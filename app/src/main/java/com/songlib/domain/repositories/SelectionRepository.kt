@@ -2,7 +2,7 @@ package com.songlib.domain.repositories
 
 import android.content.*
 import com.songlib.core.utils.PrefConstants
-import com.songlib.data.models.Book
+import com.songlib.data.models.*
 import com.songlib.data.sources.remote.ApiService
 import kotlinx.coroutines.flow.*
 import javax.inject.*
@@ -36,6 +36,19 @@ class SelectionRepository @Inject constructor(
         val books: MutableList<Book> = mutableListOf()
         books.addAll(apiService.getBooks().data)
         emit(books)
+    }
+
+
+    fun saveBooks(): Flow<List<Book>> = flow {
+        val books: MutableList<Book> = mutableListOf()
+        books.addAll(apiService.getBooks().data)
+        emit(books)
+    }
+
+    fun getSongsByBook(booksId: String): Flow<List<Song>> = flow {
+        val songs: MutableList<Song> = mutableListOf()
+        songs.addAll(apiService.getSongsByBook(booksId = booksId).data)
+        emit(songs)
     }
 
     override fun onSharedPreferenceChanged(

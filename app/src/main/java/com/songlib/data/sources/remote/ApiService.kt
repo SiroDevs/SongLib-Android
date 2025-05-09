@@ -13,5 +13,5 @@ interface ApiService {
     @GET("${ApiConstants.Uri.SONGS}{booksId}")
     suspend fun getSongsByBook(
         @Path("booksId") booksId: String,
-    )
+    ): SongResp
 }
