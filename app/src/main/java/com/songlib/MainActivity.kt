@@ -1,47 +1,34 @@
 package com.songlib
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.songlib.core.utils.PrefConstants
+import com.songlib.presentation.screens.home.HomeScreen
+import com.songlib.presentation.screens.selection.*
 import com.songlib.presentation.theme.SongLibTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        val prefs = getSharedPreferences(PrefConstants.Key.PREFERENCE_FILE, MODE_PRIVATE)
+        val isDataSelected = prefs.getBoolean(PrefConstants.Key.DATA_SELECTED, false)
+        val isDataLoaded = prefs.getBoolean(PrefConstants.Key.DATA_LOADED, false)
+
         setContent {
             SongLibTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                if (isDataLoaded) {
+                    HomeScreen()
+                } else {
+                    if (isDataSelected) {
+                        Step2Screen()
+                    } else {
+                        Step1Screen()
+                    }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SongLibTheme {
-        Greeting("Android")
     }
 }

@@ -96,6 +96,9 @@ dependencies {
 
     implementation(libs.hilt.android)
 
+    implementation(libs.compose.hilt.navigation)
+    implementation(libs.compose.navigation)
+
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
     implementation(libs.squareup.okhttp3.logging)

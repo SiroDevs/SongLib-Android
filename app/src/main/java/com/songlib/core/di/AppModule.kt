@@ -2,7 +2,7 @@ package com.songlib.core.di
 
 import android.content.Context
 import com.songlib.data.sources.remote.ApiService
-import com.songlib.domain.SelectionRepository
+import com.songlib.domain.repositories.SelectionRepository
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext

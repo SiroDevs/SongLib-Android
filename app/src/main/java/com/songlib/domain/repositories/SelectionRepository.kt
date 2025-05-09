@@ -1,4 +1,4 @@
-package com.songlib.domain
+package com.songlib.domain.repositories
 
 import android.content.*
 import com.songlib.core.utils.PrefConstants
