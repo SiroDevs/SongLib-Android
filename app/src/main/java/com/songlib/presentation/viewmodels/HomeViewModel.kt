@@ -12,7 +12,7 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class SelectionViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val bookRepo: BookRepository,
     private val songRepo: SongRepository,
 ) : ViewModel() {

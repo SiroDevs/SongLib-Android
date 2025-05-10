@@ -6,16 +6,15 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import com.google.gson.Gson
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.selection.*
 import com.songlib.presentation.screens.splash.SplashScreen
+import com.songlib.presentation.viewmodels.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
-    //homeViewModel: HomeViewModel,
 ) {
     NavHost(
         navController = navController,
@@ -27,15 +26,27 @@ fun AppNavHost(
         }
 
         composable(Routes.STEP_1) {
-            Step1Screen()
+            val selectionViewModel: SelectionViewModel = hiltViewModel()
+            Step1Screen(
+                viewModel = selectionViewModel,
+                navController = navController,
+            )
         }
 
         composable(Routes.STEP_2) {
-            Step2Screen()
+            val selectionViewModel: SelectionViewModel = hiltViewModel()
+            Step2Screen(
+                viewModel = selectionViewModel,
+                navController = navController,
+            )
         }
 
         composable(Routes.HOME) {
-            HomeScreen()
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            HomeScreen(
+                viewModel = homeViewModel,
+                navController = navController,
+            )
         }
     }
 }

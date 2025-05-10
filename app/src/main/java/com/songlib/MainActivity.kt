@@ -1,12 +1,12 @@
 package com.songlib
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.songlib.core.utils.PrefConstants
-import com.songlib.presentation.screens.home.HomeScreen
-import com.songlib.presentation.screens.selection.*
+import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.theme.SongLibTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,14 +19,11 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             SongLibTheme {
+                val navController: NavHostController = rememberNavController()
                 if (isDataLoaded) {
-                    HomeScreen()
+                    navController.navigate(Routes.HOME)
                 } else {
-                    if (isDataSelected) {
-                        Step2Screen()
-                    } else {
-                        Step1Screen()
-                    }
+                    navController.navigate(if (isDataSelected) Routes.STEP_2 else Routes.STEP_1)
                 }
             }
         }

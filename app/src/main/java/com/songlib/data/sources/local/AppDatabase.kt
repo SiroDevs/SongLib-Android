@@ -6,7 +6,8 @@ import com.songlib.data.models.*
 
 @Database(entities = [Book::class, Song::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun activitiesDao(): ActivitiesDao
+    abstract fun booksDao(): BookDao
+    abstract fun songsDao(): SongDao
 
     companion object {
         @Volatile
@@ -18,7 +19,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
                             context.applicationContext,
-                            AppDatabase::class.java, "activities_items"
+                            AppDatabase::class.java, "SongLib"
                         ).fallbackToDestructiveMigration().build()
                     }
                 }
