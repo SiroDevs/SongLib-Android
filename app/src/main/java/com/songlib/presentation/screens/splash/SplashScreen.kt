@@ -22,7 +22,7 @@ fun SplashScreen() {
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
-                    .background(color = white)
+                    .background(color = ThemeColors.white)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -42,12 +42,12 @@ fun SplashScreen() {
                             fontSize = 50.sp,
                             letterSpacing = 5.sp,
                             fontWeight = FontWeight.Bold,
-                            color = primary
+                            color = ThemeColors.primary
                         )
                     )
                     Spacer(Modifier.weight(1f))
                     Divider(
-                        color = primaryDark,
+                        color = ThemeColors.primaryDark,
                         thickness = 2.dp,
                         modifier = Modifier
                             .padding(horizontal = 10.dp)

@@ -20,9 +20,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val prefs = getSharedPreferences(PrefConstants.Key.PREFERENCE_FILE, MODE_PRIVATE)
-        val isDataSelected = prefs.getBoolean(PrefConstants.Key.DATA_SELECTED, false)
-        val isDataLoaded = prefs.getBoolean(PrefConstants.Key.DATA_LOADED, false)
+        val prefs = getSharedPreferences(PrefConstants.PREFERENCE_FILE, MODE_PRIVATE)
+        val isDataSelected = prefs.getBoolean(PrefConstants.DATA_SELECTED, false)
+        val isDataLoaded = prefs.getBoolean(PrefConstants.DATA_LOADED, false)
 
         val startDestination = when {
             isDataLoaded -> Routes.HOME

@@ -35,7 +35,7 @@ object NetworkModule {
         okHttpClient: OkHttpClient.Builder,
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.Uri.BASE)
+            .baseUrl(ApiConstants.BASE)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient.build())
             .build()

@@ -2,11 +2,14 @@ package com.songlib.presentation.navigation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
+import com.songlib.data.models.Song
 import com.songlib.presentation.screens.home.HomeScreen
+import com.songlib.presentation.screens.presentor.PresentorScreen
 import com.songlib.presentation.screens.selection.*
 import com.songlib.presentation.screens.splash.SplashScreen
 import com.songlib.presentation.viewmodels.*
@@ -49,5 +52,21 @@ fun AppNavHost(
                 navController = navController,
             )
         }
+
+        composable(Routes.PRESENTOR) {
+            val presentorViewModel: PresentorViewModel = hiltViewModel()
+            val navBackStackEntry = remember { navController.currentBackStackEntry }
+            val song = navBackStackEntry?.savedStateHandle?.get<Song>("song")
+
+            if (song != null) {
+                PresentorScreen(
+                    viewModel = presentorViewModel,
+                    navController = navController,
+                    onBackPressed = { navController.popBackStack() },
+                    song = song
+                )
+            }
+        }
+
     }
 }

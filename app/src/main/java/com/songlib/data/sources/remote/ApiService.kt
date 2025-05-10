@@ -7,10 +7,10 @@ import retrofit2.http.*
 
 @Keep
 interface ApiService {
-    @GET(ApiConstants.Uri.BOOKS)
+    @GET(ApiConstants.BOOKS)
     suspend fun getBooks(): BookResp
 
-    @GET("${ApiConstants.Uri.SONGS}{booksId}")
+    @GET("${ApiConstants.SONGS}{booksId}")
     suspend fun getSongsByBook(
         @Path("booksId") booksId: String,
     ): SongResp
