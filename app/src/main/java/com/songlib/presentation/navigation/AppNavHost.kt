@@ -14,11 +14,12 @@ import com.songlib.presentation.viewmodels.*
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppNavHost(
+    startDestination: String,
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
-        startDestination = Routes.SPLASH
+        startDestination = startDestination
     ) {
 
         composable(Routes.SPLASH) {

@@ -3,12 +3,19 @@ package com.songlib
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.annotation.Keep
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.ui.ExperimentalComposeUiApi
 import com.songlib.core.utils.PrefConstants
+import com.songlib.presentation.navigation.AppNavHost
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.theme.SongLibTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalComposeUiApi
+@ExperimentalFoundationApi
+@Keep
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,14 +24,15 @@ class MainActivity : ComponentActivity() {
         val isDataSelected = prefs.getBoolean(PrefConstants.Key.DATA_SELECTED, false)
         val isDataLoaded = prefs.getBoolean(PrefConstants.Key.DATA_LOADED, false)
 
+        val startDestination = when {
+            isDataLoaded -> Routes.HOME
+            isDataSelected -> Routes.STEP_2
+            else -> Routes.STEP_1
+        }
+
         setContent {
             SongLibTheme {
-                val navController: NavHostController = rememberNavController()
-                if (isDataLoaded) {
-                    navController.navigate(Routes.HOME)
-                } else {
-                    navController.navigate(if (isDataSelected) Routes.STEP_2 else Routes.STEP_1)
-                }
+                AppNavHost(startDestination = startDestination)
             }
         }
     }
