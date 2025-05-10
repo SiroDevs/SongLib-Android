@@ -10,6 +10,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
+import com.songlib.core.utils.refineTitle
 import com.songlib.data.models.Book
 import com.songlib.domain.entities.Selectable
 import com.songlib.presentation.theme.ThemeColors
@@ -19,9 +20,6 @@ fun BookItem(
     item: Selectable<Book>,
     onPressed: (() -> Unit)? = null
 ) {
-    //val isLight = MaterialTheme.colorScheme.isLight
-    //val unSelectedColor = if (isLight) Color.White else ThemeColors.primaryDark
-
     val backgroundColor = if (item.isSelected) ThemeColors.primary else Color.White
     val contentColor = if (item.isSelected) Color.White else ThemeColors.primaryDark
 
@@ -36,31 +34,27 @@ fun BookItem(
         ListItem(
             leadingContent = {
                 Icon(
-                    imageVector = if (item.isSelected) {
-                        if (isSystemInDarkTheme()) Icons.Default.CheckBox else Icons.Default.CheckCircle
-                    } else {
-                        if (isSystemInDarkTheme()) Icons.Default.CheckBoxOutlineBlank else Icons.Default.RadioButtonUnchecked
-                    },
+                    imageVector = if (item.isSelected) Icons.Filled.RadioButtonChecked else Icons.Filled.RadioButtonUnchecked,
                     contentDescription = null,
                     tint = contentColor,
-                    modifier = Modifier.padding(Sizes.xs.dp)
+                    modifier = Modifier.padding(5.dp)
                 )
             },
-            headlineText = {
+            headlineContent = {
                 Text(
-                    text = refineTitle(item.data.title ?: ""),
+                    text = refineTitle(item.data.title),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = contentColor
                 )
             },
-            supportingText = {
+            supportingContent = {
                 Text(
                     text = "${item.data.songs} ${item.data.subTitle} songs",
                     fontSize = 18.sp,
                     color = contentColor
                 )
-            }
+            },
         )
     }
 }

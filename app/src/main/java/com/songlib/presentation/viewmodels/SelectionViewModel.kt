@@ -3,6 +3,7 @@ package com.songlib.presentation.viewmodels
 import android.util.Log
 import androidx.lifecycle.*
 import com.songlib.data.models.*
+import com.songlib.domain.entities.Selectable
 import com.songlib.domain.entities.UiState
 import com.songlib.domain.repositories.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,8 +20,8 @@ class SelectionViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _books = MutableStateFlow<List<Book>>(emptyList())
-    val books: StateFlow<List<Book>> get() = _books
+    private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
+    val books: StateFlow<List<Selectable<Book>>> get() = _books
 
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
@@ -40,52 +41,53 @@ class SelectionViewModel @Inject constructor(
                 }
                 _uiState.tryEmit(UiState.Error(errorMessage))
             }.collect { respData ->
-                _books.emit(respData)
-            }
-            _uiState.tryEmit(UiState.Loaded)
-        }
-    }
-
-    fun saveBooks(books: List<Book>) {
-        _uiState.tryEmit(UiState.Saving)
-
-        books.map {
-            runBlocking{
-                bookRepo.saveBook(it)
+                val selectableBooks = respData.map { Selectable(it) }
+                _books.emit(selectableBooks)
+                _uiState.tryEmit(UiState.Loaded)
             }
         }
-        _uiState.tryEmit(UiState.Saved)
-    }
 
-    fun fetchSongs(booksId: String) {
-        _uiState.tryEmit(UiState.Loading)
+        fun saveBooks(books: List<Book>) {
+            _uiState.tryEmit(UiState.Saving)
 
-        viewModelScope.launch {
-            songRepo.getSongsByBook(booksId = booksId).catch { exception ->
-                Log.d("TAG", "fetching data: $exception")
-                val errorCode = (exception as? HttpException)?.code()
-
-                val errorMessage = if (errorCode in 400..499) {
-                    "Error! Force Refresh"
-                } else {
-                    "We have some issues connecting to the server: $exception"
+            books.map {
+                runBlocking {
+                    bookRepo.saveBook(it)
                 }
-                _uiState.tryEmit(UiState.Error(errorMessage))
-            }.collect { respData ->
-                _songs.emit(respData)
             }
-            _uiState.tryEmit(UiState.Loaded)
+            _uiState.tryEmit(UiState.Saved)
         }
-    }
 
-    fun saveSongs(songs: List<Song>) {
-        _uiState.tryEmit(UiState.Saving)
+        fun fetchSongs(booksId: String) {
+            _uiState.tryEmit(UiState.Loading)
 
-        songs.map {
-            runBlocking{
-                songRepo.saveSong(it)
+            viewModelScope.launch {
+                songRepo.getSongsByBook(booksId = booksId).catch { exception ->
+                    Log.d("TAG", "fetching data: $exception")
+                    val errorCode = (exception as? HttpException)?.code()
+
+                    val errorMessage = if (errorCode in 400..499) {
+                        "Error! Force Refresh"
+                    } else {
+                        "We have some issues connecting to the server: $exception"
+                    }
+                    _uiState.tryEmit(UiState.Error(errorMessage))
+                }.collect { respData ->
+                    _songs.emit(respData)
+                }
+                _uiState.tryEmit(UiState.Loaded)
             }
         }
-        _uiState.tryEmit(UiState.Saved)
+
+        fun saveSongs(songs: List<Song>) {
+            _uiState.tryEmit(UiState.Saving)
+
+            songs.map {
+                runBlocking {
+                    songRepo.saveSong(it)
+                }
+            }
+            _uiState.tryEmit(UiState.Saved)
+        }
     }
 }

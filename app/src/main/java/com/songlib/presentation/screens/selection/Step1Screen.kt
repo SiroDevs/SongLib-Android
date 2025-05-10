@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.*
+import com.songlib.presentation.components.listitems.BookItem
 import com.songlib.presentation.viewmodels.SelectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,10 +68,10 @@ fun Step1Screen(
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             contentPadding = PaddingValues(horizontal = 10.dp)
                         ) {
-                            items(books) { activity ->
-                                Workout(
-                                    activity = activity,
-                                    onActivityClick = { clickedItem -> onItemClick(clickedItem) },
+                            items(books) { book ->
+                                BookItem(
+                                    item = book,
+                                    //onActivityClick = { clickedItem -> onItemClick(clickedItem) },
                                 )
                             }
                         }
