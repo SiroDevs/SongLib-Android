@@ -1,11 +1,10 @@
 package com.songlib.core.di
 
-//import com.songlib.BuildConfig
+import com.google.gson.GsonBuilder
+import com.songlib.BuildConfig
 import com.songlib.core.utils.ApiConstants
 import com.songlib.data.sources.remote.ApiService
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
@@ -20,38 +19,35 @@ import javax.inject.Named
 object NetworkModule {
     @Provides
     @Reusable
-    @JvmStatic
-    internal fun provideApiService(
-        @Named("songlibApi") retrofit: Retrofit
-    ): ApiService {
+    fun provideApiService(@Named("songlibApi") retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
 
     @Provides
     @Named("songlibApi")
     @Reusable
-    @JvmStatic
-    internal fun provideSonglibApi(
-        okHttpClient: OkHttpClient.Builder,
-    ): Retrofit {
+    fun provideSonglibApi(okHttpClient: OkHttpClient): Retrofit {
+        val gson = GsonBuilder().setLenient().create()
+
         return Retrofit.Builder()
             .baseUrl(ApiConstants.BASE)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient.build())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(okHttpClient)
             .build()
     }
 
     @Provides
     @Reusable
-    @JvmStatic
-    internal fun provideOkHttp(): OkHttpClient.Builder {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-
-        val okHttpClient = OkHttpClient.Builder()
-        //if (BuildConfig.DEBUG) {
-            okHttpClient.addInterceptor(logging)
-        //}
-        return okHttpClient
+    fun provideOkHttp(): OkHttpClient {
+        val logging = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        return OkHttpClient.Builder()
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(logging)
+                }
+            }
+            .build()
     }
 }

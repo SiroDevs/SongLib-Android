@@ -26,8 +26,9 @@ fun LoadingState(title: String) {
 fun ErrorState(errorMessage: String, onRetry: () -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
+            .fillMaxSize()
+            .padding(all = 20.dp),
+        contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
@@ -44,5 +45,12 @@ fun ErrorState(errorMessage: String, onRetry: () -> Unit) {
 
 @Composable
 fun EmptyState() {
-    Text(text = "No data available.", modifier = Modifier.padding(16.dp))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(all = 20.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text = "No data available.", modifier = Modifier.padding(16.dp))
+    }
 }

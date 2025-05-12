@@ -17,7 +17,7 @@ data class Book(
     @ColumnInfo(name = "user") val user: Int
 )
 
-data class BookResp(
+data class BooksResponse(
     val count: Int,
     val `data`: List<Book>
 )

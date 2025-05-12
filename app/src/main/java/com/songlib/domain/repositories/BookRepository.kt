@@ -31,5 +31,4 @@ class BookRepository @Inject constructor(
             booksDao?.insert(book)
         }
     }
-
 }

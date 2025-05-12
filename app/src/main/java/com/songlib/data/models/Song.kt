@@ -18,7 +18,7 @@ data class Song(
     @ColumnInfo(name = "views") val views: Int
 )
 
-data class SongResp(
+data class SongsResponse(
     val count: Int,
     val `data`: List<Song>
 )
