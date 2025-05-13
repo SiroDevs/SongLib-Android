@@ -54,11 +54,11 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
-    fun fetchSongs(booksId: String) {
+    fun fetchSongs(books: String) {
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            songRepo.getSongsByBook(booksId = booksId).catch { exception ->
+            songRepo.getSongs(books = books).catch { exception ->
                 Log.d("TAG", "fetching songs")
                 val errorMessage = when (exception) {
                     is HttpException -> "HTTP Error: ${exception.code()}"

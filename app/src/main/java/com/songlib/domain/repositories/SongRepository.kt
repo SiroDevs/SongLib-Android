@@ -21,8 +21,8 @@ class SongRepository @Inject constructor(
         songsDao = db?.songsDao()
     }
 
-    fun getSongsByBook(booksId: String): Flow<List<Song>> = flow {
-        val songs = apiService.getSongsByBook(booksId).data
+    fun getSongs(books: String): Flow<List<Song>> = flow {
+        val songs = apiService.getSongs(books).data
         emit(songs)
     }
 

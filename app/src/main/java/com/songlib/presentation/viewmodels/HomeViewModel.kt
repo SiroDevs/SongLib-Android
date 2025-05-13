@@ -57,11 +57,11 @@ class HomeViewModel @Inject constructor(
         _uiState.tryEmit(UiState.Saved)
     }
 
-    fun fetchSongs(booksId: String) {
+    fun fetchSongs(books: String) {
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            songRepo.getSongsByBook(booksId = booksId).catch { exception ->
+            songRepo.getSongs(books = books).catch { exception ->
                 Log.d("TAG", "fetching data: $exception")
                 val errorCode = (exception as? HttpException)?.code()
 

@@ -10,8 +10,8 @@ interface ApiService {
     @GET(ApiConstants.BOOKS)
     suspend fun getBooks(): BooksResponse
 
-    @GET("${ApiConstants.SONGS}{booksId}")
-    suspend fun getSongsByBook(
-        @Path("booksId") booksId: String,
+    @GET(ApiConstants.SONGS)
+    suspend fun getSongs(
+        @Query("books") books: String,
     ): SongsResponse
 }
