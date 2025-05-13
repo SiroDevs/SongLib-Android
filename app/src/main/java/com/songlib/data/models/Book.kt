@@ -16,8 +16,3 @@ data class Book(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "user") val user: Int
 )
-
-data class BooksResponse(
-    val count: Int,
-    val `data`: List<Book>
-)

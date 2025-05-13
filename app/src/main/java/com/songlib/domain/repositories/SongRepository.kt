@@ -22,7 +22,7 @@ class SongRepository @Inject constructor(
     }
 
     fun getSongs(books: String): Flow<List<Song>> = flow {
-        val songs = apiService.getSongs(books).data
+        val songs = apiService.getSongs(books)
         emit(songs)
     }
 

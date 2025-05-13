@@ -57,6 +57,10 @@ android {
             initWith(getByName("debug"))
             manifestPlaceholders["hostName"] = "Stg SongLib"
             applicationIdSuffix = ".stg"
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {

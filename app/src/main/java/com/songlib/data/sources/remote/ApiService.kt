@@ -8,10 +8,10 @@ import retrofit2.http.*
 @Keep
 interface ApiService {
     @GET(ApiConstants.BOOKS)
-    suspend fun getBooks(): BooksResponse
+    suspend fun getBooks(): List<Book>
 
     @GET(ApiConstants.SONGS)
     suspend fun getSongs(
         @Query("books") books: String,
-    ): SongsResponse
+    ): List<Song>
 }

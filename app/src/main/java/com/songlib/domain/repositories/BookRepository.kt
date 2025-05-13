@@ -22,7 +22,7 @@ class BookRepository @Inject constructor(
     }
 
     fun getBooks(): Flow<List<Book>> = flow {
-        val books = apiService.getBooks().data
+        val books = apiService.getBooks()
         emit(books)
     }
 
