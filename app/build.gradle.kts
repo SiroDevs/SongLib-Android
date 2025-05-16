@@ -18,6 +18,10 @@ android {
     namespace = "com.songlib"
     compileSdk = 35
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.8.1"
+    }
+
     defaultConfig {
         applicationId = "com.songlib"
         minSdk = 24
@@ -40,7 +44,7 @@ android {
 
     buildTypes {
         getByName("debug") {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             isDebuggable = true
             applicationIdSuffix = ".debug"
             signingConfig = signingConfigs.getByName("debug")
@@ -93,12 +97,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
+
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.icons.extended)
-
 
     implementation(libs.hilt.android)
 

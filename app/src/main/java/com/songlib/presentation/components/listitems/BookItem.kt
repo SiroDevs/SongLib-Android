@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.songlib.core.utils.refineTitle
 import com.songlib.data.models.Book
@@ -57,4 +58,24 @@ fun BookItem(
             },
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewBookItem() {
+    val sampleBook = Book(
+        bookId = 1,
+        bookNo = 1,
+        created = "2023-01-01",
+        enabled = true,
+        position = 1,
+        songs = 12,
+        subTitle = "worship",
+        title = "Songs of Worship",
+        user = 42
+    )
+
+    val selectableBook = Selectable(data = sampleBook, isSelected = true)
+
+    BookItem(item = selectableBook)
 }
