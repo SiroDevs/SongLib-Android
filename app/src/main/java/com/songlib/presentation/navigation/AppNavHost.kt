@@ -10,7 +10,8 @@ import androidx.navigation.compose.*
 import com.songlib.data.models.Song
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.presentor.PresentorScreen
-import com.songlib.presentation.screens.selection.*
+import com.songlib.presentation.screens.selection.step1.Step1Screen
+import com.songlib.presentation.screens.selection.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
 import com.songlib.presentation.viewmodels.*
 

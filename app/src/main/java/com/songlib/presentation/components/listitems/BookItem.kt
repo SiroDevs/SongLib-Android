@@ -19,18 +19,18 @@ import com.songlib.presentation.theme.ThemeColors
 @Composable
 fun BookItem(
     item: Selectable<Book>,
-    onPressed: (() -> Unit)? = null
+    onClick: (Selectable<Book>) -> Unit
 ) {
     val backgroundColor = if (item.isSelected) ThemeColors.primary else Color.White
     val contentColor = if (item.isSelected) Color.White else ThemeColors.primaryDark
 
     Card(
-        colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-            .clickable { onPressed?.invoke() }
+            .clickable { onClick(item) },
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor
+        )
     ) {
         ListItem(
             leadingContent = {
@@ -77,5 +77,5 @@ fun PreviewBookItem() {
 
     val selectableBook = Selectable(data = sampleBook, isSelected = true)
 
-    BookItem(item = selectableBook)
+    //BookItem(item = selectableBook)
 }

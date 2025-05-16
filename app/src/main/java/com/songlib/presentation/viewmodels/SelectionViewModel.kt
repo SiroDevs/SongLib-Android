@@ -84,4 +84,14 @@ class SelectionViewModel @Inject constructor(
         _uiState.tryEmit(UiState.Saved)
     }
 
+    fun toggleBookSelection(book: Selectable<Book>) {
+        _books.value = _books.value.map {
+            if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
+        }
+    }
+
+    fun getSelectedBooks(): List<Book> {
+        return _books.value.filter { it.isSelected }.map { it.data }
+    }
+
 }

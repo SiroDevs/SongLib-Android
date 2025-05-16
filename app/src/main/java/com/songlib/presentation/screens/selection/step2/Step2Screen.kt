@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.selection
+package com.songlib.presentation.screens.selection.step2
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
