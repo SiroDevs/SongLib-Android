@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entities.UiState
+import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.SelectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +31,21 @@ fun Step1Screen(
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { Step1TopBar(uiState = uiState) },
+        topBar = {
+            AppTopBar(
+                title = "Select Songbooks",
+                actions = {
+                    if (uiState != UiState.Loading && uiState != UiState.Saving) {
+                        IconButton(onClick = { /* Refresh logic */ }) {
+                            Icon(
+                                imageVector = Icons.Filled.Refresh,
+                                contentDescription = "Refresh"
+                            )
+                        }
+                    }
+                }
+            )
+        },
         content = { paddingValues ->
             Step1Content(
                 uiState = uiState,
@@ -48,24 +64,4 @@ fun Step1Screen(
             }
         }
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Step1TopBar(uiState: UiState) {
-    Surface(shadowElevation = 3.dp) {
-        TopAppBar(
-            title = { Text("Select Songbooks") },
-            actions = {
-                if (uiState != UiState.Loading && uiState != UiState.Saving) {
-                    IconButton(onClick = { /* Implement Refresh logic if needed */ }) {
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = "Refresh"
-                        )
-                    }
-                }
-            }
-        )
-    }
 }

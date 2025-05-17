@@ -14,7 +14,6 @@ import com.songlib.domain.entities.*
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.listitems.BookItem
 
-
 @Composable
 fun Step1Content(
     uiState: UiState,
