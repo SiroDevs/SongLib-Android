@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.songlib.data.models.Book
 import com.songlib.domain.entities.*
@@ -32,6 +33,7 @@ fun Step1Content(
                 errorMessage = uiState.errorMessage,
                 onRetry = onRetry
             )
+
             is UiState.Loading -> LoadingState("Loading books ...")
             is UiState.Saving -> LoadingState("Saving books ...")
             is UiState.Loaded -> {
@@ -48,45 +50,78 @@ fun Step1Content(
                     }
                 }
             }
+
             else -> EmptyState()
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun Step1Fab(
-    selectedBooks: List<Book>,
-    onSaveConfirmed: (List<Book>) -> Unit
-) {
-    var showConfirmDialog by remember { mutableStateOf(false) }
-    var showNoSelectionDialog by remember { mutableStateOf(false) }
+fun Step1ContentPreview() {
+    val books = listOf(
+        Selectable(
+            Book(
+                bookId = 1,
+                bookNo = 1,
+                created = "",
+                enabled = true,
+                position = 1,
+                songs = 750,
+                subTitle = "worship",
+                title = "Songs of Worship",
+                user = 1
+            ),
+        ),
+        Selectable(
+            Book(
+                bookId = 2,
+                bookNo = 2,
+                created = "",
+                enabled = true,
+                position = 2,
+                songs = 220,
+                subTitle = "injili",
+                title = "Nyimbo za Injili",
+                user = 1
+            ),
+            isSelected = true
+        ),
+        Selectable(
+            Book(
+                bookId = 3,
+                bookNo = 3,
+                created = "",
+                enabled = true,
+                position = 2,
+                songs = 600,
+                subTitle = "kikuyu",
+                title = "Nyimbo cia Kunira Ngai",
+                user = 1
+            ),
+            isSelected = true
+        ),
+        Selectable(
+            Book(
+                bookId = 4,
+                bookNo = 4,
+                created = "",
+                enabled = true,
+                position = 4,
+                songs = 200,
+                subTitle = "gusii",
+                title = "Amatero Y'enchiri",
+                user = 1
+            ),
+            isSelected = false
+        ),
+    )
 
-    if (showConfirmDialog) {
-        ConfirmSaveDialog(
-            onConfirm = {
-                onSaveConfirmed(selectedBooks)
-                showConfirmDialog = false
-            },
-            onDismiss = { showConfirmDialog = false }
-        )
-    }
-
-    if (showNoSelectionDialog) {
-        NoSelectionDialog(
-            onDismiss = { showNoSelectionDialog = false }
-        )
-    }
-
-    FloatingActionButton(
-        onClick = {
-            if (selectedBooks.isNotEmpty()) {
-                showConfirmDialog = true
-            } else {
-                showNoSelectionDialog = true
-            }
-        },
-        containerColor = MaterialTheme.colorScheme.primary
-    ) {
-        Icon(Icons.Default.Check, contentDescription = "Save")
-    }
+    Step1Content(
+        uiState = UiState.Loaded,
+        books = books,
+        onRetry = {},
+        onBookClick = {},
+        modifier = Modifier.fillMaxSize()
+    )
 }
