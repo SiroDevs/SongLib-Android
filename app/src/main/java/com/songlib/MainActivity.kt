@@ -3,9 +3,14 @@ package com.songlib
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.Keep
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import com.songlib.core.utils.PrefConstants
 import com.songlib.presentation.navigation.AppNavHost
 import com.songlib.presentation.navigation.Routes
@@ -29,10 +34,15 @@ class MainActivity : ComponentActivity() {
             isDataSelected -> Routes.STEP_2
             else -> Routes.STEP_1
         }
-
+        enableEdgeToEdge()
         setContent {
             SongLibTheme {
-                AppNavHost(startDestination = startDestination)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    AppNavHost(startDestination = startDestination)
+                }
             }
         }
     }

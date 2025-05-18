@@ -7,11 +7,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.SelectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
