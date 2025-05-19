@@ -1,6 +1,7 @@
 package com.songlib.domain.repositories
 
 import android.content.*
+import androidx.core.content.edit
 import com.songlib.core.utils.PrefConstants
 import com.songlib.data.models.*
 import com.songlib.data.sources.local.*
@@ -42,6 +43,9 @@ class SongRepository @Inject constructor(
         return prefs.getString(PrefConstants.SELECTED_BOOKS, "")
     }
 
+    fun savePrefs() {
+        prefs.edit { putBoolean(PrefConstants.DATA_LOADED, true) }
+    }
 
     override fun onSharedPreferenceChanged(preferences: SharedPreferences?, key: String?) {
         TODO("Not yet implemented")

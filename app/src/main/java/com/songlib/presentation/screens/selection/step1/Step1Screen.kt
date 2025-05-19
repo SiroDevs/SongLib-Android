@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.data.models.Book
 import com.songlib.domain.entities.UiState
+import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.SelectionViewModel
@@ -30,6 +31,12 @@ fun Step1Screen(
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(uiState) {
+        if (uiState == UiState.Saved) {
+            navController.navigate(Routes.STEP_2)
+        }
+    }
+
     Scaffold(
         topBar = {
             AppTopBar(
@@ -49,22 +56,29 @@ fun Step1Screen(
             )
         },
         content = { paddingValues ->
-            Step1Content(
-                uiState = uiState,
-                books = books,
-                onRetry = { viewModel.fetchBooks() },
-                onBookClick = { viewModel.toggleBookSelection(it) },
-                modifier = Modifier.padding(paddingValues)
-            )
+            when (uiState) {
+                is UiState.Error -> ErrorState(
+                    errorMessage = (uiState as UiState.Error).errorMessage,
+                    onRetry = { viewModel.fetchBooks() }
+                )
+
+                is UiState.Loading -> LoadingState("Loading books ...")
+                is UiState.Saving -> LoadingState("Saving books ...")
+                is UiState.Loaded -> {
+                    Step1Content(
+                        books = books,
+                        onBookClick = { viewModel.toggleBookSelection(it) },
+                        modifier = Modifier.padding(paddingValues)
+                    )
+                }
+                else -> EmptyState()
+            }
         },
         floatingActionButton = {
             if (uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
-                    onSaveConfirmed = {
-                        viewModel.saveBooks(it)
-                        navController.navigate(Routes.STEP_2)
-                    }
+                    onSaveConfirmed = { viewModel.saveBooks(it) }
                 )
             }
         }
@@ -95,7 +109,7 @@ fun Step1Fab(
         )
     }
 
-    FloatingActionButton(
+    ExtendedFloatingActionButton(
         onClick = {
             if (viewModel.getSelectedBooks().isNotEmpty()) {
                 showConfirmDialog = true
@@ -103,8 +117,7 @@ fun Step1Fab(
                 showNoSelectionDialog = true
             }
         },
-        containerColor = MaterialTheme.colorScheme.primary
-    ) {
-        Icon(Icons.Default.Check, contentDescription = "Save")
-    }
+        icon = { Icon(Icons.Filled.Check, "Proceed") },
+        text = { Text(text = "Proceed") },
+    )
 }

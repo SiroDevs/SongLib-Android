@@ -17,9 +17,7 @@ import com.songlib.presentation.components.listitems.BookItem
 
 @Composable
 fun Step1Content(
-    uiState: UiState,
     books: List<Selectable<Book>>,
-    onRetry: () -> Unit,
     onBookClick: (Selectable<Book>) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -29,30 +27,17 @@ fun Step1Content(
             .padding(3.dp)
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
-        when (uiState) {
-            is UiState.Error -> ErrorState(
-                errorMessage = uiState.errorMessage,
-                onRetry = onRetry
-            )
-
-            is UiState.Loading -> LoadingState("Loading books ...")
-            is UiState.Saving -> LoadingState("Saving books ...")
-            is UiState.Loaded -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
-                    contentPadding = PaddingValues(horizontal = 5.dp)
-                ) {
-                    items(books) { book ->
-                        BookItem(
-                            item = book,
-                            onClick = { onBookClick(book) }
-                        )
-                    }
-                }
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            contentPadding = PaddingValues(horizontal = 5.dp)
+        ) {
+            items(books) { book ->
+                BookItem(
+                    item = book,
+                    onClick = { onBookClick(book) }
+                )
             }
-
-            else -> EmptyState()
         }
     }
 }
@@ -119,9 +104,7 @@ fun Step1ContentPreview() {
     )
 
     Step1Content(
-        uiState = UiState.Loaded,
         books = books,
-        onRetry = {},
         onBookClick = {},
         modifier = Modifier.fillMaxSize()
     )

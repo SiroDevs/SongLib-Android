@@ -1,22 +1,15 @@
 package com.songlib.presentation.screens.selection.step2
 
-import android.content.Context.MODE_PRIVATE
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.core.utils.PrefConstants
-import com.songlib.data.models.Book
 import com.songlib.domain.entities.UiState
-import com.songlib.presentation.components.EmptyState
-import com.songlib.presentation.components.ErrorState
-import com.songlib.presentation.components.LoadingState
-import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.components.*
+import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.SelectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,6 +27,12 @@ fun Step2Screen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(uiState) {
+        if (uiState == UiState.Saved) {
+            navController.navigate(Routes.HOME)
+        }
+    }
+
     Scaffold(
         content = { paddingValues ->
             Box(
@@ -49,7 +48,7 @@ fun Step2Screen(
                     )
 
                     is UiState.Loading -> LoadingState("Loading songs ...")
-                    is UiState.Saving -> LoadingState("Saving books ...")
+                    is UiState.Saving -> LoadingState("Saving songs ...")
 
                     is UiState.Loaded -> {
                         viewModel.saveSongs()

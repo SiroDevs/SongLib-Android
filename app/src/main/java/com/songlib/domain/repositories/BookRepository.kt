@@ -39,7 +39,7 @@ class BookRepository @Inject constructor(
         }
     }
 
-    fun saveBookPrefs(selectedBooks: String) {
+    fun savePrefs(selectedBooks: String) {
         prefs.edit { putString(PrefConstants.SELECTED_BOOKS, selectedBooks) }
         prefs.edit { putBoolean(PrefConstants.DATA_SELECTED, true) }
     }

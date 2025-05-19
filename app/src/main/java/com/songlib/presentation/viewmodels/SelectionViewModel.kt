@@ -47,15 +47,16 @@ class SelectionViewModel @Inject constructor(
     }
 
     fun saveBooks(books: List<Book>) {
+        _uiState.tryEmit(UiState.Saving)
+        val selectedBooks = books.joinToString(",") { it.bookId.toString() }
+
         viewModelScope.launch(Dispatchers.IO) {
             books.forEach {
                 bookRepo.saveBook(it)
             }
-
-            val selectedBooks = books.joinToString(",") { it.bookId.toString() }
-            bookRepo.saveBookPrefs(selectedBooks)
             _uiState.emit(UiState.Saved)
         }
+        bookRepo.savePrefs(selectedBooks)
     }
 
     fun fetchSongs() {
@@ -87,6 +88,7 @@ class SelectionViewModel @Inject constructor(
             }
             _uiState.tryEmit(UiState.Saved)
         }
+        songRepo.savePrefs()
     }
 
     fun toggleBookSelection(book: Selectable<Book>) {
