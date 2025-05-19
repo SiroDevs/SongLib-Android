@@ -15,15 +15,12 @@ import javax.inject.*
 class SongRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService
-) : SharedPreferences.OnSharedPreferenceChangeListener {
-    private val prefs: SharedPreferences = context.getSharedPreferences(
-        PrefConstants.PREFERENCE_FILE,
-        Context.MODE_PRIVATE
-    )
+) {
+    private val prefs = context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
+
     private var songsDao: SongDao?
 
     init {
-        prefs.registerOnSharedPreferenceChangeListener(this)
         val db = AppDatabase.getDatabase(context)
         songsDao = db?.songsDao()
     }
@@ -45,10 +42,6 @@ class SongRepository @Inject constructor(
 
     fun savePrefs() {
         prefs.edit { putBoolean(PrefConstants.DATA_LOADED, true) }
-    }
-
-    override fun onSharedPreferenceChanged(preferences: SharedPreferences?, key: String?) {
-        TODO("Not yet implemented")
     }
 
 }

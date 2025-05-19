@@ -78,7 +78,7 @@ fun Step1Screen(
             if (uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
-                    onSaveConfirmed = { viewModel.saveBooks(it) }
+                    onSaveConfirmed = { viewModel.saveSelectedBooks() }
                 )
             }
         }
