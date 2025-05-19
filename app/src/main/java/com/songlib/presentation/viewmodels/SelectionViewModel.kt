@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import javax.inject.Inject
+import kotlin.collections.forEach
 
 @HiltViewModel
 class SelectionViewModel @Inject constructor(
@@ -50,15 +51,19 @@ class SelectionViewModel @Inject constructor(
             books.forEach {
                 bookRepo.saveBook(it)
             }
+
+            val selectedBooks = books.joinToString(",") { it.bookId.toString() }
+            bookRepo.saveBookPrefs(selectedBooks)
             _uiState.emit(UiState.Saved)
         }
     }
 
-    fun fetchSongs(books: String) {
+    fun fetchSongs() {
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            songRepo.getSongs(books = books).catch { exception ->
+            val books = songRepo.getSelectedBookids()
+            songRepo.getSongs(books.toString()).catch { exception ->
                 Log.d("TAG", "fetching songs")
                 val errorMessage = when (exception) {
                     is HttpException -> "HTTP Error: ${exception.code()}"
@@ -73,15 +78,15 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
-    fun saveSongs(songs: List<Song>) {
+    fun saveSongs() {
         _uiState.tryEmit(UiState.Saving)
 
-        songs.map {
-            runBlocking {
+        viewModelScope.launch(Dispatchers.IO) {
+            _songs.value.forEach {
                 songRepo.saveSong(it)
             }
+            _uiState.tryEmit(UiState.Saved)
         }
-        _uiState.tryEmit(UiState.Saved)
     }
 
     fun toggleBookSelection(book: Selectable<Book>) {
@@ -93,5 +98,4 @@ class SelectionViewModel @Inject constructor(
     fun getSelectedBooks(): List<Book> {
         return _books.value.filter { it.isSelected }.map { it.data }
     }
-
 }

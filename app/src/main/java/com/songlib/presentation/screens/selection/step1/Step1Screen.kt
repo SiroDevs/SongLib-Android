@@ -7,17 +7,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.songlib.data.models.Book
-import com.songlib.domain.entities.Selectable
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.SelectionViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +36,9 @@ fun Step1Screen(
                 title = "Select Songbooks",
                 actions = {
                     if (uiState != UiState.Loading && uiState != UiState.Saving) {
-                        IconButton(onClick = { /* Refresh logic */ }) {
+                        IconButton(
+                            onClick = { viewModel.fetchBooks() }
+                        ) {
                             Icon(
                                 imageVector = Icons.Filled.Refresh,
                                 contentDescription = "Refresh"
@@ -63,8 +60,11 @@ fun Step1Screen(
         floatingActionButton = {
             if (uiState == UiState.Loaded) {
                 Step1Fab(
-                    selectedBooks = viewModel.getSelectedBooks(),
-                    onSaveConfirmed = { viewModel.saveBooks(it) }
+                    viewModel = viewModel,
+                    onSaveConfirmed = {
+                        viewModel.saveBooks(it)
+                        navController.navigate(Routes.STEP_2)
+                    }
                 )
             }
         }
@@ -73,7 +73,7 @@ fun Step1Screen(
 
 @Composable
 fun Step1Fab(
-    selectedBooks: List<Book>,
+    viewModel: SelectionViewModel,
     onSaveConfirmed: (List<Book>) -> Unit
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }
@@ -82,7 +82,7 @@ fun Step1Fab(
     if (showConfirmDialog) {
         ConfirmSaveDialog(
             onConfirm = {
-                onSaveConfirmed(selectedBooks)
+                onSaveConfirmed(viewModel.getSelectedBooks())
                 showConfirmDialog = false
             },
             onDismiss = { showConfirmDialog = false }
@@ -97,7 +97,7 @@ fun Step1Fab(
 
     FloatingActionButton(
         onClick = {
-            if (selectedBooks.isNotEmpty()) {
+            if (viewModel.getSelectedBooks().isNotEmpty()) {
                 showConfirmDialog = true
             } else {
                 showNoSelectionDialog = true

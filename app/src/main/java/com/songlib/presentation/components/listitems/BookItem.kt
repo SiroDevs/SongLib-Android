@@ -27,7 +27,7 @@ fun BookItem(
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
+            .padding(5.dp)
             .clickable { onClick(item) },
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor,

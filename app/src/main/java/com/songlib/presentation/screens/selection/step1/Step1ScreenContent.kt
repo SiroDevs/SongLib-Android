@@ -26,6 +26,7 @@ fun Step1Content(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .padding(3.dp)
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
         when (uiState) {
