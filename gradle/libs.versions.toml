@@ -8,10 +8,9 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
 composeBom = "2025.05.00"
-composeLivedata = "1.8.1"
-composeMaterial = "1.7.8"
 compose = "1.8.1"
-composeNav = "2.5.3"
+composeMaterial = "1.7.8"
+navCompose = "2.9.0"
 hilt = "2.51.1"
 hiltNav = "1.2.0"
 ksp = "2.1.0-1.0.29"
@@ -27,7 +26,9 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-androidx-compose-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "composeLivedata"}
+androidx-compose-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose"}
+androidx-compose-material = { module = "androidx.compose.material:material", version.ref = "compose"}
+androidx-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navCompose"}
 androidx-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeMaterial"}
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose" }
@@ -40,7 +41,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
-compose-navigation = { group= "androidx.navigation", name = "navigation-compose", version="composeNav"}
+compose-navigation = { group= "androidx.navigation", name = "navigation-compose", version="navCompose"}
 compose-material = { group = "androidx.compose.material3", name = "material3" }
 compose-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNav"}
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }

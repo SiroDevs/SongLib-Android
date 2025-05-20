@@ -40,6 +40,14 @@ class SongRepository @Inject constructor(
         return prefs.getString(PrefConstants.SELECTED_BOOKS, "")
     }
 
+    suspend fun getAllSongs(): List<Song> {
+        var allSongs: List<Song>
+        withContext(Dispatchers.IO) {
+            allSongs = songsDao?.getAll() ?: emptyList()
+        }
+        return allSongs
+    }
+
     fun savePrefs() {
         prefs.edit { putBoolean(PrefConstants.DATA_LOADED, true) }
     }

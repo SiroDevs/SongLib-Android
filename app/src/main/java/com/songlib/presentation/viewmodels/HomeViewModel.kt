@@ -25,67 +25,20 @@ class HomeViewModel @Inject constructor(
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
 
-    fun fetchBooks() {
+    private val _filtered = MutableStateFlow<List<Song>>(emptyList())
+    val filtered: StateFlow<List<Song>> get() = _filtered
+
+    fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            bookRepo.getBooks().catch { exception ->
-                Log.d("TAG", "fetching data: $exception")
-                val errorCode = (exception as? HttpException)?.code()
+            val books = bookRepo.getAllBooks()
+            val songs = songRepo.getAllSongs()
+            _books.value = books
+            _songs.value = songs
 
-                val errorMessage = if (errorCode in 400..499) {
-                    "Error! Force Refresh"
-                } else {
-                    "We have some issues connecting to the server: $exception"
-                }
-                _uiState.tryEmit(UiState.Error(errorMessage))
-            }.collect { respData ->
-                _books.emit(respData)
-            }
             _uiState.tryEmit(UiState.Loaded)
         }
     }
 
-    fun saveBooks(books: List<Book>) {
-        _uiState.tryEmit(UiState.Saving)
-
-        books.map {
-            runBlocking{
-                bookRepo.saveBook(it)
-            }
-        }
-        _uiState.tryEmit(UiState.Saved)
-    }
-
-    fun fetchSongs(books: String) {
-        _uiState.tryEmit(UiState.Loading)
-
-        viewModelScope.launch {
-            songRepo.getSongs(books = books).catch { exception ->
-                Log.d("TAG", "fetching data: $exception")
-                val errorCode = (exception as? HttpException)?.code()
-
-                val errorMessage = if (errorCode in 400..499) {
-                    "Error! Force Refresh"
-                } else {
-                    "We have some issues connecting to the server: $exception"
-                }
-                _uiState.tryEmit(UiState.Error(errorMessage))
-            }.collect { respData ->
-                _songs.emit(respData)
-            }
-            _uiState.tryEmit(UiState.Loaded)
-        }
-    }
-
-    fun saveSongs(songs: List<Song>) {
-        _uiState.tryEmit(UiState.Saving)
-
-        songs.map {
-            runBlocking{
-                songRepo.saveSong(it)
-            }
-        }
-        _uiState.tryEmit(UiState.Saved)
-    }
 }

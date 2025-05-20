@@ -36,6 +36,14 @@ class BookRepository @Inject constructor(
         }
     }
 
+    suspend fun getAllBooks(): List<Book> {
+        var allBooks: List<Book>
+        withContext(Dispatchers.IO) {
+            allBooks = booksDao?.getAll() ?: emptyList()
+        }
+        return allBooks
+    }
+
     fun savePrefs(selectedBooks: String) {
         prefs.edit { putString(PrefConstants.SELECTED_BOOKS, selectedBooks) }
         prefs.edit { putBoolean(PrefConstants.DATA_SELECTED, true) }

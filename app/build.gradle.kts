@@ -110,6 +110,8 @@ dependencies {
 
     implementation(libs.compose.hilt.navigation)
     implementation(libs.compose.navigation)
+    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.navigation)
 
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
