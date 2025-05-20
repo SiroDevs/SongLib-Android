@@ -1,5 +1,6 @@
 package com.songlib.presentation.screens.home.widgets
 
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -10,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.songlib.presentation.theme.ThemeColors
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
@@ -18,7 +20,7 @@ fun BottomNavigationBar(navController: NavController) {
         NavigationItem.Likes,
     )
     BottomNavigation(
-        backgroundColor = Color.White,
+        backgroundColor = ThemeColors.primary,
         contentColor = Color.White
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -27,8 +29,8 @@ fun BottomNavigationBar(navController: NavController) {
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.White.copy(0.4f),
+                selectedContentColor = ThemeColors.primaryDark1,
+                unselectedContentColor = Color.White,
                 alwaysShowLabel = true,
                 selected = currentRoute == item.route,
                 onClick = {
@@ -55,6 +57,6 @@ fun BottomNavigationBarPreview() {
 }
 
 sealed class NavigationItem(var route: String, var icon: ImageVector, var title: String) {
-    object Search : NavigationItem("home", Icons.Default.Search, "Home")
-    object Likes : NavigationItem("music", Icons.Default.Favorite, "Music")
+    object Search : NavigationItem("search", Icons.Default.Search, "Search")
+    object Likes : NavigationItem("likes", Icons.Default.FavoriteBorder, "Likes")
 }

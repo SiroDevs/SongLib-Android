@@ -28,6 +28,9 @@ class HomeViewModel @Inject constructor(
     private val _filtered = MutableStateFlow<List<Song>>(emptyList())
     val filtered: StateFlow<List<Song>> get() = _filtered
 
+    private val _likes = MutableStateFlow<List<Song>>(emptyList())
+    val likes: StateFlow<List<Song>> get() = _likes
+
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
 
