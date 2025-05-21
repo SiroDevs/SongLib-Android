@@ -1,6 +1,5 @@
 package com.songlib.presentation.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entities.UiState
@@ -8,7 +7,6 @@ import com.songlib.domain.repositories.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,6 +38,14 @@ class HomeViewModel @Inject constructor(
             _books.value = books
             _songs.value = songs
 
+            val firstBookId = books.firstOrNull()?.bookId
+            _filtered.value = if (firstBookId != null) {
+                songs.filter { it.book == firstBookId }
+            } else {
+                emptyList()
+            }
+
+            _likes.value = songs.filter { it.liked }
             _uiState.tryEmit(UiState.Loaded)
         }
     }
