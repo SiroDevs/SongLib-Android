@@ -1,5 +1,6 @@
 package com.songlib.presentation.screens.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -28,14 +29,13 @@ import com.songlib.presentation.viewmodels.HomeViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
-
     var fetchData by rememberSaveable { mutableStateOf(0) }
 
     if (fetchData == 0) {
         viewModel.fetchData()
-        fetchData = fetchData.inc()
+        fetchData++
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -45,6 +45,8 @@ fun HomeScreen(
         refreshing = isRefreshing,
         onRefresh = { viewModel.fetchData() }
     )
+
+    var selectedTab by rememberSaveable { mutableStateOf<HomeNavItem>(HomeNavItem.Search) }
 
     when (uiState) {
         is UiState.Error -> Scaffold(
@@ -59,71 +61,73 @@ fun HomeScreen(
             }
         )
 
-        UiState.Loading ->
-            Scaffold(
-                topBar = { AppTopBar(title = "SongLib") },
-                content = { padding ->
-                    Box(modifier = Modifier.padding(padding)) {
-                        LoadingState("Loading data ...")
-                    }
+        UiState.Loading -> Scaffold(
+            topBar = { AppTopBar(title = "SongLib") },
+            content = { padding ->
+                Box(modifier = Modifier.padding(padding)) {
+                    LoadingState("Loading data ...")
                 }
-            )
+            }
+        )
 
-        else -> Box() {
-            HomeContent(viewModel, navController)
-            PullRefreshIndicator(
-                refreshing = isRefreshing,
-                state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter),
-                contentColor = ThemeColors.primary,
-            )
-        }
+        else -> HomeContent(
+            viewModel = viewModel,
+            navController = navController,
+            selectedTab = selectedTab,
+            onTabSelected = { selectedTab = it },
+            isRefreshing = isRefreshing,
+            pullRefreshState = pullRefreshState
+        )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HomeContent(viewModel: HomeViewModel, navController: NavHostController) {
+fun HomeContent(
+    viewModel: HomeViewModel,
+    navController: NavHostController,
+    selectedTab: HomeNavItem,
+    onTabSelected: (HomeNavItem) -> Unit,
+    isRefreshing: Boolean,
+    pullRefreshState: PullRefreshState
+) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = "SongLib",
                 actions = {
-                    IconButton(
-                        onClick = { }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "Search"
-                        )
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Filled.Search, contentDescription = "Search")
                     }
-                    IconButton(
-                        onClick = { }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Settings,
-                            contentDescription = "Settings"
-                        )
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Filled.Settings, contentDescription = "Settings")
                     }
                 }
             )
         },
-        content = { padding ->
-            Box(modifier = Modifier.padding(padding)) {
-                Navigation(viewModel, navController)
-            }
-        },
-        bottomBar = { BottomNavigationBar(navController) },
-    )
-}
-
-@Composable
-fun Navigation(viewModel: HomeViewModel, navController: NavHostController) {
-    NavHost(navController, startDestination = NavigationItem.Search.route) {
-        composable(NavigationItem.Search.route) {
-            SearchScreen(viewModel, navController)
+        bottomBar = {
+            BottomNavigationBar(
+                selectedItem = selectedTab,
+                onItemSelected = onTabSelected
+            )
         }
-        composable(NavigationItem.Likes.route) {
-            LikesScreen(viewModel)
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .pullRefresh(pullRefreshState)
+        ) {
+            when (selectedTab) {
+                HomeNavItem.Search -> SearchScreen(viewModel, navController)
+                HomeNavItem.Likes -> LikesScreen(viewModel)
+            }
+
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier.align(Alignment.TopCenter),
+                contentColor = ThemeColors.primary
+            )
         }
     }
 }
