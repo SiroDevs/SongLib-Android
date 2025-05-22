@@ -50,7 +50,7 @@ fun AppNavHost(
             val homeViewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 viewModel = homeViewModel,
-                //navController = navController,
+                navController = navController,
             )
         }
 

@@ -30,7 +30,6 @@ fun LikesScreen(
                         SearchSongItem(
                             song = song,
                             onClick = { },
-                            height = 50.dp,
                             isSelected = false,
                             isSearching = false,
                         )

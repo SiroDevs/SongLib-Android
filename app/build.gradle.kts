@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.dagger.hilt)
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
 }
 
 val keystoreProperties = Properties()

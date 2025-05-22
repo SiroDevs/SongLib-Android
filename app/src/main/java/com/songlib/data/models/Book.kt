@@ -1,9 +1,12 @@
 package com.songlib.data.models
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
+import kotlinx.parcelize.Parcelize
 
 @Keep
+@Parcelize
 @Entity(tableName = "books", indices = [Index(value = ["bookId"], unique = true)])
 data class Book(
     @PrimaryKey() val bookId: Int,
@@ -15,4 +18,4 @@ data class Book(
     @ColumnInfo(name = "subTitle") val subTitle: String,
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "user") val user: Int
-)
+) : Parcelable

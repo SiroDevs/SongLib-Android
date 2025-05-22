@@ -28,6 +28,7 @@ import com.songlib.presentation.viewmodels.HomeViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    navController: NavHostController
 ) {
 
     var fetchData by rememberSaveable { mutableStateOf(0) }
@@ -37,7 +38,6 @@ fun HomeScreen(
         fetchData = fetchData.inc()
     }
 
-    val navController = rememberNavController()
     val uiState by viewModel.uiState.collectAsState()
 
     val isRefreshing = uiState is UiState.Loading
@@ -120,7 +120,7 @@ fun HomeContent(viewModel: HomeViewModel, navController: NavHostController) {
 fun Navigation(viewModel: HomeViewModel, navController: NavHostController) {
     NavHost(navController, startDestination = NavigationItem.Search.route) {
         composable(NavigationItem.Search.route) {
-            SearchScreen(viewModel)
+            SearchScreen(viewModel, navController)
         }
         composable(NavigationItem.Likes.route) {
             LikesScreen(viewModel)

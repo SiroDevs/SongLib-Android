@@ -2,21 +2,26 @@ package com.songlib.presentation.screens.home.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.songlib.data.models.Book
-import com.songlib.data.models.Song
+import androidx.navigation.NavHostController
+import com.songlib.data.models.*
 import com.songlib.data.sample.*
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.*
+import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.HomeViewModel
 
 @Composable
 fun SearchScreen(
     viewModel: HomeViewModel,
+    navController: NavHostController
 ) {
     val selectedBook = 0
     val uiState by viewModel.uiState.collectAsState()
@@ -24,16 +29,20 @@ fun SearchScreen(
     val filtered by viewModel.songs.collectAsState(initial = emptyList())
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-
         when (uiState) {
             is UiState.Filtered ->
                 SearchList(
                     books = books,
                     songs = filtered,
                     selectedBook = selectedBook,
-                    onBookSelected = {}
+                    onBookSelected = { viewModel.filterSongs(books.indexOf(it)) },
+                    onSongClick = { song ->
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("song", song)
+                        navController.navigate(Routes.PRESENTOR)
+                    }
                 )
-
             else -> EmptyState()
         }
     }
@@ -44,29 +53,36 @@ fun SearchList(
     books: List<Book>,
     songs: List<Song>,
     selectedBook: Int = 0,
-    onBookSelected: (Book) -> Unit
+    onBookSelected: (Book) -> Unit,
+    onSongClick: (Song) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        contentPadding = PaddingValues(horizontal = 10.dp)
     ) {
         item {
             BooksList(
                 books = books,
                 selectedBook = selectedBook,
-                onBookSelected = {},
+                onBookSelected = onBookSelected,
             )
         }
 
-        items(songs) { song ->
+        itemsIndexed(songs) { index, song ->
             SearchSongItem(
                 song = song,
-                onClick = { },
-                height = 50.dp,
+                onClick = { onSongClick(song) },
                 isSelected = false,
                 isSearching = false,
             )
+
+            if (index < songs.lastIndex) {
+                Divider(
+                    color = Color.LightGray,
+                    thickness = 1.dp,
+                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 15.dp)
+                )
+            }
         }
     }
 }
@@ -101,6 +117,7 @@ fun PreviewSearchList() {
         books = SampleBooks,
         songs = SampleSongs,
         selectedBook = 0,
-        onBookSelected = {}
+        onBookSelected = {},
+        onSongClick = {}
     )
 }

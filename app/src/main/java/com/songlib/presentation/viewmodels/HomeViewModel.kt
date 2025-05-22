@@ -20,9 +20,6 @@ class HomeViewModel @Inject constructor(
     private val _books = MutableStateFlow<List<Book>>(emptyList())
     val books: StateFlow<List<Book>> get() = _books
 
-    private val _selectedBook = MutableStateFlow<Book?>(null)
-    val selectedBook: StateFlow<Book?> get() = _selectedBook
-
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
 
@@ -52,4 +49,18 @@ class HomeViewModel @Inject constructor(
             _uiState.tryEmit(UiState.Filtered)
         }
     }
+
+    fun filterSongs(bookIndex: Int) {
+        viewModelScope.launch {
+            /*val selectedBook = books.getOrNull(bookIndex)
+            if (selectedBook != null) {
+                val bookId = selectedBook.bookId
+                _filtered.value = songs.filter { it.book == bookId }
+            } else {
+                _filtered.value = emptyList()
+            }*/
+            _uiState.tryEmit(UiState.Filtered)
+        }
+    }
+
 }
