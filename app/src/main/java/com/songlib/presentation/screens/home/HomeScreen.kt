@@ -39,6 +39,7 @@ fun HomeScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    val selectedTab by viewModel.selectedTab.collectAsState()
 
     val isRefreshing = uiState is UiState.Loading
     val pullRefreshState = rememberPullRefreshState(
@@ -46,51 +47,6 @@ fun HomeScreen(
         onRefresh = { viewModel.fetchData() }
     )
 
-    var selectedTab by rememberSaveable { mutableStateOf<HomeNavItem>(HomeNavItem.Search) }
-
-    when (uiState) {
-        is UiState.Error -> Scaffold(
-            topBar = { AppTopBar(title = "SongLib") },
-            content = { padding ->
-                Box(modifier = Modifier.padding(padding)) {
-                    ErrorState(
-                        errorMessage = (uiState as UiState.Error).errorMessage,
-                        onRetry = { viewModel.fetchData() }
-                    )
-                }
-            }
-        )
-
-        UiState.Loading -> Scaffold(
-            topBar = { AppTopBar(title = "SongLib") },
-            content = { padding ->
-                Box(modifier = Modifier.padding(padding)) {
-                    LoadingState("Loading data ...")
-                }
-            }
-        )
-
-        else -> HomeContent(
-            viewModel = viewModel,
-            navController = navController,
-            selectedTab = selectedTab,
-            onTabSelected = { selectedTab = it },
-            isRefreshing = isRefreshing,
-            pullRefreshState = pullRefreshState
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun HomeContent(
-    viewModel: HomeViewModel,
-    navController: NavHostController,
-    selectedTab: HomeNavItem,
-    onTabSelected: (HomeNavItem) -> Unit,
-    isRefreshing: Boolean,
-    pullRefreshState: PullRefreshState
-) {
     Scaffold(
         topBar = {
             AppTopBar(
@@ -108,7 +64,7 @@ fun HomeContent(
         bottomBar = {
             BottomNavigationBar(
                 selectedItem = selectedTab,
-                onItemSelected = onTabSelected
+                onItemSelected = viewModel::setSelectedTab
             )
         }
     ) { padding ->
@@ -117,17 +73,49 @@ fun HomeContent(
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
         ) {
-            when (selectedTab) {
-                HomeNavItem.Search -> SearchScreen(viewModel, navController)
-                HomeNavItem.Likes -> LikesScreen(viewModel)
-            }
+            when (uiState) {
+                is UiState.Error -> ErrorState(
+                    errorMessage = (uiState as UiState.Error).errorMessage,
+                    onRetry = { viewModel.fetchData() }
+                )
 
-            PullRefreshIndicator(
-                refreshing = isRefreshing,
-                state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter),
-                contentColor = ThemeColors.primary
-            )
+                UiState.Loading -> LoadingState("Loading data ...")
+
+                else -> HomeContent(
+                    viewModel = viewModel,
+                    navController = navController,
+                    selectedTab = selectedTab,
+                    isRefreshing = isRefreshing,
+                    pullRefreshState = pullRefreshState
+                )
+            }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun HomeContent(
+    viewModel: HomeViewModel,
+    navController: NavHostController,
+    selectedTab: HomeNavItem,
+    isRefreshing: Boolean,
+    pullRefreshState: PullRefreshState
+) {
+    Box(
+        modifier = Modifier
+            .pullRefresh(pullRefreshState)
+    ) {
+        when (selectedTab) {
+            HomeNavItem.Search -> SearchScreen(viewModel, navController)
+            HomeNavItem.Likes -> LikesScreen(viewModel)
+        }
+
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
+            contentColor = ThemeColors.primary
+        )
     }
 }

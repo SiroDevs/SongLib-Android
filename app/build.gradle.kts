@@ -114,6 +114,8 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.navigation)
 
+    implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
     implementation(libs.squareup.okhttp3.logging)

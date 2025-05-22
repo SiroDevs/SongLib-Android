@@ -2,20 +2,19 @@ package com.songlib.presentation.screens.home.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.Surface
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.data.models.*
-import com.songlib.data.sample.*
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.*
 import com.songlib.presentation.navigation.Routes
+import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.HomeViewModel
 
 @Composable
@@ -32,17 +31,13 @@ fun SearchScreen(
         when (uiState) {
             is UiState.Filtered ->
                 SearchList(
+                    navController = navController,
                     books = books,
                     songs = filtered,
                     selectedBook = selectedBook,
                     onBookSelected = { viewModel.filterSongs(books.indexOf(it)) },
-                    onSongClick = { song ->
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("song", song)
-                        navController.navigate(Routes.PRESENTOR)
-                    }
                 )
+
             else -> EmptyState()
         }
     }
@@ -50,28 +45,38 @@ fun SearchScreen(
 
 @Composable
 fun SearchList(
+    navController: NavHostController,
     books: List<Book>,
     songs: List<Song>,
     selectedBook: Int = 0,
     onBookSelected: (Book) -> Unit,
-    onSongClick: (Song) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        item {
-            BooksList(
-                books = books,
-                selectedBook = selectedBook,
-                onBookSelected = onBookSelected,
-            )
+        stickyHeader {
+            Surface(
+                color = ThemeColors.accent,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zIndex(1f)
+            ) {
+                BooksList(
+                    books = books,
+                    selectedBook = selectedBook,
+                    onBookSelected = onBookSelected,
+                )
+            }
         }
-
         itemsIndexed(songs) { index, song ->
             SearchSongItem(
                 song = song,
-                onClick = { onSongClick(song) },
+                onClick = {
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("song", song)
+                    navController.navigate(Routes.PRESENTOR)
+                },
                 isSelected = false,
                 isSearching = false,
             )
@@ -80,7 +85,7 @@ fun SearchList(
                 Divider(
                     color = Color.LightGray,
                     thickness = 1.dp,
-                    modifier = Modifier.padding(vertical = 5.dp, horizontal = 15.dp)
+                    modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp)
                 )
             }
         }
@@ -108,16 +113,4 @@ fun BooksList(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSearchList() {
-    SearchList(
-        books = SampleBooks,
-        songs = SampleSongs,
-        selectedBook = 0,
-        onBookSelected = {},
-        onSongClick = {}
-    )
 }

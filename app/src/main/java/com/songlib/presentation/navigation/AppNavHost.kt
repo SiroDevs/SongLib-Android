@@ -18,55 +18,66 @@ import com.songlib.presentation.viewmodels.*
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppNavHost(
-    startDestination: String,
     navController: NavHostController = rememberNavController(),
 ) {
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Routes.SPLASH
     ) {
 
         composable(Routes.SPLASH) {
-            SplashScreen()
+            SplashScreen(navController = navController)
         }
 
         composable(Routes.STEP_1) {
-            val selectionViewModel: SelectionViewModel = hiltViewModel()
+            val viewModel: SelectionViewModel = hiltViewModel()
             Step1Screen(
-                viewModel = selectionViewModel,
+                viewModel = viewModel,
                 navController = navController,
             )
         }
 
         composable(Routes.STEP_2) {
-            val selectionViewModel: SelectionViewModel = hiltViewModel()
+            val viewModel: SelectionViewModel = hiltViewModel()
             Step2Screen(
-                viewModel = selectionViewModel,
+                viewModel = viewModel,
                 navController = navController,
             )
         }
 
         composable(Routes.HOME) {
-            val homeViewModel: HomeViewModel = hiltViewModel()
+            val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
-                viewModel = homeViewModel,
+                viewModel = viewModel,
                 navController = navController,
             )
         }
 
-        composable(Routes.PRESENTOR) {
-            val presentorViewModel: PresentorViewModel = hiltViewModel()
+        /*composable(Routes.PRESENTOR) {
+            val viewModel: PresentorViewModel = hiltViewModel()
             val navBackStackEntry = remember { navController.currentBackStackEntry }
             val song = navBackStackEntry?.savedStateHandle?.get<Song>("song")
 
             if (song != null) {
                 PresentorScreen(
-                    viewModel = presentorViewModel,
+                    viewModel = viewModel,
                     navController = navController,
                     onBackPressed = { navController.popBackStack() },
                     song = song
                 )
             }
+        }*/
+
+        composable(route = Routes.PRESENTOR ) { backStackEntry ->
+            val song = backStackEntry.savedStateHandle.get<Song>("song")
+            val viewModel: PresentorViewModel = hiltViewModel()
+
+            PresentorScreen(
+                viewModel = viewModel,
+                navController = navController,
+                song = song,
+                onBackPressed = { navController.popBackStack() },
+            )
         }
 
     }

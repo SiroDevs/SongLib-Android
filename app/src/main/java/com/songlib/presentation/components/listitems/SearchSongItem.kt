@@ -39,7 +39,6 @@ fun SearchSongItem(
                 .fillMaxWidth()
                 .background(if (isSelected) ThemeColors.primary else Color.Transparent)
                 .clickable(onClick = { onClick(song) })
-                .padding(bottom = 5.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -81,6 +80,7 @@ fun SearchSongItem(
 //            Spacer(modifier = Modifier.height(4.dp))
 //            TagItem(tagText = refineTitle(song.book), height = height)
 //        }
+            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }

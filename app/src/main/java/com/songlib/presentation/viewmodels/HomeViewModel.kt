@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entities.UiState
 import com.songlib.domain.repositories.*
+import com.songlib.presentation.screens.home.widgets.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
@@ -17,6 +18,9 @@ class HomeViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _selectedTab: MutableStateFlow<HomeNavItem> = MutableStateFlow(HomeNavItem.Search)
+    val selectedTab: StateFlow<HomeNavItem> = _selectedTab.asStateFlow()
+
     private val _books = MutableStateFlow<List<Book>>(emptyList())
     val books: StateFlow<List<Book>> get() = _books
 
@@ -29,6 +33,9 @@ class HomeViewModel @Inject constructor(
     private val _likes = MutableStateFlow<List<Song>>(emptyList())
     val likes: StateFlow<List<Song>> get() = _likes
 
+    fun setSelectedTab(tab: HomeNavItem) {
+        _selectedTab.value = tab
+    }
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
 

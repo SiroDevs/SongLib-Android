@@ -12,7 +12,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.data.models.Song
 import com.songlib.presentation.viewmodels.PresentorViewModel
-import com.songlib.presentation.viewmodels.SelectionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,7 +19,7 @@ fun PresentorScreen(
     viewModel: PresentorViewModel,
     navController: NavHostController,
     onBackPressed: () -> Unit,
-    song: Song,
+    song: Song?,
 ) {
     var loadSong by rememberSaveable { mutableStateOf(0) }
 
