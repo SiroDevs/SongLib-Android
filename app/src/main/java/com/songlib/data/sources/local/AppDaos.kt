@@ -5,7 +5,7 @@ import com.songlib.data.models.*
 
 @Dao
 interface BookDao {
-    @Query("SELECT * FROM book ")
+    @Query("SELECT * FROM books")
     fun getAll(): List<Book>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -20,7 +20,7 @@ interface BookDao {
 
 @Dao
 interface SongDao {
-    @Query("SELECT * FROM song ")
+    @Query("SELECT * FROM songs")
     fun getAll(): List<Song>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

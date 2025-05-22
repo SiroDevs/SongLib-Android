@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import androidx.room.*
 
 @Keep
-@Entity(indices = [Index(value = ["bookId"], unique = true)])
+@Entity(tableName = "books", indices = [Index(value = ["bookId"], unique = true)])
 data class Book(
     @PrimaryKey() val bookId: Int,
     @ColumnInfo(name = "bookNo") val bookNo: Int,
