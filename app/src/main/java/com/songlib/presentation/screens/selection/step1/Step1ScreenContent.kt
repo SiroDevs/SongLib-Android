@@ -3,8 +3,6 @@ package com.songlib.presentation.screens.selection.step1
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -12,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.songlib.data.models.Book
 import com.songlib.domain.entities.*
-import com.songlib.presentation.components.*
 import com.songlib.presentation.components.listitems.BookItem
 
 @Composable

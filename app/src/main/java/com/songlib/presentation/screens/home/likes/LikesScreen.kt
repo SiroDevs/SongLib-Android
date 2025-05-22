@@ -1,15 +1,43 @@
 package com.songlib.presentation.screens.home.likes
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.dp
+import com.songlib.domain.entities.UiState
+import com.songlib.presentation.components.EmptyState
+import com.songlib.presentation.components.listitems.SearchSongItem
+import com.songlib.presentation.viewmodels.HomeViewModel
 
 @Composable
-fun LikesScreen() {
+fun LikesScreen(
+    viewModel: HomeViewModel,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val likes by viewModel.likes.collectAsState(initial = emptyList())
+
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("Likes Screen")
+
+        when (uiState) {
+            is UiState.Filtered ->
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    contentPadding = PaddingValues(horizontal = 10.dp)
+                ) {
+                    items(likes) { song ->
+                        SearchSongItem(
+                            song = song,
+                            onClick = { },
+                            height = 50.dp,
+                            isSelected = false,
+                            isSearching = false,
+                        )
+                    }
+                }
+
+            else -> EmptyState()
+        }
     }
 }

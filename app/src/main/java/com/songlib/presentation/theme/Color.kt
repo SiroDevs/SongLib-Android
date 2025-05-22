@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 object ThemeColors {
     val white = Color(0xFFFFFFFF)
+    val accent = Color(0xFFECECEC)
     val primary = Color(0xFFB86918)
     val primary1 = Color(0xFFF57C00)
     val primary2 = Color(0xFFBF360C)

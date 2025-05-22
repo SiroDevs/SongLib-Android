@@ -20,6 +20,9 @@ class HomeViewModel @Inject constructor(
     private val _books = MutableStateFlow<List<Book>>(emptyList())
     val books: StateFlow<List<Book>> get() = _books
 
+    private val _selectedBook = MutableStateFlow<Book?>(null)
+    val selectedBook: StateFlow<Book?> get() = _selectedBook
+
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
 

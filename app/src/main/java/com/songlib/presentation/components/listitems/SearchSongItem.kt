@@ -1,25 +1,17 @@
 package com.songlib.presentation.components.listitems
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.songlib.core.utils.refineContent
-import com.songlib.core.utils.refineTitle
-import com.songlib.core.utils.songItemTitle
-import com.songlib.data.models.Book
+import com.songlib.core.utils.*
 import com.songlib.data.models.Song
-import com.songlib.domain.entities.Selectable
 import com.songlib.presentation.theme.ThemeColors
 
 @Composable
@@ -28,8 +20,7 @@ fun SearchSongItem(
     height: Dp,
     isSelected: Boolean = false,
     isSearching: Boolean = false,
-    onTap: (() -> Unit)? = null,
-    onDoubleTap: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
 ) {
     val verses = remember(song.content) { song.content.split("##") }
     val hasChorus = "CHORUS" in song.content
@@ -41,12 +32,7 @@ fun SearchSongItem(
         modifier = Modifier
             .fillMaxWidth()
             .background(if (isSelected) ThemeColors.primary else Color.Transparent)
-            .clickable(onClick = { onTap?.invoke() })
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onDoubleTap = { onDoubleTap?.invoke() }
-                )
-            }
+            .clickable(onClick = { onClick?.invoke() })
             .padding(5.dp)
     ) {
         Row(
@@ -93,22 +79,24 @@ fun SearchSongItem(
 @Preview(showBackground = true)
 @Composable
 fun PreviewSearchSongItem() {
-    val sampleBook = Book(
-        bookId = 1,
-        bookNo = 1,
-        created = "2023-01-01",
-        enabled = true,
-        position = 1,
-        songs = 12,
-        subTitle = "worship",
-        title = "Songs of Worship",
-        user = 42
+    val sampleSong = Song(
+        book = 1,
+        songId = 2,
+        songNo = 2,
+        title = "Amazing Grace",
+        alias = "",
+        content = "Amazing Grace, How sweet the sound",
+        liked = false,
+        likes = 0,
+        views = 0,
+        created = "",
     )
 
-    val selectableBook = Selectable(data = sampleBook, isSelected = true)
-
-    BookItem(
-        item = selectableBook,
-        onClick = {}
+    SearchSongItem(
+        song = sampleSong,
+        onClick = {},
+        height = 50.dp,
+        isSelected = false,
+        isSearching = false,
     )
 }
