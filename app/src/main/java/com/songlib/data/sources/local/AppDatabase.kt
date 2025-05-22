@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.*
 import com.songlib.data.models.*
 
-@Database(entities = [Book::class, Song::class], version = 3, exportSchema = false)
+@Database(entities = [Book::class, Song::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun booksDao(): BookDao
     abstract fun songsDao(): SongDao

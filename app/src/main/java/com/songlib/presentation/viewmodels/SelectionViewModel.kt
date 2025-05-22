@@ -51,16 +51,22 @@ class SelectionViewModel @Inject constructor(
         saveBooks(selected)
     }
 
-    fun saveBooks(books: List<Book>) {
+    private fun saveBooks(books: List<Book>) {
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
-            books.forEach {
-                bookRepo.saveBook(it)
+            try {
+                for (book in books) {
+                    bookRepo.saveBook(book)
+                }
+                val selectedBooks = books.joinToString(",") { it.bookId.toString() }
+                bookRepo.savePrefs(selectedBooks)
+
+                _uiState.emit(UiState.Saved)
+            } catch (e: Exception) {
+                Log.e("SaveBooks", "Failed to save books", e)
+                _uiState.emit(UiState.Error("Failed to save books: ${e.message}"))
             }
-            val selectedBooks = books.joinToString(",") { it.bookId.toString() }
-            bookRepo.savePrefs(selectedBooks)
-            _uiState.emit(UiState.Saved)
         }
     }
 
@@ -88,11 +94,16 @@ class SelectionViewModel @Inject constructor(
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
-            _songs.value.forEach {
-                songRepo.saveSong(it)
+            try {
+                _songs.value.forEach {
+                    songRepo.saveSong(it)
+                }
+                songRepo.savePrefs()
+                _uiState.emit(UiState.Saved)
+            } catch (e: Exception) {
+                Log.e("SaveSongs", "Failed to save songs", e)
+                _uiState.emit(UiState.Error("Failed to save songs: ${e.message}"))
             }
-            songRepo.savePrefs()
-            _uiState.tryEmit(UiState.Saved)
         }
     }
 

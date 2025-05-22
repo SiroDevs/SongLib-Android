@@ -9,7 +9,7 @@ interface BookDao {
     fun getAll(): List<Book>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(book: Book)
+    suspend fun insert(book: Book)
 
     @Update()
     fun update(book: Book)
@@ -24,7 +24,7 @@ interface SongDao {
     fun getAll(): List<Song>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(song: Song)
+    suspend fun insert(song: Song)
 
     @Update()
     fun update(song: Song)

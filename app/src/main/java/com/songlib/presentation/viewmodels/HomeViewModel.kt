@@ -49,8 +49,7 @@ class HomeViewModel @Inject constructor(
             }
 
             _likes.value = songs.filter { it.liked }
-            _uiState.tryEmit(UiState.Loaded)
+            _uiState.tryEmit(UiState.Filtered)
         }
     }
-
 }
