@@ -4,8 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.songlib.data.models.Book
+import com.songlib.data.models.Song
+import com.songlib.data.sample.*
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.*
@@ -24,31 +27,46 @@ fun SearchScreen(
 
         when (uiState) {
             is UiState.Filtered ->
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    contentPadding = PaddingValues(horizontal = 10.dp)
-                ) {
-                    item {
-                        BooksList(
-                            books = books,
-                            selectedBook = selectedBook,
-                            onBookSelected = {},
-                        )
-                    }
-
-                    items(filtered) { song ->
-                        SearchSongItem(
-                            song = song,
-                            onClick = { },
-                            height = 50.dp,
-                            isSelected = false,
-                            isSearching = false,
-                        )
-                    }
-                }
+                SearchList(
+                    books = books,
+                    songs = filtered,
+                    selectedBook = selectedBook,
+                    onBookSelected = {}
+                )
 
             else -> EmptyState()
+        }
+    }
+}
+
+@Composable
+fun SearchList(
+    books: List<Book>,
+    songs: List<Song>,
+    selectedBook: Int = 0,
+    onBookSelected: (Book) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        contentPadding = PaddingValues(horizontal = 10.dp)
+    ) {
+        item {
+            BooksList(
+                books = books,
+                selectedBook = selectedBook,
+                onBookSelected = {},
+            )
+        }
+
+        items(songs) { song ->
+            SearchSongItem(
+                song = song,
+                onClick = { },
+                height = 50.dp,
+                isSelected = false,
+                isSearching = false,
+            )
         }
     }
 }
@@ -74,4 +92,15 @@ fun BooksList(
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewSearchList() {
+    SearchList(
+        books = SampleBooks,
+        songs = SampleSongs,
+        selectedBook = 0,
+        onBookSelected = {}
+    )
 }

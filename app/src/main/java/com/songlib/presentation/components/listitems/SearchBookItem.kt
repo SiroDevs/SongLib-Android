@@ -25,8 +25,8 @@ fun SearchBookItem(
             containerColor = backgroundColor,
             contentColor = contentColor
         ),
-        shape = RoundedCornerShape(5.dp),
-        elevation = ButtonDefaults.buttonElevation(defaultElevation = 3.dp),
+        shape = RoundedCornerShape(20.dp),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 5.dp)
     ) {
         Text(
