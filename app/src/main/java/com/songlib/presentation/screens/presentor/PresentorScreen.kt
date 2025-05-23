@@ -21,11 +21,10 @@ fun PresentorScreen(
     onBackPressed: () -> Unit,
     song: Song?,
 ) {
-    var loadSong by rememberSaveable { mutableStateOf(0) }
-
-    if (loadSong == 0) {
-        viewModel.loadSong()
-        loadSong = loadSong.inc()
+    LaunchedEffect(song) {
+        song?.let {
+            viewModel.loadSong(it)
+        }
     }
 
     val uiState by viewModel.uiState.collectAsState()
@@ -34,7 +33,7 @@ fun PresentorScreen(
         topBar = {
             Surface(shadowElevation = 3.dp) {
                 TopAppBar(
-                    title = { Text("Song") },
+                    title = { Text(song?.title ?: "Song") },
                     actions = {
                         IconButton(onClick = { }) {
                             Icon(

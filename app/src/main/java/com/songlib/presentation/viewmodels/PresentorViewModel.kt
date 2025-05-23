@@ -24,7 +24,7 @@ class PresentorViewModel @Inject constructor(
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
 
-    fun loadSong() {
+    fun loadSong(song: Song) {
         _uiState.tryEmit(UiState.Loading)
 
         _uiState.tryEmit(UiState.Loaded)

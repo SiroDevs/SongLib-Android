@@ -1,8 +1,7 @@
 package com.songlib.presentation.navigation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
@@ -53,23 +52,11 @@ fun AppNavHost(
             )
         }
 
-        /*composable(Routes.PRESENTOR) {
-            val viewModel: PresentorViewModel = hiltViewModel()
-            val navBackStackEntry = remember { navController.currentBackStackEntry }
-            val song = navBackStackEntry?.savedStateHandle?.get<Song>("song")
+        composable(route = Routes.PRESENTOR) {
+            val song = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Song>("song")
 
-            if (song != null) {
-                PresentorScreen(
-                    viewModel = viewModel,
-                    navController = navController,
-                    onBackPressed = { navController.popBackStack() },
-                    song = song
-                )
-            }
-        }*/
-
-        composable(route = Routes.PRESENTOR ) { backStackEntry ->
-            val song = backStackEntry.savedStateHandle.get<Song>("song")
             val viewModel: PresentorViewModel = hiltViewModel()
 
             PresentorScreen(
@@ -79,6 +66,6 @@ fun AppNavHost(
                 onBackPressed = { navController.popBackStack() },
             )
         }
-
+        
     }
 }
