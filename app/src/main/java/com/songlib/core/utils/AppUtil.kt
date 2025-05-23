@@ -16,7 +16,11 @@ fun songItemTitle(number: Int, title: String): String {
     }
 }
 
-fun songVerses(songContent: String): List<String> {
+fun getSongVersesX(songContent: String): List<String> {
+    return songContent.split("#").map { it.trim() }.filter { it.isNotEmpty() }
+}
+
+fun getSongVerses(songContent: String): List<String> {
     return songContent.split("##").map { it.replace("#", "\n") }
 }
 

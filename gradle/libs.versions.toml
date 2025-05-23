@@ -17,7 +17,6 @@ ksp = "2.1.0-1.0.29"
 room = "2.7.1"
 squareup = "2.9.0"
 squareupOk = "4.12.0"
-accompanist = "1.5.5"
 splashScreen = "1.0.1"
 
 [libraries]
