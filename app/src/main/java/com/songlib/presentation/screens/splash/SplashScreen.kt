@@ -54,7 +54,7 @@ fun SplashContent() {
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
-                    .background(color = ThemeColors.accent1)
+                    //.background(color = ThemeColors.accent1)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,

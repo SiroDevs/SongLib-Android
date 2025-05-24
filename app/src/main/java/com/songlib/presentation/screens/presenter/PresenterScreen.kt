@@ -1,5 +1,6 @@
 package com.songlib.presentation.screens.presenter
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -17,6 +18,7 @@ import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.screens.presenter.components.*
+import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.PresenterViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +69,7 @@ fun PresenterScreen(
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
+                    .background(ThemeColors.accent1)
             ) {
                 when (uiState) {
                     is UiState.Error -> ErrorState(
@@ -87,6 +90,7 @@ fun PresenterScreen(
         }
     )
 }
+
 @Composable
 fun PresenterContent(
     verses: List<String>,
@@ -101,18 +105,19 @@ fun PresenterContent(
         PresenterTabs(
             pagerState = pagerState,
             verses = verses,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
         )
 
         PresenterIndicators(
             pagerState = pagerState,
             indicators = indicators,
             modifier = Modifier
-                .padding(vertical = 10.dp)
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
         )
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

@@ -22,20 +22,14 @@ fun SearchScreen(
     viewModel: HomeViewModel,
     navController: NavHostController
 ) {
-    val selectedBook = 0
     val uiState by viewModel.uiState.collectAsState()
-    val books by viewModel.books.collectAsState(initial = emptyList())
-    val filtered by viewModel.songs.collectAsState(initial = emptyList())
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         when (uiState) {
             is UiState.Filtered ->
                 SearchList(
+                    viewModel = viewModel,
                     navController = navController,
-                    books = books,
-                    songs = filtered,
-                    selectedBook = selectedBook,
-                    onBookSelected = { viewModel.filterSongs(books.indexOf(it)) },
                 )
 
             else -> EmptyState()
@@ -45,12 +39,11 @@ fun SearchScreen(
 
 @Composable
 fun SearchList(
+    viewModel: HomeViewModel,
     navController: NavHostController,
-    books: List<Book>,
-    songs: List<Song>,
-    selectedBook: Int = 0,
-    onBookSelected: (Book) -> Unit,
 ) {
+    val songs by viewModel.filtered.collectAsState(initial = emptyList())
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
@@ -61,11 +54,7 @@ fun SearchList(
                     .fillMaxWidth()
                     .zIndex(1f)
             ) {
-                BooksList(
-                    books = books,
-                    selectedBook = selectedBook,
-                    onBookSelected = onBookSelected,
-                )
+                BooksList(viewModel = viewModel)
             }
         }
         itemsIndexed(songs) { index, song ->
@@ -94,10 +83,11 @@ fun SearchList(
 
 @Composable
 fun BooksList(
-    books: List<Book>,
-    selectedBook: Int = 0,
-    onBookSelected: (Book) -> Unit
+    viewModel: HomeViewModel,
 ) {
+    val selectedBook by viewModel.selectedBook.collectAsState(initial = 0)
+    val books by viewModel.books.collectAsState(initial = emptyList())
+
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,7 +99,7 @@ fun BooksList(
             SearchBookItem(
                 text = book.title,
                 isSelected = selectedBook == index,
-                onPressed = { onBookSelected(book) }
+                onPressed = { viewModel.filterSongs(index) }
             )
         }
     }

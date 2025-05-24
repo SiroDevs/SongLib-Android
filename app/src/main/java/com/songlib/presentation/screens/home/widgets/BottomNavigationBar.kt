@@ -27,8 +27,8 @@ fun BottomNavigationBar(
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
-                selectedContentColor = ThemeColors.primaryDark1,
-                unselectedContentColor = Color.White,
+                selectedContentColor = Color.White,
+                unselectedContentColor = Color.Black,
                 alwaysShowLabel = true,
                 selected = selectedItem == item,
                 onClick = { onItemSelected(item) }

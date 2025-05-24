@@ -9,6 +9,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.collections.filter
+import kotlin.collections.firstOrNull
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -17,6 +19,12 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _selectedBook: MutableStateFlow<Int> = MutableStateFlow<Int>(0)
+    val selectedBook: StateFlow<Int> = _selectedBook.asStateFlow()
+
+    private val _selectedSong: MutableStateFlow<Int> = MutableStateFlow<Int>(0)
+    val selectedSong: StateFlow<Int> = _selectedSong.asStateFlow()
 
     private val _selectedTab: MutableStateFlow<HomeNavItem> = MutableStateFlow(HomeNavItem.Search)
     val selectedTab: StateFlow<HomeNavItem> = _selectedTab.asStateFlow()
@@ -36,36 +44,41 @@ class HomeViewModel @Inject constructor(
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
     }
+
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            val books = bookRepo.getAllBooks()
-            val songs = songRepo.getAllSongs()
-            _books.value = books
-            _songs.value = songs
+            val booksList = bookRepo.getAllBooks()
+            val songsList = songRepo.getAllSongs()
+            _books.value = booksList
+            _songs.value = songsList
 
-            val firstBookId = books.firstOrNull()?.bookId
+            val firstBookId = booksList.firstOrNull()?.bookId
             _filtered.value = if (firstBookId != null) {
-                songs.filter { it.book == firstBookId }
+                songsList.filter { it.book == firstBookId }
             } else {
                 emptyList()
             }
 
-            _likes.value = songs.filter { it.liked }
+            _likes.value = songsList.filter { it.liked }
             _uiState.tryEmit(UiState.Filtered)
         }
     }
 
     fun filterSongs(bookIndex: Int) {
         viewModelScope.launch {
-            /*val selectedBook = books.getOrNull(bookIndex)
-            if (selectedBook != null) {
-                val bookId = selectedBook.bookId
-                _filtered.value = songs.filter { it.book == bookId }
+            _selectedBook.value = bookIndex
+            val bookList = _books.value
+            val songList = _songs.value
+
+            if (bookIndex in bookList.indices) {
+                val selectedBookId = bookList[bookIndex].bookId
+                _filtered.value = songList.filter { it.book == selectedBookId }
             } else {
                 _filtered.value = emptyList()
-            }*/
+            }
+
             _uiState.tryEmit(UiState.Filtered)
         }
     }

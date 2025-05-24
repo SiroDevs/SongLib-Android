@@ -12,8 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.songlib.data.sample.*
 import com.songlib.presentation.theme.ThemeColors
 import kotlinx.coroutines.launch
-
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun PresenterIndicators(
@@ -24,12 +26,12 @@ fun PresenterIndicators(
     val scope = rememberCoroutineScope()
 
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 64.dp),
+        columns = GridCells.Adaptive(minSize = 65.dp),
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
-        //verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
         items(indicators.size) { index ->
@@ -42,15 +44,19 @@ fun PresenterIndicators(
                 },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSelected) ThemeColors.primary else ThemeColors.accent1,
-                    contentColor = if (isSelected) Color.White else ThemeColors.primary,
+                    containerColor = if (isSelected) ThemeColors.primary2 else ThemeColors.primary,
+                    contentColor = Color.White,
                 ),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                elevation =  ButtonDefaults.buttonElevation(5.dp),
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
                 modifier = Modifier
                     .height(40.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = label, style = MaterialTheme.typography.labelLarge)
+                Text(
+                    text = label,
+                    style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                )
             }
         }
     }

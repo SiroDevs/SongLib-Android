@@ -6,7 +6,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.pager.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.songlib.data.sample.*
 
 @Composable
@@ -15,21 +19,33 @@ fun PresenterTabs(
     verses: List<String>,
     modifier: Modifier = Modifier
 ) {
-    VerticalPager(
-        state = pagerState,
-        modifier = modifier.fillMaxSize()
-    ) { page ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(32.dp),
-            contentAlignment = Alignment.Center
+    ElevatedCard(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+            elevation = CardDefaults.cardElevation(5.dp),
         ) {
-            Text(
-                text = verses[page],
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.fillMaxWidth()
-            )
+        VerticalPager(
+            state = pagerState,
+            modifier = modifier.fillMaxSize()
+        ) { page ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = verses[page],
+                    style = TextStyle(
+                        fontSize = 30.sp,
+                        //color = Color.White,
+                        letterSpacing = 1.sp,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
         }
     }
 }

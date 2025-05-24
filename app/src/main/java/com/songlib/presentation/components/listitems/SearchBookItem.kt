@@ -29,7 +29,7 @@ fun SearchBookItem(
         ),
         shape = RoundedCornerShape(20.dp),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 5.dp)
+        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 5.dp)
     ) {
         Text(
             text = text,
