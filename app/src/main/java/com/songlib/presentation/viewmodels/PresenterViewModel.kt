@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @HiltViewModel
-class PresentorViewModel @Inject constructor(
+class PresenterViewModel @Inject constructor(
     private val songRepo: SongRepository,
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _title = MutableStateFlow("")
+    private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
 
     private val _hasChorus = MutableStateFlow(false)

@@ -75,7 +75,7 @@ fun SearchList(
                     navController.currentBackStackEntry
                         ?.savedStateHandle
                         ?.set("song", song)
-                    navController.navigate(Routes.PRESENTOR)
+                    navController.navigate(Routes.PRESENTER)
                 },
                 isSelected = false,
                 isSearching = false,

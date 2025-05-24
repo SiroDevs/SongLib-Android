@@ -47,8 +47,10 @@ fun HomeScreen(
             AppTopBar(
                 title = "SongLib",
                 actions = {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Search, contentDescription = "Search")
+                    if (uiState != UiState.Loading) {
+                        IconButton(onClick = { }) {
+                            Icon(Icons.Filled.Search, contentDescription = "Search")
+                        }
                     }
                     IconButton(onClick = { }) {
                         Icon(Icons.Filled.Settings, contentDescription = "Settings")

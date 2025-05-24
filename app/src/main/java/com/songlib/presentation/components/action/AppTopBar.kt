@@ -11,7 +11,8 @@ import com.songlib.presentation.theme.ThemeColors
 @Composable
 fun AppTopBar(
     title: String,
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
+    navigationIcon: @Composable () -> Unit = {},
 ) {
     Surface(
         shadowElevation = 4.dp
@@ -29,7 +30,8 @@ fun AppTopBar(
                 titleContentColor = Color.White,
                 actionIconContentColor = Color.White,
                 navigationIconContentColor = Color.White
-            )
+            ),
+            navigationIcon = navigationIcon
         )
     }
 }

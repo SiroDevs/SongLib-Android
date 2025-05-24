@@ -1,0 +1,73 @@
+package com.songlib.presentation.screens.presenter.components
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.pager.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import com.songlib.data.sample.*
+import com.songlib.presentation.theme.ThemeColors
+import kotlinx.coroutines.launch
+
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.ui.unit.*
+
+@Composable
+fun PresenterIndicators(
+    pagerState: PagerState,
+    indicators: List<String>,
+    modifier: Modifier = Modifier
+) {
+    val scope = rememberCoroutineScope()
+
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 64.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(8.dp)
+    ) {
+        items(indicators.size) { index ->
+            val label = indicators[index]
+            val isSelected = pagerState.currentPage == index
+
+            Button(
+                onClick = {
+                    scope.launch { pagerState.animateScrollToPage(index) }
+                },
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSelected) ThemeColors.primary else Color.White,
+                    contentColor = if (isSelected) Color.White else ThemeColors.primary,
+                ),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                modifier = Modifier
+                    .height(40.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = label, style = MaterialTheme.typography.labelLarge)
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PresenterIndicatorsPreview() {
+    val pagerState = rememberPagerState { SampleVerses.size }
+    LaunchedEffect(Unit) {
+        pagerState.scrollToPage(0)
+    }
+
+    PresenterIndicators(
+        pagerState = pagerState,
+        indicators = SampleIndicators,
+        modifier = Modifier.padding(16.dp)
+    )
+}

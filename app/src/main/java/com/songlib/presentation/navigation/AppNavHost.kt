@@ -8,7 +8,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.Song
 import com.songlib.presentation.screens.home.HomeScreen
-import com.songlib.presentation.screens.presentor.PresentorScreen
+import com.songlib.presentation.screens.presenter.PresenterScreen
 import com.songlib.presentation.screens.selection.step1.Step1Screen
 import com.songlib.presentation.screens.selection.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
@@ -52,20 +52,19 @@ fun AppNavHost(
             )
         }
 
-        composable(route = Routes.PRESENTOR) {
+        composable(route = Routes.PRESENTER) {
             val song = navController.previousBackStackEntry
                 ?.savedStateHandle
                 ?.get<Song>("song")
 
-            val viewModel: PresentorViewModel = hiltViewModel()
+            val viewModel: PresenterViewModel = hiltViewModel()
 
-            PresentorScreen(
+            PresenterScreen(
                 viewModel = viewModel,
                 navController = navController,
                 song = song,
                 onBackPressed = { navController.popBackStack() },
             )
         }
-        
     }
 }

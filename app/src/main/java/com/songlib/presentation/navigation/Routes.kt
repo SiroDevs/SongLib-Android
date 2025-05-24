@@ -5,5 +5,5 @@ object Routes {
     const val STEP_1 = "step1"
     const val STEP_2 = "step2"
     const val HOME = "home"
-    const val PRESENTOR = "presentor"
+    const val PRESENTER = "Presenter"
 }
