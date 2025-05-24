@@ -3,8 +3,10 @@ package com.songlib.presentation.theme
 import androidx.compose.ui.graphics.Color
 
 object ThemeColors {
-    val white = Color(0xFFFFFFFF)
-    val accent = Color(0xFFECECEC)
+    val accent = Color(0xFFECECEC);
+    val accent1 = Color(0xFFEEDAC4)
+    val accent2 = Color(0xFFBEA264)
+    val accent3 = Color(0xFFFFB74D)
     val primary = Color(0xFFB86918)
     val primary1 = Color(0xFFF57C00)
     val primary2 = Color(0xFFBF360C)
@@ -13,7 +15,7 @@ object ThemeColors {
 
     // Optional helper for light/dark background color
     fun bgColorWB(isLight: Boolean): Color {
-        return if (isLight) white else primaryDark
+        return if (isLight) Color.White else primaryDark
     }
 
     // Optional Compose helper if you want to pass Compose theme directly

@@ -14,7 +14,6 @@ import com.songlib.presentation.theme.ThemeColors
 import kotlinx.coroutines.launch
 
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.ui.unit.*
 
 @Composable
 fun PresenterIndicators(
@@ -29,7 +28,7 @@ fun PresenterIndicators(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        //verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
@@ -43,7 +42,7 @@ fun PresenterIndicators(
                 },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSelected) ThemeColors.primary else Color.White,
+                    containerColor = if (isSelected) ThemeColors.primary else ThemeColors.accent1,
                     contentColor = if (isSelected) Color.White else ThemeColors.primary,
                 ),
                 contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),

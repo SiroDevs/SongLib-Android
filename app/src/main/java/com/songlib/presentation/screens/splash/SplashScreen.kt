@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
@@ -25,7 +26,8 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
         delay(3000)
 
-        val prefs = context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
+        val prefs =
+            context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
         val isDataSelected = prefs.getBoolean(PrefConstants.DATA_SELECTED, false)
         val isDataLoaded = prefs.getBoolean(PrefConstants.DATA_LOADED, false)
 
@@ -40,14 +42,19 @@ fun SplashScreen(navController: NavHostController) {
         }
     }
 
+    SplashContent()
+}
 
+@Preview(showBackground = true)
+@Composable
+fun SplashContent() {
     Scaffold(
         content = {
             Box(
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
-                    .background(color = ThemeColors.white)
+                    .background(color = ThemeColors.accent1)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,

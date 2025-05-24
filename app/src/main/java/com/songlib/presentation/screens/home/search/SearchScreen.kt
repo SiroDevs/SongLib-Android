@@ -101,7 +101,7 @@ fun BooksList(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp),
+            .height(50.dp),
         contentPadding = PaddingValues(5.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
