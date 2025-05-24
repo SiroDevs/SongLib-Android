@@ -83,4 +83,43 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun searchSongs(qry: String) {
+        viewModelScope.launch {
+            val allSongs = _songs.value
+            val query = qry.trim().lowercase()
+
+            if (query.isBlank()) {
+                _filtered.value = allSongs
+                return@launch
+            }
+
+            val charsPattern = "[!,]".toRegex()
+            val words = if (query.contains(',')) {
+                query.split(',').map { it.trim() }
+            } else {
+                listOf(query)
+            }
+
+            val queryPattern =
+                words.joinToString(".*") { Regex.escape(it) }.toRegex(RegexOption.IGNORE_CASE)
+
+            val filteredSongs = allSongs.filter { song ->
+                val queryIsNumeric = query.toIntOrNull()
+                if (queryIsNumeric != null && song.songNo == queryIsNumeric) {
+                    return@filter true
+                }
+
+                val title = song.title.replace(charsPattern, "").lowercase()
+                val alias = song.alias.replace(charsPattern, "").lowercase()
+                val content = song.content.replace(charsPattern, "").lowercase()
+
+                queryPattern.containsMatchIn(title)
+                        || queryPattern.containsMatchIn(alias)
+                        || queryPattern.containsMatchIn(content)
+            }
+
+            _filtered.value = filteredSongs
+            _uiState.tryEmit(UiState.Filtered)
+        }
+    }
 }

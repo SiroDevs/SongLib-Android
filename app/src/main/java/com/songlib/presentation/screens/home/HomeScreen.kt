@@ -10,6 +10,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entities.UiState
 import com.songlib.presentation.components.*
@@ -32,6 +33,8 @@ fun HomeScreen(
         viewModel.fetchData()
         fetchData++
     }
+    var isSearching by rememberSaveable { mutableStateOf(false) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
 
     val uiState by viewModel.uiState.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
@@ -44,19 +47,43 @@ fun HomeScreen(
 
     Scaffold(
         topBar = {
-            AppTopBar(
-                title = "SongLib",
-                actions = {
-                    if (uiState != UiState.Loading) {
-                        IconButton(onClick = { }) {
-                            Icon(Icons.Filled.Search, contentDescription = "Search")
+            if (isSearching) {
+                TextField(
+                    value = searchQuery,
+                    onValueChange = {
+                        searchQuery = it
+                        viewModel.searchSongs(it)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    placeholder = { Text("Search songs") },
+                    singleLine = true,
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            isSearching = false
+                            searchQuery = ""
+                            viewModel.searchSongs("")
+                        }) {
+                            Icon(Icons.Filled.Close, contentDescription = "Close")
                         }
                     }
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Filled.Settings, contentDescription = "Settings")
+                )
+            } else {
+                AppTopBar(
+                    title = "SongLib",
+                    actions = {
+                        if (uiState != UiState.Loading) {
+                            IconButton(onClick = { isSearching = true }) {
+                                Icon(Icons.Filled.Search, contentDescription = "Search")
+                            }
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(Icons.Filled.Settings, contentDescription = "Settings")
+                        }
                     }
-                }
-            )
+                )
+            }
         },
         bottomBar = {
             BottomNavigationBar(
@@ -70,49 +97,13 @@ fun HomeScreen(
                 .padding(padding)
                 .pullRefresh(pullRefreshState)
         ) {
-            when (uiState) {
-                is UiState.Error -> ErrorState(
-                    errorMessage = (uiState as UiState.Error).errorMessage,
-                    onRetry = { viewModel.fetchData() }
-                )
-
-                UiState.Loading -> LoadingState("Loading data ...")
-
-                else -> HomeContent(
-                    viewModel = viewModel,
-                    navController = navController,
-                    selectedTab = selectedTab,
-                    isRefreshing = isRefreshing,
-                    pullRefreshState = pullRefreshState
-                )
-            }
+            HomeContent(
+                viewModel = viewModel,
+                navController = navController,
+                selectedTab = selectedTab,
+                isRefreshing = isRefreshing,
+                pullRefreshState = pullRefreshState
+            )
         }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun HomeContent(
-    viewModel: HomeViewModel,
-    navController: NavHostController,
-    selectedTab: HomeNavItem,
-    isRefreshing: Boolean,
-    pullRefreshState: PullRefreshState
-) {
-    Box(
-        modifier = Modifier
-            .pullRefresh(pullRefreshState)
-    ) {
-        when (selectedTab) {
-            HomeNavItem.Search -> SearchScreen(viewModel, navController)
-            HomeNavItem.Likes -> LikesScreen(viewModel)
-        }
-
-        PullRefreshIndicator(
-            refreshing = isRefreshing,
-            state = pullRefreshState,
-            modifier = Modifier.align(Alignment.TopCenter),
-            contentColor = ThemeColors.primary
-        )
     }
 }
