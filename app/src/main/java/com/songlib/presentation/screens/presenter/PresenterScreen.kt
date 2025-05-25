@@ -48,7 +48,16 @@ fun PresenterScreen(
                 title = title,
                 actions = {
                     IconButton(onClick = {
-                        song?.let { viewModel.likeSong(it) }
+                        song?.let {
+                            viewModel.likeSong(it)
+
+                            val text = if (isLiked) {
+                                "${song.title} added to your likes"
+                            } else {
+                                "${song.title} removed from your likes"
+                            }
+                            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                        }
                     }) {
                         Icon(
                             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
@@ -80,18 +89,6 @@ fun PresenterScreen(
                 UiState.Loaded -> PresenterContent(
                     verses = verses, indicators = indicators
                 )
-
-                is UiState.Liked -> {
-                    val text = if ((uiState as UiState.Liked).status) {
-                        "${song?.title} has been added to your likes"
-                    } else {
-                        "${song?.title} removed from your likes"
-                    }
-                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                    PresenterContent(
-                        verses = verses, indicators = indicators
-                    )
-                }
 
                 UiState.Loading -> LoadingState("Loading song ...")
 

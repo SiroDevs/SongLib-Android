@@ -75,7 +75,6 @@ class PresenterViewModel @Inject constructor(
             val updatedSong = song.copy(liked = !song.liked)
             songRepo.updateSong(updatedSong)
             _isLiked.value = updatedSong.liked
-            _uiState.value = UiState.Liked(song.liked)
         }
     }
 
