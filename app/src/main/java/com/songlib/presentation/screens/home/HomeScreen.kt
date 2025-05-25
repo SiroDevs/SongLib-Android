@@ -13,7 +13,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entities.UiState
-import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.components.action.*
 import com.songlib.presentation.screens.home.widgets.*
 import com.songlib.presentation.viewmodels.HomeViewModel
 
@@ -44,25 +44,16 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             if (isSearching) {
-                TextField(
-                    value = searchQuery,
-                    onValueChange = {
+                SearchTopBar(
+                    query = searchQuery,
+                    onQueryChange = {
                         searchQuery = it
                         viewModel.searchSongs(it)
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    placeholder = { Text("Search songs") },
-                    singleLine = true,
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            isSearching = false
-                            searchQuery = ""
-                            viewModel.searchSongs("")
-                        }) {
-                            Icon(Icons.Filled.Close, contentDescription = "Close")
-                        }
+                    onClose = {
+                        isSearching = false
+                        searchQuery = ""
+                        viewModel.searchSongs("")
                     }
                 )
             } else {
@@ -74,7 +65,7 @@ fun HomeScreen(
                                 Icon(Icons.Filled.Search, contentDescription = "Search")
                             }
                         }
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { /* TODO: Navigate to settings */ }) {
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }
                     }
