@@ -36,7 +36,13 @@ class SongRepository @Inject constructor(
         }
     }
 
-    fun getSelectedBookids(): String? {
+    suspend fun updateSong(song: Song) {
+        withContext(Dispatchers.IO) {
+            songsDao?.update(song)
+        }
+    }
+
+    fun getSelectedBookIds(): String? {
         return prefs.getString(PrefConstants.SELECTED_BOOKS, "")
     }
 

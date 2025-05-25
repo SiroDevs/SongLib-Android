@@ -1,5 +1,6 @@
 package com.songlib.presentation.screens.presenter
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
@@ -9,6 +10,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -29,14 +31,15 @@ fun PresenterScreen(
     onBackPressed: () -> Unit,
     song: Song?,
 ) {
-    LaunchedEffect(song) {
-        song?.let { viewModel.loadSong(it) }
-    }
-
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val title by viewModel.title.collectAsState()
     val verses by viewModel.verses.collectAsState()
     val indicators by viewModel.indicators.collectAsState()
+
+    LaunchedEffect(song) {
+        song?.let { viewModel.loadSong(it) }
+    }
 
     Scaffold(
         topBar = {
@@ -44,13 +47,13 @@ fun PresenterScreen(
                 AppTopBar(
                     title = title,
                     actions = {
-                        if (uiState == UiState.Loaded) {
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Favorite,
-                                    contentDescription = "Like"
-                                )
-                            }
+                        IconButton(onClick = {
+                            song?.let { viewModel.likeSong(it) }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Favorite,
+                                contentDescription = "Like"
+                            )
                         }
                     },
                     navigationIcon = {
@@ -77,10 +80,23 @@ fun PresenterScreen(
                         onRetry = { }
                     )
 
-                    is UiState.Loaded -> PresenterContent(
+                    UiState.Loaded -> PresenterContent(
                         verses = verses,
                         indicators = indicators
                     )
+
+                    is UiState.Liked -> {
+                        val text = if ((uiState as UiState.Liked).status) {
+                            "${song?.title} has been added to your likes"
+                        } else {
+                            "${song?.title} removed from your likes"
+                        }
+                        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                        PresenterContent(
+                            verses = verses,
+                            indicators = indicators
+                        )
+                    }
 
                     UiState.Loading -> LoadingState("Loading song ...")
 

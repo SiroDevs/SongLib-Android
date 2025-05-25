@@ -13,12 +13,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entities.UiState
-import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.screens.home.likes.LikesScreen
-import com.songlib.presentation.screens.home.search.SearchScreen
 import com.songlib.presentation.screens.home.widgets.*
-import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.HomeViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -42,7 +38,7 @@ fun HomeScreen(
     val isRefreshing = uiState is UiState.Loading
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { viewModel.fetchData() }
+        onRefresh = { viewModel.refreshData() }
     )
 
     Scaffold(

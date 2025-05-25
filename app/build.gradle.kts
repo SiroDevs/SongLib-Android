@@ -27,8 +27,8 @@ android {
         applicationId = "com.songlib"
         minSdk = 24
         targetSdk = 35
-        versionCode = 801
-        versionName = "1.0.801"
+        versionCode = 802
+        versionName = "1.0.802"
         multiDexEnabled = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

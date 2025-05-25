@@ -74,7 +74,7 @@ class SelectionViewModel @Inject constructor(
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            val books = songRepo.getSelectedBookids()
+            val books = songRepo.getSelectedBookIds()
             songRepo.getSongs(books.toString()).catch { exception ->
                 Log.d("TAG", "fetching songs")
                 val errorMessage = when (exception) {

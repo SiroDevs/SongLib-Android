@@ -3,9 +3,10 @@ package com.songlib.presentation.viewmodels
 import androidx.lifecycle.*
 import com.songlib.core.utils.*
 import com.songlib.data.models.*
-import com.songlib.domain.entities.UiState
+import com.songlib.domain.entities.*
 import com.songlib.domain.repositories.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
@@ -13,15 +14,14 @@ import javax.inject.Inject
 class PresenterViewModel @Inject constructor(
     private val songRepo: SongRepository,
 ) : ViewModel() {
+    private val _songState: MutableStateFlow<ItemState> = MutableStateFlow(ItemState.Unliked)
+    val songState: StateFlow<ItemState> = _songState.asStateFlow()
 
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
-
-    private val _hasChorus = MutableStateFlow(false)
-    val hasChorus: StateFlow<Boolean> get() = _hasChorus
 
     private val _indicators = MutableStateFlow<List<String>>(emptyList())
     val indicators: StateFlow<List<String>> get() = _indicators
@@ -34,7 +34,6 @@ class PresenterViewModel @Inject constructor(
 
         val content = song.content
         val hasChorus = content.contains("CHORUS")
-        _hasChorus.value = hasChorus
 
         _title.value = songItemTitle(song.songNo, song.title)
 
@@ -69,6 +68,14 @@ class PresenterViewModel @Inject constructor(
         _verses.value = tempVerses
 
         _uiState.value = UiState.Loaded
+    }
+
+    fun likeSong(song: Song) {
+        viewModelScope.launch {
+            val updatedSong = song.copy(liked = !song.liked)
+            songRepo.updateSong(updatedSong)
+            _uiState.value = UiState.Liked(song.liked)
+        }
     }
 
 }

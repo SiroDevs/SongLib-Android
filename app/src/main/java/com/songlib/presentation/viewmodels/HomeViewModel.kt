@@ -67,8 +67,13 @@ class HomeViewModel @Inject constructor(
     }
 
     fun filterSongs(bookIndex: Int) {
+        _selectedBook.value = bookIndex
+        refreshData()
+    }
+
+    fun refreshData() {
         viewModelScope.launch {
-            _selectedBook.value = bookIndex
+            val bookIndex = _selectedBook.value
             val bookList = _books.value
             val songList = _songs.value
 
