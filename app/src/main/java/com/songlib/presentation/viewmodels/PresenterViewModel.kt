@@ -14,11 +14,11 @@ import javax.inject.Inject
 class PresenterViewModel @Inject constructor(
     private val songRepo: SongRepository,
 ) : ViewModel() {
-    private val _songState: MutableStateFlow<ItemState> = MutableStateFlow(ItemState.Unliked)
-    val songState: StateFlow<ItemState> = _songState.asStateFlow()
-
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _isLiked = MutableStateFlow(false)
+    val isLiked: StateFlow<Boolean> get() = _isLiked
 
     private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
@@ -31,7 +31,7 @@ class PresenterViewModel @Inject constructor(
 
     fun loadSong(song: Song) {
         _uiState.value = UiState.Loading
-
+        _isLiked.value = song.liked
         val content = song.content
         val hasChorus = content.contains("CHORUS")
 
@@ -74,6 +74,7 @@ class PresenterViewModel @Inject constructor(
         viewModelScope.launch {
             val updatedSong = song.copy(liked = !song.liked)
             songRepo.updateSong(updatedSong)
+            _isLiked.value = updatedSong.liked
             _uiState.value = UiState.Liked(song.liked)
         }
     }

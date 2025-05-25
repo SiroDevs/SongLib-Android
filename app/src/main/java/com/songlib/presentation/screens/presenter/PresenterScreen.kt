@@ -33,6 +33,7 @@ fun PresenterScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
+    val isLiked by viewModel.isLiked.collectAsState()
     val title by viewModel.title.collectAsState()
     val verses by viewModel.verses.collectAsState()
     val indicators by viewModel.indicators.collectAsState()
@@ -41,88 +42,76 @@ fun PresenterScreen(
         song?.let { viewModel.loadSong(it) }
     }
 
-    Scaffold(
-        topBar = {
-            Surface(shadowElevation = 3.dp) {
-                AppTopBar(
-                    title = title,
-                    actions = {
-                        IconButton(onClick = {
-                            song?.let { viewModel.likeSong(it) }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Favorite,
-                                contentDescription = "Like"
-                            )
-                        }
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = onBackPressed) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    },
-                )
-            }
-        },
-        content = {
-            Box(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-                    .background(ThemeColors.accent1)
-            ) {
-                when (uiState) {
-                    is UiState.Error -> ErrorState(
-                        errorMessage = (uiState as UiState.Error).errorMessage,
-                        onRetry = { }
-                    )
-
-                    UiState.Loaded -> PresenterContent(
-                        verses = verses,
-                        indicators = indicators
-                    )
-
-                    is UiState.Liked -> {
-                        val text = if ((uiState as UiState.Liked).status) {
-                            "${song?.title} has been added to your likes"
-                        } else {
-                            "${song?.title} removed from your likes"
-                        }
-                        Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                        PresenterContent(
-                            verses = verses,
-                            indicators = indicators
+    Scaffold(topBar = {
+        Surface(shadowElevation = 3.dp) {
+            AppTopBar(
+                title = title,
+                actions = {
+                    IconButton(onClick = {
+                        song?.let { viewModel.likeSong(it) }
+                    }) {
+                        Icon(
+                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Like Song"
                         )
                     }
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBackPressed) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+            )
+        }
+    }, content = {
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+                .background(ThemeColors.accent1)
+        ) {
+            when (uiState) {
+                is UiState.Error -> ErrorState(
+                    errorMessage = (uiState as UiState.Error).errorMessage, onRetry = { })
 
-                    UiState.Loading -> LoadingState("Loading song ...")
+                UiState.Loaded -> PresenterContent(
+                    verses = verses, indicators = indicators
+                )
 
-                    else -> EmptyState()
+                is UiState.Liked -> {
+                    val text = if ((uiState as UiState.Liked).status) {
+                        "${song?.title} has been added to your likes"
+                    } else {
+                        "${song?.title} removed from your likes"
+                    }
+                    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+                    PresenterContent(
+                        verses = verses, indicators = indicators
+                    )
                 }
+
+                UiState.Loading -> LoadingState("Loading song ...")
+
+                else -> EmptyState()
             }
         }
-    )
+    })
 }
 
 @Composable
 fun PresenterContent(
-    verses: List<String>,
-    indicators: List<String>
+    verses: List<String>, indicators: List<String>
 ) {
     val pagerState = rememberPagerState { verses.size }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween
     ) {
         PresenterTabs(
-            pagerState = pagerState,
-            verses = verses,
-            modifier = Modifier
-                .weight(1f)
+            pagerState = pagerState, verses = verses, modifier = Modifier.weight(1f)
         )
 
         PresenterIndicators(
@@ -139,7 +128,6 @@ fun PresenterContent(
 @Composable
 fun PreviewPresenterContent() {
     PresenterContent(
-        verses = SampleVerses,
-        indicators = SampleIndicators
+        verses = SampleVerses, indicators = SampleIndicators
     )
 }
