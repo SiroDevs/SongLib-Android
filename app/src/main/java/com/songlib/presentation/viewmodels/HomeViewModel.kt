@@ -1,5 +1,6 @@
 package com.songlib.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entities.UiState
@@ -80,8 +81,10 @@ class HomeViewModel @Inject constructor(
             if (bookIndex in bookList.indices) {
                 val selectedBookId = bookList[bookIndex].bookId
                 _filtered.value = songList.filter { it.book == selectedBookId }
+                Log.d("TAG", "🎵 filtered songs count: ${_filtered.value.size}")
             } else {
                 _filtered.value = emptyList()
+                Log.d("TAG", "No 🎵 filtered songs were found")
             }
 
             _uiState.tryEmit(UiState.Filtered)

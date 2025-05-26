@@ -2,7 +2,9 @@ package com.songlib.presentation.screens.home.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.Surface
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.runtime.*
 import androidx.compose.ui.*

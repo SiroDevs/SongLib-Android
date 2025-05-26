@@ -15,6 +15,12 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(keystorePropertiesFile.inputStream())
 }
 
+val configProperties = Properties()
+val configFile = rootProject.file("gradle/config/config.properties")
+if (configFile.exists()) {
+    configProperties.load(configFile.inputStream())
+}
+
 android {
     namespace = "com.songlib"
     compileSdk = 35
@@ -24,13 +30,12 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.songlib"
-        minSdk = 24
-        targetSdk = 35
-        versionCode = 802
-        versionName = "1.0.802"
+        applicationId = configProperties["applicationId"] as String
+        minSdk = (configProperties["minSdk"] as String).toInt()
+        targetSdk = (configProperties["targetSdk"] as String).toInt()
+        versionCode = (configProperties["versionCode"] as String).toInt()
+        versionName = configProperties["versionName"] as String
         multiDexEnabled = true
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -78,6 +83,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    lint {
+        disable += "NullSafeMutableLiveData"
     }
 }
 
