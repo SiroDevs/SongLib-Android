@@ -1,13 +1,19 @@
 package com.songlib
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.animation.AnticipateInterpolator
+import android.view.animation.DecelerateInterpolator
 import androidx.activity.*
 import androidx.activity.compose.setContent
 import androidx.annotation.Keep
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.*
 import androidx.compose.ui.*
+import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.songlib.presentation.navigation.*
 import com.songlib.presentation.theme.SongLibTheme
@@ -18,19 +24,28 @@ import dagger.hilt.android.AndroidEntryPoint
 @Keep
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+        installSplashScreen().setKeepOnScreenCondition { false }
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge()
+        splashScreen.setOnExitAnimationListener { splashScreenView ->
+            val scaleX = ObjectAnimator.ofFloat(splashScreenView, View.SCALE_X, 1f, 0.7f)
+            val scaleY = ObjectAnimator.ofFloat(splashScreenView, View.SCALE_Y, 1f, 0.7f)
+            val fadeOut = ObjectAnimator.ofFloat(splashScreenView, View.ALPHA, 1f, 0f)
+
+            AnimatorSet().apply {
+                playTogether(scaleX, scaleY, fadeOut)
+                interpolator = DecelerateInterpolator()
+                duration = 500L
+                doOnEnd { splashScreenView.remove() }
+                start()
+            }
+        }
+
         setContent {
             SongLibTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavHost()
-                }
+                AppNavHost()
             }
         }
     }

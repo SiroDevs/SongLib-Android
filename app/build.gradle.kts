@@ -22,8 +22,8 @@ if (configFile.exists()) {
 }
 
 android {
-    namespace = "com.songlib"
-    compileSdk = 35
+    namespace = configProperties["applicationId"] as String
+    compileSdk = (configProperties["targetSdk"] as String).toInt()
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.8.1"
@@ -109,6 +109,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
 
+    implementation(libs.androidx.core.splashscreen)
+
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -116,13 +118,10 @@ dependencies {
     implementation(libs.androidx.icons.extended)
 
     implementation(libs.hilt.android)
-
     implementation(libs.compose.hilt.navigation)
     implementation(libs.compose.navigation)
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.navigation)
-
-    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)

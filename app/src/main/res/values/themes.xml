@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="Theme.SongLib.Splash" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="postSplashScreenTheme">@style/Theme.SongLib</item>
+    </style>
 
-    <style name="Theme.SongLib" parent="android:Theme.Material.Light.NoActionBar" />
-
-    <style name="Theme.AppSplash" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">@color/black</item>
+    <style name="Theme.SongLib" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@color/primaryDark</item>
     </style>
 </resources>

@@ -38,7 +38,7 @@ fun PresenterTabs(
                 Text(
                     text = verses[page],
                     style = TextStyle(
-                        fontSize = 30.sp,
+                        fontSize = 25.sp,
                         //color = Color.White,
                         letterSpacing = 1.sp,
                         fontWeight = FontWeight.Bold,
