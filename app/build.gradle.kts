@@ -59,8 +59,8 @@ android {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+     getDefaultProguardFile("proguard-android-optimize.txt"),
+     "proguard-rules.pro"
             )
         }
         create("staging") {
@@ -68,8 +68,8 @@ android {
             manifestPlaceholders["hostName"] = "Stg SongLib"
             applicationIdSuffix = ".stg"
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+     getDefaultProguardFile("proguard-android-optimize.txt"),
+     "proguard-rules.pro"
             )
         }
     }
@@ -88,55 +88,59 @@ android {
         disable += "NullSafeMutableLiveData"
     }
 }
-
 dependencies {
     // Core AndroidX & Lifecycle
-    implementation(libs.androidx.core.ktx)                     // Kotlin extensions for core Android APIs
-    implementation(libs.androidx.lifecycle.runtime.ktx)        // Lifecycle-aware components
-    implementation(libs.androidx.core.splashscreen)            // Splash screen API
+    implementation(libs.androidx.core.ktx)  // Kotlin extensions for core Android APIs
+    implementation(libs.androidx.lifecycle.runtime.ktx)  // Lifecycle-aware components
+    implementation(libs.androidx.core.splashscreen)  // Splash screen API
 
-    // Jetpack Compose UI
-    implementation(platform(libs.androidx.compose.bom))        // Compose Bill of Materials (BOM)
-    implementation(libs.androidx.activity.compose)             // Activity support for Compose
-    implementation(libs.androidx.ui)                           // Core Compose UI elements
-    implementation(libs.androidx.ui.graphics)                  // Graphics support in Compose
-    implementation(libs.androidx.ui.tooling.preview)           // Tools for previewing Compose UI
-    implementation(libs.androidx.material3)                    // Material 3 components for Compose
-    implementation(libs.androidx.compose.material)             // Material 2 components (legacy)
-    implementation(libs.androidx.icons.extended)               // Extended material icons for Compose
-    implementation(libs.compose.navigation)                    // Compose navigation
-    implementation(libs.compose.hilt.navigation)               // Hilt integration with Compose navigation
-    implementation(libs.androidx.compose.livedata)             // LiveData support in Compose
+    // Jetpack Compose - BOM
+    implementation(platform(libs.androidx.compose.bom))  // Compose Bill of Materials (BOM)
+
+    // Jetpack Compose - Core UI
+    implementation(libs.androidx.activity.compose)  // Activity support for Compose
+    implementation(libs.androidx.ui)  // Core Compose UI elements
+    implementation(libs.androidx.ui.graphics)  // Compose graphics primitives
+
+    // Jetpack Compose - Material Design
+    implementation(libs.androidx.material3)   // Material 3 UI components
+    implementation(libs.androidx.compose.material)  // Material 2 components (legacy support)
+    implementation(libs.androidx.icons.extended)  // Extended material icons
+
+    // Jetpack Compose - Navigation & State
+    implementation(libs.compose.navigation)   // Navigation support in Compose
+    implementation(libs.compose.hilt.navigation)  // Hilt + Navigation integration
+    implementation(libs.androidx.compose.livedata)  // LiveData support in Compose
+
+    // Jetpack Compose - Tooling & Preview
+    implementation(libs.androidx.ui.tooling.preview)   // Compose UI preview support
+    debugImplementation(libs.androidx.ui.tooling)   // Compose UI tools (debug only)
+    debugImplementation(libs.androidx.ui.test.manifest)  // Manifest for Compose UI tests (debug)
 
     // Navigation (Non-Compose)
-    implementation(libs.androidx.navigation)                   // Android Jetpack Navigation components
+    implementation(libs.androidx.navigation)  // AndroidX Navigation components
 
     // Room Database
-    implementation(libs.androidx.room.runtime)                 // Room runtime
-    ksp(libs.androidx.room.compiler)                           // KSP for Room code generation
-    annotationProcessor(libs.androidx.room.compiler)           // Annotation processor (fallback or tests)
+    implementation(libs.androidx.room.runtime)   // Room runtime
+    ksp(libs.androidx.room.compiler)  // Room annotation processor (KSP)
+    annotationProcessor(libs.androidx.room.compiler)   // Annotation processor (for fallback/tests)
 
     // Hilt for Dependency Injection
-    implementation(libs.hilt.android)                          // Hilt core
-    ksp(libs.hilt.compiler)                                    // Hilt compiler for DI generation
-    kspAndroidTest(libs.hilt.android.compiler)                 // Hilt compiler for instrumented tests
+    implementation(libs.hilt.android)  // Hilt core
+    ksp(libs.hilt.compiler)   // Hilt code generation
+    kspAndroidTest(libs.hilt.android.compiler)   // Hilt codegen for instrumentation tests
 
     // Networking (Retrofit + OkHttp)
-    implementation(libs.squareup.retrofit)                     // Retrofit for HTTP API
-    implementation(libs.squareup.retrofit.gson)                // Gson converter for Retrofit
-    implementation(libs.squareup.okhttp3.logging)             // OkHttp logging interceptor
+    implementation(libs.squareup.retrofit)  // Retrofit for networking
+    implementation(libs.squareup.retrofit.gson)  // Gson converter for Retrofit
+    implementation(libs.squareup.okhttp3.logging)   // OkHttp logging interceptor
 
     // Testing - Unit Tests
-    testImplementation(libs.junit)                             // JUnit for unit testing
+    testImplementation(libs.junit)  // JUnit for unit testing
 
     // Testing - Android Instrumentation Tests
-    androidTestImplementation(libs.androidx.junit)             // AndroidX JUnit extensions
-    androidTestImplementation(libs.androidx.espresso.core)     // Espresso for UI testing
+    androidTestImplementation(libs.androidx.junit)  // AndroidX JUnit extensions
+    androidTestImplementation(libs.androidx.espresso.core)  // Espresso UI test framework
     androidTestImplementation(platform(libs.androidx.compose.bom)) // Compose BOM for tests
-    androidTestImplementation(libs.androidx.ui.test.junit4)    // Compose JUnit4 test support
-
-    // Debug Tools
-    debugImplementation(libs.androidx.ui.tooling)              // Compose UI tooling (debug only)
-    debugImplementation(libs.androidx.ui.test.manifest)        // Compose test manifest (debug only)
-    implementation(libs.androidx.ui.tooling.preview)           // Preview tooling for Compose
+    androidTestImplementation(libs.androidx.ui.test.junit4)  // Compose JUnit4 test support
 }
