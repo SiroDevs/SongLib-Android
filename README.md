@@ -1,4 +1,4 @@
-# Welcome to SongLib
+# Welcome to SongLib-Android
 
 <a href='https://songlib.siro.co.ke'>
   <img alt='Get it on your Device' src='screenshots/main_banner.png'/>
