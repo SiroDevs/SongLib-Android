@@ -1,4 +1,4 @@
-package com.songlib.domain.entities
+package com.songlib.domain.entity
 
 sealed class UiState {
     object Loading : UiState()

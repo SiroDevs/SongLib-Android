@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.songlib.core.utils.refineTitle
 import com.songlib.data.models.Book
-import com.songlib.domain.entities.Selectable
+import com.songlib.domain.entity.Selectable
 import com.songlib.presentation.theme.ThemeColors
 
 @Composable

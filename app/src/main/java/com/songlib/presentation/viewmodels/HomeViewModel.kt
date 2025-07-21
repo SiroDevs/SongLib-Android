@@ -3,8 +3,8 @@ package com.songlib.presentation.viewmodels
 import android.util.Log
 import androidx.lifecycle.*
 import com.songlib.data.models.*
-import com.songlib.domain.entities.UiState
-import com.songlib.domain.repositories.*
+import com.songlib.domain.entity.UiState
+import com.songlib.domain.repository.*
 import com.songlib.presentation.screens.home.widgets.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*

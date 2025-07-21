@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
-import com.songlib.domain.entities.UiState
+import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.SearchSongItem
 import com.songlib.presentation.viewmodels.HomeViewModel

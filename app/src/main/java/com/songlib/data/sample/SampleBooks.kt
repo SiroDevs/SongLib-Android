@@ -1,7 +1,7 @@
 package com.songlib.data.sample
 
 import com.songlib.data.models.Book
-import com.songlib.domain.entities.Selectable
+import com.songlib.domain.entity.Selectable
 
 val SampleBooks = listOf(
     Book(

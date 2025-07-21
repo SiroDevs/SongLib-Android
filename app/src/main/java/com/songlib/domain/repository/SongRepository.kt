@@ -1,4 +1,4 @@
-package com.songlib.domain.repositories
+package com.songlib.domain.repository
 
 import android.content.*
 import androidx.core.content.edit

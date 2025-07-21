@@ -3,8 +3,8 @@ package com.songlib.presentation.viewmodels
 import androidx.lifecycle.*
 import com.songlib.core.utils.*
 import com.songlib.data.models.*
-import com.songlib.domain.entities.*
-import com.songlib.domain.repositories.*
+import com.songlib.domain.entity.*
+import com.songlib.domain.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*

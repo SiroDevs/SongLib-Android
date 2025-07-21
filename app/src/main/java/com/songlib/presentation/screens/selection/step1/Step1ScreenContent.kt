@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.songlib.data.models.Book
 import com.songlib.data.sample.SampleSelectableBooks
-import com.songlib.domain.entities.*
+import com.songlib.domain.entity.*
 import com.songlib.presentation.components.listitems.BookItem
 
 @Composable

@@ -11,7 +11,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.songlib.domain.entities.UiState
+import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.*
 import com.songlib.presentation.navigation.Routes
