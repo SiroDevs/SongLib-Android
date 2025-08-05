@@ -49,18 +49,12 @@ android {
     }
 
     buildTypes {
-        getByName("debug") {
-            isMinifyEnabled = false
-            isDebuggable = true
-            applicationIdSuffix = ".debug"
-            signingConfig = signingConfigs.getByName("debug")
-        }
         getByName("release") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
-     getDefaultProguardFile("proguard-android-optimize.txt"),
-     "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
         create("staging") {
@@ -68,8 +62,8 @@ android {
             manifestPlaceholders["hostName"] = "Stg SongLib"
             applicationIdSuffix = ".stg"
             proguardFiles(
-     getDefaultProguardFile("proguard-android-optimize.txt"),
-     "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
             )
         }
     }
