@@ -58,7 +58,8 @@ android {
             )
         }
         create("staging") {
-            initWith(getByName("debug"))
+            isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             manifestPlaceholders["hostName"] = "Stg SongLib"
             applicationIdSuffix = ".stg"
             proguardFiles(
