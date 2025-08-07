@@ -1,22 +1,18 @@
 package com.songlib
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.os.Build
-import android.os.Bundle
+import android.animation.*
+import android.os.*
 import android.view.View
-import android.view.animation.AnticipateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.activity.*
 import androidx.activity.compose.setContent
-import androidx.annotation.Keep
-import androidx.annotation.RequiresApi
+import androidx.annotation.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.ui.*
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.songlib.presentation.navigation.*
-import com.songlib.presentation.theme.SongLibTheme
+import com.songlib.presentation.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalComposeUiApi
@@ -44,7 +40,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            SongLibTheme {
+            AppTheme {
                 AppNavHost()
             }
         }

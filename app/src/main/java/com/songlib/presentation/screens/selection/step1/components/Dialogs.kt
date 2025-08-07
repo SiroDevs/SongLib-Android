@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.selection.step1
+package com.songlib.presentation.screens.selection.step1.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
