@@ -17,11 +17,11 @@ fun Step1Fab(
 
     if (showConfirmDialog) {
         ConfirmSaveDialog(
+            onDismiss = { showConfirmDialog = false },
             onConfirm = {
                 onSaveConfirmed(viewModel.getSelectedBooks())
                 showConfirmDialog = false
-            },
-            onDismiss = { showConfirmDialog = false }
+            }
         )
     }
 

@@ -24,7 +24,7 @@ fun Step1Screen(
     themeManager: ThemeManager
 ) {
     var fetchData by rememberSaveable { mutableStateOf(0) }
-    var showThemeDialog by rememberSaveable { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
 
     if (fetchData == 0) {
         viewModel.fetchBooks()
@@ -66,6 +66,13 @@ fun Step1Screen(
                                 contentDescription = "Refresh"
                             )
                         }
+                    }
+
+                    IconButton(onClick = { showThemeDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Filled.Brightness6,
+                            contentDescription = "Change Theme"
+                        )
                     }
                 }
             )

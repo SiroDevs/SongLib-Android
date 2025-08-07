@@ -12,12 +12,14 @@ import com.songlib.presentation.screens.presenter.PresenterScreen
 import com.songlib.presentation.screens.selection.step1.Step1Screen
 import com.songlib.presentation.screens.selection.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
+import com.songlib.presentation.theme.ThemeManager
 import com.songlib.presentation.viewmodels.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
+    themeManager: ThemeManager
 ) {
     NavHost(
         navController = navController,
@@ -33,6 +35,7 @@ fun AppNavHost(
             Step1Screen(
                 viewModel = viewModel,
                 navController = navController,
+                themeManager = themeManager,
             )
         }
 

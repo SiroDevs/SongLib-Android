@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.songlib.presentation.theme.ThemeColors
 
@@ -33,19 +34,25 @@ fun AppTopBar(
             title = {
                 Text(
                     text = title,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             },
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = ThemeColors.primary,
-                titleContentColor = Color.White,
-                actionIconContentColor = Color.White,
-                navigationIconContentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
             ),
             navigationIcon = navigationIcon
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppTopBarPreview() {
+    AppTopBar(title = "SongLib")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
