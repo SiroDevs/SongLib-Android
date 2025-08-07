@@ -20,7 +20,7 @@ fun BottomNavigationBar(
         HomeNavItem.Likes,
     )
     BottomNavigation(
-        backgroundColor = ThemeColors.primary,
+        backgroundColor = ThemeColors.primary1,
         contentColor = Color.White
     ) {
         items.forEach { item ->

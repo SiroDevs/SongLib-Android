@@ -24,13 +24,13 @@ fun WithLoveFromRow() {
                 fontSize = 30.sp,
                 letterSpacing = 5.sp,
                 fontWeight = FontWeight.Bold,
-                color = ThemeColors.primary
+                color = ThemeColors.primary1
             )
         )
         Icon(
             imageVector = Icons.Filled.Favorite,
             contentDescription = null,
-            tint = ThemeColors.primaryDark
+            tint = ThemeColors.primaryDark1
         )
         Text(
             text = " from",
@@ -38,7 +38,7 @@ fun WithLoveFromRow() {
                 fontSize = 30.sp,
                 letterSpacing = 5.sp,
                 fontWeight = FontWeight.Bold,
-                color = ThemeColors.primary
+                color = ThemeColors.primary1
             )
         )
     }
@@ -55,14 +55,14 @@ fun AppDevelopersRow() {
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = ThemeColors.primaryDark
+                color = ThemeColors.primaryDark1
             )
         )
         Text(
             text = " & ",
             style = TextStyle(
                 fontSize = 20.sp,
-                color = ThemeColors.primary
+                color = ThemeColors.primary1
             )
         )
         Text(
@@ -70,7 +70,7 @@ fun AppDevelopersRow() {
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = ThemeColors.primaryDark
+                color = ThemeColors.primaryDark1
             )
         )
     }

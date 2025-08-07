@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -32,15 +33,12 @@ fun AppTopBar(
     ) {
         TopAppBar(
             title = {
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
+                Text(text = title)
             },
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                titleContentColor = Color.White,
                 actionIconContentColor = MaterialTheme.colorScheme.onPrimary,
                 navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
             ),
@@ -99,7 +97,7 @@ fun SearchTopBar(
             navigationIcon = {},
             actions = {},
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = ThemeColors.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 titleContentColor = Color.White
             )
         )

@@ -21,7 +21,8 @@ fun BookItem(
     item: Selectable<Book>,
     onClick: (Selectable<Book>) -> Unit
 ) {
-    val backgroundColor = if (item.isSelected) ThemeColors.primary else Color.White
+    val backgroundColor =
+        if (item.isSelected) MaterialTheme.colorScheme.surfaceTint else ThemeColors.accent2
     val contentColor = if (item.isSelected) Color.White else Color.Black
 
     ElevatedCard(

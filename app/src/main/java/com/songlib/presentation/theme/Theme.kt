@@ -11,10 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.*
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = ThemeColors.primary,
-    secondary = ThemeColors.primary2,
-    tertiary = ThemeColors.primary1,
+private val DarkColorSchemex = darkColorScheme(
+    primary = ThemeColors.primary1,
+    secondary = ThemeColors.primary3,
+    tertiary = ThemeColors.primary2,
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
@@ -24,10 +24,10 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = Color(0xFF1C1B1F),
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = ThemeColors.primary,
-    secondary = ThemeColors.primary2,
-    tertiary = ThemeColors.primary1,
+private val LightColorSchemex = lightColorScheme(
+    primary = ThemeColors.primary1,
+    secondary = ThemeColors.primary3,
+    tertiary = ThemeColors.primary2,
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
@@ -35,12 +35,75 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Color.White,
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F),
+)
+private val LightTheme = lightColorScheme(
+    primary = LightColors.primary,
+    onPrimary = LightColors.onPrimary,
+    primaryContainer = LightColors.primaryContainer,
+    onPrimaryContainer = LightColors.onPrimaryContainer,
+    secondary = LightColors.secondary,
+    onSecondary = LightColors.onSecondary,
+    secondaryContainer = LightColors.secondaryContainer,
+    onSecondaryContainer = LightColors.onSecondaryContainer,
+    tertiary = LightColors.tertiary,
+    onTertiary = LightColors.onTertiary,
+    tertiaryContainer = LightColors.tertiaryContainer,
+    onTertiaryContainer = LightColors.onTertiaryContainer,
+    error = LightColors.error,
+    errorContainer = LightColors.errorContainer,
+    onError = LightColors.onError,
+    onErrorContainer = LightColors.onErrorContainer,
+    background = LightColors.background,
+    onBackground = LightColors.onBackground,
+    surface = LightColors.surface,
+    onSurface = LightColors.onSurface,
+    surfaceVariant = LightColors.surfaceVariant,
+    onSurfaceVariant = LightColors.onSurfaceVariant,
+    outline = LightColors.outline,
+    inverseOnSurface = LightColors.inverseOnSurface,
+    inverseSurface = LightColors.inverseSurface,
+    inversePrimary = LightColors.inversePrimary,
+    surfaceTint = LightColors.surfaceTint,
+    outlineVariant = LightColors.outlineVariant,
+    scrim = LightColors.scrim,
+)
+
+private val DarkTheme = darkColorScheme(
+    primary = DarkColors.primary,
+    onPrimary = DarkColors.onPrimary,
+    primaryContainer = DarkColors.primaryContainer,
+    onPrimaryContainer = DarkColors.onPrimaryContainer,
+    secondary = DarkColors.secondary,
+    onSecondary = DarkColors.onSecondary,
+    secondaryContainer = DarkColors.secondaryContainer,
+    onSecondaryContainer = DarkColors.onSecondaryContainer,
+    tertiary = DarkColors.tertiary,
+    onTertiary = DarkColors.onTertiary,
+    tertiaryContainer = DarkColors.tertiaryContainer,
+    onTertiaryContainer = DarkColors.onTertiaryContainer,
+    error = DarkColors.error,
+    errorContainer = DarkColors.errorContainer,
+    onError = DarkColors.onError,
+    onErrorContainer = DarkColors.onErrorContainer,
+    background = DarkColors.background,
+    onBackground = DarkColors.onBackground,
+    surface = DarkColors.surface,
+    onSurface = DarkColors.onSurface,
+    surfaceVariant = DarkColors.surfaceVariant,
+    onSurfaceVariant = DarkColors.onSurfaceVariant,
+    outline = DarkColors.outline,
+    inverseOnSurface = DarkColors.inverseOnSurface,
+    inverseSurface = DarkColors.inverseSurface,
+    inversePrimary = DarkColors.inversePrimary,
+    surfaceTint = DarkColors.surfaceTint,
+    outlineVariant = DarkColors.outlineVariant,
+    scrim = DarkColors.scrim,
 )
 
 @Composable
 fun AppTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -49,8 +112,8 @@ fun AppTheme(
             if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        useDarkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        useDarkTheme -> DarkTheme
+        else -> LightTheme
     }
 
     val view = LocalView.current

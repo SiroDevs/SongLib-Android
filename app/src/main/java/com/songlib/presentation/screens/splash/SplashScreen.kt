@@ -74,12 +74,12 @@ fun SplashContent() {
                             fontSize = 50.sp,
                             letterSpacing = 5.sp,
                             fontWeight = FontWeight.Bold,
-                            color = ThemeColors.primary
+                            color = ThemeColors.primary1
                         )
                     )
                     Spacer(Modifier.weight(1f))
                     Divider(
-                        color = ThemeColors.primaryDark,
+                        color = ThemeColors.primaryDark1,
                         thickness = 2.dp,
                         modifier = Modifier
                             .padding(horizontal = 10.dp)

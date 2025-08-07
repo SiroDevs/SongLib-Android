@@ -18,7 +18,7 @@ fun SearchBookItem(
     isSelected: Boolean = false,
     onPressed: (() -> Unit)? = null
 ) {
-    val backgroundColor = if (isSelected) ThemeColors.primary2 else ThemeColors.accent
+    val backgroundColor = if (isSelected) ThemeColors.primary2 else ThemeColors.accent1
     val contentColor = if (isSelected) Color.White else Color.Black
 
     Button(
