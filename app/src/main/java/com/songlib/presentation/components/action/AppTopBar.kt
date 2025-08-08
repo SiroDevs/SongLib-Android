@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -16,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.songlib.presentation.theme.ThemeColors
 
@@ -31,21 +33,24 @@ fun AppTopBar(
     ) {
         TopAppBar(
             title = {
-                Text(
-                    text = title,
-                    color = Color.White
-                )
+                Text(text = title)
             },
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = ThemeColors.primary,
-                titleContentColor = Color.White,
-                actionIconContentColor = Color.White,
-                navigationIconContentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+//                titleContentColor = Color.White,
+//                actionIconContentColor = Color.White,
+//                navigationIconContentColor = Color.White,
             ),
             navigationIcon = navigationIcon
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppTopBarPreview() {
+    AppTopBar(title = "SongLib")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +97,7 @@ fun SearchTopBar(
             navigationIcon = {},
             actions = {},
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = ThemeColors.primary,
+                containerColor = MaterialTheme.colorScheme.primary,
                 titleContentColor = Color.White
             )
         )

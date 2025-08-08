@@ -1,158 +1,68 @@
-# Welcome to SongLib-Android
+# 🎵 SongLib
 
-<a href='https://songlib.siro.co.ke'>
-  <img alt='Get it on your Device' src='screenshots/main_banner.png'/>
-</a>
+**SongLib** is a modern, cross-platform church hymn library and songbook manager.
+With **14 built-in songbooks** and powerful search, it lets you keep all your favorite hymns right at your fingertips — even offline.
 
- Your songbook for Android, iOS, Windows, Linux, MacOS
+Available for **Android, iOS, Windows, Linux, and macOS**.
 
-## Overview
+> 🔗 iOS Version Repo: [@SiroDaves/SongLib-iOS](https://github.com/SiroDaves/SongLib-iOS)
 
-SongLib is a robust mobile solution tailored for our users who need to sing hymns, designed to streamline their operations and enhance productivity. This Flutter-based application facilitates their access to your church songbook/hymns seamlessly that you don't have to worry about even being online once you have set up the app on your device.
+## ✨ Features
+
+* 📖 **14 Songbooks Included** – Choose from a wide selection of hymnals.
+* 📚 **Custom Collections** – Create your own set of favorite church hymns.
+* 🔍 **Real-Time Search** – Search by song **title**, **number**, or **lyrics** instantly.
+* 📜 **Verse Navigation** – Swipe up/down to slide through song verses seamlessly.
+* 🌐 **Cross-Platform** – Runs on **Android**, **iOS**, **Windows**, **Linux**, and **macOS**.
+* 📶 **Offline Mode** – Once set up, the app works without internet access.
+* ☁ **Cloud-Backed** – Uses a **MongoDB** database with backend services for sync and updates.
+
+Backend API: [`https://songlive.vercel.app/api`](https://songlive.vercel.app/api)
+
+## 📸 Screenshots
+
 <table>
-<tr>
-<td><img src="screenshots/Droid/image1.png" width="200px" /></td>
-<td><img src="screenshots/Droid/image2.png" width="200px" /></td>
-<td><img src="screenshots/Droid/image3.png" width="200px" /></td>
-<td><img src="screenshots/Droid/image4.png" width="200px" /></td>
-<td><img src="screenshots/Droid/image5.png" width="200px" /></td>
-</tr>
+    <tr>
+        <td><img src="screenshots/image1.jpg" width="200px" /></td>
+        <td><img src="screenshots/image2.jpg" width="200px" /></td>
+        <td><img src="screenshots/image3.jpg" width="200px" /></td>
+    </tr>
 </table>
 
-## Getting Started
+## 🛠 Tech Stack
 
-Follow this guide to set up and run SongLib:
+### **Frontend**
 
-### Setting Up SongLib:
+* **Jetpack Compose** (Android UI)
+* **Material Design 3** + Material Icons
+* **Room Database** for local storage
+* **Navigation Component** for in-app navigation
+* **Hilt** for dependency injection
+* **Retrofit + OkHttp** for networking
 
-1. **Install Flutter and Dependencies:** Ensure Flutter is installed on your system. Download the Flutter SDK from the official website and set up your preferred IDE (e.g., Android Studio or Visual Studio Code) with the Flutter plugin.
+### **Backend**
 
-2. **Clone the Repository:** Clone SongLib repository from GitHub using Git:
+* **Node.js** + **MongoDB**
+* REST API hosted on **Vercel**
 
-    ```bash
-    git clone git@github.com:SiroDaves/SongLibApp.git
-    ```
+## 🚀 Getting Started (Android)
 
-3. **Install Packages:** Navigate to the project directory and run:
+1. **Clone the repo**
 
-    ```bash
-    flutter pub get
-    ```
+   ```bash
+   git clone https://github.com/SiroDaves/SongLib-Android.git
+   cd SongLib-Android
+   ```
 
-### Running SongLib:
+2. **Open in Android Studio**
+   Make sure you have **Android Studio Flamingo+** with Kotlin and Compose support.
 
-1. **Device Setup:** Connect an emulator or physical device to your development environment. Check connected devices:
+3. **Run the app**
+   Select a device/emulator and hit **Run ▶**.
 
-    ```bash
-    flutter devices
-    ```
+4. **Backend Setup (Optional)**
+   If you want to connect to your own backend, update the API endpoint in the config to point to your MongoDB-powered service.
 
-2. **Update Dependencies:**
+## 📄 License
 
-    ```bash
-    flutter pub get
-    ```
-
-3. **Update Code Generated Files:**
-
-    ```bash
-    dart run build_runner build --delete-conflicting-outputs
-    ```
-
-4. **Update Localization Strings:**
-
-    ```bash
-    flutter gen-l10n
-    ```
-5. **Running SongLib:**
-    ```bash
-    flutter run --flavor develop -t lib/main_dev.dart --no-tree-shake-icons
-    ```
-
-### Building SongLib
-
-1. **Android:**
-
-    - **Staging: AppTester (Firebase Distribution):**
-
-        ```bash
-        flutter build apk --flavor staging -t lib/main.dart --no-tree-shake-icons
-        ```
-
-    - **Production (For Play Store):**
-
-        ```bash
-        flutter build appbundle --flavor production -t lib/main.dart --no-tree-shake-icons
-        ```
-    
-2. **iOS:**
-
-    - **Production (For Play Store):**
-
-        ```bash
-        flutter build ipa -t lib/main.dart --no-tree-shake-icons
-        ```
-    To upload to the App Store either:
-    - Drag and drop the "build/ios/ipa/*.ipa" bundle into the Apple Transporter macOS app https://apps.apple.com/us/app/transporter/id1450874784
-    - Run "xcrun altool --upload-app --type ios -f build/ios/ipa/*.ipa --apiKey your_api_key --apiIssuer your_issuer_id".
-       See "man altool" for details about how to authenticate with the App Store Connect API key.
-        
-3. **Windows:**
-
-    ```
-    flutter build windows --target=lib/main.dart --no-tree-shake-icons
-    ```
-          
-4. **MacOS:**
-
-    ```
-    flutter build macos -t lib/main.dart --no-tree-shake-icons
-    ```
-
-    Install create-dmg
-    ```
-    brew install create-dmg
-    ```
-
-    Generate DMG
-    ```
-    create-dmg \
-    --volname "SongLib" \
-    --window-pos 200 120 \
-    --window-size 800 400 \
-    --icon-size 100 \
-    --icon "SongLib.app" 200 190 \
-    --hide-extension "SongLib.app" \
-    --app-drop-link 600 185 \
-    "dist/macos/songlib_1.0.799.dmg" \
-    "build/macos/Build/Products/Release/SongLib.app"
-    ```
-         
-5. **Linux:**
-
-    Generate the build
-    ```
-    flutter build linux -t lib/main.dart --no-tree-shake-icons
-    ```
-
-    Create a deb package
-    ```
-    flutter_distributor package --platform linux --targets deb
-    ```
-    Or an rpm package 
-    ```
-    flutter_distributor package --platform linux --targets rpm
-    ```
-        
-6. **All the builds:**
-
-    ```
-    flutter build appbundle --flavor production -t lib/main.dart --no-tree-shake-icons
-    flutter build apk --flavor production -t lib/main.dart --no-tree-shake-icons
-    flutter build ipa -t lib/main.dart --no-tree-shake-icons
-    flutter build macos -t lib/main.dart --no-tree-shake-icons
-    ```
-
----
-
-Congratulations! You've successfully set up and run or built SongLib. Explore the codebase, make modifications, and contribute to creating a seamless experience for the users. Happy coding!
+MIT License — Feel free to use, modify, and distribute.

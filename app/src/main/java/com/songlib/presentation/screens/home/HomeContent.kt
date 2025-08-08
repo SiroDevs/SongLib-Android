@@ -48,7 +48,7 @@ fun HomeContent(
                     refreshing = isRefreshing,
                     state = pullRefreshState,
                     modifier = Modifier.align(Alignment.TopCenter),
-                    contentColor = ThemeColors.primary
+                    contentColor = ThemeColors.primary1
                 )
             }
         }

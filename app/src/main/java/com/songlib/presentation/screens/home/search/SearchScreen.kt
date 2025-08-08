@@ -50,7 +50,7 @@ fun SearchList(
     ) {
         stickyHeader {
             Surface(
-                color = ThemeColors.accent,
+                color = ThemeColors.accent1,
                 modifier = Modifier
                     .fillMaxWidth()
                     .zIndex(1f)

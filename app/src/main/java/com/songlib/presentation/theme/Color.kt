@@ -3,24 +3,79 @@ package com.songlib.presentation.theme
 import androidx.compose.ui.graphics.Color
 
 object ThemeColors {
-    val accent = Color(0xFFECECEC);
-    val accent1 = Color(0xFFEEDAC4)
-    val accent2 = Color(0xFFBEA264)
-    val accent3 = Color(0xFFFFB74D)
+    val accent1 = Color(0xFFECECEC);
+    val accent2 = Color(0xFFEEDAC4)
+    val accent3 = Color(0xFFBEA264)
+    val accent4 = Color(0xFFFFB74D)
+    val primary1 = Color(0xFFB86918)
+    val primary2 = Color(0xFFF57C00)
+    val primary3 = Color(0xFFBF360C)
+    val primaryDark1 = Color(0xFF432B25)
+    val primaryDark2 = Color(0xFF331900)
+}
+
+object LightColors {
     val primary = Color(0xFFB86918)
-    val primary1 = Color(0xFFF57C00)
-    val primary2 = Color(0xFFBF360C)
-    val primaryDark = Color(0xFF432B25)
-    val primaryDark1 = Color(0xFF331900)
+    val onPrimary = Color(0xFFEEDAC4)
+    val primaryContainer = Color(0xFFFFB951)
+    val onPrimaryContainer = Color(0xFF291800)
+    val secondary = Color(0xFF6F5B40)
+    val onSecondary = Color(0xFFFFFFFF)
+    val secondaryContainer = Color(0xFFBF360C)
+    val onSecondaryContainer = Color(0xFF271904)
+    val tertiary = Color(0xFF51643F)
+    val onTertiary = Color(0xFFFFFFFF)
+    val tertiaryContainer = Color(0xFFD4EABB)
+    val onTertiaryContainer = Color(0xFF102004)
+    val error = Color(0xFFBA1A1A)
+    val errorContainer = Color(0xFFFFDAD6)
+    val onError = Color(0xFFFFFFFF)
+    val onErrorContainer = Color(0xFF410002)
+    val background = Color(0xFFFFFBFF)
+    val onBackground = Color(0xFF1F1B16)
+    val surface = Color(0xFFFFFBFF)
+    val onSurface = Color(0xFF1F1B16)
+    val surfaceVariant = Color(0xFFF0E0CF)
+    val onSurfaceVariant = Color(0xFF4F4539)
+    val outline = Color(0xFF817567)
+    val inverseOnSurface = Color(0xFFF9EFE7)
+    val inverseSurface = Color(0xFF34302A)
+    val inversePrimary = Color(0xFFFFFFFF)
+    val shadow = Color(0xFF000000)
+    val surfaceTint = Color(0xFFBF360C)
+    val outlineVariant = Color(0xFFD3C4B4)
+    val scrim = Color(0xFF000000)
+}
 
-    // Optional helper for light/dark background color
-    fun bgColorWB(isLight: Boolean): Color {
-        return if (isLight) Color.White else primaryDark
-    }
-
-    // Optional Compose helper if you want to pass Compose theme directly
-//    @Composable
-//    fun bgColorWB(): Color {
-//        return if (MaterialTheme.colorScheme.isLight) white else primaryDark
-//    }
+object DarkColors {
+    val primary = Color(0xFFFFB951)
+    val onPrimary = Color(0xFF633F00)
+    val primaryContainer = Color(0xFF452B00)
+    val onPrimaryContainer = Color(0xFFFFDDB3)
+    val secondary = Color(0xFFDDC2A1)
+    val onSecondary = Color(0xFF3E2D16)
+    val secondaryContainer = Color(0xFF56442A)
+    val onSecondaryContainer = Color(0xFFFBDEBC)
+    val tertiary = Color(0xFFB8CEA1)
+    val onTertiary = Color(0xFF243515)
+    val tertiaryContainer = Color(0xFF3A4C2A)
+    val onTertiaryContainer = Color(0xFFD4EABB)
+    val error = Color(0xFFFFB4AB)
+    val errorContainer = Color(0xFF93000A)
+    val onError = Color(0xFF690005)
+    val onErrorContainer = Color(0xFFFFDAD6)
+    val background = Color(0xFF1F1B16)
+    val onBackground = Color(0xFFEAE1D9)
+    val surface = Color(0xFF1F1B16)
+    val onSurface = Color(0xFFEAE1D9)
+    val surfaceVariant = Color(0xFF4F4539)
+    val onSurfaceVariant = Color(0xFFD3C4B4)
+    val outline = Color(0xFF9C8F80)
+    val inverseOnSurface = Color(0xFF1F1B16)
+    val inverseSurface = Color(0xFFEAE1D9)
+    val inversePrimary = Color(0xFF000000)
+    val shadow = Color(0xFF000000)
+    val surfaceTint = Color(0xFFF57C00)
+    val outlineVariant = Color(0xFF4F4539)
+    val scrim = Color(0xFFFFFFFF)
 }
