@@ -54,7 +54,7 @@ fun SplashContent() {
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize()
-                    //.background(color = ThemeColors.accent1)
+                    .background(color = MaterialTheme.colorScheme.onPrimary)
             ) {
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -74,12 +74,12 @@ fun SplashContent() {
                             fontSize = 50.sp,
                             letterSpacing = 5.sp,
                             fontWeight = FontWeight.Bold,
-                            color = ThemeColors.primary1
+                            color = MaterialTheme.colorScheme.primary
                         )
                     )
                     Spacer(Modifier.weight(1f))
                     Divider(
-                        color = ThemeColors.primaryDark1,
+                        color = MaterialTheme.colorScheme.inversePrimary,
                         thickness = 2.dp,
                         modifier = Modifier
                             .padding(horizontal = 10.dp)

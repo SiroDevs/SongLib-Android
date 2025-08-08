@@ -22,13 +22,13 @@ fun BookItem(
     onClick: (Selectable<Book>) -> Unit
 ) {
     val backgroundColor =
-        if (item.isSelected) MaterialTheme.colorScheme.surfaceTint else ThemeColors.accent2
-    val contentColor = if (item.isSelected) Color.White else Color.Black
+        if (item.isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
+    val contentColor = if (item.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
 
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(5.dp)
+            .padding(3.dp)
             .clickable { onClick(item) },
         colors = CardDefaults.cardColors(
             containerColor = backgroundColor,

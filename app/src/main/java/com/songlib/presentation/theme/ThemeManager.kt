@@ -64,7 +64,7 @@ fun ThemeSelectorDialog(
                     onDismiss()
                 }
             ) {
-                Text("OK")
+                Text("OKAY")
             }
         },
         dismissButton = {

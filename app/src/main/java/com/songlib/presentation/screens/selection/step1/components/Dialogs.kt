@@ -12,7 +12,7 @@ fun ConfirmSaveDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = onConfirm) {
-                Text("Confirm")
+                Text("OKAY")
             }
         },
         dismissButton = {
@@ -31,7 +31,7 @@ fun NoSelectionDialog(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("OK")
+                Text("OKAY")
             }
         },
         title = { Text("No Selection") },

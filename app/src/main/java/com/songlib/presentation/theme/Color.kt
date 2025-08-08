@@ -15,13 +15,13 @@ object ThemeColors {
 }
 
 object LightColors {
-    val primary = Color(0xFF825500)
-    val onPrimary = Color(0xFFFFFFFF)
-    val primaryContainer = Color(0xFFFFDDB3)
+    val primary = Color(0xFFB86918)
+    val onPrimary = Color(0xFFEEDAC4)
+    val primaryContainer = Color(0xFFFFB951)
     val onPrimaryContainer = Color(0xFF291800)
     val secondary = Color(0xFF6F5B40)
     val onSecondary = Color(0xFFFFFFFF)
-    val secondaryContainer = Color(0xFFFBDEBC)
+    val secondaryContainer = Color(0xFFBF360C)
     val onSecondaryContainer = Color(0xFF271904)
     val tertiary = Color(0xFF51643F)
     val onTertiary = Color(0xFFFFFFFF)
@@ -40,7 +40,7 @@ object LightColors {
     val outline = Color(0xFF817567)
     val inverseOnSurface = Color(0xFFF9EFE7)
     val inverseSurface = Color(0xFF34302A)
-    val inversePrimary = Color(0xFFFFB951)
+    val inversePrimary = Color(0xFFFFFFFF)
     val shadow = Color(0xFF000000)
     val surfaceTint = Color(0xFFBF360C)
     val outlineVariant = Color(0xFFD3C4B4)
@@ -48,9 +48,9 @@ object LightColors {
 }
 
 object DarkColors {
-    val primary = Color(0xFF432B25)
-    val onPrimary = Color(0xFF452B00)
-    val primaryContainer = Color(0xFF633F00)
+    val primary = Color(0xFFFFB951)
+    val onPrimary = Color(0xFF633F00)
+    val primaryContainer = Color(0xFF452B00)
     val onPrimaryContainer = Color(0xFFFFDDB3)
     val secondary = Color(0xFFDDC2A1)
     val onSecondary = Color(0xFF3E2D16)
@@ -73,9 +73,9 @@ object DarkColors {
     val outline = Color(0xFF9C8F80)
     val inverseOnSurface = Color(0xFF1F1B16)
     val inverseSurface = Color(0xFFEAE1D9)
-    val inversePrimary = Color(0xFF825500)
+    val inversePrimary = Color(0xFF000000)
     val shadow = Color(0xFF000000)
     val surfaceTint = Color(0xFFF57C00)
     val outlineVariant = Color(0xFF4F4539)
-    val scrim = Color(0xFF000000)
+    val scrim = Color(0xFFFFFFFF)
 }
