@@ -20,11 +20,15 @@ fun PresenterTabs(
     modifier: Modifier = Modifier
 ) {
     ElevatedCard(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(15.dp),
-            elevation = CardDefaults.cardElevation(5.dp),
-        ) {
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(15.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+//            contentColor = MaterialTheme.colorScheme.onPrimary,
+        ),
+        elevation = CardDefaults.cardElevation(5.dp),
+    ) {
         VerticalPager(
             state = pagerState,
             modifier = modifier.fillMaxSize()

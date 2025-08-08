@@ -28,7 +28,7 @@ fun BottomNavigationBar(
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
-                selectedContentColor = ThemeColors.primary3,
+                selectedContentColor = MaterialTheme.colorScheme.primary,
                 unselectedContentColor = MaterialTheme.colorScheme.scrim,
                 alwaysShowLabel = true,
                 selected = selectedItem == item,

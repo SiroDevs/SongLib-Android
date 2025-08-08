@@ -3,6 +3,7 @@ package com.songlib.presentation.screens.settings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
@@ -10,8 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.theme.ThemeManager
-import com.songlib.presentation.theme.ThemeSelectorDialog
+import com.songlib.presentation.theme.*
 
 @Composable
 fun SettingsScreen(
@@ -25,11 +25,8 @@ fun SettingsScreen(
         topBar = {
             AppTopBar(
                 title = "Settings",
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
+                showGoBack = true,
+                onNavIconClick = { navController.popBackStack() }
             )
         }
     ) { padding ->

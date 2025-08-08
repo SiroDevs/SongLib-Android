@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material3.*
@@ -25,21 +26,32 @@ import com.songlib.presentation.theme.ThemeColors
 @Composable
 fun AppTopBar(
     title: String,
-    actions: @Composable RowScope.() -> Unit = {},
-    navigationIcon: @Composable () -> Unit = {},
+    showGoBack: Boolean = false,
+    onNavIconClick: (() -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
     Surface(
         shadowElevation = 4.dp
     ) {
         TopAppBar(
-            title = {
-                Text(text = title)
-            },
+            title = { Text(text = title) },
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.onPrimary,
+                navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+
             ),
-            navigationIcon = navigationIcon
+            navigationIcon = {
+                if (showGoBack) {
+                    IconButton(onClick = { onNavIconClick?.invoke() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                        )
+                    }
+                }
+            }
         )
     }
 }

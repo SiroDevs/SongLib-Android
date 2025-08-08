@@ -62,15 +62,12 @@ fun PresenterScreen(
                     }) {
                         Icon(
                             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Like Song"
+                            contentDescription = "Like Song",
                         )
                     }
                 },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
+                showGoBack = true,
+                onNavIconClick = { navController.popBackStack() },
             )
         }
     }, content = {

@@ -16,8 +16,7 @@ import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.screens.home.likes.LikesScreen
-import com.songlib.presentation.screens.home.search.SearchScreen
+import com.songlib.presentation.screens.home.tabs.*
 import com.songlib.presentation.screens.home.widgets.*
 import com.songlib.presentation.viewmodels.HomeViewModel
 
@@ -92,8 +91,8 @@ fun HomeScreen(
                 is UiState.Loading -> LoadingState("Loading data ...")
                 else -> {
                     when (selectedTab) {
-                        HomeNavItem.Search -> SearchScreen(viewModel, navController)
-                        HomeNavItem.Likes -> LikesScreen(viewModel)
+                        HomeNavItem.Search -> SearchTab(viewModel, navController)
+                        HomeNavItem.Likes -> LikesTab(viewModel)
                     }
                 }
             }

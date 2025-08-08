@@ -37,7 +37,7 @@ fun SearchSongItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary)
+                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
                 .clickable(onClick = { onClick(song) })
         ) {
             Row(

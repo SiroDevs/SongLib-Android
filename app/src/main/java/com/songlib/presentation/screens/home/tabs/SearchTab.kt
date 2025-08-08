@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.home.search
+package com.songlib.presentation.screens.home.tabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -16,11 +16,10 @@ import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.HomeViewModel
 
 @Composable
-fun SearchScreen(
+fun SearchTab(
     viewModel: HomeViewModel,
     navController: NavHostController
 ) {
@@ -54,7 +53,7 @@ fun SearchList(
     ) {
         stickyHeader {
             Surface(
-//                color = ThemeColors.accent1,
+                color = Color.Transparent,
                 modifier = Modifier
                     .fillMaxWidth()
                     .zIndex(1f)

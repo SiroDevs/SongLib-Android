@@ -37,6 +37,10 @@ fun PresenterIndicators(
         items(indicators.size) { index ->
             val label = indicators[index]
             val isSelected = pagerState.currentPage == index
+            val bgColor =
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
+            val txtColor =
+                if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
 
             Button(
                 onClick = {
@@ -44,8 +48,8 @@ fun PresenterIndicators(
                 },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary,
-                    contentColor = Color.White,
+                    containerColor = bgColor,
+                    contentColor = txtColor,
                 ),
                 elevation = ButtonDefaults.buttonElevation(5.dp),
                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
