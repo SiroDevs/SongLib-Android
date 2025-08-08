@@ -38,9 +38,6 @@ fun AppTopBar(
             actions = actions,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.onPrimary,
-//                titleContentColor = Color.White,
-//                actionIconContentColor = Color.White,
-//                navigationIconContentColor = Color.White,
             ),
             navigationIcon = navigationIcon
         )

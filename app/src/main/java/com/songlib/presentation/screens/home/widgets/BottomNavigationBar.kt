@@ -4,6 +4,7 @@ package com.songlib.presentation.screens.home.widgets
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -20,15 +21,15 @@ fun BottomNavigationBar(
         HomeNavItem.Likes,
     )
     BottomNavigation(
-        backgroundColor = ThemeColors.primary1,
+        backgroundColor = MaterialTheme.colorScheme.onPrimary,
         contentColor = Color.White
     ) {
         items.forEach { item ->
             BottomNavigationItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
                 label = { Text(text = item.title) },
-                selectedContentColor = Color.White,
-                unselectedContentColor = Color.Black,
+                selectedContentColor = ThemeColors.primary3,
+                unselectedContentColor = MaterialTheme.colorScheme.scrim,
                 alwaysShowLabel = true,
                 selected = selectedItem == item,
                 onClick = { onItemSelected(item) }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Surface
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
@@ -25,7 +26,10 @@ fun SearchScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         when (uiState) {
             is UiState.Filtered ->
                 SearchList(
@@ -50,7 +54,7 @@ fun SearchList(
     ) {
         stickyHeader {
             Surface(
-                color = ThemeColors.accent1,
+//                color = ThemeColors.accent1,
                 modifier = Modifier
                     .fillMaxWidth()
                     .zIndex(1f)
@@ -73,7 +77,7 @@ fun SearchList(
 
             if (index < songs.lastIndex) {
                 Divider(
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.scrim,
                     thickness = 1.dp,
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp)
                 )

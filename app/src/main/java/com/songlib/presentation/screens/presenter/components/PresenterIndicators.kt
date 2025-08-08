@@ -44,10 +44,10 @@ fun PresenterIndicators(
                 },
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSelected) ThemeColors.primary2 else ThemeColors.primary1,
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary,
                     contentColor = Color.White,
                 ),
-                elevation =  ButtonDefaults.buttonElevation(5.dp),
+                elevation = ButtonDefaults.buttonElevation(5.dp),
                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 5.dp),
                 modifier = Modifier
                     .height(40.dp)

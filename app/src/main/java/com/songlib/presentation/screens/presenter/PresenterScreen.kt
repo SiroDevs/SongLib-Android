@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -28,7 +30,6 @@ import com.songlib.presentation.viewmodels.PresenterViewModel
 fun PresenterScreen(
     viewModel: PresenterViewModel,
     navController: NavHostController,
-    onBackPressed: () -> Unit,
     song: Song?,
 ) {
     val context = LocalContext.current
@@ -66,11 +67,8 @@ fun PresenterScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
             )
@@ -80,7 +78,7 @@ fun PresenterScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .background(ThemeColors.accent1)
+//                .background(ThemeColors.accent1)
         ) {
             when (uiState) {
                 is UiState.Error -> ErrorState(
