@@ -13,6 +13,7 @@ import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.*
+import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.home.widgets.*
 import com.songlib.presentation.viewmodels.HomeViewModel
 
@@ -64,7 +65,8 @@ fun HomeScreen(
                                 Icon(Icons.Filled.Search, contentDescription = "Search")
                             }
                         }
-                        IconButton(onClick = { /* TODO: Navigate to settings */ }) {
+
+                        IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }
                     }

@@ -8,6 +8,7 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.Song
 import com.songlib.presentation.screens.home.HomeScreen
+import com.songlib.presentation.screens.home.settings.SettingsScreen
 import com.songlib.presentation.screens.presenter.PresenterScreen
 import com.songlib.presentation.screens.selection.step1.Step1Screen
 import com.songlib.presentation.screens.selection.step2.Step2Screen
@@ -69,5 +70,12 @@ fun AppNavHost(
                 onBackPressed = { navController.popBackStack() },
             )
         }
+
+        composable(Routes.SETTINGS) {
+            SettingsScreen(
+                navController = navController,
+            )
+        }
+
     }
 }

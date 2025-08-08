@@ -6,4 +6,5 @@ object Routes {
     const val STEP_2 = "step2"
     const val HOME = "home"
     const val PRESENTER = "Presenter"
+    const val SETTINGS = "Settings"
 }
