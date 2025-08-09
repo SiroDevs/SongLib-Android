@@ -52,8 +52,8 @@ fun Step2Screen(
                     )
 
                     is UiState.Loading -> LoadingState(
-                        title = "Inapakia data ...",
-                        fileName = "bar-loader",
+                        title = "Loading Songs ...",
+                        fileName = "loading-hand",
                     )
 
                     is UiState.Saving ->
@@ -64,9 +64,7 @@ fun Step2Screen(
                             progressValue = progress
                         )
 
-                    is UiState.Loaded -> {
-                        viewModel.saveSongs()
-                    }
+                    is UiState.Loaded -> viewModel.saveSongs()
 
                     else -> EmptyState()
                 }

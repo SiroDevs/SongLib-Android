@@ -15,10 +15,12 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.*
+import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.home.tabs.*
 import com.songlib.presentation.screens.home.widgets.*
 import com.songlib.presentation.viewmodels.HomeViewModel
+import com.swahilib.presentation.components.indicators.ErrorState
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -85,10 +87,14 @@ fun HomeScreen(
 
             when (uiState) {
                 is UiState.Error -> ErrorState(
-                    errorMessage = (uiState as UiState.Error).errorMessage,
+                    message = (uiState as UiState.Error).message,
                     onRetry = { viewModel.fetchData() }
                 )
-                is UiState.Loading -> LoadingState("Loading data ...")
+
+                is UiState.Loading -> LoadingState(
+                    title = "",
+                    fileName = "circle-loader"
+                )
                 else -> {
                     when (selectedTab) {
                         HomeNavItem.Search -> SearchTab(viewModel, navController)

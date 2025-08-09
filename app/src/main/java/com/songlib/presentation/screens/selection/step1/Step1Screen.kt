@@ -11,10 +11,13 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.selection.step1.components.*
 import com.songlib.presentation.theme.*
 import com.songlib.presentation.viewmodels.SelectionViewModel
+import com.swahilib.presentation.components.indicators.EmptyState
+import com.swahilib.presentation.components.indicators.ErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,12 +83,21 @@ fun Step1Screen(
         content = { paddingValues ->
             when (uiState) {
                 is UiState.Error -> ErrorState(
-                    errorMessage = (uiState as UiState.Error).errorMessage,
+                    message = (uiState as UiState.Error).message,
                     onRetry = { viewModel.fetchBooks() }
                 )
 
-                is UiState.Loading -> LoadingState("Loading books ...")
-                is UiState.Saving -> LoadingState("Saving books ...")
+                is UiState.Loading -> LoadingState(
+                    title = "Loading books ...",
+                    fileName = "loading-hand"
+                )
+
+                is UiState.Saving ->
+                    LoadingState(
+                        title = "Saving books ...",
+                        fileName = "cloud-download"
+                    )
+
                 is UiState.Loaded -> {
                     Step1Content(
                         books = books,
@@ -93,6 +105,7 @@ fun Step1Screen(
                         modifier = Modifier.padding(paddingValues)
                     )
                 }
+
                 else -> EmptyState()
             }
         },

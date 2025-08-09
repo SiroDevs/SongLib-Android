@@ -97,12 +97,17 @@ class SelectionViewModel @Inject constructor(
     }
 
     fun saveSongs() {
+        Log.d("TAG", "Saving songs")
+        val songs = _songs.value
+        val total = songs.size
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _songs.value.forEach {
-                    songRepo.saveSong(it)
+                songs.forEachIndexed { index, song ->
+                    songRepo.saveSong(song)
+                    val percent = ((index + 1).toFloat() / total * 100).toInt()
+                    _progress.emit(percent)
                 }
                 songRepo.savePrefs()
                 _uiState.emit(UiState.Saved)

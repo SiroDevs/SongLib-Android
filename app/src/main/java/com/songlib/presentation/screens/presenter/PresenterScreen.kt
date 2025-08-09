@@ -21,9 +21,12 @@ import com.songlib.data.sample.*
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.screens.presenter.components.*
 import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.PresenterViewModel
+import com.swahilib.presentation.components.indicators.EmptyState
+import com.swahilib.presentation.components.indicators.ErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,17 +78,21 @@ fun PresenterScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-//                .background(ThemeColors.accent1)
         ) {
             when (uiState) {
                 is UiState.Error -> ErrorState(
-                    errorMessage = (uiState as UiState.Error).errorMessage, onRetry = { })
+                    message = (uiState as UiState.Error).message,
+                    onRetry = { }
+                )
 
                 UiState.Loaded -> PresenterContent(
                     verses = verses, indicators = indicators
                 )
 
-                UiState.Loading -> LoadingState("Loading song ...")
+                UiState.Loading -> LoadingState(
+                    title = "Loading song ...",
+                    fileName = "circle-loader"
+                )
 
                 else -> EmptyState()
             }
