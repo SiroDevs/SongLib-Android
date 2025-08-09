@@ -111,6 +111,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)      // Compose UI preview support
     debugImplementation(libs.androidx.ui.tooling)      // Compose UI tools (debug only)
     debugImplementation(libs.androidx.ui.test.manifest)      // Manifest for Compose UI tests (debug)
+    implementation(libs.lottie.compose)     //  Lottie loader
 
     // Navigation (Non-Compose)
     implementation(libs.androidx.navigation)      // AndroidX Navigation components

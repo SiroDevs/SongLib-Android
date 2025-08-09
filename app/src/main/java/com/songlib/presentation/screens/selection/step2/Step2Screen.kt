@@ -8,9 +8,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.*
+import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.SelectionViewModel
+import com.swahilib.presentation.components.indicators.EmptyState
+import com.swahilib.presentation.components.indicators.ErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -18,7 +20,7 @@ fun Step2Screen(
     viewModel: SelectionViewModel,
     navController: NavHostController,
 ) {
-    var fetchData by rememberSaveable { mutableStateOf(0) }
+    var fetchData by rememberSaveable { mutableIntStateOf(0) }
 
     if (fetchData == 0) {
         viewModel.fetchSongs()
@@ -26,6 +28,8 @@ fun Step2Screen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    val progress by viewModel.progress.collectAsState(initial = 0)
+    val status by viewModel.status.collectAsState(initial = "Saving songs ...")
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
@@ -43,12 +47,22 @@ fun Step2Screen(
             ) {
                 when (uiState) {
                     is UiState.Error -> ErrorState(
-                        errorMessage = (uiState as UiState.Error).errorMessage,
+                        message = (uiState as UiState.Error).message,
                         onRetry = { viewModel.fetchSongs() }
                     )
 
-                    is UiState.Loading -> LoadingState("Loading songs ...")
-                    is UiState.Saving -> LoadingState("Saving songs ...")
+                    is UiState.Loading -> LoadingState(
+                        title = "Inapakia data ...",
+                        fileName = "bar-loader",
+                    )
+
+                    is UiState.Saving ->
+                        LoadingState(
+                            title = status,
+                            fileName = "opener-loading",
+                            showProgress = true,
+                            progressValue = progress
+                        )
 
                     is UiState.Loaded -> {
                         viewModel.saveSongs()
