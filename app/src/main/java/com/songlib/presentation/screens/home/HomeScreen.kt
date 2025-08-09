@@ -1,20 +1,26 @@
 package com.songlib.presentation.screens.home
 
 import androidx.compose.foundation.layout.*
+//noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.pullrefresh.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
+import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.*
+import com.songlib.presentation.components.indicators.LoadingState
+import com.songlib.presentation.navigation.Routes
+import com.songlib.presentation.screens.home.tabs.*
 import com.songlib.presentation.screens.home.widgets.*
 import com.songlib.presentation.viewmodels.HomeViewModel
+import com.swahilib.presentation.components.indicators.ErrorState
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -33,12 +39,6 @@ fun HomeScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
-
-    val isRefreshing = uiState is UiState.Loading
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = isRefreshing,
-        onRefresh = { viewModel.refreshData() }
-    )
 
     Scaffold(
         topBar = {
@@ -64,7 +64,8 @@ fun HomeScreen(
                                 Icon(Icons.Filled.Search, contentDescription = "Search")
                             }
                         }
-                        IconButton(onClick = { /* TODO: Navigate to settings */ }) {
+
+                        IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }
                     }
@@ -81,15 +82,26 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .padding(padding)
-                .pullRefresh(pullRefreshState)
+                .fillMaxSize()
         ) {
-            HomeContent(
-                viewModel = viewModel,
-                navController = navController,
-                selectedTab = selectedTab,
-                isRefreshing = isRefreshing,
-                pullRefreshState = pullRefreshState
-            )
+
+            when (uiState) {
+                is UiState.Error -> ErrorState(
+                    message = (uiState as UiState.Error).message,
+                    onRetry = { viewModel.fetchData() }
+                )
+
+                is UiState.Loading -> LoadingState(
+                    title = "",
+                    fileName = "circle-loader"
+                )
+                else -> {
+                    when (selectedTab) {
+                        HomeNavItem.Search -> SearchTab(viewModel, navController)
+                        HomeNavItem.Likes -> LikesTab(viewModel)
+                    }
+                }
+            }
         }
     }
 }

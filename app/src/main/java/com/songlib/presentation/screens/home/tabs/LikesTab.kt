@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.home.likes
+package com.songlib.presentation.screens.home.tabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -6,12 +6,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.SearchSongItem
 import com.songlib.presentation.viewmodels.HomeViewModel
+import com.swahilib.presentation.components.indicators.EmptyState
 
 @Composable
-fun LikesScreen(
+fun LikesTab(
     viewModel: HomeViewModel,
 ) {
     val uiState by viewModel.uiState.collectAsState()

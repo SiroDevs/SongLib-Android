@@ -20,6 +20,12 @@ class SelectionViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _progress = MutableStateFlow(0)
+    val progress: StateFlow<Int> = _progress.asStateFlow()
+
+    private val _status = MutableStateFlow("Saving songs ...")
+    val status: StateFlow<String> = _status.asStateFlow()
+
     private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
     val books: StateFlow<List<Selectable<Book>>> get() = _books
 
@@ -91,12 +97,17 @@ class SelectionViewModel @Inject constructor(
     }
 
     fun saveSongs() {
+        Log.d("TAG", "Saving songs")
+        val songs = _songs.value
+        val total = songs.size
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _songs.value.forEach {
-                    songRepo.saveSong(it)
+                songs.forEachIndexed { index, song ->
+                    songRepo.saveSong(song)
+                    val percent = ((index + 1).toFloat() / total * 100).toInt()
+                    _progress.emit(percent)
                 }
                 songRepo.savePrefs()
                 _uiState.emit(UiState.Saved)

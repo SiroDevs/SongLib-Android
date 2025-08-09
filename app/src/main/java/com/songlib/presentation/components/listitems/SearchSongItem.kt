@@ -37,7 +37,7 @@ fun SearchSongItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isSelected) ThemeColors.primary1 else Color.Transparent)
+                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
                 .clickable(onClick = { onClick(song) })
         ) {
             Row(
@@ -48,6 +48,7 @@ fun SearchSongItem(
                     text = songItemTitle(song.songNo, song.title),
                     maxLines = 1,
                     modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.scrim,
                     style = TextStyle(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
@@ -73,7 +74,8 @@ fun SearchSongItem(
                     text = refineContent(verses.firstOrNull().orEmpty()),
                     style = TextStyle(fontSize = 16.sp),
                     maxLines = 2,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.scrim,
                 )
             }
 //        if (isSearching) {

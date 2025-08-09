@@ -21,9 +21,10 @@ fun BookItem(
     item: Selectable<Book>,
     onClick: (Selectable<Book>) -> Unit
 ) {
-    val backgroundColor =
+    val bgColor =
         if (item.isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
-    val contentColor = if (item.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
+    val txtColor =
+        if (item.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
 
     ElevatedCard(
         modifier = Modifier
@@ -31,8 +32,8 @@ fun BookItem(
             .padding(3.dp)
             .clickable { onClick(item) },
         colors = CardDefaults.cardColors(
-            containerColor = backgroundColor,
-            contentColor = contentColor,
+            containerColor = bgColor,
+            contentColor = txtColor,
         ),
         elevation = CardDefaults.cardElevation(5.dp),
     ) {
@@ -45,7 +46,7 @@ fun BookItem(
             Icon(
                 imageVector = if (item.isSelected) Icons.Filled.RadioButtonChecked else Icons.Filled.RadioButtonUnchecked,
                 contentDescription = null,
-                tint = contentColor,
+                tint = txtColor,
                 modifier = Modifier.padding(end = 12.dp)
             )
             Column {
@@ -53,12 +54,12 @@ fun BookItem(
                     text = refineTitle(item.data.title),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = contentColor
+                    color = txtColor
                 )
                 Text(
                     text = "${item.data.songs} ${item.data.subTitle} songs",
                     fontSize = 18.sp,
-                    color = contentColor
+                    color = txtColor
                 )
             }
         }

@@ -4,6 +4,8 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
@@ -19,16 +21,18 @@ import com.songlib.data.sample.*
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.screens.presenter.components.*
 import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.PresenterViewModel
+import com.swahilib.presentation.components.indicators.EmptyState
+import com.swahilib.presentation.components.indicators.ErrorState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresenterScreen(
     viewModel: PresenterViewModel,
     navController: NavHostController,
-    onBackPressed: () -> Unit,
     song: Song?,
 ) {
     val context = LocalContext.current
@@ -61,18 +65,12 @@ fun PresenterScreen(
                     }) {
                         Icon(
                             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Like Song"
+                            contentDescription = "Like Song",
                         )
                     }
                 },
-                navigationIcon = {
-                    IconButton(onClick = onBackPressed) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
+                showGoBack = true,
+                onNavIconClick = { navController.popBackStack() },
             )
         }
     }, content = {
@@ -80,17 +78,21 @@ fun PresenterScreen(
             modifier = Modifier
                 .padding(it)
                 .fillMaxSize()
-                .background(ThemeColors.accent1)
         ) {
             when (uiState) {
                 is UiState.Error -> ErrorState(
-                    errorMessage = (uiState as UiState.Error).errorMessage, onRetry = { })
+                    message = (uiState as UiState.Error).message,
+                    onRetry = { }
+                )
 
                 UiState.Loaded -> PresenterContent(
                     verses = verses, indicators = indicators
                 )
 
-                UiState.Loading -> LoadingState("Loading song ...")
+                UiState.Loading -> LoadingState(
+                    title = "Loading song ...",
+                    fileName = "circle-loader"
+                )
 
                 else -> EmptyState()
             }

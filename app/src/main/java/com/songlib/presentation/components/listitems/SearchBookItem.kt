@@ -18,14 +18,14 @@ fun SearchBookItem(
     isSelected: Boolean = false,
     onPressed: (() -> Unit)? = null
 ) {
-    val backgroundColor = if (isSelected) ThemeColors.primary2 else ThemeColors.accent1
-    val contentColor = if (isSelected) Color.White else Color.Black
+    val bgColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
+    val txtColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
 
     Button(
         onClick = { onPressed?.invoke() },
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor,
-            contentColor = contentColor
+            containerColor = bgColor,
+            contentColor = txtColor
         ),
         shape = RoundedCornerShape(20.dp),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),

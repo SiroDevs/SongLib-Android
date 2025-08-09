@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.LocalContext
@@ -78,12 +79,12 @@ fun SplashContent() {
                         )
                     )
                     Spacer(Modifier.weight(1f))
-                    Divider(
-                        color = MaterialTheme.colorScheme.inversePrimary,
-                        thickness = 2.dp,
+                    HorizontalDivider(
                         modifier = Modifier
                             .padding(horizontal = 10.dp)
-                            .height(1.dp)
+                            .height(1.dp),
+                        thickness = 2.dp,
+                        color = MaterialTheme.colorScheme.inversePrimary
                     )
                     WithLoveFromRow()
                     AppDevelopersRow()

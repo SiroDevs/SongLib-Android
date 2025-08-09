@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.home.search
+package com.songlib.presentation.screens.home.tabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -6,26 +6,29 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Surface
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.EmptyState
 import com.songlib.presentation.components.listitems.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.HomeViewModel
+import com.swahilib.presentation.components.indicators.EmptyState
 
 @Composable
-fun SearchScreen(
+fun SearchTab(
     viewModel: HomeViewModel,
     navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         when (uiState) {
             is UiState.Filtered ->
                 SearchList(
@@ -50,7 +53,7 @@ fun SearchList(
     ) {
         stickyHeader {
             Surface(
-                color = ThemeColors.accent1,
+                color = Color.Transparent,
                 modifier = Modifier
                     .fillMaxWidth()
                     .zIndex(1f)
@@ -73,7 +76,7 @@ fun SearchList(
 
             if (index < songs.lastIndex) {
                 Divider(
-                    color = Color.LightGray,
+                    color = MaterialTheme.colorScheme.scrim,
                     thickness = 1.dp,
                     modifier = Modifier.padding(horizontal = 15.dp, vertical = 5.dp)
                 )
