@@ -57,10 +57,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+
         create("staging") {
             isMinifyEnabled = true
             signingConfig = signingConfigs.getByName("release")
-            manifestPlaceholders["hostName"] = "Stg SongLib"
             applicationIdSuffix = ".stg"
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

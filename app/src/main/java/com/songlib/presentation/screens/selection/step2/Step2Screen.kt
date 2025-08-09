@@ -5,14 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.indicators.*
+import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.SelectionViewModel
-import com.swahilib.presentation.components.indicators.EmptyState
-import com.swahilib.presentation.components.indicators.ErrorState
+import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,9 +58,9 @@ fun Step2Screen(
                     is UiState.Saving ->
                         LoadingState(
                             title = status,
-                            fileName = "opener-loading",
                             showProgress = true,
-                            progressValue = progress
+                            progressValue = progress,
+                            fileName = "cloud-download",
                         )
 
                     is UiState.Loaded -> viewModel.saveSongs()
