@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.*
 import com.songlib.core.utils.*
 import com.songlib.data.models.Song
 import com.songlib.data.sample.SampleSongs
-import com.songlib.presentation.theme.ThemeColors
 
 @Composable
 fun SearchSongItem(

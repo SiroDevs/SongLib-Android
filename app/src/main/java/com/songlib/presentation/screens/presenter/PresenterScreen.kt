@@ -19,14 +19,11 @@ import androidx.navigation.NavHostController
 import com.songlib.data.models.Song
 import com.songlib.data.sample.*
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.screens.presenter.components.*
-import com.songlib.presentation.theme.ThemeColors
 import com.songlib.presentation.viewmodels.PresenterViewModel
-import com.swahilib.presentation.components.indicators.EmptyState
-import com.swahilib.presentation.components.indicators.ErrorState
+import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
