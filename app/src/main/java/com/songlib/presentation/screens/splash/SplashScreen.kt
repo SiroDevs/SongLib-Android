@@ -84,7 +84,7 @@ fun SplashContent() {
                             .padding(horizontal = 10.dp)
                             .height(1.dp),
                         thickness = 2.dp,
-                        color = MaterialTheme.colorScheme.inversePrimary
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     WithLoveFromRow()
                     AppDevelopersRow()
