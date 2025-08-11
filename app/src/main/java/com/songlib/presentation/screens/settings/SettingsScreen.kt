@@ -10,6 +10,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.songlib.domain.repository.ThemeManager
+import com.songlib.domain.repository.ThemeSelectorDialog
+import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.theme.*
 

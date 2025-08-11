@@ -1,11 +1,8 @@
-package com.songlib.presentation.theme
+package com.songlib.domain.repository
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.*
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
@@ -16,7 +13,7 @@ import javax.inject.Inject
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 @HiltViewModel
-class ThemeManager @Inject constructor() : ViewModel() {
+class ThemeRepository @Inject constructor() : ViewModel() {
     var selectedTheme by mutableStateOf(ThemeMode.SYSTEM)
         private set
 
@@ -40,8 +37,8 @@ fun ThemeSelectorDialog(
             Column {
                 ThemeMode.entries.forEach { mode ->
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
+                        verticalAlignment = Alignment.Companion.CenterVertically,
+                        modifier = Modifier.Companion
                             .fillMaxWidth()
                             .clickable { selectedTheme = mode }
                     ) {
@@ -51,7 +48,7 @@ fun ThemeSelectorDialog(
                         )
                         Text(
                             appThemeName(mode),
-                            modifier = Modifier.padding(start = 8.dp),
+                            modifier = Modifier.Companion.padding(start = 8.dp),
                         )
                     }
                 }
