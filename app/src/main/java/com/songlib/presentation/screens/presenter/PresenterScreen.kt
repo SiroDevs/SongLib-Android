@@ -1,13 +1,9 @@
 package com.songlib.presentation.screens.presenter
 
 import android.widget.Toast
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -32,7 +28,6 @@ fun PresenterScreen(
     navController: NavHostController,
     song: Song?,
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
     val isLiked by viewModel.isLiked.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -48,23 +43,11 @@ fun PresenterScreen(
             AppTopBar(
                 title = title,
                 actions = {
-                    IconButton(onClick = {
-                        song?.let {
-                            viewModel.likeSong(it)
-
-                            val text = if (isLiked) {
-                                "${song.title} added to your likes"
-                            } else {
-                                "${song.title} removed from your likes"
-                            }
-                            Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = "Like Song",
-                        )
-                    }
+                    LikeSongButton(
+                        isLiked = isLiked,
+                        song = song,
+                        onLikeToggle = { viewModel.likeSong(it) }
+                    )
                 },
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
@@ -95,6 +78,33 @@ fun PresenterScreen(
             }
         }
     })
+}
+
+@Composable
+private fun LikeSongButton(
+    isLiked: Boolean,
+    song: Song?,
+    onLikeToggle: (Song) -> Unit
+) {
+    val context = LocalContext.current
+
+    IconButton(onClick = {
+        song?.let {
+            onLikeToggle(it)
+            val message = if (isLiked) {
+                "${it.title} removed from your likes"
+            } else {
+                "${it.title} added to your likes"
+            }
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }) {
+        Icon(
+            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+            contentDescription = "Like Song",
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
 }
 
 @Composable

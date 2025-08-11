@@ -24,7 +24,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Settings",
+                title = "App Settings",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() }
             )
@@ -36,17 +36,15 @@ fun SettingsScreen(
                 .fillMaxSize()
         ) {
             ListItem(
-                headlineContent = { Text("Theme") },
+                headlineContent = { Text("App Theme") },
                 modifier = Modifier.clickable { showThemeDialog = true },
                 supportingContent = {
-                    Text(
-                        theme.name.lowercase().replaceFirstChar { it.uppercase() })
+                    Text(appThemeName(theme))
                 },
                 leadingContent = {
                     Icon(Icons.Default.Brightness6, contentDescription = "Theme")
                 },
             )
-
             HorizontalDivider()
         }
 
