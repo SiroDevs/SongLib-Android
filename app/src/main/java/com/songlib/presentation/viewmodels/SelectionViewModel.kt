@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import javax.inject.Inject
-import kotlin.collections.forEach
 
 @HiltViewModel
 class SelectionViewModel @Inject constructor(
@@ -109,9 +108,10 @@ class SelectionViewModel @Inject constructor(
                     val percent = ((index + 1).toFloat() / total * 100).toInt()
                     _progress.emit(percent)
                 }
-                songRepo.savePrefs()
+                songRepo.setDataLoaded(isLoaded = true)
                 _uiState.emit(UiState.Saved)
             } catch (e: Exception) {
+                songRepo.setDataLoaded(isLoaded = false)
                 Log.e("SaveSongs", "Failed to save songs", e)
                 _uiState.emit(UiState.Error("Failed to save songs: ${e.message}"))
             }

@@ -13,8 +13,7 @@ import androidx.compose.ui.*
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.songlib.domain.repository.ThemeManager
-import com.songlib.domain.repository.ThemeMode
+import com.songlib.domain.repository.*
 import com.songlib.presentation.navigation.*
 import com.songlib.presentation.theme.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,8 +43,8 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val themeManager: ThemeManager = hiltViewModel()
-            val themeMode = themeManager.selectedTheme
+            val themeRepo: ThemeRepository = hiltViewModel()
+            val themeMode = themeRepo.selectedTheme
             val isDarkTheme = when (themeMode) {
                 ThemeMode.DARK -> true
                 ThemeMode.LIGHT -> false
@@ -53,7 +52,7 @@ class MainActivity : ComponentActivity() {
             }
 
             AppTheme(useDarkTheme = isDarkTheme) {
-                AppNavHost(themeManager = themeManager)
+                AppNavHost(themeRepo = themeRepo)
             }
         }
     }

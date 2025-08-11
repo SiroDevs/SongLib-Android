@@ -1,6 +1,7 @@
 package com.songlib.domain.repository
 
 import android.content.*
+import androidx.compose.runtime.remember
 import androidx.core.content.edit
 import com.songlib.core.utils.PrefConstants
 import com.songlib.data.models.*
@@ -14,10 +15,9 @@ import javax.inject.*
 @Singleton
 class SongRepository @Inject constructor(
     context: Context,
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val prefsRepo: PrefsRepository,
 ) {
-    private val prefs = context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
-
     private var songsDao: SongDao?
 
     init {
@@ -43,7 +43,7 @@ class SongRepository @Inject constructor(
     }
 
     fun getSelectedBookIds(): String? {
-        return prefs.getString(PrefConstants.SELECTED_BOOKS, "")
+        return prefsRepo.selectedBooks
     }
 
     suspend fun getAllSongs(): List<Song> {
@@ -54,8 +54,8 @@ class SongRepository @Inject constructor(
         return allSongs
     }
 
-    fun savePrefs() {
-        prefs.edit { putBoolean(PrefConstants.DATA_LOADED, true) }
+    fun setDataLoaded(isLoaded: Boolean) {
+        prefsRepo.isDataLoaded = isLoaded
     }
 
 }

@@ -6,4 +6,5 @@ object PrefConstants {
 
     const val DATA_SELECTED = "dataSelected"
     const val DATA_LOADED = "dataLoaded"
+    const val THEME_MODE = "themeMode"
 }
