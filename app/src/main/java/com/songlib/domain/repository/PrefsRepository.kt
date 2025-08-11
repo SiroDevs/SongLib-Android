@@ -26,7 +26,7 @@ class PrefsRepository @Inject constructor(
         get() = prefs.getBoolean(PrefConstants.DATA_LOADED, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.DATA_LOADED, value) }
 
-    var themeMode: ThemeMode
+    var appThemeMode: ThemeMode
         get() = ThemeMode.valueOf(
             prefs.getString(PrefConstants.THEME_MODE, ThemeMode.SYSTEM.name)
                 ?: ThemeMode.SYSTEM.name

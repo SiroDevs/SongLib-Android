@@ -13,11 +13,15 @@ import javax.inject.Inject
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
 @HiltViewModel
-class ThemeRepository @Inject constructor() : ViewModel() {
-    var selectedTheme by mutableStateOf(ThemeMode.SYSTEM)
+class ThemeRepository @Inject constructor(
+    private val prefs: PrefsRepository
+) : ViewModel() {
+
+    var selectedTheme by mutableStateOf(prefs.appThemeMode)
         private set
 
     fun setTheme(mode: ThemeMode) {
+        prefs.appThemeMode = mode
         selectedTheme = mode
     }
 }
