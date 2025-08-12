@@ -7,10 +7,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.pager.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.songlib.data.sample.*
-import com.songlib.presentation.theme.ThemeColors
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.ui.text.TextStyle

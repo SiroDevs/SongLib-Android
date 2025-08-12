@@ -9,7 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.songlib.presentation.theme.ThemeColors
 
 @Composable
 fun BottomNavigationBar(

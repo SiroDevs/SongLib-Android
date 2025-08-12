@@ -1,6 +1,5 @@
 package com.songlib.presentation.screens.splash
 
-import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -15,26 +14,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
-import com.songlib.core.utils.PrefConstants
+import com.songlib.domain.repository.PrefsRepository
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.theme.*
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
+    val prefs = remember { PrefsRepository(context) }
 
     LaunchedEffect(Unit) {
         delay(3000)
 
-        val prefs =
-            context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
-        val isDataSelected = prefs.getBoolean(PrefConstants.DATA_SELECTED, false)
-        val isDataLoaded = prefs.getBoolean(PrefConstants.DATA_LOADED, false)
-
         val nextRoute = when {
-            isDataLoaded -> Routes.HOME
-            isDataSelected -> Routes.STEP_2
+            prefs.isDataLoaded -> Routes.HOME
+            prefs.isDataSelected -> Routes.STEP_2
             else -> Routes.STEP_1
         }
 
@@ -84,7 +78,7 @@ fun SplashContent() {
                             .padding(horizontal = 10.dp)
                             .height(1.dp),
                         thickness = 2.dp,
-                        color = MaterialTheme.colorScheme.inversePrimary
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     WithLoveFromRow()
                     AppDevelopersRow()

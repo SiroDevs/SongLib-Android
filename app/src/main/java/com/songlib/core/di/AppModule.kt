@@ -16,14 +16,28 @@ class AppModule {
     @Singleton
     fun provideBookRepository(
         @ApplicationContext context: Context,
-        apiService: ApiService
-    ): BookRepository = BookRepository(context, apiService)
+        apiService: ApiService,
+        prefsRepo: PrefsRepository,
+    ): BookRepository = BookRepository(context, apiService, prefsRepo)
+
+    @Provides
+    @Singleton
+    fun providePrefsRepository(
+        @ApplicationContext context: Context,
+    ): PrefsRepository = PrefsRepository(context)
 
     @Provides
     @Singleton
     fun provideSongRepository(
         @ApplicationContext context: Context,
-        apiService: ApiService
-    ): SongRepository = SongRepository(context, apiService)
+        apiService: ApiService,
+        prefsRepo: PrefsRepository,
+    ): SongRepository = SongRepository(context, apiService, prefsRepo)
+
+    @Provides
+    @Singleton
+    fun provideThemeRepository(
+        prefsRepo: PrefsRepository,
+    ): ThemeRepository = ThemeRepository(prefsRepo)
 
 }

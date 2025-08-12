@@ -62,7 +62,7 @@ fun AppDevelopersRow() {
             text = " & ",
             style = TextStyle(
                 fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
         Text(

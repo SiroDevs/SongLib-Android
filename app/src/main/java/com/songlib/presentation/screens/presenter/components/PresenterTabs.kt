@@ -25,7 +25,6 @@ fun PresenterTabs(
             .padding(15.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
-//            contentColor = MaterialTheme.colorScheme.onPrimary,
         ),
         elevation = CardDefaults.cardElevation(5.dp),
     ) {

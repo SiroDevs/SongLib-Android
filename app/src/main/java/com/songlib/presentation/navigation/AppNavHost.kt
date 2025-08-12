@@ -7,20 +7,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.Song
+import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.settings.SettingsScreen
 import com.songlib.presentation.screens.presenter.PresenterScreen
 import com.songlib.presentation.screens.selection.step1.Step1Screen
 import com.songlib.presentation.screens.selection.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
-import com.songlib.presentation.theme.ThemeManager
 import com.songlib.presentation.viewmodels.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
-    themeManager: ThemeManager
+    themeRepo: ThemeRepository
 ) {
     NavHost(
         navController = navController,
@@ -36,7 +36,7 @@ fun AppNavHost(
             Step1Screen(
                 viewModel = viewModel,
                 navController = navController,
-                themeManager = themeManager,
+                themeRepo = themeRepo,
             )
         }
 
@@ -73,7 +73,7 @@ fun AppNavHost(
         composable(Routes.SETTINGS) {
             SettingsScreen(
                 navController = navController,
-                themeManager = themeManager,
+                themeRepo = themeRepo,
             )
         }
 
