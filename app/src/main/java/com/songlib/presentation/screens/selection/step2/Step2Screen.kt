@@ -20,15 +20,10 @@ fun Step2Screen(
     viewModel: SelectionViewModel,
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
-
-    if (fetchData == 0) {
-        viewModel.fetchSongs()
-        fetchData++
-    }
+    if (fetchData == 0) { viewModel.fetchSongs() }
 
     val uiState by viewModel.uiState.collectAsState()
     val progress by viewModel.progress.collectAsState(initial = 0)
-    val status by viewModel.status.collectAsState(initial = "Saving songs ...")
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
@@ -57,14 +52,13 @@ fun Step2Screen(
 
                     is UiState.Saving ->
                         LoadingState(
-                            title = status,
+                            title = "Saving your songs ...",
                             showProgress = true,
                             progressValue = progress,
                             fileName = "cloud-download",
                         )
 
                     is UiState.Loaded -> viewModel.saveSongs()
-
                     else -> EmptyState()
                 }
             }

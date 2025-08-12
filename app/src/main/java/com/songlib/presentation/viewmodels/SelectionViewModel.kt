@@ -1,6 +1,9 @@
 package com.songlib.presentation.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entity.*
@@ -13,6 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectionViewModel @Inject constructor(
+    private val prefsRepo: PrefsRepository,
     private val bookRepo: BookRepository,
     private val songRepo: SongRepository,
 ) : ViewModel() {
@@ -22,18 +26,20 @@ class SelectionViewModel @Inject constructor(
     private val _progress = MutableStateFlow(0)
     val progress: StateFlow<Int> = _progress.asStateFlow()
 
-    private val _status = MutableStateFlow("Saving songs ...")
-    val status: StateFlow<String> = _status.asStateFlow()
-
     private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
     val books: StateFlow<List<Selectable<Book>>> get() = _books
 
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
 
+    var selectAfresh by mutableStateOf(prefsRepo.selectAfresh)
+        private set
+
+    var selectedBooks by mutableStateOf(prefsRepo.selectedBooks)
+        private set
+
     fun fetchBooks() {
         _uiState.tryEmit(UiState.Loading)
-
         viewModelScope.launch {
             bookRepo.getBooks().catch { exception ->
                 Log.d("TAG", "fetching books")
@@ -52,7 +58,7 @@ class SelectionViewModel @Inject constructor(
     }
 
     fun saveSelectedBooks() {
-        val selected = getSelectedBooks()
+        val selected = _books.value.filter { it.isSelected }.map { it.data }
         saveBooks(selected)
     }
 
@@ -64,9 +70,8 @@ class SelectionViewModel @Inject constructor(
                 for (book in books) {
                     bookRepo.saveBook(book)
                 }
-                val selectedBooks = books.joinToString(",") { it.bookId.toString() }
-                bookRepo.savePrefs(selectedBooks)
-
+                prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
+                prefsRepo.isDataSelected = true
                 _uiState.emit(UiState.Saved)
             } catch (e: Exception) {
                 Log.e("SaveBooks", "Failed to save books", e)
@@ -77,10 +82,9 @@ class SelectionViewModel @Inject constructor(
 
     fun fetchSongs() {
         _uiState.tryEmit(UiState.Loading)
-
         viewModelScope.launch {
-            val books = songRepo.getSelectedBookIds()
-            songRepo.getSongs(books.toString()).catch { exception ->
+            val books = prefsRepo.selectedBooks
+            songRepo.getSongs(books).catch { exception ->
                 Log.d("TAG", "fetching songs")
                 val errorMessage = when (exception) {
                     is HttpException -> "HTTP Error: ${exception.code()}"
@@ -108,10 +112,10 @@ class SelectionViewModel @Inject constructor(
                     val percent = ((index + 1).toFloat() / total * 100).toInt()
                     _progress.emit(percent)
                 }
-                songRepo.setDataLoaded(isLoaded = true)
+                prefsRepo.isDataLoaded = true
                 _uiState.emit(UiState.Saved)
             } catch (e: Exception) {
-                songRepo.setDataLoaded(isLoaded = false)
+                prefsRepo.isDataLoaded = false
                 Log.e("SaveSongs", "Failed to save songs", e)
                 _uiState.emit(UiState.Error("Failed to save songs: ${e.message}"))
             }
@@ -122,9 +126,5 @@ class SelectionViewModel @Inject constructor(
         _books.value = _books.value.map {
             if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
         }
-    }
-
-    fun getSelectedBooks(): List<Book> {
-        return _books.value.filter { it.isSelected }.map { it.data }
     }
 }

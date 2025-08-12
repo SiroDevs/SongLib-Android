@@ -16,4 +16,7 @@ interface SongDao {
 
     @Delete()
     fun delete(song: Song)
+
+    @Query("DELETE FROM songs")
+    suspend fun deleteAll()
 }

@@ -2,10 +2,10 @@ package com.songlib.presentation.viewmodels
 
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
-import com.songlib.domain.repository.BookRepository
-import com.songlib.domain.repository.PrefsRepository
-import com.songlib.domain.repository.SongRepository
+import androidx.lifecycle.viewModelScope
+import com.songlib.domain.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,5 +21,19 @@ class SettingsViewModel @Inject constructor(
     fun updateHorizontalSlides(enabled: Boolean) {
         horizontalSlides = enabled
         prefsRepo.horizontalSlides = enabled
+    }
+
+    fun updateSelection(enabled: Boolean) {
+        prefsRepo.selectAfresh = enabled
+    }
+
+    fun clearData() {
+        viewModelScope.launch {
+            bookRepo.deleteAllBooks()
+            songRepo.deleteAllSongs()
+            prefsRepo.isDataLoaded = false
+            prefsRepo.isDataSelected = false
+            prefsRepo.selectedBooks = ""
+        }
     }
 }

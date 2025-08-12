@@ -14,7 +14,6 @@ import javax.inject.*
 class BookRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService,
-    private val prefsRepo: PrefsRepository,
 ) {
     private var booksDao: BookDao?
 
@@ -42,16 +41,9 @@ class BookRepository @Inject constructor(
         return allBooks
     }
 
-    suspend fun clearAllBooks(): List<Book> {
-        var allBooks: List<Book>
+    suspend fun deleteAllBooks() {
         withContext(Dispatchers.IO) {
-            allBooks = booksDao?.getAll() ?: emptyList()
+            booksDao?.deleteAll()
         }
-        return allBooks
-    }
-
-    fun savePrefs(selectedBooks: String) {
-        prefsRepo.selectedBooks = selectedBooks
-        prefsRepo.isDataSelected = true
     }
 }

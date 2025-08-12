@@ -14,7 +14,6 @@ import javax.inject.*
 class SongRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService,
-    private val prefsRepo: PrefsRepository,
 ) {
     private var songsDao: SongDao?
 
@@ -26,6 +25,12 @@ class SongRepository @Inject constructor(
     fun getSongs(books: String): Flow<List<Song>> = flow {
         val songs = apiService.getSongs(books)
         emit(songs)
+    }
+
+    suspend fun deleteAllSongs() {
+        withContext(Dispatchers.IO) {
+            songsDao?.deleteAll()
+        }
     }
 
     suspend fun saveSong(song: Song) {
@@ -40,20 +45,12 @@ class SongRepository @Inject constructor(
         }
     }
 
-    fun getSelectedBookIds(): String? {
-        return prefsRepo.selectedBooks
-    }
-
     suspend fun getAllSongs(): List<Song> {
         var allSongs: List<Song>
         withContext(Dispatchers.IO) {
             allSongs = songsDao?.getAll() ?: emptyList()
         }
         return allSongs
-    }
-
-    fun setDataLoaded(isLoaded: Boolean) {
-        prefsRepo.isDataLoaded = isLoaded
     }
 
 }

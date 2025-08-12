@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.repository.*
 import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.settings.components.*
 import com.songlib.presentation.viewmodels.SettingsViewModel
 
@@ -25,12 +26,20 @@ fun SettingsScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
+    fun navigateToSplash() {
+        navController.navigate(Routes.SPLASH) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     if (showResetDialog) {
         ConfirmResetDialog(
             onDismiss = { showResetDialog = false },
             onConfirm = {
-
                 showResetDialog = false
+                viewModel.clearData()
+                navigateToSplash()
             }
         )
     }
@@ -102,7 +111,10 @@ fun SettingsScreen(
                 },
                 headlineContent = { Text("Modify Collection") },
                 supportingContent = { Text("Add or Remove Songbooks") },
-                modifier = Modifier.clickable {  },
+                modifier = Modifier.clickable {
+                    viewModel.updateSelection(true)
+                    navigateToSplash()
+                },
             )
             ListItem(
                 leadingContent = {
