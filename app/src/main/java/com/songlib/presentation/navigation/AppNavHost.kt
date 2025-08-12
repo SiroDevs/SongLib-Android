@@ -7,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.Song
+import com.songlib.domain.repository.PrefsRepository
 import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.settings.SettingsScreen
@@ -34,8 +35,8 @@ fun AppNavHost(
         composable(Routes.STEP_1) {
             val viewModel: SelectionViewModel = hiltViewModel()
             Step1Screen(
-                viewModel = viewModel,
                 navController = navController,
+                viewModel = viewModel,
                 themeRepo = themeRepo,
             )
         }
@@ -43,16 +44,16 @@ fun AppNavHost(
         composable(Routes.STEP_2) {
             val viewModel: SelectionViewModel = hiltViewModel()
             Step2Screen(
-                viewModel = viewModel,
                 navController = navController,
+                viewModel = viewModel,
             )
         }
 
         composable(Routes.HOME) {
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
-                viewModel = viewModel,
                 navController = navController,
+                viewModel = viewModel,
             )
         }
 
@@ -64,8 +65,8 @@ fun AppNavHost(
             val viewModel: PresenterViewModel = hiltViewModel()
 
             PresenterScreen(
-                viewModel = viewModel,
                 navController = navController,
+                viewModel = viewModel,
                 song = song,
             )
         }

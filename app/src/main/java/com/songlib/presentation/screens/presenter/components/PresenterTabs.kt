@@ -17,7 +17,8 @@ import com.songlib.data.sample.*
 fun PresenterTabs(
     pagerState: PagerState,
     verses: List<String>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    horizontalSlides: Boolean = false,
 ) {
     ElevatedCard(
         modifier = modifier
@@ -28,28 +29,46 @@ fun PresenterTabs(
         ),
         elevation = CardDefaults.cardElevation(5.dp),
     ) {
-        VerticalPager(
-            state = pagerState,
-            modifier = modifier.fillMaxSize()
-        ) { page ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = verses[page],
-                    style = TextStyle(
-                        fontSize = 25.sp,
-                        //color = Color.White,
-                        letterSpacing = 1.sp,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                )
+        val pager: @Composable (content: @Composable (page: Int) -> Unit) -> Unit =
+            if (horizontalSlides) {
+                { content ->
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = modifier.fillMaxSize()
+                    ) { page -> content(page) }
+                }
+            } else {
+                { content ->
+                    VerticalPager(
+                        state = pagerState,
+                        modifier = modifier.fillMaxSize()
+                    ) { page -> content(page) }
+                }
             }
+
+        pager { page ->
+            PresenterSlide(text = verses[page])
         }
+    }
+}
+
+@Composable
+fun PresenterSlide(text: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            style = TextStyle(
+                fontSize = 25.sp,
+                letterSpacing = 1.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
 
@@ -65,6 +84,6 @@ fun PresenterTabsPreview() {
         verses = SampleVerses,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(200.dp),
     )
 }

@@ -9,19 +9,21 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.domain.repository.ThemeRepository
-import com.songlib.domain.repository.ThemeSelectorDialog
+import com.songlib.domain.repository.*
 import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.theme.*
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
     themeRepo: ThemeRepository,
+    prefs: PrefsRepository = hiltViewModel() // Inject PrefsRepository here
 ) {
     var showThemeDialog by remember { mutableStateOf(false) }
     val theme = themeRepo.selectedTheme
+
+    // Read and store switch state
+    var horizontalSlides by remember { mutableStateOf(prefs.horizontalSlides) }
 
     Scaffold(
         topBar = {
@@ -37,6 +39,7 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
+            // Theme selector
             ListItem(
                 headlineContent = { Text("App Theme") },
                 modifier = Modifier.clickable { showThemeDialog = true },
@@ -48,6 +51,24 @@ fun SettingsScreen(
                 },
             )
             HorizontalDivider()
+
+            // Horizontal slides toggle
+            ListItem(
+                headlineContent = { Text("Horizontal Slides") },
+                supportingContent = { Text("Swipe songs horizontally instead of vertically") },
+                trailingContent = {
+                    Switch(
+                        checked = horizontalSlides,
+                        onCheckedChange = { isChecked ->
+                            horizontalSlides = isChecked
+                            prefs.horizontalSlides = isChecked // Persist change
+                        }
+                    )
+                },
+                leadingContent = {
+                    Icon(Icons.Default.Swipe, contentDescription = "Horizontal slides")
+                }
+            )
         }
 
         if (showThemeDialog) {
@@ -62,3 +83,4 @@ fun SettingsScreen(
         }
     }
 }
+
