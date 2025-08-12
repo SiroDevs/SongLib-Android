@@ -12,7 +12,7 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.repository.*
 import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.screens.selection.step1.components.ConfirmSaveDialog
+import com.songlib.presentation.screens.settings.components.*
 import com.songlib.presentation.viewmodels.SettingsViewModel
 
 @Composable
@@ -22,7 +22,6 @@ fun SettingsScreen(
     themeRepo: ThemeRepository,
 ) {
     val theme = themeRepo.selectedTheme
-
     var showThemeDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
@@ -32,6 +31,17 @@ fun SettingsScreen(
             onConfirm = {
 
                 showResetDialog = false
+            }
+        )
+    }
+
+    if (showThemeDialog) {
+        ThemeSelectorDialog(
+            current = theme,
+            onDismiss = { showThemeDialog = false },
+            onThemeSelected = {
+                themeRepo.setTheme(it)
+                showThemeDialog = false
             }
         )
     }
@@ -50,7 +60,7 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            Text("SLIDES")
+            SettingsSectionTitle("Slides")
             ListItem(
                 leadingContent = {
                     Icon(
@@ -70,7 +80,7 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            Text("DISPLAY")
+            SettingsSectionTitle("Display")
             ListItem(
                 leadingContent = {
                     Icon(
@@ -83,7 +93,7 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            Text("SELECTION")
+            SettingsSectionTitle("Selection")
             ListItem(
                 leadingContent = {
                     Icon(
@@ -92,7 +102,7 @@ fun SettingsScreen(
                 },
                 headlineContent = { Text("Modify Collection") },
                 supportingContent = { Text("Add or Remove Songbooks") },
-                modifier = Modifier.clickable { showThemeDialog = true },
+                modifier = Modifier.clickable {  },
             )
             ListItem(
                 leadingContent = {
@@ -100,24 +110,11 @@ fun SettingsScreen(
                         Icons.Default.Refresh, contentDescription = "Reset"
                     )
                 },
-                headlineContent = { Text("Do Selection Afresh") },
+                headlineContent = { Text("Select Afresh") },
                 supportingContent = { Text("Reset everything and start over") },
-                modifier = Modifier.clickable { showThemeDialog = true },
+                modifier = Modifier.clickable { showResetDialog = true },
             )
             HorizontalDivider()
-
-        }
-
-        if (showThemeDialog) {
-            ThemeSelectorDialog(
-                current = theme,
-                onDismiss = { showThemeDialog = false },
-                onThemeSelected = {
-                    themeRepo.setTheme(it)
-                    showThemeDialog = false
-                }
-            )
         }
     }
 }
-

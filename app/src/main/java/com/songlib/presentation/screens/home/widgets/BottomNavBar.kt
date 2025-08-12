@@ -11,7 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun BottomNavigationBar(
+fun BottomNavBar(
     selectedItem: HomeNavItem,
     onItemSelected: (HomeNavItem) -> Unit
 ) {
@@ -39,8 +39,8 @@ fun BottomNavigationBar(
 
 @Preview(showBackground = true)
 @Composable
-fun BottomNavigationBarPreview() {
-    BottomNavigationBar(
+fun BottomNavBarPreview() {
+    BottomNavBar(
         selectedItem = HomeNavItem.Search,
         onItemSelected = {}
     )

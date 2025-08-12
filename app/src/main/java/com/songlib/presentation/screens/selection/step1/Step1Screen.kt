@@ -25,13 +25,10 @@ fun Step1Screen(
     viewModel: SelectionViewModel,
     themeRepo: ThemeRepository
 ) {
-    var fetchData by rememberSaveable { mutableStateOf(0) }
+    var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
 
-    if (fetchData == 0) {
-        viewModel.fetchBooks()
-        fetchData++
-    }
+    if (fetchData == 0) { viewModel.fetchBooks() }
 
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
