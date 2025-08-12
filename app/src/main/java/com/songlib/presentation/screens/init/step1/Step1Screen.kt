@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.selection.step1
+package com.songlib.presentation.screens.init.step1
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -14,7 +14,7 @@ import com.songlib.domain.repository.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.screens.selection.step1.components.*
+import com.songlib.presentation.screens.init.step1.components.*
 import com.songlib.presentation.viewmodels.Step1ViewModel
 import com.swahilib.presentation.components.indicators.*
 

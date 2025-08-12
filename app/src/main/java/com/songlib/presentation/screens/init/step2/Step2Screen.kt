@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.selection.step2
+package com.songlib.presentation.screens.init.step2
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

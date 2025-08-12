@@ -11,8 +11,8 @@ import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.settings.SettingsScreen
 import com.songlib.presentation.screens.presenter.PresenterScreen
-import com.songlib.presentation.screens.selection.step1.Step1Screen
-import com.songlib.presentation.screens.selection.step2.Step2Screen
+import com.songlib.presentation.screens.init.step1.Step1Screen
+import com.songlib.presentation.screens.init.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
 import com.songlib.presentation.viewmodels.*
 
