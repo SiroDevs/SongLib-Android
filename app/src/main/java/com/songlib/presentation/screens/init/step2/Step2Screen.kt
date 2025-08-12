@@ -20,7 +20,11 @@ fun Step2Screen(
     viewModel: Step2ViewModel,
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
-    if (fetchData == 0) { viewModel.fetchSongs() }
+
+    if (fetchData == 0) {
+        viewModel.fetchSongs()
+        fetchData++
+    }
 
     val uiState by viewModel.uiState.collectAsState()
     val progress by viewModel.progress.collectAsState(initial = 0)

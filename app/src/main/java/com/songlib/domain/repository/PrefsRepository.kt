@@ -18,7 +18,7 @@ class PrefsRepository @Inject constructor(
         set(value) = prefs.edit { putString(PrefConstants.INITIAL_BOOKS, value) }
 
     var selectedBooks: String
-        get() = prefs.getString(PrefConstants.SELECTED_BOOKS, "") ?: "1,2"
+        get() = prefs.getString(PrefConstants.SELECTED_BOOKS, "1,2") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.SELECTED_BOOKS, value) }
 
     var isDataSelected: Boolean

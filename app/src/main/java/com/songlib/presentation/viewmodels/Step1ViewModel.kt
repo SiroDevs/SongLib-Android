@@ -22,7 +22,7 @@ class Step1ViewModel @Inject constructor(
     private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
     val books: StateFlow<List<Selectable<Book>>> get() = _books
 
-    private fun getSelectedIdsFromPrefs(): Set<Int> =
+    private fun getSelectedIds(): Set<Int> =
         prefsRepo.selectedBooks
             .split(",")
             .mapNotNull { it.toIntOrNull() }
@@ -30,25 +30,23 @@ class Step1ViewModel @Inject constructor(
 
     fun fetchBooks() {
         _uiState.tryEmit(UiState.Loading)
-        viewModelScope.launch {
-            val selectedIds = getSelectedIdsFromPrefs()
 
-            bookRepo.getBooks()
-                .catch { exception ->
-                    val errorMessage = when (exception) {
-                        is HttpException -> "HTTP Error: ${exception.code()}"
-                        else -> "Network error: ${exception.message}"
-                    }
-                    _uiState.tryEmit(UiState.Error(errorMessage))
+        viewModelScope.launch {
+            bookRepo.getBooks().catch { exception ->
+                Log.d("TAG", "fetching books")
+                val errorMessage = when (exception) {
+                    is HttpException -> "HTTP Error: ${exception.code()}"
+                    else -> "Network error: ${exception.message}"
                 }
-                .collect { respData ->
-                    _books.emit(
-                        respData.map { book ->
-                            Selectable(book, isSelected = book.bookId in selectedIds)
-                        }
-                    )
-                    _uiState.tryEmit(UiState.Loaded)
+                Log.d("TAG", errorMessage)
+                _uiState.tryEmit(UiState.Error(errorMessage))
+            }.collect { respData ->
+                val selectableBooks = respData.map { book->
+                    Selectable(book, book.bookId in getSelectedIds())
                 }
+                _books.emit(selectableBooks)
+                _uiState.tryEmit(UiState.Loaded)
+            }
         }
     }
 
@@ -66,7 +64,7 @@ class Step1ViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (prefsRepo.selectAfresh) {
-                    val existingIds = getSelectedIdsFromPrefs()
+                    val existingIds = getSelectedIds()
                     val newIds = books.map { it.bookId }.toSet()
 
                     val booksToInsert = books.filter { it.bookId !in existingIds }

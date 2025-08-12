@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -14,7 +13,7 @@ import com.songlib.domain.repository.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.screens.init.step1.components.*
+import com.songlib.presentation.screens.init.step1.components.Step1Fab
 import com.songlib.presentation.viewmodels.Step1ViewModel
 import com.swahilib.presentation.components.indicators.*
 
@@ -28,7 +27,10 @@ fun Step1Screen(
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
 
-    if (fetchData == 0) { viewModel.fetchBooks() }
+    if (fetchData == 0) {
+        viewModel.fetchBooks()
+        fetchData++
+    }
 
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
@@ -62,7 +64,6 @@ fun Step1Screen(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Refresh, contentDescription = "",
-                                tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     }
@@ -100,6 +101,7 @@ fun Step1Screen(
                         modifier = Modifier.padding(paddingValues)
                     )
                 }
+
                 else -> EmptyState()
             }
         },

@@ -17,8 +17,7 @@ class AppModule {
     fun provideBookRepository(
         @ApplicationContext context: Context,
         apiService: ApiService,
-        prefsRepo: PrefsRepository,
-    ): BookRepository = BookRepository(context, apiService, prefsRepo)
+    ): BookRepository = BookRepository(context, apiService)
 
     @Provides
     @Singleton
@@ -31,8 +30,7 @@ class AppModule {
     fun provideSongRepository(
         @ApplicationContext context: Context,
         apiService: ApiService,
-        prefsRepo: PrefsRepository,
-    ): SongRepository = SongRepository(context, apiService, prefsRepo)
+    ): SongRepository = SongRepository(context, apiService)
 
     @Provides
     @Singleton
