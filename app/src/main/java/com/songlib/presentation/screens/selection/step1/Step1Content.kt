@@ -27,7 +27,6 @@ fun Step1Content(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-//            verticalArrangement = Arrangement.spacedBy(5.dp),
             contentPadding = PaddingValues(horizontal = 5.dp)
         ) {
             items(books) { book ->

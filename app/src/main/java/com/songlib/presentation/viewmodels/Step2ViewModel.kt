@@ -15,9 +15,8 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class SelectionViewModel @Inject constructor(
+class Step2ViewModel @Inject constructor(
     private val prefsRepo: PrefsRepository,
-    private val bookRepo: BookRepository,
     private val songRepo: SongRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
@@ -25,9 +24,6 @@ class SelectionViewModel @Inject constructor(
 
     private val _progress = MutableStateFlow(0)
     val progress: StateFlow<Int> = _progress.asStateFlow()
-
-    private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
-    val books: StateFlow<List<Selectable<Book>>> get() = _books
 
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
@@ -37,48 +33,6 @@ class SelectionViewModel @Inject constructor(
 
     var selectedBooks by mutableStateOf(prefsRepo.selectedBooks)
         private set
-
-    fun fetchBooks() {
-        _uiState.tryEmit(UiState.Loading)
-        viewModelScope.launch {
-            bookRepo.getBooks().catch { exception ->
-                Log.d("TAG", "fetching books")
-                val errorMessage = when (exception) {
-                    is HttpException -> "HTTP Error: ${exception.code()}"
-                    else -> "Network error: ${exception.message}"
-                }
-                Log.d("TAG", errorMessage)
-                _uiState.tryEmit(UiState.Error(errorMessage))
-            }.collect { respData ->
-                val selectableBooks = respData.map { Selectable(it) }
-                _books.emit(selectableBooks)
-                _uiState.tryEmit(UiState.Loaded)
-            }
-        }
-    }
-
-    fun saveSelectedBooks() {
-        val selected = _books.value.filter { it.isSelected }.map { it.data }
-        saveBooks(selected)
-    }
-
-    private fun saveBooks(books: List<Book>) {
-        _uiState.tryEmit(UiState.Saving)
-
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                for (book in books) {
-                    bookRepo.saveBook(book)
-                }
-                prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
-                prefsRepo.isDataSelected = true
-                _uiState.emit(UiState.Saved)
-            } catch (e: Exception) {
-                Log.e("SaveBooks", "Failed to save books", e)
-                _uiState.emit(UiState.Error("Failed to save books: ${e.message}"))
-            }
-        }
-    }
 
     fun fetchSongs() {
         _uiState.tryEmit(UiState.Loading)
@@ -119,12 +73,6 @@ class SelectionViewModel @Inject constructor(
                 Log.e("SaveSongs", "Failed to save songs", e)
                 _uiState.emit(UiState.Error("Failed to save songs: ${e.message}"))
             }
-        }
-    }
-
-    fun toggleBookSelection(book: Selectable<Book>) {
-        _books.value = _books.value.map {
-            if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
         }
     }
 }

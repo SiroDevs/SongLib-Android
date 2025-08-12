@@ -10,18 +10,20 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.viewmodels.SelectionViewModel
+import com.songlib.presentation.viewmodels.Step2ViewModel
 import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Step2Screen(
     navController: NavHostController,
-    viewModel: SelectionViewModel,
+    viewModel: Step2ViewModel,
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     if (fetchData == 0) { viewModel.fetchSongs() }
 
+    val initialBooks = viewModel.selectedBooks
+    val selectAfresh = viewModel.selectAfresh
     val uiState by viewModel.uiState.collectAsState()
     val progress by viewModel.progress.collectAsState(initial = 0)
 

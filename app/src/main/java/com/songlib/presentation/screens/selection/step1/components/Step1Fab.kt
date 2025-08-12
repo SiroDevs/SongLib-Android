@@ -5,11 +5,11 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import com.songlib.data.models.Book
-import com.songlib.presentation.viewmodels.SelectionViewModel
+import com.songlib.presentation.viewmodels.Step1ViewModel
 
 @Composable
 fun Step1Fab(
-    viewModel: SelectionViewModel,
+    viewModel: Step1ViewModel,
     onSaveConfirmed: (List<Book>) -> Unit
 ) {
     var showConfirmDialog by remember { mutableStateOf(false) }

@@ -32,7 +32,7 @@ fun AppNavHost(
         }
 
         composable(Routes.STEP_1) {
-            val viewModel: SelectionViewModel = hiltViewModel()
+            val viewModel: Step2ViewModel = hiltViewModel()
             Step1Screen(
                 navController = navController,
                 viewModel = viewModel,
@@ -41,7 +41,7 @@ fun AppNavHost(
         }
 
         composable(Routes.STEP_2) {
-            val viewModel: SelectionViewModel = hiltViewModel()
+            val viewModel: Step2ViewModel = hiltViewModel()
             Step2Screen(
                 navController = navController,
                 viewModel = viewModel,

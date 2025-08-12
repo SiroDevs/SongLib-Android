@@ -15,14 +15,14 @@ import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.selection.step1.components.*
-import com.songlib.presentation.viewmodels.SelectionViewModel
+import com.songlib.presentation.viewmodels.Step1ViewModel
 import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Step1Screen(
     navController: NavHostController,
-    viewModel: SelectionViewModel,
+    viewModel: Step1ViewModel,
     themeRepo: ThemeRepository
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
@@ -61,8 +61,7 @@ fun Step1Screen(
                             onClick = { viewModel.fetchBooks() }
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Refresh,
-                                contentDescription = "Refresh",
+                                imageVector = Icons.Filled.Refresh, contentDescription = "",
                                 tint = MaterialTheme.colorScheme.onPrimary
                             )
                         }
@@ -70,8 +69,7 @@ fun Step1Screen(
 
                     IconButton(onClick = { showThemeDialog = true }) {
                         Icon(
-                            imageVector = Icons.Filled.Brightness6,
-                            contentDescription = "Change Theme"
+                            imageVector = Icons.Filled.Brightness6, contentDescription = ""
                         )
                     }
                 }
@@ -102,7 +100,6 @@ fun Step1Screen(
                         modifier = Modifier.padding(paddingValues)
                     )
                 }
-
                 else -> EmptyState()
             }
         },
