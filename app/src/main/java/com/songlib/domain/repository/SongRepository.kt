@@ -33,6 +33,12 @@ class SongRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteByBookId(bookId: Int) {
+        withContext(Dispatchers.IO) {
+            songsDao?.deleteByBookId(bookId)
+        }
+    }
+
     suspend fun saveSong(song: Song) {
         withContext(Dispatchers.IO) {
             songsDao?.insert(song)

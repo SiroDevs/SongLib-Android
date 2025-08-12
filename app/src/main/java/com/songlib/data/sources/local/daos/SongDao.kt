@@ -19,4 +19,10 @@ interface SongDao {
 
     @Query("DELETE FROM songs")
     suspend fun deleteAll()
+
+    @Query("DELETE FROM songs WHERE songId = :id")
+    suspend fun deleteById(id: Int)
+
+    @Query("DELETE FROM songs WHERE book = :id")
+    suspend fun deleteByBookId(id: Int)
 }

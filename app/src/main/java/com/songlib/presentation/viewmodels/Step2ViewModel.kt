@@ -1,9 +1,6 @@
 package com.songlib.presentation.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entity.*
@@ -27,12 +24,6 @@ class Step2ViewModel @Inject constructor(
 
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> get() = _songs
-
-    var selectAfresh by mutableStateOf(prefsRepo.selectAfresh)
-        private set
-
-    var selectedBooks by mutableStateOf(prefsRepo.selectedBooks)
-        private set
 
     fun fetchSongs() {
         _uiState.tryEmit(UiState.Loading)
@@ -61,11 +52,38 @@ class Step2ViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                songs.forEachIndexed { index, song ->
-                    songRepo.saveSong(song)
-                    val percent = ((index + 1).toFloat() / total * 100).toInt()
-                    _progress.emit(percent)
+                if (prefsRepo.selectAfresh) {
+                    // Get old and new book IDs
+                    val oldBookIds = prefsRepo.initialBooks
+                        .split(",")
+                        .mapNotNull { it.toIntOrNull() }
+                        .toSet()
+
+                    val newBookIds = prefsRepo.selectedBooks
+                        .split(",")
+                        .mapNotNull { it.toIntOrNull() }
+                        .toSet()
+
+                    val removedBookIds = oldBookIds - newBookIds
+                    removedBookIds.forEach { bookId ->
+                        songRepo.deleteByBookId(bookId)
+                    }
+
+                    songs.forEachIndexed { index, song ->
+                        if (song.book in newBookIds) {
+                            songRepo.saveSong(song)
+                        }
+                        val percent = ((index + 1).toFloat() / total * 100).toInt()
+                        _progress.emit(percent)
+                    }
+                } else {
+                    songs.forEachIndexed { index, song ->
+                        songRepo.saveSong(song)
+                        val percent = ((index + 1).toFloat() / total * 100).toInt()
+                        _progress.emit(percent)
+                    }
                 }
+
                 prefsRepo.isDataLoaded = true
                 _uiState.emit(UiState.Saved)
             } catch (e: Exception) {

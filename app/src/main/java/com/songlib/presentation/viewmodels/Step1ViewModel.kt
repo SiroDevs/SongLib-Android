@@ -1,9 +1,6 @@
 package com.songlib.presentation.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entity.*
@@ -19,44 +16,48 @@ class Step1ViewModel @Inject constructor(
     private val prefsRepo: PrefsRepository,
     private val bookRepo: BookRepository,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
     val books: StateFlow<List<Selectable<Book>>> get() = _books
 
-    var selectAfresh by mutableStateOf(prefsRepo.selectAfresh)
-        private set
-
-    var selectedBooks by mutableStateOf(prefsRepo.selectedBooks)
-        private set
+    private fun getSelectedIdsFromPrefs(): Set<Int> =
+        prefsRepo.selectedBooks
+            .split(",")
+            .mapNotNull { it.toIntOrNull() }
+            .toSet()
 
     fun fetchBooks() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            bookRepo.getBooks().catch { exception ->
-                Log.d("TAG", "fetching books")
-                val errorMessage = when (exception) {
-                    is HttpException -> "HTTP Error: ${exception.code()}"
-                    else -> "Network error: ${exception.message}"
+            val selectedIds = getSelectedIdsFromPrefs()
+
+            bookRepo.getBooks()
+                .catch { exception ->
+                    val errorMessage = when (exception) {
+                        is HttpException -> "HTTP Error: ${exception.code()}"
+                        else -> "Network error: ${exception.message}"
+                    }
+                    _uiState.tryEmit(UiState.Error(errorMessage))
                 }
-                Log.d("TAG", errorMessage)
-                _uiState.tryEmit(UiState.Error(errorMessage))
-            }.collect { respData ->
-                val selectableBooks = respData.map { Selectable(it) }
-                _books.emit(selectableBooks)
-                _uiState.tryEmit(UiState.Loaded)
-            }
+                .collect { respData ->
+                    _books.emit(
+                        respData.map { book ->
+                            Selectable(book, isSelected = book.bookId in selectedIds)
+                        }
+                    )
+                    _uiState.tryEmit(UiState.Loaded)
+                }
         }
     }
 
-    fun getSelectedBooks(): List<Book> {
+    fun getSelectedBookList(): List<Book> {
         return _books.value.filter { it.isSelected }.map { it.data }
     }
 
     fun saveSelectedBooks() {
-        val selected = _books.value.filter { it.isSelected }.map { it.data }
-        saveBooks(selected)
+        saveBooks(getSelectedBookList())
     }
 
     private fun saveBooks(books: List<Book>) {
@@ -64,10 +65,22 @@ class Step1ViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                for (book in books) {
-                    bookRepo.saveBook(book)
+                if (prefsRepo.selectAfresh) {
+                    val existingIds = getSelectedIdsFromPrefs()
+                    val newIds = books.map { it.bookId }.toSet()
+
+                    val booksToInsert = books.filter { it.bookId !in existingIds }
+                    val idsToDelete = existingIds - newIds
+
+                    booksToInsert.forEach { bookRepo.saveBook(it) }
+                    idsToDelete.forEach { bookRepo.deleteById(it) }
+
+                    prefsRepo.selectedBooks = newIds.joinToString(",")
+                } else {
+                    books.forEach { bookRepo.saveBook(it) }
+                    prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
                 }
-                prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
+
                 prefsRepo.isDataSelected = true
                 _uiState.emit(UiState.Saved)
             } catch (e: Exception) {

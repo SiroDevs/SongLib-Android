@@ -22,8 +22,6 @@ fun Step2Screen(
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     if (fetchData == 0) { viewModel.fetchSongs() }
 
-    val initialBooks = viewModel.selectedBooks
-    val selectAfresh = viewModel.selectAfresh
     val uiState by viewModel.uiState.collectAsState()
     val progress by viewModel.progress.collectAsState(initial = 0)
 

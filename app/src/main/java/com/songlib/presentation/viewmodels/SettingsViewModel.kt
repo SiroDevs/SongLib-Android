@@ -24,6 +24,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun updateSelection(enabled: Boolean) {
+        prefsRepo.initialBooks = prefsRepo.selectedBooks
         prefsRepo.selectAfresh = enabled
     }
 

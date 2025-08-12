@@ -3,6 +3,7 @@ package com.songlib.core.utils
 object PrefConstants {
     const val PREFERENCE_FILE = "app_pref"
 
+    const val INITIAL_BOOKS = "initialBooks"
     const val SELECTED_BOOKS = "selectedBooks"
 
     const val DATA_SELECTED = "dataSelected"

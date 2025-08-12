@@ -19,7 +19,7 @@ fun Step1Fab(
         ConfirmSaveDialog(
             onDismiss = { showConfirmDialog = false },
             onConfirm = {
-                onSaveConfirmed(viewModel.getSelectedBooks())
+                onSaveConfirmed(viewModel.getSelectedBookList())
                 showConfirmDialog = false
             }
         )
@@ -33,7 +33,7 @@ fun Step1Fab(
 
     ExtendedFloatingActionButton(
         onClick = {
-            if (viewModel.getSelectedBooks().isNotEmpty()) {
+            if (viewModel.getSelectedBookList().isNotEmpty()) {
                 showConfirmDialog = true
             } else {
                 showNoSelectionDialog = true

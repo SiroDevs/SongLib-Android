@@ -33,6 +33,12 @@ class BookRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteById(bookId: Int) {
+        withContext(Dispatchers.IO) {
+            booksDao?.deleteById(bookId)
+        }
+    }
+
     suspend fun getAllBooks(): List<Book> {
         var allBooks: List<Book>
         withContext(Dispatchers.IO) {
