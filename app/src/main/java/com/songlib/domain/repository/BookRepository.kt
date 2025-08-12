@@ -3,6 +3,7 @@ package com.songlib.domain.repository
 import android.content.*
 import com.songlib.data.models.*
 import com.songlib.data.sources.local.*
+import com.songlib.data.sources.local.daos.BookDao
 import com.songlib.data.sources.remote.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -13,7 +14,6 @@ import javax.inject.*
 class BookRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService,
-    private val prefsRepo: PrefsRepository,
 ) {
     private var booksDao: BookDao?
 
@@ -33,6 +33,12 @@ class BookRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteById(bookId: Int) {
+        withContext(Dispatchers.IO) {
+            booksDao?.deleteById(bookId)
+        }
+    }
+
     suspend fun getAllBooks(): List<Book> {
         var allBooks: List<Book>
         withContext(Dispatchers.IO) {
@@ -41,8 +47,9 @@ class BookRepository @Inject constructor(
         return allBooks
     }
 
-    fun savePrefs(selectedBooks: String) {
-        prefsRepo.selectedBooks = selectedBooks
-        prefsRepo.isDataSelected = true
+    suspend fun deleteAllBooks() {
+        withContext(Dispatchers.IO) {
+            booksDao?.deleteAll()
+        }
     }
 }

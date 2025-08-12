@@ -27,6 +27,7 @@ fun SplashScreen(navController: NavHostController) {
         delay(3000)
 
         val nextRoute = when {
+            prefs.selectAfresh -> Routes.STEP_1
             prefs.isDataLoaded -> Routes.HOME
             prefs.isDataSelected -> Routes.STEP_2
             else -> Routes.STEP_1

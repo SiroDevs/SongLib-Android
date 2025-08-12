@@ -1,11 +1,9 @@
 package com.songlib.domain.repository
 
 import android.content.*
-import androidx.compose.runtime.remember
-import androidx.core.content.edit
-import com.songlib.core.utils.PrefConstants
 import com.songlib.data.models.*
 import com.songlib.data.sources.local.*
+import com.songlib.data.sources.local.daos.SongDao
 import com.songlib.data.sources.remote.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -16,7 +14,6 @@ import javax.inject.*
 class SongRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService,
-    private val prefsRepo: PrefsRepository,
 ) {
     private var songsDao: SongDao?
 
@@ -28,6 +25,18 @@ class SongRepository @Inject constructor(
     fun getSongs(books: String): Flow<List<Song>> = flow {
         val songs = apiService.getSongs(books)
         emit(songs)
+    }
+
+    suspend fun deleteAllSongs() {
+        withContext(Dispatchers.IO) {
+            songsDao?.deleteAll()
+        }
+    }
+
+    suspend fun deleteByBookId(bookId: Int) {
+        withContext(Dispatchers.IO) {
+            songsDao?.deleteByBookId(bookId)
+        }
     }
 
     suspend fun saveSong(song: Song) {
@@ -42,20 +51,12 @@ class SongRepository @Inject constructor(
         }
     }
 
-    fun getSelectedBookIds(): String? {
-        return prefsRepo.selectedBooks
-    }
-
     suspend fun getAllSongs(): List<Song> {
         var allSongs: List<Song>
         withContext(Dispatchers.IO) {
             allSongs = songsDao?.getAll() ?: emptyList()
         }
         return allSongs
-    }
-
-    fun setDataLoaded(isLoaded: Boolean) {
-        prefsRepo.isDataLoaded = isLoaded
     }
 
 }

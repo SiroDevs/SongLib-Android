@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.selection.step2
+package com.songlib.presentation.screens.init.step2
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -10,14 +10,14 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.viewmodels.SelectionViewModel
+import com.songlib.presentation.viewmodels.Step2ViewModel
 import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Step2Screen(
     navController: NavHostController,
-    viewModel: SelectionViewModel,
+    viewModel: Step2ViewModel,
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
 
@@ -28,7 +28,6 @@ fun Step2Screen(
 
     val uiState by viewModel.uiState.collectAsState()
     val progress by viewModel.progress.collectAsState(initial = 0)
-    val status by viewModel.status.collectAsState(initial = "Saving songs ...")
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
@@ -57,14 +56,13 @@ fun Step2Screen(
 
                     is UiState.Saving ->
                         LoadingState(
-                            title = status,
+                            title = "Saving your songs ...",
                             showProgress = true,
                             progressValue = progress,
                             fileName = "cloud-download",
                         )
 
                     is UiState.Loaded -> viewModel.saveSongs()
-
                     else -> EmptyState()
                 }
             }

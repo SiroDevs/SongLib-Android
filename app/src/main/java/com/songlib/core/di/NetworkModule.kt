@@ -1,6 +1,5 @@
 package com.songlib.core.di
 
-import com.google.gson.GsonBuilder
 import com.songlib.BuildConfig
 import com.songlib.core.utils.ApiConstants
 import com.songlib.data.sources.remote.ApiService

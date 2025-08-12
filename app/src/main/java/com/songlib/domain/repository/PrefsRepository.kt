@@ -4,8 +4,7 @@ import android.content.Context
 import com.songlib.core.utils.PrefConstants
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.*
 
 @Singleton
 class PrefsRepository @Inject constructor(
@@ -14,13 +13,21 @@ class PrefsRepository @Inject constructor(
     private val prefs =
         context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
 
+    var initialBooks: String
+        get() = prefs.getString(PrefConstants.INITIAL_BOOKS, "") ?: ""
+        set(value) = prefs.edit { putString(PrefConstants.INITIAL_BOOKS, value) }
+
     var selectedBooks: String
-        get() = prefs.getString(PrefConstants.SELECTED_BOOKS, "") ?: ""
+        get() = prefs.getString(PrefConstants.SELECTED_BOOKS, "1,2") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.SELECTED_BOOKS, value) }
 
     var isDataSelected: Boolean
-        get() = prefs.getBoolean(PrefConstants.DATA_SELECTED, false)
+        get() = prefs.getBoolean(PrefConstants.SELECT_AFRESH, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.DATA_SELECTED, value) }
+
+    var selectAfresh: Boolean
+        get() = prefs.getBoolean(PrefConstants.SELECT_AFRESH, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.SELECT_AFRESH, value) }
 
     var isDataLoaded: Boolean
         get() = prefs.getBoolean(PrefConstants.DATA_LOADED, false)

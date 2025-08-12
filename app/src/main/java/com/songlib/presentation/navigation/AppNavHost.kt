@@ -11,8 +11,8 @@ import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.settings.SettingsScreen
 import com.songlib.presentation.screens.presenter.PresenterScreen
-import com.songlib.presentation.screens.selection.step1.Step1Screen
-import com.songlib.presentation.screens.selection.step2.Step2Screen
+import com.songlib.presentation.screens.init.step1.Step1Screen
+import com.songlib.presentation.screens.init.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
 import com.songlib.presentation.viewmodels.*
 
@@ -32,7 +32,7 @@ fun AppNavHost(
         }
 
         composable(Routes.STEP_1) {
-            val viewModel: SelectionViewModel = hiltViewModel()
+            val viewModel: Step1ViewModel = hiltViewModel()
             Step1Screen(
                 navController = navController,
                 viewModel = viewModel,
@@ -41,7 +41,7 @@ fun AppNavHost(
         }
 
         composable(Routes.STEP_2) {
-            val viewModel: SelectionViewModel = hiltViewModel()
+            val viewModel: Step2ViewModel = hiltViewModel()
             Step2Screen(
                 navController = navController,
                 viewModel = viewModel,
@@ -78,6 +78,5 @@ fun AppNavHost(
                 themeRepo = themeRepo,
             )
         }
-
     }
 }
