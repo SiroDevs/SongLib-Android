@@ -24,10 +24,11 @@ import com.swahilib.presentation.components.indicators.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresenterScreen(
-    viewModel: PresenterViewModel,
     navController: NavHostController,
+    viewModel: PresenterViewModel,
     song: Song?,
 ) {
+    val horizontalSlides = viewModel.horizontalSlides
     val uiState by viewModel.uiState.collectAsState()
     val isLiked by viewModel.isLiked.collectAsState()
     val title by viewModel.title.collectAsState()
@@ -66,7 +67,8 @@ fun PresenterScreen(
                 )
 
                 UiState.Loaded -> PresenterContent(
-                    verses = verses, indicators = indicators
+                    verses = verses, indicators = indicators,
+                    horizontalSlides = horizontalSlides
                 )
 
                 UiState.Loading -> LoadingState(
@@ -109,7 +111,8 @@ private fun LikeSongButton(
 
 @Composable
 fun PresenterContent(
-    verses: List<String>, indicators: List<String>
+    verses: List<String>, indicators: List<String>,
+    horizontalSlides: Boolean = false,
 ) {
     val pagerState = rememberPagerState { verses.size }
 
@@ -117,7 +120,8 @@ fun PresenterContent(
         modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween
     ) {
         PresenterTabs(
-            pagerState = pagerState, verses = verses, modifier = Modifier.weight(1f)
+            pagerState = pagerState, verses = verses, modifier = Modifier.weight(1f),
+            horizontalSlides = horizontalSlides,
         )
 
         PresenterIndicators(
@@ -134,6 +138,6 @@ fun PresenterContent(
 @Composable
 fun PreviewPresenterContent() {
     PresenterContent(
-        verses = SampleVerses, indicators = SampleIndicators
+        verses = SampleVerses, indicators = SampleIndicators,
     )
 }

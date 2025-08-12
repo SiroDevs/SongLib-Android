@@ -91,13 +91,24 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchSongs(qry: String) {
+    fun searchSongs(qry: String, byNo: Boolean = false) {
         viewModelScope.launch {
             val allSongs = _songs.value
-            val query = qry.trim().lowercase()
+            val query = qry.trim()
 
             if (query.isBlank()) {
                 _filtered.value = allSongs
+                return@launch
+            }
+
+            if (byNo) {
+                val number = query.toIntOrNull()
+                _filtered.value = if (number != null) {
+                    allSongs.filter { it.songNo == number }
+                } else {
+                    emptyList()
+                }
+                _uiState.tryEmit(UiState.Filtered)
                 return@launch
             }
 
@@ -105,18 +116,13 @@ class HomeViewModel @Inject constructor(
             val words = if (query.contains(',')) {
                 query.split(',').map { it.trim() }
             } else {
-                listOf(query)
+                listOf(query.lowercase())
             }
 
             val queryPattern =
                 words.joinToString(".*") { Regex.escape(it) }.toRegex(RegexOption.IGNORE_CASE)
 
             val filteredSongs = allSongs.filter { song ->
-                val queryIsNumeric = query.toIntOrNull()
-                if (queryIsNumeric != null && song.songNo == queryIsNumeric) {
-                    return@filter true
-                }
-
                 val title = song.title.replace(charsPattern, "").lowercase()
                 val alias = song.alias.replace(charsPattern, "").lowercase()
                 val content = song.content.replace(charsPattern, "").lowercase()

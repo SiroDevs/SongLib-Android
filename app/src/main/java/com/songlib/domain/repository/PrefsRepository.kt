@@ -33,4 +33,8 @@ class PrefsRepository @Inject constructor(
         )
         set(value) = prefs.edit { putString(PrefConstants.THEME_MODE, value.name) }
 
+    var horizontalSlides: Boolean
+        get() = prefs.getBoolean(PrefConstants.HORIZONTAL_SLIDES, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.HORIZONTAL_SLIDES, value) }
+
 }

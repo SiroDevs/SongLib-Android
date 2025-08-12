@@ -16,8 +16,8 @@ import com.swahilib.presentation.components.indicators.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Step2Screen(
-    viewModel: SelectionViewModel,
     navController: NavHostController,
+    viewModel: SelectionViewModel,
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
 

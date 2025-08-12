@@ -11,29 +11,24 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.domain.repository.*
-import com.songlib.presentation.components.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.selection.step1.components.*
-import com.songlib.presentation.theme.*
 import com.songlib.presentation.viewmodels.SelectionViewModel
 import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Step1Screen(
-    viewModel: SelectionViewModel,
     navController: NavHostController,
+    viewModel: SelectionViewModel,
     themeRepo: ThemeRepository
 ) {
-    var fetchData by rememberSaveable { mutableStateOf(0) }
+    var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
 
-    if (fetchData == 0) {
-        viewModel.fetchBooks()
-        fetchData++
-    }
+    if (fetchData == 0) { viewModel.fetchBooks() }
 
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()

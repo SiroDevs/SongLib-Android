@@ -13,6 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PresenterViewModel @Inject constructor(
     private val songRepo: SongRepository,
+    private val prefsRepo: PrefsRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -28,6 +29,8 @@ class PresenterViewModel @Inject constructor(
 
     private val _verses = MutableStateFlow<List<String>>(emptyList())
     val verses: StateFlow<List<String>> get() = _verses
+
+    val horizontalSlides = prefsRepo.horizontalSlides
 
     fun loadSong(song: Song) {
         _uiState.value = UiState.Loading
