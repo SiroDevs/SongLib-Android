@@ -64,13 +64,14 @@ fun LoadingState(
                         .fillMaxWidth(0.8f)
                 ) {
                     LinearProgressIndicator(
-                        progress = (progressValue / 100f).coerceIn(0f, 1f),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        trackColor = Color.LightGray.copy(alpha = 0.3f),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp)
-                            .clip(RoundedCornerShape(4.dp))
+                    progress = { (progressValue / 100f).coerceIn(0f, 1f) },
+                    modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(8.dp)
+                                                .clip(RoundedCornerShape(4.dp)),
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    trackColor = Color.LightGray.copy(alpha = 0.3f),
+                    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
