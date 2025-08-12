@@ -12,18 +12,16 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.repository.*
 import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.viewmodels.SettingsViewModel
 
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
+    viewModel: SettingsViewModel,
     themeRepo: ThemeRepository,
-    prefs: PrefsRepository = hiltViewModel() // Inject PrefsRepository here
 ) {
     var showThemeDialog by remember { mutableStateOf(false) }
     val theme = themeRepo.selectedTheme
-
-    // Read and store switch state
-    var horizontalSlides by remember { mutableStateOf(prefs.horizontalSlides) }
 
     Scaffold(
         topBar = {
@@ -39,36 +37,33 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            // Theme selector
             ListItem(
                 headlineContent = { Text("App Theme") },
                 modifier = Modifier.clickable { showThemeDialog = true },
-                supportingContent = {
-                    Text(appThemeName(theme))
-                },
-                leadingContent = {
-                    Icon(Icons.Default.Brightness6, contentDescription = "Theme")
-                },
+                supportingContent = { Text(appThemeName(theme)) },
+                leadingContent = { Icon(Icons.Default.Brightness6, contentDescription = "Theme") },
             )
             HorizontalDivider()
 
-            // Horizontal slides toggle
             ListItem(
-                headlineContent = { Text("Horizontal Slides") },
-                supportingContent = { Text("Swipe songs horizontally instead of vertically") },
+                headlineContent = { Text("Song Slides") },
+                supportingContent = { Text("Swipe verses horizontally") },
                 trailingContent = {
                     Switch(
-                        checked = horizontalSlides,
-                        onCheckedChange = { isChecked ->
-                            horizontalSlides = isChecked
-                            prefs.horizontalSlides = isChecked // Persist change
+                        checked = viewModel.horizontalSlides,
+                        onCheckedChange = {
+                            viewModel.updateHorizontalSlides(it)
                         }
                     )
                 },
                 leadingContent = {
-                    Icon(Icons.Default.Swipe, contentDescription = "Horizontal slides")
+                    Icon(
+                        Icons.Default.Swipe,
+                        contentDescription = "Horizontal slides"
+                    )
                 }
             )
+            HorizontalDivider()
         }
 
         if (showThemeDialog) {

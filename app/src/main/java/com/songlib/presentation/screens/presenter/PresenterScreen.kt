@@ -15,8 +15,6 @@ import androidx.navigation.NavHostController
 import com.songlib.data.models.Song
 import com.songlib.data.sample.*
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repository.PrefsRepository
-import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.screens.presenter.components.*

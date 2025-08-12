@@ -7,7 +7,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.Song
-import com.songlib.domain.repository.PrefsRepository
 import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.settings.SettingsScreen
@@ -15,6 +14,7 @@ import com.songlib.presentation.screens.presenter.PresenterScreen
 import com.songlib.presentation.screens.selection.step1.Step1Screen
 import com.songlib.presentation.screens.selection.step2.Step2Screen
 import com.songlib.presentation.screens.splash.SplashScreen
+import com.songlib.presentation.viewmodels.*
 import com.songlib.presentation.viewmodels.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -72,8 +72,10 @@ fun AppNavHost(
         }
 
         composable(Routes.SETTINGS) {
+            val viewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
                 navController = navController,
+                viewModel = viewModel,
                 themeRepo = themeRepo,
             )
         }
