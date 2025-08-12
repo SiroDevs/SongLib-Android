@@ -3,6 +3,7 @@ package com.songlib.domain.repository
 import android.content.*
 import com.songlib.data.models.*
 import com.songlib.data.sources.local.*
+import com.songlib.data.sources.local.daos.BookDao
 import com.songlib.data.sources.remote.ApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -34,6 +35,14 @@ class BookRepository @Inject constructor(
     }
 
     suspend fun getAllBooks(): List<Book> {
+        var allBooks: List<Book>
+        withContext(Dispatchers.IO) {
+            allBooks = booksDao?.getAll() ?: emptyList()
+        }
+        return allBooks
+    }
+
+    suspend fun clearAllBooks(): List<Book> {
         var allBooks: List<Book>
         withContext(Dispatchers.IO) {
             allBooks = booksDao?.getAll() ?: emptyList()

@@ -3,6 +3,7 @@ package com.songlib.data.sources.local
 import android.content.Context
 import androidx.room.*
 import com.songlib.data.models.*
+import com.songlib.data.sources.local.daos.*
 
 @Database(entities = [Book::class, Song::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
