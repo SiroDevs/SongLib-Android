@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.repository.*
 import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
+import com.songlib.presentation.screens.selection.step1.components.ConfirmSaveDialog
 import com.songlib.presentation.viewmodels.SettingsViewModel
 
 @Composable
@@ -20,8 +21,20 @@ fun SettingsScreen(
     viewModel: SettingsViewModel,
     themeRepo: ThemeRepository,
 ) {
-    var showThemeDialog by remember { mutableStateOf(false) }
     val theme = themeRepo.selectedTheme
+
+    var showThemeDialog by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
+
+    if (showResetDialog) {
+        ConfirmResetDialog(
+            onDismiss = { showResetDialog = false },
+            onConfirm = {
+
+                showResetDialog = false
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -37,15 +50,13 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
+            Text("SLIDES")
             ListItem(
-                headlineContent = { Text("App Theme") },
-                modifier = Modifier.clickable { showThemeDialog = true },
-                supportingContent = { Text(appThemeName(theme)) },
-                leadingContent = { Icon(Icons.Default.Brightness6, contentDescription = "Theme") },
-            )
-            HorizontalDivider()
-
-            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.Swipe, contentDescription = "slides"
+                    )
+                },
                 headlineContent = { Text("Song Slides") },
                 supportingContent = { Text("Swipe verses horizontally") },
                 trailingContent = {
@@ -55,15 +66,46 @@ fun SettingsScreen(
                             viewModel.updateHorizontalSlides(it)
                         }
                     )
-                },
-                leadingContent = {
-                    Icon(
-                        Icons.Default.Swipe,
-                        contentDescription = "Horizontal slides"
-                    )
                 }
             )
             HorizontalDivider()
+
+            Text("DISPLAY")
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.Brightness6, contentDescription = "Theme"
+                    )
+                },
+                headlineContent = { Text("App Theme") },
+                supportingContent = { Text(appThemeName(theme)) },
+                modifier = Modifier.clickable { showThemeDialog = true },
+            )
+            HorizontalDivider()
+
+            Text("SELECTION")
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.EditNote, contentDescription = "Reset"
+                    )
+                },
+                headlineContent = { Text("Modify Collection") },
+                supportingContent = { Text("Add or Remove Songbooks") },
+                modifier = Modifier.clickable { showThemeDialog = true },
+            )
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.Refresh, contentDescription = "Reset"
+                    )
+                },
+                headlineContent = { Text("Do Selection Afresh") },
+                supportingContent = { Text("Reset everything and start over") },
+                modifier = Modifier.clickable { showThemeDialog = true },
+            )
+            HorizontalDivider()
+
         }
 
         if (showThemeDialog) {
