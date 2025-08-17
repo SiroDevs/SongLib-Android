@@ -3,8 +3,6 @@
 **SongLib** is a modern, cross-platform church hymn library and songbook manager.
 With **10+ songbooks**, **10000+ songs** and powerful search, it lets you keep all your favorite hymns right at your fingertips — even offline.
 
-Available for **Android, iOS, Windows, Linux, and macOS**.
-
 > 🔗 iOS Version Repo: [@SiroDaves/SongLib-iOS](https://github.com/SiroDaves/SongLib-iOS)
 
 ## ✨ Features

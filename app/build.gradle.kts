@@ -37,6 +37,10 @@ android {
         versionName = configProperties["versionName"] as String
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
+        buildConfigField("String", "RevenueCatId", "\"${properties.getProperty("REVENUE_CAT_ID")}\"")
     }
 
     signingConfigs {
@@ -131,6 +135,9 @@ dependencies {
     implementation(libs.squareup.retrofit)      // Retrofit for networking
     implementation(libs.squareup.retrofit.gson)      // Gson converter for Retrofit
     implementation(libs.squareup.okhttp3.logging)      // OkHttp logging interceptor
+
+    // Error Handling
+    implementation(libs.io.sentry)   // Sentry
 
     // Testing - Unit Tests
     testImplementation(libs.junit)      // JUnit for unit testing
