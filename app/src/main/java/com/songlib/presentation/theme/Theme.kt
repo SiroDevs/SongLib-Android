@@ -2,6 +2,7 @@ package com.songlib.presentation.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.WindowInsets
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.shapes
@@ -110,7 +111,19 @@ fun AppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.onPrimary.toArgb()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+                    val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
+                    view.setBackgroundColor(colorScheme.onPrimary.toArgb())
+
+                    view.setPadding(0, statusBarInsets.top, 0, 0)
+                    insets
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                window.statusBarColor = colorScheme.onPrimary.toArgb()
+            }
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !useDarkTheme
         }
     }

@@ -14,7 +14,51 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SongLib.Splash"
-        tools:targetApi="31">
+        tools:targetApi="31" >
+
+        <meta-data
+            android:name="io.sentry.dsn"
+            android:value="https://3fe2721bbfa7a1184eb24a8241a58822@o1365314.ingest.us.sentry.io/4507672351014912" />
+
+        <meta-data
+            android:name="io.sentry.send-default-pii"
+            android:value="true" />
+
+        <meta-data
+            android:name="io.sentry.traces.user-interaction.enable"
+            android:value="true" />
+
+        <meta-data
+            android:name="io.sentry.attach-screenshot"
+            android:value="true" />
+
+        <meta-data
+            android:name="io.sentry.attach-view-hierarchy"
+            android:value="true" />
+
+        <meta-data
+            android:name="io.sentry.traces.sample-rate"
+            android:value="1.0" />
+
+        <meta-data
+            android:name="io.sentry.traces.profiling.session-sample-rate"
+            android:value="1.0" />
+
+        <meta-data
+            android:name="io.sentry.traces.profiling.lifecycle"
+            android:value="trace" />
+
+        <meta-data
+            android:name="io.sentry.traces.profiling.start-on-app-start"
+            android:value="true" />
+
+        <meta-data
+            android:name="io.sentry.session-replay.on-error-sample-rate"
+            android:value="1.0" />
+
+        <meta-data
+            android:name="io.sentry.session-replay.session-sample-rate"
+            android:value="0.1" />
 
         <activity
             android:name=".MainActivity"
