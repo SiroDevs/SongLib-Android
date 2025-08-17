@@ -56,7 +56,6 @@ squareup-okhttp3-logging = { module = "com.squareup.okhttp3:logging-interceptor"
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashScreen" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
 material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
-io-sentry = { group = "io.sentry.android.gradle", name = "sentry", version.ref = "sentry" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -64,4 +63,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+io-sentry = { id = "io.sentry.android.gradle", version.ref = "sentry" }
 

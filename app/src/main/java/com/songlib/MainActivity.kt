@@ -43,7 +43,6 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val prefsRepo: PrefsRepository
             val themeRepo: ThemeRepository = hiltViewModel()
             val themeMode = themeRepo.selectedTheme
             val isDarkTheme = when (themeMode) {
