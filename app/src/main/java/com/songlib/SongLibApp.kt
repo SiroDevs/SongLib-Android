@@ -2,10 +2,10 @@ package com.songlib
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-//import io.sentry.android.core.SentryAndroid
+import io.sentry.android.core.SentryAndroid
 
 @HiltAndroidApp
-class SongLibApp : Application() /*{
+class SongLibApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -16,4 +16,4 @@ class SongLibApp : Application() /*{
             options.isDebug = false
         }
     }
-} */
+}

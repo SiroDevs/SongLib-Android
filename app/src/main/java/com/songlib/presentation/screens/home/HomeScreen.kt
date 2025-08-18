@@ -62,12 +62,12 @@ fun HomeScreen(
                     actions = {
                         if (uiState != UiState.Loading) {
                             IconButton(onClick = { isSearching = true }) {
-                                Icon(Icons.Filled.Search, contentDescription = "Search")
+                                Icon(Icons.Filled.Search, contentDescription = "")
                             }
                         }
 
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
-                            Icon(Icons.Filled.Settings, contentDescription = "Settings")
+                            Icon(Icons.Filled.Settings, contentDescription = "")
                         }
                     }
                 )
