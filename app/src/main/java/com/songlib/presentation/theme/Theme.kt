@@ -112,19 +112,24 @@ fun AppTheme(
         SideEffect {
             val window = (view.context as Activity).window
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                window.decorView.setOnApplyWindowInsetsListener { view, insets ->
-                    val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
-                    view.setBackgroundColor(colorScheme.onPrimary.toArgb())
-
-                    view.setPadding(0, statusBarInsets.top, 0, 0)
-                    insets
+            when {
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                    window.setDecorFitsSystemWindows(false)
+                    window.decorView.setOnApplyWindowInsetsListener { v, insets ->
+                        val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
+                        v.setBackgroundColor(colorScheme.onPrimary.toArgb())
+                        v.setPadding(0, statusBarInsets.top, 0, 0)
+                        insets
+                    }
                 }
-            } else {
-                @Suppress("DEPRECATION")
-                window.statusBarColor = colorScheme.onPrimary.toArgb()
+                else -> {
+                    @Suppress("DEPRECATION")
+                    window.statusBarColor = colorScheme.onPrimary.toArgb()
+                }
             }
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !useDarkTheme
+
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !useDarkTheme
         }
     }
 

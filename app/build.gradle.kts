@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
+    alias(libs.plugins.io.sentry)
 }
 
 val keystoreProperties = Properties()
@@ -20,6 +21,9 @@ val configFile = rootProject.file("gradle/config/config.properties")
 if (configFile.exists()) {
     configProperties.load(configFile.inputStream())
 }
+
+val localProperties = Properties()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
     namespace = configProperties["applicationId"] as String
@@ -38,9 +42,15 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
-        buildConfigField("String", "RevenueCatId", "\"${properties.getProperty("REVENUE_CAT_ID")}\"")
+        buildConfigField("String", "RevenueCatId", "\"${localProperties.getProperty("REVENUE_CAT_ID")}\"")
+        buildConfigField("String", "SentryDsn", "\"${localProperties.getProperty("SENTRY_DSN")}\"")
+    }
+
+    sentry {
+        org.set(localProperties.getProperty("SENTRY_ORG"))
+        projectName.set(localProperties.getProperty("SENTRY_PROJECT"))
+        authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
+        autoUploadProguardMapping.set(true)
     }
 
     signingConfigs {
@@ -87,11 +97,20 @@ android {
         disable += "NullSafeMutableLiveData"
     }
 }
+
+sentry {
+    debug.set(true)
+    includeSourceContext.set(true)
+    org.set("futuristicken")
+    projectName.set("songlib-android")
+    additionalSourceDirsForSourceContext.set(setOf("detail/src/main/java", "core/src/main/java"))
+    authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
+}
+
 dependencies {
     // Core AndroidX & Lifecycle
     implementation(libs.androidx.core.ktx)      // Kotlin extensions for core Android APIs
     implementation(libs.androidx.lifecycle.runtime.ktx)      // Lifecycle-aware components
-    implementation(libs.androidx.core.splashscreen)      // Splash screen API
 
     // Jetpack Compose - BOM
     implementation(platform(libs.androidx.compose.bom))      // Compose Bill of Materials (BOM)
@@ -135,9 +154,6 @@ dependencies {
     implementation(libs.squareup.retrofit)      // Retrofit for networking
     implementation(libs.squareup.retrofit.gson)      // Gson converter for Retrofit
     implementation(libs.squareup.okhttp3.logging)      // OkHttp logging interceptor
-
-    // Error Handling
-    implementation(libs.io.sentry)   // Sentry
 
     // Testing - Unit Tests
     testImplementation(libs.junit)      // JUnit for unit testing

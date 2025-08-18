@@ -13,6 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+sentry.properties
 
 # Remember to never publicly share your keystore.
 # See https://flutter.dev/to/reference-keystore
