@@ -7,11 +7,11 @@ import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.pager.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.songlib.data.sample.*
+import com.songlib.presentation.components.autosize.AutoSizeText
 
 @Composable
 fun PresenterTabs(
@@ -47,28 +47,22 @@ fun PresenterTabs(
             }
 
         pager { page ->
-            PresenterSlide(text = verses[page])
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(15.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AutoSizeText(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = verses[page],
+                    fontSize = 45.sp,
+                    lineHeight = 48.sp,
+                    keepLineHeight = true,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
-    }
-}
-
-@Composable
-fun PresenterSlide(text: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            style = TextStyle(
-                fontSize = 25.sp,
-                letterSpacing = 1.sp,
-                fontWeight = FontWeight.Bold,
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
