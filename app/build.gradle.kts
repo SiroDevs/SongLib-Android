@@ -103,7 +103,6 @@ dependencies {
     // Core AndroidX & Lifecycle
     implementation(libs.androidx.core.ktx)      // Kotlin extensions for core Android APIs
     implementation(libs.androidx.lifecycle.runtime.ktx)      // Lifecycle-aware components
-    implementation(libs.androidx.core.splashscreen)      // Splash screen API
 
     // Jetpack Compose - BOM
     implementation(platform(libs.androidx.compose.bom))      // Compose Bill of Materials (BOM)
