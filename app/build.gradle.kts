@@ -44,8 +44,6 @@ android {
 
         buildConfigField("String", "RevenueCatId", "\"${localProperties.getProperty("REVENUE_CAT_ID")}\"")
         buildConfigField("String", "SentryDsn", "\"${localProperties.getProperty("SENTRY_DSN")}\"")
-        buildConfigField("String", "SentryOrg", "\"${localProperties.getProperty("SENTRY_ORG")}\"")
-        buildConfigField("String", "SentryProject", "\"${localProperties.getProperty("SENTRY_PROJECT")}\"")
     }
 
     sentry {
@@ -99,6 +97,16 @@ android {
         disable += "NullSafeMutableLiveData"
     }
 }
+
+sentry {
+    debug.set(true)
+    includeSourceContext.set(true)
+    org.set("futuristicken")
+    projectName.set("songlib-android")
+    additionalSourceDirsForSourceContext.set(setOf("detail/src/main/java", "core/src/main/java"))
+    authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
+}
+
 dependencies {
     // Core AndroidX & Lifecycle
     implementation(libs.androidx.core.ktx)      // Kotlin extensions for core Android APIs
