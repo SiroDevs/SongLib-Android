@@ -1,11 +1,12 @@
 package com.songlib.data.sources.local.daos
 
 import androidx.room.*
+import com.songlib.core.utils.DbConstants
 import com.songlib.data.models.Song
 
 @Dao
 interface SongDao {
-    @Query("SELECT * FROM songs")
+    @Query("SELECT * FROM ${DbConstants.SONGS}")
     fun getAll(): List<Song>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -17,12 +18,12 @@ interface SongDao {
     @Delete()
     fun delete(song: Song)
 
-    @Query("DELETE FROM songs")
+    @Query("DELETE FROM ${DbConstants.SONGS}")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM songs WHERE songId = :id")
+    @Query("DELETE FROM ${DbConstants.SONGS} WHERE songId = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("DELETE FROM songs WHERE book = :id")
+    @Query("DELETE FROM ${DbConstants.SONGS} WHERE book = :id")
     suspend fun deleteByBookId(id: Int)
 }

@@ -3,11 +3,12 @@ package com.songlib.data.models
 import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
+import com.songlib.core.utils.DbConstants
 import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
-@Entity(tableName = "books", indices = [Index(value = ["bookId"], unique = true)])
+@Entity(tableName = DbConstants.BOOKS, indices = [Index(value = ["bookId"], unique = true)])
 data class Book(
     @PrimaryKey() val bookId: Int,
     @ColumnInfo(name = "bookNo") val bookNo: Int,

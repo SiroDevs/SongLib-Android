@@ -35,7 +35,7 @@ fun HomeScreen(
     }
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var searchByNo by rememberSaveable { mutableStateOf(false) }
-    var searchQuery by rememberSaveable { mutableStateOf("") }
+    var searchQry by rememberSaveable { mutableStateOf("") }
 
     val uiState by viewModel.uiState.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
@@ -44,15 +44,15 @@ fun HomeScreen(
         topBar = {
             if (isSearching) {
                 SearchTopBar(
-                    query = searchQuery,
+                    query = searchQry,
                     onQueryChange = {
-                        searchQuery = it
+                        searchQry = it
                         viewModel.searchSongs(it, searchByNo)
                     },
                     onClose = {
                         isSearching = false
                         searchByNo = false
-                        searchQuery = ""
+                        searchQry = ""
                         viewModel.searchSongs("")
                     }
                 )
@@ -119,17 +119,17 @@ fun HomeScreen(
         DialPadOverlay(
             visible = true,
             onNumberClick = { num ->
-                searchQuery += num
-                viewModel.searchSongs(searchQuery, true)
+                searchQry += num
+                viewModel.searchSongs(searchQry, true)
             },
             onBackspaceClick = {
-                if (searchQuery.isNotEmpty()) {
-                    searchQuery = searchQuery.dropLast(1)
-                    viewModel.searchSongs(searchQuery, true)
+                if (searchQry.isNotEmpty()) {
+                    searchQry = searchQry.dropLast(1)
+                    viewModel.searchSongs(searchQry, true)
                 }
             },
             onSearchClick = {
-                viewModel.searchSongs(searchQuery, true)
+                viewModel.searchSongs(searchQry, true)
                 isSearching = false
                 searchByNo = false
             }
