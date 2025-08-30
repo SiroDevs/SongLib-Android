@@ -19,7 +19,7 @@ import com.songlib.presentation.components.action.*
 import com.songlib.presentation.components.indicators.LoadingState
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.home.tabs.*
-import com.songlib.presentation.screens.home.widgets.*
+import com.songlib.presentation.screens.home.components.*
 import com.songlib.presentation.viewmodels.HomeViewModel
 import com.swahilib.presentation.components.indicators.ErrorState
 
@@ -41,51 +41,6 @@ fun HomeScreen(
     val selectedTab by viewModel.selectedTab.collectAsState()
 
     Scaffold(
-        topBar = {
-            if (isSearching) {
-                SearchTopBar(
-                    query = searchQry,
-                    onQueryChange = {
-                        searchQry = it
-                        viewModel.searchSongs(it, searchByNo)
-                    },
-                    onClose = {
-                        isSearching = false
-                        searchByNo = false
-                        searchQry = ""
-                        viewModel.searchSongs("")
-                    }
-                )
-            } else {
-                AppTopBar(
-                    title = "SongLib",
-                    actions = {
-                        if (uiState != UiState.Loading) {
-                            IconButton(onClick = { isSearching = true }) {
-                                Icon(Icons.Filled.Search, contentDescription = "")
-                            }
-                        }
-
-                        IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
-                            Icon(Icons.Filled.Settings, contentDescription = "")
-                        }
-                    }
-                )
-            }
-        },
-        floatingActionButton = {
-            if (selectedTab == HomeNavItem.Search) {
-                FloatingActionButton(
-                    onClick = {
-                        isSearching = true
-                        searchByNo = true
-                    },
-                    containerColor = MaterialTheme.colorScheme.onPrimary
-                ) {
-                    Icon(Icons.Filled.Dialpad, "Search by number")
-                }
-            }
-        },
         bottomBar = {
             BottomNavBar(
                 selectedItem = selectedTab,
@@ -107,8 +62,9 @@ fun HomeScreen(
                 is UiState.Loading -> LoadingState(title = "", fileName = "circle-loader")
                 else -> {
                     when (selectedTab) {
-                        HomeNavItem.Search -> SearchTab(viewModel, navController)
-                        HomeNavItem.Likes -> LikesTab(viewModel)
+                        HomeNavItem.Search -> HomeSearch(viewModel, navController)
+                        HomeNavItem.Likes -> HomeLikes(viewModel, navController)
+                        HomeNavItem.Listing -> HomeLikes(viewModel, navController)
                     }
                 }
             }

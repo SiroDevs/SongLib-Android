@@ -5,7 +5,7 @@ import androidx.lifecycle.*
 import com.songlib.data.models.*
 import com.songlib.domain.entity.UiState
 import com.songlib.domain.repository.*
-import com.songlib.presentation.screens.home.widgets.HomeNavItem
+import com.songlib.presentation.screens.home.components.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*

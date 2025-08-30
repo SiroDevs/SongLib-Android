@@ -4,6 +4,7 @@ import androidx.room.*
 import com.songlib.core.utils.DbConstants
 import com.songlib.data.models.Listing
 
+@Dao
 interface ListingDao {
     @Query("SELECT * FROM ${DbConstants.LISTINGS}")
     fun getAll(): List<Listing>

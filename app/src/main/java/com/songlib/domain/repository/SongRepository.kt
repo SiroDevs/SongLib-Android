@@ -15,11 +15,11 @@ class SongRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService,
 ) {
-    private var songsDao: SongDao?
+    private var songDao: SongDao?
 
     init {
         val db = AppDatabase.getDatabase(context)
-        songsDao = db?.songsDao()
+        songDao = db?.songDao()
     }
 
     fun getSongs(books: String): Flow<List<Song>> = flow {
@@ -29,32 +29,32 @@ class SongRepository @Inject constructor(
 
     suspend fun deleteAllSongs() {
         withContext(Dispatchers.IO) {
-            songsDao?.deleteAll()
+            songDao?.deleteAll()
         }
     }
 
     suspend fun deleteByBookId(bookId: Int) {
         withContext(Dispatchers.IO) {
-            songsDao?.deleteByBookId(bookId)
+            songDao?.deleteByBookId(bookId)
         }
     }
 
     suspend fun saveSong(song: Song) {
         withContext(Dispatchers.IO) {
-            songsDao?.insert(song)
+            songDao?.insert(song)
         }
     }
 
     suspend fun updateSong(song: Song) {
         withContext(Dispatchers.IO) {
-            songsDao?.update(song)
+            songDao?.update(song)
         }
     }
 
     suspend fun getAllSongs(): List<Song> {
         var allSongs: List<Song>
         withContext(Dispatchers.IO) {
-            allSongs = songsDao?.getAll() ?: emptyList()
+            allSongs = songDao?.getAll() ?: emptyList()
         }
         return allSongs
     }

@@ -5,9 +5,8 @@ import com.songlib.data.models.*
 import com.songlib.data.sources.local.*
 import com.songlib.data.sources.local.daos.BookDao
 import com.songlib.data.sources.remote.ApiService
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 import javax.inject.*
 
 @Singleton
@@ -15,11 +14,11 @@ class BookRepository @Inject constructor(
     context: Context,
     private val apiService: ApiService,
 ) {
-    private var booksDao: BookDao?
+    private var bookDao: BookDao?
 
     init {
         val db = AppDatabase.getDatabase(context)
-        booksDao = db?.booksDao()
+        bookDao = db?.bookDao()
     }
 
     fun getBooks(): Flow<List<Book>> = flow {
@@ -29,27 +28,27 @@ class BookRepository @Inject constructor(
 
     suspend fun saveBook(book: Book) {
         withContext(Dispatchers.IO) {
-            booksDao?.insert(book)
+            bookDao?.insert(book)
         }
     }
 
     suspend fun deleteById(bookId: Int) {
         withContext(Dispatchers.IO) {
-            booksDao?.deleteById(bookId)
+            bookDao?.deleteById(bookId)
         }
     }
 
     suspend fun getAllBooks(): List<Book> {
         var allBooks: List<Book>
         withContext(Dispatchers.IO) {
-            allBooks = booksDao?.getAll() ?: emptyList()
+            allBooks = bookDao?.getAll() ?: emptyList()
         }
         return allBooks
     }
 
     suspend fun deleteAllBooks() {
         withContext(Dispatchers.IO) {
-            booksDao?.deleteAll()
+            bookDao?.deleteAll()
         }
     }
 }

@@ -1,11 +1,13 @@
 package com.songlib.data.models
 
+import androidx.annotation.Keep
 import androidx.room.*
-import java.util.Date
+import com.songlib.core.utils.DbConstants
 
-@Entity(tableName = "histories")
+@Keep
+@Entity(tableName = DbConstants.HISTORIES)
 data class History(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "song") val song: Int = 0,
-    @ColumnInfo(name = "created") val created: Date
+    @ColumnInfo(name = "created") val created: String
 )

@@ -1,13 +1,10 @@
 package com.songlib.data.sources.local.daos
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.songlib.core.utils.DbConstants
 import com.songlib.data.models.Search
 
+@Dao
 interface SearchDao {
     @Query("SELECT * FROM ${DbConstants.SEARCHES}")
     fun getAll(): List<Search>

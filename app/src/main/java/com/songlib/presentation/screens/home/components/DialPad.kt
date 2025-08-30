@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.home.widgets
+package com.songlib.presentation.screens.home.components
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*

@@ -1,25 +1,22 @@
 package com.songlib.data.sources.local.daos
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import com.songlib.core.utils.DbConstants
-import com.songlib.data.models.Song
+import com.songlib.data.models.History
 
+@Dao
 interface HistoryDao {
     @Query("SELECT * FROM ${DbConstants.HISTORIES}")
-    fun getAll(): List<Song>
+    fun getAll(): List<History>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(history: Song)
+    suspend fun insert(history: History)
 
     @Update()
-    fun update(history: Song)
+    fun update(history: History)
 
     @Delete()
-    fun delete(history: Song)
+    fun delete(history: History)
 
     @Query("DELETE FROM ${DbConstants.HISTORIES}")
     suspend fun deleteAll()
