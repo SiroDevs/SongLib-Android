@@ -1,4 +1,4 @@
-package com.songlib.presentation.screens.home.widgets
+package com.songlib.presentation.screens.home.components
 
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*
@@ -18,6 +18,7 @@ fun BottomNavBar(
     val items = listOf(
         HomeNavItem.Search,
         HomeNavItem.Likes,
+        HomeNavItem.Listing,
     )
     BottomNavigation(
         backgroundColor = MaterialTheme.colorScheme.onPrimary,
@@ -49,4 +50,5 @@ fun BottomNavBarPreview() {
 sealed class HomeNavItem(var icon: ImageVector, var title: String) {
     object Search : HomeNavItem(Icons.Default.Search, "Search")
     object Likes : HomeNavItem(Icons.Default.FavoriteBorder, "Likes")
+    object Listing : HomeNavItem(Icons.Default.FormatListNumbered, "Listings")
 }

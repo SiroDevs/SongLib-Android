@@ -1,79 +1,51 @@
 package com.songlib.presentation.components.listitems
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.songlib.core.utils.refineTitle
-import com.songlib.data.models.Book
-import com.songlib.data.sample.SampleBooks
-import com.songlib.domain.entity.Selectable
 
 @Composable
 fun BookItem(
-    item: Selectable<Book>,
-    onClick: (Selectable<Book>) -> Unit
+    text: String,
+    isSelected: Boolean = false,
+    onPressed: (() -> Unit)? = null
 ) {
-    val bgColor =
-        if (item.isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
-    val txtColor =
-        if (item.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
+    val bgColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
+    val txtColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
 
-    ElevatedCard(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(3.dp)
-            .clickable { onClick(item) },
-        colors = CardDefaults.cardColors(
+    Button(
+        onClick = { onPressed?.invoke() },
+        colors = ButtonDefaults.buttonColors(
             containerColor = bgColor,
-            contentColor = txtColor,
+            contentColor = txtColor
         ),
-        elevation = CardDefaults.cardElevation(5.dp),
+        shape = RoundedCornerShape(20.dp),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
+        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 5.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = if (item.isSelected) Icons.Filled.RadioButtonChecked else Icons.Filled.RadioButtonUnchecked,
-                contentDescription = null,
-                tint = txtColor,
-                modifier = Modifier.padding(end = 12.dp)
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
             )
-            Column {
-                Text(
-                    text = refineTitle(item.data.title),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = txtColor
-                )
-                Text(
-                    text = "${item.data.songs} ${item.data.subTitle} songs",
-                    fontSize = 18.sp,
-                    color = txtColor
-                )
-            }
-        }
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewBookItem() {
-    val sampleBook = SampleBooks[0]
-
-    val selectableBook = Selectable(data = sampleBook, isSelected = true)
-
     BookItem(
-        item = selectableBook,
-        onClick = {}
+        text = "Song of Worship",
+        isSelected = false,
+        onPressed = {}
     )
 }

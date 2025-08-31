@@ -5,10 +5,16 @@ import androidx.room.*
 import com.songlib.data.models.*
 import com.songlib.data.sources.local.daos.*
 
-@Database(entities = [Book::class, Song::class], version = 1, exportSchema = false)
+@Database(
+    entities = [Book::class, History::class, Listing::class, Search::class, Song::class],
+    version = 2, exportSchema = false
+)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun booksDao(): BookDao
-    abstract fun songsDao(): SongDao
+    abstract fun bookDao(): BookDao
+    abstract fun historyDao(): HistoryDao
+    abstract fun listingDao(): ListingDao
+    abstract fun searchDao(): SearchDao
+    abstract fun songDao(): SongDao
 
     companion object {
         @Volatile

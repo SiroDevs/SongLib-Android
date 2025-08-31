@@ -1,13 +1,11 @@
 package com.songlib.presentation.components.listitems
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,27 +15,19 @@ import com.songlib.data.models.Song
 import com.songlib.data.sample.SampleSongs
 
 @Composable
-fun SearchSongItem(
-    song: Song,
-    isSelected: Boolean,
-    isSearching: Boolean,
-    onClick: (Song) -> Unit,
-) {
+fun SongItem(song: Song) {
     val verses = remember(song.content) { song.content.split("##") }
     val hasChorus = "CHORUS" in song.content
     val chorusText = if (hasChorus) "Chorus" else ""
     val verseCount = verses.size - if (hasChorus) 1 else 0
-    val versesText = if (verses.size == 1) "$verseCount V" else "${verseCount} Vs"
+    val versesText = if (verses.size == 1) "$verseCount v" else "$verseCount vs"
 
     Box(
         modifier = Modifier.padding(horizontal = 10.dp)
     )
     {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                .clickable(onClick = { onClick(song) })
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -62,7 +52,6 @@ fun SearchSongItem(
                 Icon(
                     imageVector = if (song.liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = null,
-                    //tint = ThemeColors.foreColorBW()
                 )
             }
 
@@ -88,11 +77,8 @@ fun SearchSongItem(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSearchSongItem() {
-    SearchSongItem(
+fun PreviewSongItem() {
+    SongItem(
         song = SampleSongs[3],
-        onClick = {},
-        isSelected = false,
-        isSearching = false,
     )
 }

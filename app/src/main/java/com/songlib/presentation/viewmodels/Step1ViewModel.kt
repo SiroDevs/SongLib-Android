@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class Step1ViewModel @Inject constructor(
-    private val prefsRepo: PrefsRepository,
-    private val bookRepo: BookRepository,
+    private val prefsRepo: PreferencesRepository,
+    private val songbkRepo: SongBookRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -32,7 +32,7 @@ class Step1ViewModel @Inject constructor(
         _uiState.tryEmit(UiState.Loading)
 
         viewModelScope.launch {
-            bookRepo.getBooks().catch { exception ->
+            songbkRepo.fetchRemoteBooks().catch { exception ->
                 Log.d("TAG", "fetching books")
                 val errorMessage = when (exception) {
                     is HttpException -> "HTTP Error: ${exception.code()}"
@@ -70,12 +70,12 @@ class Step1ViewModel @Inject constructor(
                     val booksToInsert = books.filter { it.bookId !in existingIds }
                     val idsToDelete = existingIds - newIds
 
-                    booksToInsert.forEach { bookRepo.saveBook(it) }
-                    idsToDelete.forEach { bookRepo.deleteById(it) }
+                    booksToInsert.forEach { songbkRepo.saveBook(it) }
+                    idsToDelete.forEach { songbkRepo.deleteById(it) }
 
                     prefsRepo.selectedBooks = newIds.joinToString(",")
                 } else {
-                    books.forEach { bookRepo.saveBook(it) }
+                    books.forEach { songbkRepo.saveBook(it) }
                     prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
                 }
 

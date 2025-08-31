@@ -16,7 +16,6 @@ import javax.inject.Named
 @Module
 @Suppress("unused")
 object NetworkModule {
-
     @Provides
     @Reusable
     @JvmStatic

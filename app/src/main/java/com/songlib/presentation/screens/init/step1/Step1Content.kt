@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.songlib.data.models.Book
 import com.songlib.data.sample.SampleSelectableBooks
 import com.songlib.domain.entity.*
-import com.songlib.presentation.components.listitems.BookItem
+import com.songlib.presentation.components.listitems.SongBook
 
 @Composable
 fun Step1Content(
@@ -30,7 +30,7 @@ fun Step1Content(
             contentPadding = PaddingValues(horizontal = 5.dp)
         ) {
             items(books) { book ->
-                BookItem(
+                SongBook(
                     item = book,
                     onClick = { onBookClick(book) }
                 )

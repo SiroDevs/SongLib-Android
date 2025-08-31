@@ -7,7 +7,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.*
 
 @Singleton
-class PrefsRepository @Inject constructor(
+class PreferencesRepository @Inject constructor(
     @ApplicationContext context: Context
 ) {
     private val prefs =

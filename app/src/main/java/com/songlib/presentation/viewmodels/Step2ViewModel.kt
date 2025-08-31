@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class Step2ViewModel @Inject constructor(
-    private val prefsRepo: PrefsRepository,
-    private val songRepo: SongRepository,
+    private val prefsRepo: PreferencesRepository,
+    private val songbkRepo: SongBookRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -29,7 +29,7 @@ class Step2ViewModel @Inject constructor(
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
             val books = prefsRepo.selectedBooks
-            songRepo.getSongs(books).catch { exception ->
+            songbkRepo.fetchRemoteSongs(books).catch { exception ->
                 Log.d("TAG", "fetching songs")
                 val errorMessage = when (exception) {
                     is HttpException -> "HTTP Error: ${exception.code()}"
@@ -66,19 +66,19 @@ class Step2ViewModel @Inject constructor(
 
                     val removedBookIds = oldBookIds - newBookIds
                     removedBookIds.forEach { bookId ->
-                        songRepo.deleteByBookId(bookId)
+                        songbkRepo.deleteByBookId(bookId)
                     }
 
                     songs.forEachIndexed { index, song ->
                         if (song.book in newBookIds) {
-                            songRepo.saveSong(song)
+                            songbkRepo.saveSong(song)
                         }
                         val percent = ((index + 1).toFloat() / total * 100).toInt()
                         _progress.emit(percent)
                     }
                 } else {
                     songs.forEachIndexed { index, song ->
-                        songRepo.saveSong(song)
+                        songbkRepo.saveSong(song)
                         val percent = ((index + 1).toFloat() / total * 100).toInt()
                         _progress.emit(percent)
                     }

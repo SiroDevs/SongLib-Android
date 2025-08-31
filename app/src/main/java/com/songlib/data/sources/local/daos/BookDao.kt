@@ -1,11 +1,12 @@
 package com.songlib.data.sources.local.daos
 
 import androidx.room.*
+import com.songlib.core.utils.DbConstants
 import com.songlib.data.models.Book
 
 @Dao
 interface BookDao {
-    @Query("SELECT * FROM books")
+    @Query("SELECT * FROM ${DbConstants.BOOKS}")
     fun getAll(): List<Book>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -17,9 +18,9 @@ interface BookDao {
     @Delete()
     fun delete(book: Book)
 
-    @Query("DELETE FROM books")
-    suspend fun deleteAll()
-
-    @Query("DELETE FROM books WHERE bookId = :id")
+    @Query("DELETE FROM ${DbConstants.BOOKS} WHERE bookId = :id")
     suspend fun deleteById(id: Int)
+
+    @Query("DELETE FROM ${DbConstants.BOOKS}")
+    suspend fun deleteAll()
 }
