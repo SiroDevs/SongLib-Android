@@ -11,12 +11,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.collections.filter
-import kotlin.collections.firstOrNull
+import kotlin.collections.*
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val songbkRepo: SongBookRepository,
+    private val listRepo: ListingRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -47,18 +47,17 @@ class HomeViewModel @Inject constructor(
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            val booksList = songbkRepo.fetchLocalBooks()
-            val songsList = songbkRepo.fetchLocalSongs()
-            _books.value = booksList
-            _songs.value = songsList
+            _books.value = songbkRepo.fetchLocalBooks()
+            _songs.value = songbkRepo.fetchLocalSongs()
+            _listings.value = listRepo.fetchListings()
 
-            val firstBookId = booksList.firstOrNull()?.bookId
+            val firstBookId = _books.value.firstOrNull()?.bookId
             _filtered.value = if (firstBookId != null) {
-                songsList.filter { it.book == firstBookId }
+                _songs.value.filter { it.book == firstBookId }
             } else {
                 emptyList()
             }
-            _likes.value = songsList.filter { it.liked }
+            _likes.value = _songs.value.filter { it.liked }
             _uiState.tryEmit(UiState.Filtered)
         }
     }
@@ -91,4 +90,23 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+     fun likeSongs(books: Set<Song>) {
+        _uiState.tryEmit(UiState.Saving)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                books.forEach {
+                    val likedSong = it.copy(liked = !it.liked)
+                    songbkRepo.updateSong(likedSong)
+                }
+                _uiState.emit(UiState.Saved)
+            } catch (e: Exception) {
+                Log.e("Like/Unlike", "Failed to like songs", e)
+            }
+        }
+    }
+
+    fun saveListing(listing: Listing) {
+
+    }
 }

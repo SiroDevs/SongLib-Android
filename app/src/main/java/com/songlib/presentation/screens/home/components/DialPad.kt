@@ -57,6 +57,7 @@ fun DialPad(
                                 ) { onNumberClick(item) }
 
                                 is Pair<*, *> -> {
+                                    @Suppress("UNCHECKED_CAST")
                                     DialIconButton(
                                         icon = item.first as ImageVector,
                                         modifier = modifier,

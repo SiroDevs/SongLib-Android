@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PresenterViewModel @Inject constructor(
-    private val songRepo: SongRepository,
+    private val songbkRepo: SongBookRepository,
     private val prefsRepo: PreferencesRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
@@ -76,7 +76,7 @@ class PresenterViewModel @Inject constructor(
     fun likeSong(song: Song) {
         viewModelScope.launch {
             val updatedSong = song.copy(liked = !song.liked)
-            songRepo.updateSong(updatedSong)
+            songbkRepo.updateSong(updatedSong)
             _isLiked.value = updatedSong.liked
         }
     }

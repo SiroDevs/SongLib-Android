@@ -3,58 +3,44 @@ package com.songlib.presentation.screens.home.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.songlib.data.models.Song
-import com.songlib.presentation.components.listitems.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.HomeViewModel
+import com.songlib.data.models.Listing
+import com.songlib.presentation.components.listitems.ListingItem
 
 @Composable
-fun SongsList(
-    songs: List<Song>,
+fun ListingsList(
+    listings: List<Listing>,
     viewModel: HomeViewModel,
     navController: NavHostController,
-    selectedSongs: Set<Song>,
-    onSongSelected: (Song) -> Unit
+    selectedListings: Set<Listing>,
+    onListingSelected: (Listing) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
-        stickyHeader {
-            Surface(
-                color = Color.Transparent,
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onSecondary)
-                    .fillMaxWidth()
-                    .zIndex(1f)
-            ) {
-                BooksList(viewModel = viewModel)
-            }
-        }
-
-        itemsIndexed(songs) { index, song ->
-            val isSelected = selectedSongs.contains(song)
+        itemsIndexed(listings) { index, listing ->
+            val isSelected = selectedListings.contains(listing)
             Box(
                 modifier = Modifier
                     .combinedClickable(
                         onClick = {
-                            if (selectedSongs.isNotEmpty()) {
-                                onSongSelected(song)
+                            if (selectedListings.isNotEmpty()) {
+                                onListingSelected(listing)
                             } else {
                                 navController.currentBackStackEntry
                                     ?.savedStateHandle
-                                    ?.set("song", song)
-                                navController.navigate(Routes.PRESENTER)
+                                    ?.set("listing", listing)
+                                navController.navigate(Routes.LISTING)
                             }
                         },
                         onLongClick = {
-                            onSongSelected(song)
+                            onListingSelected(listing)
                         }
                     )
                     .background(
@@ -62,7 +48,7 @@ fun SongsList(
                         else Color.Transparent
                     )
             ) {
-                SongItem(song = song)
+                ListingItem(listing = listing)
             }
         }
     }

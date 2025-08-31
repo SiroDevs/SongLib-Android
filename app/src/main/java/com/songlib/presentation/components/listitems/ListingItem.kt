@@ -1,0 +1,60 @@
+package com.songlib.presentation.components.listitems
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.*
+import com.songlib.data.models.Listing
+
+@Composable
+fun ListingItem(listing: Listing) {
+    Box(
+        modifier = Modifier.padding(horizontal = 10.dp)
+    )
+    {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 5.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = listing.title,
+                    maxLines = 1,
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.scrim,
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(3.dp))
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "0 songs",
+                    style = TextStyle(fontSize = 16.sp),
+                    maxLines = 2,
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.scrim,
+                )
+                Text(
+                    text = "updated just now",
+                    style = TextStyle(fontSize = 16.sp),
+                    maxLines = 2,
+                    modifier = Modifier.weight(1f),
+                    color = MaterialTheme.colorScheme.scrim,
+                )
+            }
+        }
+    }
+}
