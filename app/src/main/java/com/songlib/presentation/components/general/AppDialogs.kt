@@ -1,10 +1,12 @@
-package com.songlib.presentation.screens.selection.step1.components
+package com.songlib.presentation.components.general
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 
 @Composable
-fun ConfirmSaveDialog(
+fun ConfirmDialog(
+    title: String,
+    message: String,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -20,13 +22,18 @@ fun ConfirmSaveDialog(
                 Text("Cancel")
             }
         },
-        title = { Text("Save Selection") },
-        text = { Text("Are you sure you want to save the selected books?") }
+
+        title = { Text(title) },
+        text = { Text(message) }
     )
 }
 
 @Composable
-fun NoSelectionDialog(onDismiss: () -> Unit) {
+fun InfoDialog(
+    title: String,
+    message: String,
+    onDismiss: () -> Unit
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
@@ -34,8 +41,8 @@ fun NoSelectionDialog(onDismiss: () -> Unit) {
                 Text("OKAY")
             }
         },
-        title = { Text("No Selection") },
-        text = { Text("Please select at least one book before saving.") }
+        title = { Text(title) },
+        text = { Text(message) }
     )
 }
 

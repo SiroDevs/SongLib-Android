@@ -42,7 +42,9 @@ class HomeViewModel @Inject constructor(
     private val _listings = MutableStateFlow<List<Listing>>(emptyList())
     val listings: StateFlow<List<Listing>> get() = _listings
 
-    fun setSelectedTab(tab: HomeNavItem) { _selectedTab.value = tab }
+    fun setSelectedTab(tab: HomeNavItem) {
+        _selectedTab.value = tab
+    }
 
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
@@ -90,7 +92,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-     fun likeSongs(books: Set<Song>) {
+    fun likeSongs(books: Set<Song>) {
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -99,7 +101,7 @@ class HomeViewModel @Inject constructor(
                     val likedSong = it.copy(liked = !it.liked)
                     songbkRepo.updateSong(likedSong)
                 }
-                _uiState.emit(UiState.Saved)
+                _uiState.emit(UiState.Filtered)
             } catch (e: Exception) {
                 Log.e("Like/Unlike", "Failed to like songs", e)
             }
@@ -107,6 +109,18 @@ class HomeViewModel @Inject constructor(
     }
 
     fun saveListing(listing: Listing) {
-
+        viewModelScope.launch(Dispatchers.IO) {
+            listRepo.saveListing(listing)
+        }
     }
+
+    fun deleteListings(listings: Set<Listing>) {
+        _uiState.tryEmit(UiState.Saving)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            listings.forEach { listRepo.deleteById(it.id) }
+            _uiState.emit(UiState.Filtered)
+        }
+    }
+
 }

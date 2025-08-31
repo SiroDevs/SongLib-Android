@@ -5,9 +5,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
 import com.songlib.data.models.Song
@@ -23,18 +24,27 @@ fun SongsList(
     selectedSongs: Set<Song>,
     onSongSelected: (Song) -> Unit
 ) {
+    val selectedBook by viewModel.selectedBook.collectAsState(initial = 0)
+    val books by viewModel.books.collectAsState(initial = emptyList())
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
-        stickyHeader {
-            Surface(
-                color = Color.Transparent,
+        item {
+            LazyRow(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.onSecondary)
                     .fillMaxWidth()
-                    .zIndex(1f)
+                    .height(35.dp),
+                contentPadding = PaddingValues(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                BooksList(viewModel = viewModel)
+                itemsIndexed(books) { index, book ->
+                    BookItem(
+                        text = book.title,
+                        isSelected = selectedBook == index,
+                        onPressed = { viewModel.filterSongs(index) }
+                    )
+                }
             }
         }
 

@@ -12,6 +12,7 @@ import com.songlib.presentation.screens.home.components.ListingsList
 import com.songlib.data.models.Listing
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.*
+import com.songlib.presentation.components.general.*
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.HomeViewModel
@@ -23,8 +24,21 @@ fun HomeListings(
     navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
     var selectedListings by remember { mutableStateOf<Set<Listing>>(emptySet()) }
+
+    if (showDeleteDialog) {
+        ConfirmDialog(
+            title = "Delete this listing${selectedListings.size} == 1 ? 's' : ''",
+            message = "Are you sure you want to save the selected books?",
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                viewModel.deleteListings(selectedListings)
+                showDeleteDialog = false
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -39,7 +53,7 @@ fun HomeListings(
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }
                     } else {
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { showDeleteDialog = true }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
                     }

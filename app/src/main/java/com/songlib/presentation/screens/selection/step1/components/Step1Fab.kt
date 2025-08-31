@@ -5,6 +5,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import com.songlib.data.models.Book
+import com.songlib.presentation.components.general.*
 import com.songlib.presentation.viewmodels.Step1ViewModel
 
 @Composable
@@ -16,7 +17,9 @@ fun Step1Fab(
     var showNoSelectionDialog by remember { mutableStateOf(false) }
 
     if (showConfirmDialog) {
-        ConfirmSaveDialog(
+        ConfirmDialog(
+            title = "Save Selection",
+            message = "Are you sure you want to save the selected books?",
             onDismiss = { showConfirmDialog = false },
             onConfirm = {
                 onSaveConfirmed(viewModel.getSelectedBookList())
@@ -26,7 +29,9 @@ fun Step1Fab(
     }
 
     if (showNoSelectionDialog) {
-        NoSelectionDialog(
+        InfoDialog(
+            title = "No Selection",
+            message = "Please select at least one book before saving.",
             onDismiss = { showNoSelectionDialog = false }
         )
     }

@@ -30,7 +30,7 @@ fun SongItem(song: Song) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 5.dp)
+                .padding(vertical = 2.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -42,7 +42,7 @@ fun SongItem(song: Song) {
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,
                     style = TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -58,12 +58,10 @@ fun SongItem(song: Song) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(3.dp))
-
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = refineContent(verses.firstOrNull().orEmpty()),
-                    style = TextStyle(fontSize = 16.sp),
+                    style = TextStyle(fontSize = 14.sp),
                     maxLines = 2,
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,
