@@ -3,20 +3,20 @@ package com.songlib.presentation.screens.home.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.viewmodels.HomeViewModel
 import com.songlib.data.models.Listing
 import com.songlib.presentation.components.listitems.ListingItem
 
 @Composable
 fun ListingsList(
     listings: List<Listing>,
-    viewModel: HomeViewModel,
     navController: NavHostController,
     selectedListings: Set<Listing>,
     onListingSelected: (Listing) -> Unit
@@ -50,6 +50,10 @@ fun ListingsList(
             ) {
                 ListingItem(listing = listing)
             }
+            Divider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                thickness = 1.dp,
+            )
         }
     }
 }

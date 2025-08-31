@@ -31,7 +31,7 @@ fun ListingItem(listing: Listing) {
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,
                     style = TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -41,15 +41,16 @@ fun ListingItem(listing: Listing) {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "0 songs",
-                    style = TextStyle(fontSize = 16.sp),
+                    text = "${listing.song} songs",
+                    style = TextStyle(fontSize = 10.sp),
                     maxLines = 2,
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,
                 )
+                Spacer(modifier = Modifier.fillMaxWidth())
                 Text(
-                    text = "updated just now",
-                    style = TextStyle(fontSize = 16.sp),
+                    text = listing.modified,
+                    style = TextStyle(fontSize = 10.sp),
                     maxLines = 2,
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,

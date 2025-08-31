@@ -16,6 +16,7 @@ import com.songlib.presentation.components.general.*
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.HomeViewModel
+import kotlin.collections.plus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,6 +26,7 @@ fun HomeListings(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
     var selectedListings by remember { mutableStateOf<Set<Listing>>(emptySet()) }
 
@@ -40,13 +42,25 @@ fun HomeListings(
         )
     }
 
+    if (showAddDialog) {
+        QuickFormDialog(
+            title = "New Listing",
+            label = "Listing title",
+            onDismiss = { showAddDialog = false },
+            onConfirm = { title ->
+                viewModel.saveListing(title)
+                showAddDialog = false
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             AppTopBar(
                 title = if (selectedListings.isEmpty()) "Song Listings" else "${selectedListings.size} selected",
                 actions = {
                     if (selectedListings.isEmpty()) {
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { showAddDialog = true }) {
                             Icon(Icons.Filled.Add, contentDescription = "New")
                         }
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
@@ -59,7 +73,7 @@ fun HomeListings(
                     }
                 },
                 showGoBack = selectedListings.isNotEmpty(),
-                onNavIconClick = { selectedListings = emptySet()}
+                onNavIconClick = { selectedListings = emptySet() }
             )
         },
     ) { innerPadding ->
@@ -79,13 +93,15 @@ fun HomeListings(
                     } else {
                         ListingsList(
                             listings = listings,
-                            viewModel = viewModel,
                             navController = navController,
                             selectedListings = selectedListings,
-                            onListingSelected = { },
+                            onListingSelected = { listing ->
+                                selectedListings =
+                                    if (selectedListings.contains(listing)) selectedListings - listing
+                                    else selectedListings + listing
+                            },
                         )
                     }
-
                 else -> EmptyState()
             }
         }

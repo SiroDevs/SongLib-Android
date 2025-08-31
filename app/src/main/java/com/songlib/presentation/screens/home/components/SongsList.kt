@@ -3,6 +3,7 @@ package com.songlib.presentation.screens.home.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.material.Divider
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -74,6 +75,10 @@ fun SongsList(
             ) {
                 SongItem(song = song)
             }
+            Divider(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                thickness = 1.dp,
+            )
         }
     }
 }

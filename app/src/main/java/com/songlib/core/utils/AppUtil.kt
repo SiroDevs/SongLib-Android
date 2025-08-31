@@ -53,3 +53,19 @@ fun songShareString(title: String, content: String): String {
 fun verseOfString(number: String, count: Int): String {
     return "VERSE $number of $count"
 }
+
+fun Long.toTimeAgo(): String {
+    val now = System.currentTimeMillis()
+    val diff = now - this
+
+    val minutes = diff / 60000
+    val hours = diff / (3600000)
+    val days = diff / (86400000)
+
+    return when {
+        minutes < 1 -> "just now"
+        minutes < 60 -> "$minutes min ago"
+        hours < 24 -> "$hours hr ago"
+        else -> "$days d ago"
+    }
+}

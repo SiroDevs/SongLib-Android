@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _books.value = songbkRepo.fetchLocalBooks()
             _songs.value = songbkRepo.fetchLocalSongs()
-            _listings.value = listRepo.fetchListings()
+            _listings.value = listRepo.fetchListings(0)
 
             val firstBookId = _books.value.firstOrNull()?.bookId
             _filtered.value = if (firstBookId != null) {
@@ -108,9 +108,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun saveListing(listing: Listing) {
+    fun saveListing(title: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            listRepo.saveListing(listing)
+            listRepo.saveListing(0, title, 0)
+            _listings.value = listRepo.fetchListings(0)
+            _uiState.tryEmit(UiState.Filtered)
+        }
+    }
+
+    fun saveListItem(parent: Listing, song: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            listRepo.saveListItem(parent, song)
+            _listings.value = listRepo.fetchListings(0)
+            _uiState.tryEmit(UiState.Filtered)
         }
     }
 

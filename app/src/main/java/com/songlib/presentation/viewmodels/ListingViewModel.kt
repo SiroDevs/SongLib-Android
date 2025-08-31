@@ -31,7 +31,7 @@ class ListingViewModel @Inject constructor(
         _uiState.value = UiState.Loading
 
         viewModelScope.launch {
-            _listings.value = listRepo.fetchListings()
+            _listings.value = listRepo.fetchListings(listing.id)
             _uiState.tryEmit(UiState.Loaded)
         }
     }

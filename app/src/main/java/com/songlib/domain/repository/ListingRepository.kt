@@ -1,6 +1,7 @@
 package com.songlib.domain.repository
 
 import android.content.*
+import com.songlib.core.utils.toTimeAgo
 import com.songlib.data.models.*
 import com.songlib.data.sources.local.*
 import com.songlib.data.sources.local.daos.*
@@ -16,18 +17,50 @@ class ListingRepository @Inject constructor(context: Context) {
         listDao = db?.listingDao()
     }
 
-    suspend fun saveListing(listing: Listing) {
-        withContext(Dispatchers.IO) {
-            listDao?.insert(listing)
+    suspend fun fetchListings(parent: Int): List<Listing> {
+        return withContext(Dispatchers.IO) {
+            val allListings = listDao?.getAll(parent) ?: emptyList()
+
+            allListings.map { listing ->
+                Listing(
+                    id = listing.id,
+                    parent = listing.parent,
+                    title = listing.title,
+                    created = listing.created,
+                    song = listDao?.countSongs(listing.id) ?: 0,
+                    modified = listing.modified.toLongOrNull()?.toTimeAgo() ?: ""
+                )
+            }
         }
     }
 
-    suspend fun fetchListings(): List<Listing> {
-        var allListings: List<Listing>
+    suspend fun saveListing(parent: Int, title: String, song: Int) {
         withContext(Dispatchers.IO) {
-            allListings = listDao?.getAll() ?: emptyList()
+            val currentTime = System.currentTimeMillis().toString()
+            val newListing = Listing(
+                parent = parent,
+                title = title,
+                song = song,
+                created = currentTime,
+                modified = currentTime
+            )
+            listDao?.insert(newListing)
         }
-        return allListings
+    }
+
+    suspend fun saveListItem(parent: Listing, song: Int) {
+        withContext(Dispatchers.IO) {
+            val currentTime = System.currentTimeMillis().toString()
+            val newListing = Listing(
+                parent = parent.id,
+                title = "",
+                song = song,
+                created = currentTime,
+                modified = currentTime
+            )
+            listDao?.insert(newListing)
+            listDao?.update(parent)
+        }
     }
 
     suspend fun updateListing(listing: Listing) {
