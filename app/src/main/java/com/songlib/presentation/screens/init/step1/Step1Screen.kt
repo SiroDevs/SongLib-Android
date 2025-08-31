@@ -11,11 +11,10 @@ import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.domain.repository.*
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.indicators.LoadingState
+import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.screens.init.step1.components.Step1Fab
 import com.songlib.presentation.viewmodels.Step1ViewModel
-import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,7 +79,7 @@ fun Step1Screen(
             when (uiState) {
                 is UiState.Error -> ErrorState(
                     message = (uiState as UiState.Error).message,
-                    onRetry = { viewModel.fetchBooks() }
+                    retryAction = { viewModel.fetchBooks() }
                 )
 
                 is UiState.Loading -> LoadingState(

@@ -16,10 +16,9 @@ import com.songlib.data.models.Song
 import com.songlib.data.sample.*
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.indicators.LoadingState
+import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.screens.presenter.components.*
 import com.songlib.presentation.viewmodels.PresenterViewModel
-import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,7 +62,7 @@ fun PresenterScreen(
             when (uiState) {
                 is UiState.Error -> ErrorState(
                     message = (uiState as UiState.Error).message,
-                    onRetry = { }
+                    retryAction = { }
                 )
 
                 UiState.Loaded -> PresenterContent(

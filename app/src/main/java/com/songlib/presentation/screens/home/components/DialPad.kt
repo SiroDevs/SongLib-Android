@@ -1,6 +1,5 @@
 package com.songlib.presentation.screens.home.components
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,41 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.*
-
-@Composable
-fun DialPadOverlay(
-    visible: Boolean,
-    onNumberClick: (String) -> Unit,
-    onBackspaceClick: () -> Unit,
-    onSearchClick: () -> Unit,
-) {
-    if (!visible) return
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter
-    ) {
-        AnimatedVisibility(
-            visible = true,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
-        ) {
-            Card(
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            ) {
-                DialPad(
-                    onNumberClick = onNumberClick,
-                    onBackspaceClick = onBackspaceClick,
-                    onSearchClick = onSearchClick,
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun DialPad(
@@ -64,32 +28,41 @@ fun DialPad(
             Icons.Default.Check to onSearchClick
         )
     )
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.padding(16.dp)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
     ) {
-        dialPadItems.forEach { row ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
+        Card(
+            shape = RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp),
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(16.dp)
             ) {
-                row.forEach { item ->
-                    val modifier = Modifier.weight(1f)
-
-                    when (item) {
-                        is String -> DialButton(
-                            label = item, modifier = modifier
-                        ) { onNumberClick(item) }
-
-                        is Pair<*, *> -> {
-                            @Suppress("UNCHECKED_CAST")
-                            DialIconButton(
-                                icon = item.first as ImageVector,
-                                modifier = modifier,
-                                onClick = item.second as () -> Unit
-                            )
+                dialPadItems.forEach { row ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        row.forEach { item ->
+                            val modifier = Modifier.weight(1f)
+                            when (item) {
+                                is String -> DialButton(
+                                    label = item, modifier = modifier
+                                ) { onNumberClick(item) }
+                                is Pair<*, *> -> {
+                                    DialIconButton(
+                                        icon = item.first as ImageVector,
+                                        modifier = modifier,
+                                        onClick = item.second as () -> Unit
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -103,9 +76,7 @@ private fun DialButton(label: String, modifier: Modifier, onClick: () -> Unit) {
     OutlinedButton(
         onClick = onClick,
         modifier = modifier.aspectRatio(1f)
-    ) {
-        Text(label, fontSize = 20.sp)
-    }
+    ) { Text(label, fontSize = 20.sp) }
 }
 
 @Composable
@@ -115,7 +86,5 @@ private fun DialIconButton(
     OutlinedButton(
         onClick = onClick,
         modifier = modifier.aspectRatio(1f)
-    ) {
-        Icon(icon, contentDescription = "")
-    }
+    ) { Icon(icon, contentDescription = "") }
 }

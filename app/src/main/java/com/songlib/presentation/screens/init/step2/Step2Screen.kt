@@ -8,10 +8,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.indicators.LoadingState
+import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.Step2ViewModel
-import com.swahilib.presentation.components.indicators.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +45,7 @@ fun Step2Screen(
                 when (uiState) {
                     is UiState.Error -> ErrorState(
                         message = (uiState as UiState.Error).message,
-                        onRetry = { viewModel.fetchSongs() }
+                        retryAction = { viewModel.fetchSongs() }
                     )
 
                     is UiState.Loading -> LoadingState(

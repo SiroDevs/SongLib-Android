@@ -9,25 +9,23 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.action.SearchTopBar
+import com.songlib.presentation.components.action.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.HomeViewModel
-import com.swahilib.presentation.components.indicators.EmptyState
 import androidx.compose.ui.Modifier
+import com.songlib.data.models.Song
+import com.songlib.presentation.components.indicators.EmptyState
 import com.songlib.presentation.screens.home.components.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSearch(
-    viewModel: HomeViewModel,
-    navController: NavHostController
-) {
+fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
     val uiState by viewModel.uiState.collectAsState()
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var searchByNo by rememberSaveable { mutableStateOf(false) }
     var searchQry by rememberSaveable { mutableStateOf("") }
     val songs by viewModel.filtered.collectAsState(initial = emptyList())
+    var selectedSong by remember { mutableStateOf<Song?>(null) }
 
     Scaffold(
         topBar = {
@@ -47,14 +45,10 @@ fun HomeSearch(
                 )
             } else {
                 AppTopBar(
-                    title = "SongLib",
                     actions = {
-                        if (uiState != UiState.Loading) {
-                            IconButton(onClick = { isSearching = true }) {
-                                Icon(Icons.Filled.Search, contentDescription = "")
-                            }
+                        IconButton(onClick = { isSearching = true }) {
+                            Icon(Icons.Filled.Search, contentDescription = "")
                         }
-
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                             Icon(Icons.Filled.Settings, contentDescription = "")
                         }
@@ -69,9 +63,7 @@ fun HomeSearch(
                     searchByNo = true
                 },
                 containerColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Icon(Icons.Filled.Dialpad, "Search by number")
-            }
+            ) { Icon(Icons.Filled.Dialpad, "Search by number") }
         },
     ) { innerPadding ->
         Box(
@@ -87,9 +79,28 @@ fun HomeSearch(
                         viewModel = viewModel,
                         navController = navController,
                     )
-
                 else -> EmptyState()
             }
         }
+    }
+
+    if (searchByNo) {
+        DialPad(
+            onNumberClick = { num ->
+                searchQry += num
+                viewModel.searchSongs(searchQry, true)
+            },
+            onBackspaceClick = {
+                if (searchQry.isNotEmpty()) {
+                    searchQry = searchQry.dropLast(1)
+                    viewModel.searchSongs(searchQry, true)
+                }
+            },
+            onSearchClick = {
+                viewModel.searchSongs(searchQry, true)
+                isSearching = false
+                searchByNo = false
+            }
+        )
     }
 }

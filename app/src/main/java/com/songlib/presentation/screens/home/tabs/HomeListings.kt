@@ -3,6 +3,8 @@ package com.songlib.presentation.screens.home.tabs
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -16,14 +18,17 @@ import com.songlib.presentation.viewmodels.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeLikes(viewModel: HomeViewModel, navController: NavHostController) {
+fun HomeListings(
+    viewModel: HomeViewModel,
+    navController: NavHostController
+) {
     val uiState by viewModel.uiState.collectAsState()
-    val likes by viewModel.likes.collectAsState(initial = emptyList())
+    val listings by viewModel.likes.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Liked Songs",
+                title = "Songs Listings",
                 actions = {
                     IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                         Icon(Icons.Filled.Settings, contentDescription = "")
@@ -40,18 +45,19 @@ fun HomeLikes(viewModel: HomeViewModel, navController: NavHostController) {
         ) {
             when (uiState) {
                 is UiState.Filtered ->
-                    if (likes.isEmpty()) {
+                    if (listings.isEmpty()) {
                         EmptyState(
-                            message = "Start liking songs when you view them,\n If you don't want to see this again",
-                            messageIcon = Icons.Default.FavoriteBorder
+                            message = "Start adding lists of songs,\\nif you don't want to see this again",
+                            messageIcon = Icons.Default.FormatListNumbered
                         )
                     } else {
                         SongsList(
-                            songs = likes,
+                            songs = listings,
                             viewModel = viewModel,
                             navController = navController,
                         )
                     }
+
                 else -> EmptyState()
             }
         }
