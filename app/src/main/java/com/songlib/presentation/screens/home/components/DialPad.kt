@@ -55,6 +55,7 @@ fun DialPad(
                                 is String -> DialButton(
                                     label = item, modifier = modifier
                                 ) { onNumberClick(item) }
+
                                 is Pair<*, *> -> {
                                     DialIconButton(
                                         icon = item.first as ImageVector,
@@ -72,7 +73,9 @@ fun DialPad(
 }
 
 @Composable
-private fun DialButton(label: String, modifier: Modifier, onClick: () -> Unit) {
+private fun DialButton(
+    label: String, modifier: Modifier, onClick: () -> Unit
+) {
     OutlinedButton(
         onClick = onClick,
         modifier = modifier.aspectRatio(1f)

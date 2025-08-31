@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
+import com.songlib.data.models.Song
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.*
 import com.songlib.presentation.components.indicators.*
@@ -24,6 +25,7 @@ fun HomeListings(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val listings by viewModel.likes.collectAsState(initial = emptyList())
+    var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
 
     Scaffold(
         topBar = {
@@ -55,6 +57,8 @@ fun HomeListings(
                             songs = listings,
                             viewModel = viewModel,
                             navController = navController,
+                            selectedSongs = selectedSongs,
+                            onSongSelected = { },
                         )
                     }
 

@@ -1,13 +1,11 @@
 package com.songlib.presentation.components.listitems
 
-import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -17,12 +15,7 @@ import com.songlib.data.models.Song
 import com.songlib.data.sample.SampleSongs
 
 @Composable
-fun SearchSongItem(
-    song: Song,
-    isSelected: Boolean,
-    isSearching: Boolean,
-    onClick: (Song) -> Unit,
-) {
+fun SongItem(song: Song) {
     val verses = remember(song.content) { song.content.split("##") }
     val hasChorus = "CHORUS" in song.content
     val chorusText = if (hasChorus) "Chorus" else ""
@@ -36,8 +29,7 @@ fun SearchSongItem(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                .clickable(onClick = { onClick(song) })
+//                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -88,11 +80,8 @@ fun SearchSongItem(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSearchSongItem() {
-    SearchSongItem(
+fun PreviewSongItem() {
+    SongItem(
         song = SampleSongs[3],
-        onClick = {},
-        isSelected = false,
-        isSearching = false,
     )
 }

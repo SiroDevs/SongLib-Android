@@ -25,7 +25,7 @@ fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
     var searchByNo by rememberSaveable { mutableStateOf(false) }
     var searchQry by rememberSaveable { mutableStateOf("") }
     val songs by viewModel.filtered.collectAsState(initial = emptyList())
-    var selectedSong by remember { mutableStateOf<Song?>(null) }
+    var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
 
     Scaffold(
         topBar = {
@@ -45,12 +45,27 @@ fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
                 )
             } else {
                 AppTopBar(
+                    title = if (selectedSongs.isEmpty()) "SongLib" else "1 selected",
                     actions = {
-                        IconButton(onClick = { isSearching = true }) {
-                            Icon(Icons.Filled.Search, contentDescription = "")
-                        }
-                        IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
-                            Icon(Icons.Filled.Settings, contentDescription = "")
+                        if (selectedSongs.isEmpty()) {
+                            IconButton(onClick = { isSearching = true }) {
+                                Icon(Icons.Filled.Search, contentDescription = "")
+                            }
+                            IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
+                                Icon(Icons.Filled.Settings, contentDescription = "")
+                            }
+                        } else {
+                            IconButton(onClick = { /*viewModel.addToFavorites(selectedSong!!)*/ }) {
+                                Icon(Icons.Default.Favorite, contentDescription = "Favorite")
+                            }
+                            IconButton(onClick = { /*viewModel.shareSong(selectedSong!!)*/ }) {
+                                Icon(Icons.Default.Share, contentDescription = "Share")
+                            }
+                            IconButton(onClick = {
+                                //viewModel.deleteSong(selectedSong!!)
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Delete")
+                            }
                         }
                     }
                 )
@@ -78,6 +93,12 @@ fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
                         songs = songs,
                         viewModel = viewModel,
                         navController = navController,
+                        selectedSongs = selectedSongs,
+                        onSongSelected = { song ->
+                            selectedSongs =
+                                if (selectedSongs.contains(song)) selectedSongs - song
+                                else selectedSongs + song
+                        }
                     )
                 else -> EmptyState()
             }

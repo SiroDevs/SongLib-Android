@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
-    title: String = "SongLib",
+    title: String,
     showGoBack: Boolean = false,
     onNavIconClick: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {}
