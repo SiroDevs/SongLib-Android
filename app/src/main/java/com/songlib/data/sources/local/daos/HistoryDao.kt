@@ -18,9 +18,10 @@ interface HistoryDao {
     @Delete()
     fun delete(history: History)
 
+    @Query("DELETE FROM ${DbConstants.HISTORIES} WHERE id = :id")
+    suspend fun deleteById(id: Int)
+
     @Query("DELETE FROM ${DbConstants.HISTORIES}")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM ${DbConstants.HISTORIES} WHERE id = :id")
-    suspend fun deleteById(id: Int)
 }

@@ -59,7 +59,7 @@ fun SongsList(
                         }
                     )
                     .background(
-                        if (isSelected) MaterialTheme.colorScheme.secondary.copy(alpha = 0.2f)
+                        if (isSelected) MaterialTheme.colorScheme.onPrimary
                         else Color.Transparent
                     )
             ) {

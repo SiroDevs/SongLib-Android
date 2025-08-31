@@ -14,14 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
-import com.songlib.domain.repository.PrefsRepository
+import com.songlib.domain.repository.PreferencesRepository
 import com.songlib.presentation.navigation.Routes
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
-    val prefs = remember { PrefsRepository(context) }
+    val prefs = remember { PreferencesRepository(context) }
 
     LaunchedEffect(Unit) {
         delay(3000)

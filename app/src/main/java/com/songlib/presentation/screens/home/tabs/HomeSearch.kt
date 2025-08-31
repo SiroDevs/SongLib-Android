@@ -44,41 +44,26 @@ fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
                     }
                 )
             } else {
-                AppTopBar(
-                    title = if (selectedSongs.isEmpty()) "SongLib" else "1 selected",
-                    actions = {
-                        if (selectedSongs.isEmpty()) {
-                            IconButton(onClick = { isSearching = true }) {
-                                Icon(Icons.Filled.Search, contentDescription = "")
-                            }
-                            IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
-                                Icon(Icons.Filled.Settings, contentDescription = "")
-                            }
-                        } else {
-                            IconButton(onClick = { /*viewModel.addToFavorites(selectedSong!!)*/ }) {
-                                Icon(Icons.Default.Favorite, contentDescription = "Favorite")
-                            }
-                            IconButton(onClick = { /*viewModel.shareSong(selectedSong!!)*/ }) {
-                                Icon(Icons.Default.Share, contentDescription = "Share")
-                            }
-                            IconButton(onClick = {
-                                //viewModel.deleteSong(selectedSong!!)
-                            }) {
-                                Icon(Icons.Default.Delete, contentDescription = "Delete")
-                            }
-                        }
-                    }
+                HomeAppBar(
+                    selectedSongs = selectedSongs,
+                    onSearchClick = { isSearching = true },
+                    onSettingsClick = { navController.navigate(Routes.SETTINGS) },
+                    onLikeClick = { /*viewModel.addToFavorites()*/ },
+                    onShareClick = { /*viewModel.shareSong()*/ },
+                    onClearSelection = { selectedSongs = emptySet() }
                 )
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    isSearching = true
-                    searchByNo = true
-                },
-                containerColor = MaterialTheme.colorScheme.onPrimary
-            ) { Icon(Icons.Filled.Dialpad, "Search by number") }
+            if (selectedSongs.isEmpty()) {
+                FloatingActionButton(
+                    onClick = {
+                        isSearching = true
+                        searchByNo = true
+                    },
+                    containerColor = MaterialTheme.colorScheme.onPrimary
+                ) { Icon(Icons.Filled.Dialpad, "Search by number") }
+            }
         },
     ) { innerPadding ->
         Box(

@@ -20,16 +20,14 @@ fun SongItem(song: Song) {
     val hasChorus = "CHORUS" in song.content
     val chorusText = if (hasChorus) "Chorus" else ""
     val verseCount = verses.size - if (hasChorus) 1 else 0
-    val versesText = if (verses.size == 1) "$verseCount V" else "${verseCount} Vs"
+    val versesText = if (verses.size == 1) "$verseCount v" else "$verseCount vs"
 
     Box(
         modifier = Modifier.padding(horizontal = 10.dp)
     )
     {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-//                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -54,7 +52,6 @@ fun SongItem(song: Song) {
                 Icon(
                     imageVector = if (song.liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = null,
-                    //tint = ThemeColors.foreColorBW()
                 )
             }
 

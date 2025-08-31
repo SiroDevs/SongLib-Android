@@ -18,9 +18,10 @@ interface ListingDao {
     @Delete()
     fun delete(listing: Listing)
 
+    @Query("DELETE FROM ${DbConstants.LISTINGS} WHERE id = :id")
+    suspend fun deleteById(id: Int)
+
     @Query("DELETE FROM ${DbConstants.LISTINGS}")
     suspend fun deleteAll()
 
-    @Query("DELETE FROM ${DbConstants.LISTINGS} WHERE id = :id")
-    suspend fun deleteById(id: Int)
 }

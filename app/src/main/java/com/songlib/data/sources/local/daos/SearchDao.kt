@@ -18,9 +18,9 @@ interface SearchDao {
     @Delete()
     fun delete(search: Search)
 
-    @Query("DELETE FROM ${DbConstants.SEARCHES}")
-    suspend fun deleteAll()
-
     @Query("DELETE FROM ${DbConstants.SEARCHES} WHERE id = :id")
     suspend fun deleteById(id: Int)
+
+    @Query("DELETE FROM ${DbConstants.SEARCHES}")
+    suspend fun deleteAll()
 }
