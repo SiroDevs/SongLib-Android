@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,9 @@ fun SongItem(song: Song) {
     )
     {
         Column(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 2.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -39,7 +42,7 @@ fun SongItem(song: Song) {
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,
                     style = TextStyle(
-                        fontSize = 20.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
                     )
                 )
@@ -55,12 +58,10 @@ fun SongItem(song: Song) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(3.dp))
-
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = refineContent(verses.firstOrNull().orEmpty()),
-                    style = TextStyle(fontSize = 16.sp),
+                    style = TextStyle(fontSize = 14.sp),
                     maxLines = 2,
                     modifier = Modifier.weight(1f),
                     color = MaterialTheme.colorScheme.scrim,
@@ -70,7 +71,6 @@ fun SongItem(song: Song) {
 //            Spacer(modifier = Modifier.height(4.dp))
 //            TagItem(tagText = refineTitle(song.book), height = height)
 //        }
-            Spacer(modifier = Modifier.height(3.dp))
         }
     }
 }

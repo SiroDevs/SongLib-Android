@@ -56,8 +56,8 @@ fun PresenterTabs(
                 AutoSizeText(
                     modifier = Modifier.fillMaxWidth(),
                     text = verses[page],
-                    fontSize = 45.sp,
-                    lineHeight = 48.sp,
+                    fontSize = 40.sp,
+                    lineHeight = 45.sp,
                     keepLineHeight = true,
                     overflow = TextOverflow.Ellipsis,
                 )

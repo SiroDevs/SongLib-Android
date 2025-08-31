@@ -3,7 +3,7 @@ package com.songlib.presentation.screens.home
 import androidx.compose.foundation.layout.*
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
@@ -52,7 +52,7 @@ fun HomeScreen(
                     when (selectedTab) {
                         HomeNavItem.Search -> HomeSearch(viewModel, navController)
                         HomeNavItem.Likes -> HomeLikes(viewModel, navController)
-                        HomeNavItem.Listing -> HomeListings(viewModel, navController)
+                        HomeNavItem.Listings -> HomeListings(viewModel, navController)
                     }
                 }
             }

@@ -3,19 +3,20 @@ package com.songlib.presentation.screens.home.tabs
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
-import com.songlib.data.models.Song
+import com.songlib.presentation.screens.home.components.ListingsList
+import com.songlib.data.models.Listing
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.*
+import com.songlib.presentation.components.general.*
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.screens.home.components.SongsList
 import com.songlib.presentation.viewmodels.HomeViewModel
+import kotlin.collections.plus
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,18 +25,55 @@ fun HomeListings(
     navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val listings by viewModel.likes.collectAsState(initial = emptyList())
-    var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
+    val listings by viewModel.listings.collectAsState(initial = emptyList())
+    var selectedListings by remember { mutableStateOf<Set<Listing>>(emptySet()) }
+
+    if (showDeleteDialog) {
+        ConfirmDialog(
+            title = "Delete this listing${selectedListings.size} == 1 ? 's' : ''",
+            message = "Are you sure you want to save the selected books?",
+            onDismiss = { showDeleteDialog = false },
+            onConfirm = {
+                viewModel.deleteListings(selectedListings)
+                showDeleteDialog = false
+            }
+        )
+    }
+
+    if (showAddDialog) {
+        QuickFormDialog(
+            title = "New Listing",
+            label = "Listing title",
+            onDismiss = { showAddDialog = false },
+            onConfirm = { title ->
+                viewModel.saveListing(title)
+                showAddDialog = false
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Songs Listings",
+                title = if (selectedListings.isEmpty()) "Song Listings" else "${selectedListings.size} selected",
                 actions = {
-                    IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
-                        Icon(Icons.Filled.Settings, contentDescription = "")
+                    if (selectedListings.isEmpty()) {
+                        IconButton(onClick = { showAddDialog = true }) {
+                            Icon(Icons.Filled.Add, contentDescription = "New")
+                        }
+                        IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
+                            Icon(Icons.Filled.Settings, contentDescription = "Settings")
+                        }
+                    } else {
+                        IconButton(onClick = { showDeleteDialog = true }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete")
+                        }
                     }
-                }
+                },
+                showGoBack = selectedListings.isNotEmpty(),
+                onNavIconClick = { selectedListings = emptySet() }
             )
         },
     ) { innerPadding ->
@@ -53,15 +91,17 @@ fun HomeListings(
                             messageIcon = Icons.Default.FormatListNumbered
                         )
                     } else {
-                        SongsList(
-                            songs = listings,
-                            viewModel = viewModel,
+                        ListingsList(
+                            listings = listings,
                             navController = navController,
-                            selectedSongs = selectedSongs,
-                            onSongSelected = { },
+                            selectedListings = selectedListings,
+                            onListingSelected = { listing ->
+                                selectedListings =
+                                    if (selectedListings.contains(listing)) selectedListings - listing
+                                    else selectedListings + listing
+                            },
                         )
                     }
-
                 else -> EmptyState()
             }
         }

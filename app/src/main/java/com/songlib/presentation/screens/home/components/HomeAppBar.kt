@@ -9,7 +9,7 @@ import com.songlib.presentation.components.action.AppTopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeAppBar(
+fun HomeSearchAppBar(
     selectedSongs: Set<Song>,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
@@ -18,7 +18,7 @@ fun HomeAppBar(
     onClearSelection: () -> Unit,
 ) {
     AppTopBar(
-        title = if (selectedSongs.isEmpty()) "SongLib" else selectedSongs.size.toString(),
+        title = if (selectedSongs.isEmpty()) "SongLib" else "${selectedSongs.size} selected",
         actions = {
             if (selectedSongs.isEmpty()) {
                 IconButton(onClick = onSearchClick) {

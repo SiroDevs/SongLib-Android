@@ -14,10 +14,9 @@ import javax.inject.Singleton
 class AppModule {
     @Provides
     @Singleton
-    fun provideSongBookRepository(
+    fun provideListingRepository(
         @ApplicationContext context: Context,
-        apiService: ApiService,
-    ): SongBookRepository = SongBookRepository(context, apiService)
+    ): ListingRepository = ListingRepository(context)
 
     @Provides
     @Singleton
@@ -27,8 +26,21 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideSongBookRepository(
+        @ApplicationContext context: Context,
+        apiService: ApiService,
+    ): SongBookRepository = SongBookRepository(context, apiService)
+
+    @Provides
+    @Singleton
     fun provideThemeRepository(
         prefsRepo: PreferencesRepository,
     ): ThemeRepository = ThemeRepository(prefsRepo)
+
+    @Provides
+    @Singleton
+    fun provideTrackingRepository(
+        @ApplicationContext context: Context,
+    ): TrackingRepository = TrackingRepository(context)
 
 }

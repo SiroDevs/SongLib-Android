@@ -25,17 +25,14 @@ fun BookItem(
             containerColor = bgColor,
             contentColor = txtColor
         ),
-        shape = RoundedCornerShape(20.dp),
+        shape = RoundedCornerShape(15.dp),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = 5.dp),
-        contentPadding = PaddingValues(horizontal = 15.dp, vertical = 5.dp)
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp)
     ) {
         Text(
             text = text,
             textAlign = TextAlign.Center,
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+            style = TextStyle(fontSize = 15.sp)
         )
     }
 }

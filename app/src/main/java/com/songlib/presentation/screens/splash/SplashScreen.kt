@@ -21,15 +21,15 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(navController: NavHostController) {
     val context = LocalContext.current
-    val prefs = remember { PreferencesRepository(context) }
+    val prefsRepo = remember { PreferencesRepository(context) }
 
     LaunchedEffect(Unit) {
         delay(3000)
 
         val nextRoute = when {
-            prefs.selectAfresh -> Routes.STEP_1
-            prefs.isDataLoaded -> Routes.HOME
-            prefs.isDataSelected -> Routes.STEP_2
+            prefsRepo.selectAfresh -> Routes.STEP_1
+            prefsRepo.isDataLoaded -> Routes.HOME
+            prefsRepo.isDataSelected -> Routes.STEP_2
             else -> Routes.STEP_1
         }
 

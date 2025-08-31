@@ -6,13 +6,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import com.songlib.data.models.Song
+import com.songlib.data.models.*
 import com.songlib.domain.repository.ThemeRepository
 import com.songlib.presentation.screens.home.HomeScreen
 import com.songlib.presentation.screens.settings.SettingsScreen
 import com.songlib.presentation.screens.presenter.PresenterScreen
-import com.songlib.presentation.screens.init.step1.Step1Screen
-import com.songlib.presentation.screens.init.step2.Step2Screen
+import com.songlib.presentation.screens.selection.step1.Step1Screen
+import com.songlib.presentation.screens.selection.step2.Step2Screen
+import com.songlib.presentation.screens.listing.ListingScreen
 import com.songlib.presentation.screens.splash.SplashScreen
 import com.songlib.presentation.viewmodels.*
 
@@ -67,6 +68,20 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 song = song,
+            )
+        }
+
+        composable(route = Routes.LISTING) {
+            val listing = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Listing>("listing")
+
+            val viewModel: ListingViewModel = hiltViewModel()
+
+            ListingScreen(
+                navController = navController,
+                viewModel = viewModel,
+                listing = listing,
             )
         }
 

@@ -6,8 +6,11 @@ import com.songlib.data.models.Listing
 
 @Dao
 interface ListingDao {
-    @Query("SELECT * FROM ${DbConstants.LISTINGS}")
-    fun getAll(): List<Listing>
+    @Query("SELECT * FROM ${DbConstants.LISTINGS} WHERE parent = :parent")
+    fun getAll(parent: Int): List<Listing>
+
+    @Query("SELECT COUNT(*) FROM listings WHERE parent = :parentId")
+    suspend fun countSongs(parentId: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(listing: Listing)

@@ -19,7 +19,9 @@ import com.songlib.presentation.screens.home.components.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
+fun HomeSearch(
+    viewModel: HomeViewModel, navController: NavHostController
+) {
     val uiState by viewModel.uiState.collectAsState()
     var isSearching by rememberSaveable { mutableStateOf(false) }
     var searchByNo by rememberSaveable { mutableStateOf(false) }
@@ -44,11 +46,11 @@ fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
                     }
                 )
             } else {
-                HomeAppBar(
+                HomeSearchAppBar(
                     selectedSongs = selectedSongs,
                     onSearchClick = { isSearching = true },
                     onSettingsClick = { navController.navigate(Routes.SETTINGS) },
-                    onLikeClick = { /*viewModel.addToFavorites()*/ },
+                    onLikeClick = { viewModel.likeSongs(selectedSongs) },
                     onShareClick = { /*viewModel.shareSong()*/ },
                     onClearSelection = { selectedSongs = emptySet() }
                 )
@@ -85,6 +87,7 @@ fun HomeSearch( viewModel: HomeViewModel, navController: NavHostController) {
                                 else selectedSongs + song
                         }
                     )
+
                 else -> EmptyState()
             }
         }

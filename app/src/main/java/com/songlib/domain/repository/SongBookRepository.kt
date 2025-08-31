@@ -87,7 +87,7 @@ class SongBookRepository @Inject constructor(
 
     suspend fun deleteByBookId(bookId: Int) {
         withContext(Dispatchers.IO) {
-            songDao?.deleteByBookId(bookId)
+            songDao?.deleteById(bookId)
         }
     }
 

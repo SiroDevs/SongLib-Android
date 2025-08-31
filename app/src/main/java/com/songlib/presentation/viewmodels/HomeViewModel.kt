@@ -11,12 +11,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.*
 import javax.inject.Inject
-import kotlin.collections.filter
-import kotlin.collections.firstOrNull
+import kotlin.collections.*
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val songbkRepo: SongBookRepository,
+    private val listRepo: ListingRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -42,23 +42,24 @@ class HomeViewModel @Inject constructor(
     private val _listings = MutableStateFlow<List<Listing>>(emptyList())
     val listings: StateFlow<List<Listing>> get() = _listings
 
-    fun setSelectedTab(tab: HomeNavItem) { _selectedTab.value = tab }
+    fun setSelectedTab(tab: HomeNavItem) {
+        _selectedTab.value = tab
+    }
 
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            val booksList = songbkRepo.fetchLocalBooks()
-            val songsList = songbkRepo.fetchLocalSongs()
-            _books.value = booksList
-            _songs.value = songsList
+            _books.value = songbkRepo.fetchLocalBooks()
+            _songs.value = songbkRepo.fetchLocalSongs()
+            _listings.value = listRepo.fetchListings(0)
 
-            val firstBookId = booksList.firstOrNull()?.bookId
+            val firstBookId = _books.value.firstOrNull()?.bookId
             _filtered.value = if (firstBookId != null) {
-                songsList.filter { it.book == firstBookId }
+                _songs.value.filter { it.book == firstBookId }
             } else {
                 emptyList()
             }
-            _likes.value = songsList.filter { it.liked }
+            _likes.value = _songs.value.filter { it.liked }
             _uiState.tryEmit(UiState.Filtered)
         }
     }
@@ -88,6 +89,47 @@ class HomeViewModel @Inject constructor(
             val allSongs = _songs.value
             _filtered.value = SongUtils.searchSongs(allSongs, qry, byNo)
             _uiState.tryEmit(UiState.Filtered)
+        }
+    }
+
+    fun likeSongs(books: Set<Song>) {
+        _uiState.tryEmit(UiState.Saving)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                books.forEach {
+                    val likedSong = it.copy(liked = !it.liked)
+                    songbkRepo.updateSong(likedSong)
+                }
+                _uiState.emit(UiState.Filtered)
+            } catch (e: Exception) {
+                Log.e("Like/Unlike", "Failed to like songs", e)
+            }
+        }
+    }
+
+    fun saveListing(title: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            listRepo.saveListing(0, title, 0)
+            _listings.value = listRepo.fetchListings(0)
+            _uiState.tryEmit(UiState.Filtered)
+        }
+    }
+
+    fun saveListItem(parent: Listing, song: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            listRepo.saveListItem(parent, song)
+            _listings.value = listRepo.fetchListings(0)
+            _uiState.tryEmit(UiState.Filtered)
+        }
+    }
+
+    fun deleteListings(listings: Set<Listing>) {
+        _uiState.tryEmit(UiState.Saving)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            listings.forEach { listRepo.deleteById(it.id) }
+            _uiState.emit(UiState.Filtered)
         }
     }
 

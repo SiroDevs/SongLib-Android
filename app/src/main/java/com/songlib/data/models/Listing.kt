@@ -13,6 +13,4 @@ data class Listing(
     val song: Int,
     val created: String,
     val modified: String,
-    val songCount: Int = 0
 )
-
