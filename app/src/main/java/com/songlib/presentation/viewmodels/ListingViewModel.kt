@@ -44,7 +44,7 @@ class ListingViewModel @Inject constructor(
         }
     }
 
-    fun saveListItem(parent: Listing, song: Int) {
+    fun saveListItem(parent: ListingUi, song: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             listRepo.saveListItem(parent, song)
             _listings.value = listRepo.fetchListings(0)

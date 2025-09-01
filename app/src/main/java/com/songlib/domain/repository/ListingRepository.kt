@@ -50,24 +50,36 @@ class ListingRepository @Inject constructor(context: Context) {
         }
     }
 
-    suspend fun saveListItem(parent: Listing, song: Int) {
+    suspend fun saveListItem(parent: ListingUi, song: Int) {
         withContext(Dispatchers.IO) {
             val currentTime = System.currentTimeMillis().toString()
-            val newListing = Listing(
+            listingDao?.insert(Listing(
                 parent = parent.id,
                 title = "",
                 song = song,
                 created = currentTime,
                 modified = currentTime
-            )
-            listingDao?.insert(newListing)
-            listingDao?.update(parent)
+            ))
+            listingDao?.update(Listing(
+                parent = parent.id,
+                title = parent.title,
+                song = song,
+                created = parent.created,
+                modified = currentTime
+            ))
         }
     }
 
-    suspend fun updateListing(listing: Listing) {
+    suspend fun updateListing(listing: ListingUi) {
+        val currentTime = System.currentTimeMillis().toString()
         withContext(Dispatchers.IO) {
-            listingDao?.update(listing)
+            listingDao?.update(Listing(
+                parent = listing.id,
+                title = listing.title,
+                song = listing.song,
+                created = listing.created,
+                modified = currentTime
+            ))
         }
     }
 

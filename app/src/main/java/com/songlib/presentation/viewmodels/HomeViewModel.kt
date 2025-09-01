@@ -117,11 +117,20 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun saveListItem(parent: Listing, song: Int) {
+    fun saveListItem(parent: ListingUi, song: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             listRepo.saveListItem(parent, song)
             _listings.value = listRepo.fetchListings(0)
             _uiState.tryEmit(UiState.Filtered)
+        }
+    }
+
+    fun saveListItems(parent: ListingUi, listings: Set<Song>) {
+        _uiState.tryEmit(UiState.Saving)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            listings.forEach { saveListItem(parent, it.songId) }
+            _uiState.emit(UiState.Filtered)
         }
     }
 
