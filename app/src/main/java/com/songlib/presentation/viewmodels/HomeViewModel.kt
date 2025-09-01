@@ -15,6 +15,7 @@ import kotlin.collections.*
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val prefsRepo: PreferencesRepository,
     private val songbkRepo: SongBookRepository,
     private val listRepo: ListingRepository,
 ) : ViewModel() {
@@ -39,8 +40,8 @@ class HomeViewModel @Inject constructor(
     private val _likes = MutableStateFlow<List<Song>>(emptyList())
     val likes: StateFlow<List<Song>> get() = _likes
 
-    private val _listings = MutableStateFlow<List<Listing>>(emptyList())
-    val listings: StateFlow<List<Listing>> get() = _listings
+    private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
+    val listings: StateFlow<List<ListingUi>> get() = _listings
 
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
@@ -124,7 +125,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deleteListings(listings: Set<Listing>) {
+    fun deleteListings(listings: Set<ListingUi>) {
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -133,4 +134,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun clearData() {
+        viewModelScope.launch {
+            songbkRepo.deleteAllData()
+            listRepo.deleteAllListings()
+            prefsRepo.isDataLoaded = false
+            prefsRepo.isDataSelected = false
+            prefsRepo.selectedBooks = ""
+        }
+    }
 }

@@ -73,14 +73,9 @@ class SongBookRepository @Inject constructor(
         }
     }
 
-    suspend fun deleteAllBooks() {
+    suspend fun deleteAllData() {
         withContext(Dispatchers.IO) {
             bookDao?.deleteAll()
-        }
-    }
-
-    suspend fun deleteAllSongs() {
-        withContext(Dispatchers.IO) {
             songDao?.deleteAll()
         }
     }

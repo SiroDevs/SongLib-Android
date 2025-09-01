@@ -9,7 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.presentation.screens.home.components.ListingsList
-import com.songlib.data.models.Listing
+import com.songlib.data.models.ListingUi
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.*
 import com.songlib.presentation.components.general.*
@@ -28,7 +28,7 @@ fun HomeListings(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
-    var selectedListings by remember { mutableStateOf<Set<Listing>>(emptySet()) }
+    var selectedListings by remember { mutableStateOf<Set<ListingUi>>(emptySet()) }
 
     if (showDeleteDialog) {
         ConfirmDialog(

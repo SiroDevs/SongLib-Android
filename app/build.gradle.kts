@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
-    alias(libs.plugins.io.sentry)
+//    alias(libs.plugins.io.sentry)
 }
 
 val keystoreProperties = Properties()
@@ -46,12 +46,12 @@ android {
         buildConfigField("String", "SentryDsn", "\"${localProperties.getProperty("SENTRY_DSN")}\"")
     }
 
-    sentry {
-        org.set(localProperties.getProperty("SENTRY_ORG"))
-        projectName.set(localProperties.getProperty("SENTRY_PROJECT"))
-        authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
-        autoUploadProguardMapping.set(true)
-    }
+//    sentry {
+//        org.set(localProperties.getProperty("SENTRY_ORG"))
+//        projectName.set(localProperties.getProperty("SENTRY_PROJECT"))
+//        authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
+//        autoUploadProguardMapping.set(true)
+//    }
 
     signingConfigs {
         create("release") {
@@ -98,14 +98,14 @@ android {
     }
 }
 
-sentry {
-    debug.set(true)
-    includeSourceContext.set(true)
-    org.set("futuristicken")
-    projectName.set("songlib-android")
-    additionalSourceDirsForSourceContext.set(setOf("detail/src/main/java", "core/src/main/java"))
-    authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
-}
+//sentry {
+//    debug.set(true)
+//    includeSourceContext.set(true)
+//    org.set("futuristicken")
+//    projectName.set("songlib-android")
+//    additionalSourceDirsForSourceContext.set(setOf("detail/src/main/java", "core/src/main/java"))
+//    authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
+//}
 
 dependencies {
     // Core AndroidX & Lifecycle

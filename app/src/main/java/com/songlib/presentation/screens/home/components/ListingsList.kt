@@ -11,15 +11,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.presentation.navigation.Routes
-import com.songlib.data.models.Listing
+import com.songlib.data.models.ListingUi
 import com.songlib.presentation.components.listitems.ListingItem
 
 @Composable
 fun ListingsList(
-    listings: List<Listing>,
+    listings: List<ListingUi>,
     navController: NavHostController,
-    selectedListings: Set<Listing>,
-    onListingSelected: (Listing) -> Unit
+    selectedListings: Set<ListingUi>,
+    onListingSelected: (ListingUi) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

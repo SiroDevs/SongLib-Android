@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
@@ -66,7 +67,8 @@ fun EmptyState(
                 imageVector = icon,
                 contentDescription = "Message icon",
 //                tint = Color.Red,
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier
+                    .size(20.dp)
                     .padding(vertical = 10.dp)
             )
         }
@@ -80,7 +82,9 @@ fun EmptyState(
             ) {
                 Text(
                     text = actionTitle ?: "Retry",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.White
+                    ),
                 )
             }
         }

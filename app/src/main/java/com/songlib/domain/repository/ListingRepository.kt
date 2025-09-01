@@ -10,25 +10,27 @@ import javax.inject.*
 
 @Singleton
 class ListingRepository @Inject constructor(context: Context) {
-    private var listDao: ListingDao?
+    private var listingDao: ListingDao?
 
     init {
         val db = AppDatabase.getDatabase(context)
-        listDao = db?.listingDao()
+        listingDao = db?.listingDao()
     }
 
-    suspend fun fetchListings(parent: Int): List<Listing> {
+    suspend fun fetchListings(parent: Int): List<ListingUi> {
         return withContext(Dispatchers.IO) {
-            val allListings = listDao?.getAll(parent) ?: emptyList()
+            val allListings = listingDao?.getAll(parent) ?: emptyList()
 
             allListings.map { listing ->
-                Listing(
+                ListingUi(
                     id = listing.id,
                     parent = listing.parent,
                     title = listing.title,
+                    song = listing.song,
                     created = listing.created,
-                    song = listDao?.countSongs(listing.id) ?: 0,
-                    modified = listing.modified.toLongOrNull()?.toTimeAgo() ?: ""
+                    modified = listing.modified,
+                    songCount = listingDao?.countSongs(listing.id) ?: 0,
+                    updatedAgo = listing.modified.toLongOrNull()?.toTimeAgo() ?: ""
                 )
             }
         }
@@ -44,7 +46,7 @@ class ListingRepository @Inject constructor(context: Context) {
                 created = currentTime,
                 modified = currentTime
             )
-            listDao?.insert(newListing)
+            listingDao?.insert(newListing)
         }
     }
 
@@ -58,26 +60,26 @@ class ListingRepository @Inject constructor(context: Context) {
                 created = currentTime,
                 modified = currentTime
             )
-            listDao?.insert(newListing)
-            listDao?.update(parent)
+            listingDao?.insert(newListing)
+            listingDao?.update(parent)
         }
     }
 
     suspend fun updateListing(listing: Listing) {
         withContext(Dispatchers.IO) {
-            listDao?.update(listing)
+            listingDao?.update(listing)
         }
     }
 
     suspend fun deleteById(listId: Int) {
         withContext(Dispatchers.IO) {
-            listDao?.deleteById(listId)
+            listingDao?.deleteById(listId)
         }
     }
 
     suspend fun deleteAllListings() {
         withContext(Dispatchers.IO) {
-            listDao?.deleteAll()
+            listingDao?.deleteAll()
         }
     }
 

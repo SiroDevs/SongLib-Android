@@ -9,9 +9,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
 import com.songlib.data.models.Listing
+import com.songlib.data.models.ListingUi
 
 @Composable
-fun ListingItem(listing: Listing) {
+fun ListingItem(listing: ListingUi) {
     Box(
         modifier = Modifier.padding(horizontal = 10.dp)
     )
@@ -41,7 +42,7 @@ fun ListingItem(listing: Listing) {
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "${listing.song} songs",
+                    text = "${listing.songCount} songs",
                     style = TextStyle(fontSize = 10.sp),
                     maxLines = 2,
                     modifier = Modifier.weight(1f),
@@ -49,7 +50,7 @@ fun ListingItem(listing: Listing) {
                 )
                 Spacer(modifier = Modifier.fillMaxWidth())
                 Text(
-                    text = listing.modified,
+                    text = listing.updatedAgo,
                     style = TextStyle(fontSize = 10.sp),
                     maxLines = 2,
                     modifier = Modifier.weight(1f),

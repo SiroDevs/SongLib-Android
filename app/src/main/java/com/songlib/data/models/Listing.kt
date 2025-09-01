@@ -14,3 +14,14 @@ data class Listing(
     val created: String,
     val modified: String,
 )
+
+data class ListingUi(
+    val id: Int,
+    val parent: Int,
+    val title: String,
+    val song: Int,
+    val created: String,
+    val modified: String,
+    val songCount: Int,
+    val updatedAgo: String
+)
