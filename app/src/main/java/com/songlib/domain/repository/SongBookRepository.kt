@@ -61,6 +61,14 @@ class SongBookRepository @Inject constructor(
         return allSongs
     }
 
+    suspend fun fetchSong(songId: Int): Song {
+        var song: Song
+        withContext(Dispatchers.IO) {
+            song = songDao?.getSong(songId)!!
+        }
+        return song
+    }
+
     suspend fun updateSong(song: Song) {
         withContext(Dispatchers.IO) {
             songDao?.update(song)

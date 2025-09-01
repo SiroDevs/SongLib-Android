@@ -1,8 +1,10 @@
 package com.songlib.data.models
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.*
 import com.songlib.core.utils.DbConstants
+import kotlinx.parcelize.Parcelize
 
 @Keep
 @Entity(tableName = DbConstants.LISTINGS)
@@ -15,6 +17,7 @@ data class Listing(
     val modified: String,
 )
 
+@Parcelize
 data class ListingUi(
     val id: Int,
     val parent: Int,
@@ -24,4 +27,4 @@ data class ListingUi(
     val modified: String,
     val songCount: Int,
     val updatedAgo: String
-)
+) : Parcelable

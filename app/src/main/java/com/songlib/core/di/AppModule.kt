@@ -42,5 +42,4 @@ class AppModule {
     fun provideTrackingRepository(
         @ApplicationContext context: Context,
     ): TrackingRepository = TrackingRepository(context)
-
 }

@@ -9,6 +9,9 @@ interface SongDao {
     @Query("SELECT * FROM ${DbConstants.SONGS}")
     fun getAll(): List<Song>
 
+    @Query("SELECT * FROM ${DbConstants.SONGS} WHERE songId = :songId")
+    fun getSong(songId: Int): Song
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(song: Song)
 
