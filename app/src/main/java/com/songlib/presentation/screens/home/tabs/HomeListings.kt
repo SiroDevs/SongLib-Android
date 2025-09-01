@@ -9,7 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
 import com.songlib.presentation.screens.home.components.ListingsList
-import com.songlib.data.models.Listing
+import com.songlib.data.models.ListingUi
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.*
 import com.songlib.presentation.components.general.*
@@ -25,31 +25,31 @@ fun HomeListings(
     navController: NavHostController
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    var showAddDialog by remember { mutableStateOf(false) }
+    var showAddAlert by remember { mutableStateOf(false) }
+    var showDeleteAlert by remember { mutableStateOf(false) }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
-    var selectedListings by remember { mutableStateOf<Set<Listing>>(emptySet()) }
+    var selectedListings by remember { mutableStateOf<Set<ListingUi>>(emptySet()) }
 
-    if (showDeleteDialog) {
-        ConfirmDialog(
-            title = "Delete this listing${selectedListings.size} == 1 ? 's' : ''",
-            message = "Are you sure you want to save the selected books?",
-            onDismiss = { showDeleteDialog = false },
-            onConfirm = {
-                viewModel.deleteListings(selectedListings)
-                showDeleteDialog = false
+    if (showAddAlert) {
+        QuickFormDialog(
+            title = "New Listing",
+            label = "Listing title",
+            onDismiss = { showAddAlert = false },
+            onConfirm = { title ->
+                viewModel.saveListing(title)
+                showAddAlert = false
             }
         )
     }
 
-    if (showAddDialog) {
-        QuickFormDialog(
-            title = "New Listing",
-            label = "Listing title",
-            onDismiss = { showAddDialog = false },
-            onConfirm = { title ->
-                viewModel.saveListing(title)
-                showAddDialog = false
+    if (showDeleteAlert) {
+        ConfirmDialog(
+            title = "Delete this listing${selectedListings.size} == 1 ? 's' : ''",
+            message = "Are you sure you want to deleted the selected listings?",
+            onDismiss = { showDeleteAlert = false },
+            onConfirm = {
+                viewModel.deleteListings(selectedListings)
+                showDeleteAlert = false
             }
         )
     }
@@ -60,14 +60,14 @@ fun HomeListings(
                 title = if (selectedListings.isEmpty()) "Song Listings" else "${selectedListings.size} selected",
                 actions = {
                     if (selectedListings.isEmpty()) {
-                        IconButton(onClick = { showAddDialog = true }) {
+                        IconButton(onClick = { showAddAlert = true }) {
                             Icon(Icons.Filled.Add, contentDescription = "New")
                         }
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }
                     } else {
-                        IconButton(onClick = { showDeleteDialog = true }) {
+                        IconButton(onClick = { showDeleteAlert = true }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
                     }

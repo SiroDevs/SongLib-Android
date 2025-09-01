@@ -74,7 +74,7 @@ fun AppNavHost(
         composable(route = Routes.LISTING) {
             val listing = navController.previousBackStackEntry
                 ?.savedStateHandle
-                ?.get<Listing>("listing")
+                ?.get<ListingUi>("listing")
 
             val viewModel: ListingViewModel = hiltViewModel()
 

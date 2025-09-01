@@ -11,6 +11,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.songlib.data.sample.*
+import com.songlib.presentation.components.autosize.AutoResizingText
 import com.songlib.presentation.components.autosize.AutoSizeText
 
 @Composable
@@ -53,14 +54,17 @@ fun PresenterTabs(
                     .padding(15.dp),
                 contentAlignment = Alignment.Center
             ) {
-                AutoSizeText(
-                    modifier = Modifier.fillMaxWidth(),
+                AutoResizingText(
                     text = verses[page],
-                    fontSize = 40.sp,
-                    lineHeight = 45.sp,
-                    keepLineHeight = true,
-                    overflow = TextOverflow.Ellipsis,
                 )
+//                AutoSizeText(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    text = verses[page],
+//                    fontSize = 40.sp,
+//                    lineHeight = 45.sp,
+//                    keepLineHeight = true,
+//                    overflow = TextOverflow.Ellipsis,
+//                )
             }
         }
     }

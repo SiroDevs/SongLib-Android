@@ -47,11 +47,11 @@ fun HomeSearch(
                 )
             } else {
                 HomeSearchAppBar(
+                    viewModel = viewModel,
                     selectedSongs = selectedSongs,
                     onSearchClick = { isSearching = true },
                     onSettingsClick = { navController.navigate(Routes.SETTINGS) },
-                    onLikeClick = { viewModel.likeSongs(selectedSongs) },
-                    onShareClick = { /*viewModel.shareSong()*/ },
+                    onShareClick = { },
                     onClearSelection = { selectedSongs = emptySet() }
                 )
             }

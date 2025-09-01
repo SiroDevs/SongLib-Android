@@ -12,6 +12,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val prefsRepo: PreferencesRepository,
     private val songbkRepo: SongBookRepository,
+    private val listRepo: ListingRepository,
 ) : ViewModel() {
 
     var horizontalSlides by mutableStateOf(prefsRepo.horizontalSlides)
@@ -29,8 +30,8 @@ class SettingsViewModel @Inject constructor(
 
     fun clearData() {
         viewModelScope.launch {
-            songbkRepo.deleteAllBooks()
-            songbkRepo.deleteAllSongs()
+            songbkRepo.deleteAllData()
+            listRepo.deleteAllListings()
             prefsRepo.isDataLoaded = false
             prefsRepo.isDataSelected = false
             prefsRepo.selectedBooks = ""

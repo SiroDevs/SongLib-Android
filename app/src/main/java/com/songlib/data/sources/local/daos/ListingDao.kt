@@ -6,7 +6,7 @@ import com.songlib.data.models.Listing
 
 @Dao
 interface ListingDao {
-    @Query("SELECT * FROM ${DbConstants.LISTINGS} WHERE parent = :parent")
+    @Query("SELECT * FROM ${DbConstants.LISTINGS} WHERE parent = :parent ORDER BY modified DESC")
     fun getAll(parent: Int): List<Listing>
 
     @Query("SELECT COUNT(*) FROM listings WHERE parent = :parentId")

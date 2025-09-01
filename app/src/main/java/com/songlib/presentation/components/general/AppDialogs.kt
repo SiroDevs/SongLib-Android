@@ -54,10 +54,11 @@ fun InfoDialog(
 fun QuickFormDialog(
     title: String,
     label: String,
+    initialValue: String = "",
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
-    var fieldValue by remember { mutableStateOf("") }
+    var fieldValue by remember { mutableStateOf(initialValue) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -75,7 +76,6 @@ fun QuickFormDialog(
                 onClick = {
                     if (fieldValue.isNotBlank()) {
                         onConfirm(fieldValue)
-                        fieldValue = ""
                     }
                 }
             ) {

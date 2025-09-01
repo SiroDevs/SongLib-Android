@@ -1,46 +1,46 @@
-package com.songlib.presentation.screens.home.components
+package com.songlib.presentation.screens.listing
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
-import androidx.compose.material.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.songlib.data.models.Song
+import com.songlib.presentation.components.listitems.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.data.models.ListingUi
-import com.songlib.presentation.components.listitems.ListingItem
 
 @Composable
-fun ListingsList(
-    listings: List<ListingUi>,
+fun ListedSongs(
+    songs: List<Song>,
     navController: NavHostController,
-    selectedListings: Set<ListingUi>,
-    onListingSelected: (ListingUi) -> Unit
+    selectedSongs: Set<Song>,
+    onSongSelected: (Song) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ) {
-        itemsIndexed(listings) { index, listing ->
-            val isSelected = selectedListings.contains(listing)
+        itemsIndexed(songs) { index, song ->
+            val isSelected = selectedSongs.contains(song)
             Box(
                 modifier = Modifier
                     .combinedClickable(
                         onClick = {
-                            if (selectedListings.isNotEmpty()) {
-                                onListingSelected(listing)
+                            if (selectedSongs.isNotEmpty()) {
+                                onSongSelected(song)
                             } else {
                                 navController.currentBackStackEntry
                                     ?.savedStateHandle
-                                    ?.set("listing", listing)
-                                navController.navigate(Routes.LISTING)
+                                    ?.set("song", song)
+                                navController.navigate(Routes.PRESENTER)
                             }
                         },
                         onLongClick = {
-                            onListingSelected(listing)
+                            onSongSelected(song)
                         }
                     )
                     .background(
@@ -48,9 +48,9 @@ fun ListingsList(
                         else Color.Transparent
                     )
             ) {
-                ListingItem(listing = listing)
+                SongItem(song = song)
             }
-            Divider(
+            HorizontalDivider(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 thickness = 1.dp,
             )
