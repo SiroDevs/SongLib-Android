@@ -45,6 +45,7 @@ class Step1ViewModel @Inject constructor(
                     Selectable(book, book.bookId in getSelectedIds())
                 }
                 _books.emit(selectableBooks)
+                Log.d("TAG", "${_books.value.size} books fetched")
                 _uiState.tryEmit(UiState.Loaded)
             }
         }
@@ -60,6 +61,7 @@ class Step1ViewModel @Inject constructor(
 
     private fun saveBooks(books: List<Book>) {
         _uiState.tryEmit(UiState.Saving)
+        Log.d("TAG", "saving books")
 
         viewModelScope.launch(Dispatchers.IO) {
             try {

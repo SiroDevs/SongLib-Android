@@ -69,6 +69,7 @@ fun SplashContent() {
                         style = TextStyle(
                             fontSize = 35.sp,
                             letterSpacing = 5.sp,
+                            fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                     )

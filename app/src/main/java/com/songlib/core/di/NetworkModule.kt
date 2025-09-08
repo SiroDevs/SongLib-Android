@@ -16,9 +16,9 @@ import javax.inject.Named
 @Module
 @Suppress("unused")
 object NetworkModule {
+
     @Provides
     @Reusable
-    @JvmStatic
     fun provideApiService(@Named("songlibApi") retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
@@ -26,26 +26,26 @@ object NetworkModule {
     @Provides
     @Named("songlibApi")
     @Reusable
-    @JvmStatic
-    fun provideSonglibApi(okHttpClient: OkHttpClient.Builder): Retrofit {
+    fun provideSonglibApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(ApiConstants.BASE)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient.build())
+            .client(okHttpClient)
             .build()
     }
 
     @Provides
     @Reusable
-    @JvmStatic
-    internal fun provideOkHttp(): OkHttpClient.Builder {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
+    fun provideOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
 
-        val okHttpClient = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
-            okHttpClient.addInterceptor(logging)
+            val loggingInterceptor = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
+            builder.addInterceptor(loggingInterceptor)
         }
-        return okHttpClient
+
+        return builder.build() // <- Build the client here
     }
 }
