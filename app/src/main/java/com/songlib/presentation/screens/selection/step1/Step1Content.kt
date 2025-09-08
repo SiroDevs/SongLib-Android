@@ -2,7 +2,7 @@ package com.songlib.presentation.screens.selection.step1
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,12 +22,15 @@ fun Step1Content(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(3.dp)
+            .padding(2.dp)
             .background(color = MaterialTheme.colorScheme.surface)
     ) {
-        LazyColumn(
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 150.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 5.dp)
+            contentPadding = PaddingValues(horizontal = 2.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(books) { book ->
                 SongBook(
