@@ -7,7 +7,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.songlib.core.utils.refineTitle
@@ -28,7 +31,7 @@ fun SongBook(
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(3.dp)
+            .padding(2.dp)
             .clickable { onClick(item) },
         colors = CardDefaults.cardColors(
             containerColor = bgColor,
@@ -39,28 +42,27 @@ fun SongBook(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (item.isSelected) Icons.Filled.RadioButtonChecked else Icons.Filled.RadioButtonUnchecked,
+                imageVector = if (item.isSelected) Icons.Filled.CheckBox else Icons.Filled.CheckBoxOutlineBlank,
                 contentDescription = null,
                 tint = txtColor,
                 modifier = Modifier.padding(end = 12.dp)
             )
-            Column {
-                Text(
-                    text = refineTitle(item.data.title),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = txtColor
-                )
-                Text(
-                    text = "${item.data.songs} ${item.data.subTitle} songs",
-                    fontSize = 18.sp,
-                    color = txtColor
-                )
-            }
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(fontSize = 16.sp, color = txtColor)) {
+                        append(refineTitle(item.data.title))
+                    }
+                    append(" ")
+                    withStyle(style = SpanStyle(fontSize = 12.sp, color = txtColor.copy(alpha = 0.7f))) {
+                        append("(${item.data.songs})")
+                    }
+                },
+                maxLines = 3
+            )
         }
     }
 }

@@ -10,8 +10,8 @@ interface ApiService {
     @GET(ApiConstants.BOOKS)
     suspend fun getBooks(): List<Book>
 
-    @GET(ApiConstants.SONGS)
+    @GET("${ApiConstants.SONGS}/books/{bookIds}")
     suspend fun getSongs(
-        @Query("books") books: String,
+        @Path("bookIds") bookIds: String
     ): List<Song>
 }

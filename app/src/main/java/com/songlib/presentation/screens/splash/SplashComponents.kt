@@ -21,9 +21,8 @@ fun WithLoveFromRow() {
         Text(
             text = "with ",
             style = TextStyle(
-                fontSize = 30.sp,
+                fontSize = 18.sp,
                 letterSpacing = 5.sp,
-                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
@@ -35,9 +34,8 @@ fun WithLoveFromRow() {
         Text(
             text = " from",
             style = TextStyle(
-                fontSize = 30.sp,
+                fontSize = 18.sp,
                 letterSpacing = 5.sp,
-                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
@@ -53,7 +51,7 @@ fun AppDevelopersRow() {
         Text(
             text = "Siro",
             style = TextStyle(
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -61,14 +59,14 @@ fun AppDevelopersRow() {
         Text(
             text = " & ",
             style = TextStyle(
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         )
         Text(
             text = "Titus",
             style = TextStyle(
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )

@@ -61,13 +61,13 @@ fun SplashContent() {
                     Image(
                         painter = painterResource(id = R.drawable.app_icon),
                         contentDescription = "App logo",
-                        modifier = Modifier.size(200.dp)
+                        modifier = Modifier.size(180.dp)
                     )
                     Spacer(Modifier.height(10.dp))
                     Text(
                         text = "SongLib",
                         style = TextStyle(
-                            fontSize = 50.sp,
+                            fontSize = 35.sp,
                             letterSpacing = 5.sp,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
@@ -81,6 +81,7 @@ fun SplashContent() {
                         thickness = 2.dp,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
+                    Spacer(Modifier.height(5.dp))
                     WithLoveFromRow()
                     AppDevelopersRow()
                     Spacer(Modifier.height(20.dp))

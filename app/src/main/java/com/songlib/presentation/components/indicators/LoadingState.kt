@@ -50,8 +50,7 @@ fun LoadingState(
 
             Text(
                 text = title,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center
             )

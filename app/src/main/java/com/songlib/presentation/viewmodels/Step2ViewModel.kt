@@ -32,15 +32,16 @@ class Step2ViewModel @Inject constructor(
             songbkRepo.fetchRemoteSongs(books).catch { exception ->
                 Log.d("TAG", "fetching songs")
                 val errorMessage = when (exception) {
-                    is HttpException -> "HTTP Error: ${exception.code()}"
-                    else -> "Network error: ${exception.message}"
+                    is HttpException -> "We're sorry. We can't access the songs at the moment due to a HTTP Error: ${exception.code()} error on our server. Kindly try again a little later."
+                    else -> "We're sorry. We can't access the songs at the moment due to a ${exception.message} error on our server. Kindly try again a little later."
                 }
                 Log.d("TAG", errorMessage)
                 _uiState.tryEmit(UiState.Error(errorMessage))
             }.collect { respData ->
                 _songs.emit(respData)
+                Log.d("TAG", "${_songs.value.size} songs fetched")
+                _uiState.tryEmit(UiState.Loaded)
             }
-            _uiState.tryEmit(UiState.Loaded)
         }
     }
 
