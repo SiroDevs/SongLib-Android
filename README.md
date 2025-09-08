@@ -23,9 +23,7 @@ Backend API: [`https://songlive.vercel.app/api`](https://songlive.vercel.app/api
     <tr>
         <td><img src="screenshots/image1.jpg" width="150px" /></td>
         <td><img src="screenshots/image2.jpg" width="150px" /></td>
-        <td><img src="screenshots/image3.jpg" width="150px" /></td>
-        <td><img src="screenshots/image4.jpg" width="150px" /></td>
-        <td><img src="screenshots/image5.jpg" width="150px" /></td>
+        <td><img src="screenshots/image2.jpg" width="150px" /></td>
     </tr>
 </table>
 
