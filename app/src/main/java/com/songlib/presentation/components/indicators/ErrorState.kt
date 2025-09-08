@@ -35,7 +35,7 @@ fun ErrorState(
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Oops!",
+            text = "Oops, something went wrong!",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Red
@@ -46,7 +46,7 @@ fun ErrorState(
         Text(
             text = message,
             fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 16.dp),
             textAlign = TextAlign.Center
         )
