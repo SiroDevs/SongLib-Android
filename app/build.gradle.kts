@@ -43,6 +43,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField("String", "RevenueCatId", "\"${localProperties.getProperty("REVENUE_CAT_ID")}\"")
+        buildConfigField("String", "RcPublicApiKey", "\"${localProperties.getProperty("RC_PUBLIC_API_KEY")}\"")
         buildConfigField("String", "SentryDsn", "\"${localProperties.getProperty("SENTRY_DSN")}\"")
     }
 
