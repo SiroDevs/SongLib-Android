@@ -42,8 +42,8 @@ android {
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "RevenueCatId", "\"${localProperties.getProperty("REVENUE_CAT_ID")}\"")
-        buildConfigField("String", "RcPublicApiKey", "\"${localProperties.getProperty("RC_PUBLIC_API_KEY")}\"")
+        buildConfigField("String", "RcCatId", "\"${localProperties.getProperty("REVENUECAT_ID")}\"")
+        buildConfigField("String", "RcApiKey", "\"${localProperties.getProperty("REVENUECAT_API_KEY")}\"")
         buildConfigField("String", "SentryDsn", "\"${localProperties.getProperty("SENTRY_DSN")}\"")
     }
 
