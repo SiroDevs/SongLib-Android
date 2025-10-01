@@ -126,7 +126,6 @@ dependencies {
     implementation(libs.androidx.icons.extended)      // Extended material icons
 
     // Jetpack Compose - Navigation & State
-    implementation(libs.compose.navigation)      // Navigation support in Compose
     implementation(libs.compose.hilt.navigation)      // Hilt + Navigation integration
     implementation(libs.androidx.compose.livedata)      // LiveData support in Compose
 
@@ -154,6 +153,10 @@ dependencies {
     implementation(libs.squareup.retrofit)      // Retrofit for networking
     implementation(libs.squareup.retrofit.gson)      // Gson converter for Retrofit
     implementation(libs.squareup.okhttp3.logging)      // OkHttp logging interceptor
+
+    // Subscription
+    implementation(libs.android.billing)     //  Play Billing Library
+    implementation(libs.revenuecat.purchases)     //  Revenue Cat Purchases
 
     // Testing - Unit Tests
     testImplementation(libs.junit)      // JUnit for unit testing
