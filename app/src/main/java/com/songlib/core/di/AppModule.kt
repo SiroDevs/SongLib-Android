@@ -33,6 +33,11 @@ class AppModule {
 
     @Provides
     @Singleton
+    fun provideSubscriptionRepository(
+    ): SubscriptionsRepository = SubscriptionsRepository()
+
+    @Provides
+    @Singleton
     fun provideThemeRepository(
         prefsRepo: PreferencesRepository,
     ): ThemeRepository = ThemeRepository(prefsRepo)

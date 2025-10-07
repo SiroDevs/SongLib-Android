@@ -8,10 +8,15 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import com.revenuecat.purchases.ui.revenuecatui.*
+import com.revenuecat.purchases.ui.revenuecatui.customercenter.CustomerCenter
+import com.songlib.core.helpers.NetworkUtils
 import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.indicators.EmptyState
-import com.songlib.presentation.components.indicators.LoadingState
+import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.screens.home.tabs.*
 import com.songlib.presentation.screens.home.components.*
 import com.songlib.presentation.viewmodels.HomeViewModel
@@ -24,13 +29,42 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel,
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.fetchData()
-    }
+    val context = LocalContext.current
 
     val uiState by viewModel.uiState.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
     val songs by viewModel.songs.collectAsState(initial = emptyList())
+
+    val isProUser by viewModel.isProUser.collectAsState()
+    var showPaywall by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchData()
+        if (NetworkUtils.isNetworkAvailable(context)) {
+            viewModel.checkSubscription()
+            showPaywall = !isProUser
+        }
+    }
+
+    if (showPaywall) {
+        Dialog(
+            onDismissRequest = { showPaywall = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            val paywallOptions = remember {
+                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
+                    .setShouldDisplayDismissButton(true)
+                    .build()
+            }
+            Box() {
+                if (!isProUser) {
+                    Paywall(paywallOptions)
+                } else {
+                    CustomerCenter(onDismiss = { showPaywall = false })
+                }
+            }
+        }
+    }
 
     when (uiState) {
         is UiState.Error -> Scaffold { padding ->

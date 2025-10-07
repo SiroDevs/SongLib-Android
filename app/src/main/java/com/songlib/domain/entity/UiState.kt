@@ -4,6 +4,8 @@ sealed class UiState {
     object Idle : UiState()
     object Loading : UiState()
     object Loaded : UiState()
+    object RcChecking : UiState()
+    object RcChecked : UiState()
     object Filtered : UiState()
     object Saving : UiState()
     object Saved : UiState()
