@@ -157,7 +157,8 @@ dependencies {
 
     // Subscription
     implementation(libs.android.billing)     //  Play Billing Library
-    implementation(libs.revenuecat.purchases)     //  Revenue Cat Purchases
+    implementation(libs.revenuecat)     //  Revenue Cat Purchases
+    implementation(libs.revenuecat.ui)     //  Revenue Cat UI
 
     // Testing - Unit Tests
     testImplementation(libs.junit)      // JUnit for unit testing
