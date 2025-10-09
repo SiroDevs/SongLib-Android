@@ -27,10 +27,12 @@ object PrefConstants {
     const val DATA_SELECTED = "dataSelected"
     const val DATA_LOADED = "dataLoaded"
     const val SELECT_AFRESH = "selectAfresh"
+    const val IS_PRO_USER = "isProUser"
+    const val CAN_SHOW_PAYWALL = "canShowPaywall"
     const val INSTALL_DATE = "install_date"
     const val REVIEW_REQUESTED = "review_requested"
     const val IS_USER_A_KID = "is_user_a_kid"
-    const val USAGE_TIME = "usage_time"
     const val THEME_MODE = "themeMode"
     const val HORIZONTAL_SLIDES = "horizontalSlides"
+    const val LAST_APP_OPEN_TIME = "lastAppOpenTime"
 }

@@ -8,13 +8,10 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
 import com.revenuecat.purchases.ui.revenuecatui.*
 import com.revenuecat.purchases.ui.revenuecatui.customercenter.CustomerCenter
-import com.songlib.core.helpers.NetworkUtils
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.screens.home.tabs.*
@@ -29,21 +26,16 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel,
 ) {
-    val context = LocalContext.current
-
     val uiState by viewModel.uiState.collectAsState()
     val selectedTab by viewModel.selectedTab.collectAsState()
     val songs by viewModel.songs.collectAsState(initial = emptyList())
 
-    val isProUser by viewModel.isProUser.collectAsState()
+    val canShowPaywall by viewModel.canShowPaywall.collectAsState()
     var showPaywall by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchData()
-        if (NetworkUtils.isNetworkAvailable(context)) {
-            viewModel.checkSubscription()
-            showPaywall = !isProUser
-        }
+        showPaywall = canShowPaywall
     }
 
     if (showPaywall) {
@@ -57,7 +49,7 @@ fun HomeScreen(
                     .build()
             }
             Box() {
-                if (!isProUser) {
+                if (canShowPaywall) {
                     Paywall(paywallOptions)
                 } else {
                     CustomerCenter(onDismiss = { showPaywall = false })
