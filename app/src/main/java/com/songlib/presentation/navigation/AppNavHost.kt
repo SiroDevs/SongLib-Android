@@ -29,7 +29,8 @@ fun AppNavHost(
     ) {
 
         composable(Routes.SPLASH) {
-            SplashScreen(navController = navController)
+            val viewModel: SplashViewModel = hiltViewModel()
+            SplashScreen(navController = navController, viewModel = viewModel)
         }
 
         composable(Routes.STEP_1) {

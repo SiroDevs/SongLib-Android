@@ -1,6 +1,7 @@
 package com.songlib.domain.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.songlib.core.utils.PrefConstants
 import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -13,6 +14,7 @@ class PreferencesRepository @Inject constructor(
     private val prefs =
         context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
 
+    // Existing properties
     var initialBooks: String
         get() = prefs.getString(PrefConstants.INITIAL_BOOKS, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.INITIAL_BOOKS, value) }
@@ -22,12 +24,20 @@ class PreferencesRepository @Inject constructor(
         set(value) = prefs.edit { putString(PrefConstants.SELECTED_BOOKS, value) }
 
     var isDataSelected: Boolean
-        get() = prefs.getBoolean(PrefConstants.SELECT_AFRESH, false)
+        get() = prefs.getBoolean(PrefConstants.DATA_SELECTED, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.DATA_SELECTED, value) }
 
     var selectAfresh: Boolean
         get() = prefs.getBoolean(PrefConstants.SELECT_AFRESH, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.SELECT_AFRESH, value) }
+
+    var isProUser: Boolean
+        get() = prefs.getBoolean(PrefConstants.IS_PRO_USER, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.IS_PRO_USER, value) }
+
+    var canShowPaywall: Boolean
+        get() = prefs.getBoolean(PrefConstants.CAN_SHOW_PAYWALL, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.CAN_SHOW_PAYWALL, value) }
 
     var isDataLoaded: Boolean
         get() = prefs.getBoolean(PrefConstants.DATA_LOADED, false)
@@ -44,4 +54,39 @@ class PreferencesRepository @Inject constructor(
         get() = prefs.getBoolean(PrefConstants.HORIZONTAL_SLIDES, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.HORIZONTAL_SLIDES, value) }
 
+    var lastAppOpenTime: Long
+        get() = prefs.getLong(PrefConstants.LAST_APP_OPEN_TIME, 0L)
+        set(value) = prefs.edit { putLong(PrefConstants.LAST_APP_OPEN_TIME, value) }
+
+    fun hasTimeExceeded(hours: Int = 5): Boolean {
+        val lastTime = lastAppOpenTime
+        if (lastTime == 0L) return false
+
+        val currentTime = System.currentTimeMillis()
+        val timeDifference = currentTime - lastTime
+        val hoursInMillis = hours * 60 * 60 * 1000L
+
+        return timeDifference >= hoursInMillis
+    }
+
+    fun updateAppOpenTime() {
+        lastAppOpenTime = System.currentTimeMillis()
+    }
+
+    fun getTimeSinceLastOpen(): Long {
+        val lastTime = lastAppOpenTime
+        if (lastTime == 0L) return 0L
+        return System.currentTimeMillis() - lastTime
+    }
+
+    private inline fun SharedPreferences.edit(
+        commit: Boolean = false,
+        action: SharedPreferences.Editor.() -> Unit
+    ) {
+        val editor = edit()
+        editor.action()
+        if (commit) {
+            editor.apply()
+        }
+    }
 }

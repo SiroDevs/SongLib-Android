@@ -14,27 +14,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
-import com.songlib.domain.repository.PreferencesRepository
 import com.songlib.presentation.navigation.Routes
-import kotlinx.coroutines.delay
+import com.songlib.presentation.viewmodels.SplashViewModel
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(
+    navController: NavHostController,
+    viewModel: SplashViewModel,
+) {
     val context = LocalContext.current
-    val prefsRepo = remember { PreferencesRepository(context) }
+    val nextRoute by viewModel.nextRoute.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
-        delay(3000)
+        viewModel.initializeApp(context)
+    }
 
-        val nextRoute = when {
-            prefsRepo.selectAfresh -> Routes.STEP_1
-            prefsRepo.isDataLoaded -> Routes.HOME
-            prefsRepo.isDataSelected -> Routes.STEP_2
-            else -> Routes.STEP_1
-        }
-
-        navController.navigate(nextRoute) {
-            popUpTo(Routes.SPLASH) { inclusive = true }
+    LaunchedEffect(isLoading, nextRoute) {
+        if (!isLoading && nextRoute != Routes.SPLASH) {
+            navController.navigate(nextRoute) {
+                popUpTo(Routes.SPLASH) { inclusive = true }
+            }
         }
     }
 

@@ -18,7 +18,6 @@ class HomeViewModel @Inject constructor(
     private val prefsRepo: PreferencesRepository,
     private val songbkRepo: SongBookRepository,
     private val listRepo: ListingRepository,
-    private val subsRepo: SubscriptionsRepository,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -44,8 +43,8 @@ class HomeViewModel @Inject constructor(
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
 
-    private val _isProUser = MutableStateFlow(false)
-    val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
+    private val _canShowPaywall = MutableStateFlow(false)
+    val canShowPaywall: StateFlow<Boolean> = _canShowPaywall.asStateFlow()
 
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
@@ -54,6 +53,7 @@ class HomeViewModel @Inject constructor(
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
+            _canShowPaywall.value = prefsRepo.canShowPaywall
             _books.value = songbkRepo.fetchLocalBooks()
             _songs.value = songbkRepo.fetchLocalSongs()
             _listings.value = listRepo.fetchListings(0)
@@ -66,17 +66,6 @@ class HomeViewModel @Inject constructor(
             }
             _likes.value = _songs.value.filter { it.liked }
             _uiState.tryEmit(UiState.Filtered)
-        }
-    }
-
-    fun checkSubscription() {
-        _uiState.tryEmit(UiState.RcChecking)
-        viewModelScope.launch {
-            subsRepo.isProUser() { isActive ->
-                _isProUser.value = isActive
-            }
-
-            _uiState.tryEmit(UiState.RcChecked)
         }
     }
 
