@@ -30,32 +30,11 @@ fun HomeScreen(
     val selectedTab by viewModel.selectedTab.collectAsState()
     val songs by viewModel.songs.collectAsState(initial = emptyList())
 
-    val canShowPaywall by viewModel.canShowPaywall.collectAsState()
+    val isProUser by viewModel.isProUser.collectAsState()
     var showPaywall by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchData()
-        showPaywall = canShowPaywall
-    }
-
-    if (showPaywall) {
-        Dialog(
-            onDismissRequest = { showPaywall = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            val paywallOptions = remember {
-                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
-                    .setShouldDisplayDismissButton(true)
-                    .build()
-            }
-            Box() {
-                if (canShowPaywall) {
-                    Paywall(paywallOptions)
-                } else {
-                    CustomerCenter(onDismiss = { showPaywall = false })
-                }
-            }
-        }
     }
 
     when (uiState) {

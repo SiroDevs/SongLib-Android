@@ -39,10 +39,9 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun checkSubscriptionAndTime(isOnline: Boolean) {
-        if (!prefsRepo.isProUser && prefsRepo.hasTimeExceeded(5)) {
+        if (!prefsRepo.isProUser) {
             subsRepo.isProUser(isOnline) { isActive ->
                 prefsRepo.isProUser = isActive
-                prefsRepo.canShowPaywall = !isActive
             }
         }
         prefsRepo.updateAppOpenTime()

@@ -3,7 +3,6 @@ package com.songlib.domain.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.songlib.core.utils.PrefConstants
-import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.*
 
@@ -14,7 +13,6 @@ class PreferencesRepository @Inject constructor(
     private val prefs =
         context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
 
-    // Existing properties
     var initialBooks: String
         get() = prefs.getString(PrefConstants.INITIAL_BOOKS, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.INITIAL_BOOKS, value) }
@@ -34,10 +32,6 @@ class PreferencesRepository @Inject constructor(
     var isProUser: Boolean
         get() = prefs.getBoolean(PrefConstants.IS_PRO_USER, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.IS_PRO_USER, value) }
-
-    var canShowPaywall: Boolean
-        get() = prefs.getBoolean(PrefConstants.CAN_SHOW_PAYWALL, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.CAN_SHOW_PAYWALL, value) }
 
     var isDataLoaded: Boolean
         get() = prefs.getBoolean(PrefConstants.DATA_LOADED, false)

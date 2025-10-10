@@ -7,7 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import com.revenuecat.purchases.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.ui.revenuecatui.PaywallOptions
 import com.songlib.domain.entity.UiState
 import com.songlib.domain.repository.*
 import com.songlib.presentation.components.action.AppTopBar
@@ -25,6 +29,7 @@ fun Step1Screen(
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showPaywall by remember { mutableStateOf(false) }
 
     if (fetchData == 0) {
         viewModel.fetchBooks()
@@ -33,11 +38,56 @@ fun Step1Screen(
 
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
+    val showUpgradeDialog by viewModel.showUpgradeDialog.collectAsState()
+    val isProUser by viewModel.isProUser.collectAsState()
     val theme = themeRepo.selectedTheme
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
             navController.navigate(Routes.STEP_2)
+        }
+    }
+
+    if (showUpgradeDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.onUpgradeDismis() },
+            title = { Text("You selected more than 3 Songbooks...") },
+            text = {
+                Text("Please purchase a subscription if you want to have more than 3 songbooks in your collection.")
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.onUpgradeProceed()
+                        showPaywall = true
+                    }
+                ) {
+                    Text("OKAY")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { viewModel.onUpgradeDismis() }
+                ) {
+                    Text("CANCEL")
+                }
+            }
+        )
+    }
+
+    if (showPaywall) {
+        Dialog(
+            onDismissRequest = { showPaywall = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            val paywallOptions = remember {
+                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
+                    .setShouldDisplayDismissButton(true)
+                    .build()
+            }
+            Box() {
+                Paywall(paywallOptions)
+            }
         }
     }
 

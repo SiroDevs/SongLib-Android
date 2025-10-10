@@ -43,8 +43,11 @@ class HomeViewModel @Inject constructor(
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
 
-    private val _canShowPaywall = MutableStateFlow(false)
-    val canShowPaywall: StateFlow<Boolean> = _canShowPaywall.asStateFlow()
+    private val _isProUser = MutableStateFlow(false)
+    val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
+
+    private val _showProLimitDialog = MutableStateFlow(false)
+    val showProLimitDialog: StateFlow<Boolean> = _showProLimitDialog.asStateFlow()
 
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
@@ -53,7 +56,7 @@ class HomeViewModel @Inject constructor(
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            _canShowPaywall.value = prefsRepo.canShowPaywall
+            _isProUser.value = prefsRepo.isProUser
             _books.value = songbkRepo.fetchLocalBooks()
             _songs.value = songbkRepo.fetchLocalSongs()
             _listings.value = listRepo.fetchListings(0)
@@ -145,6 +148,22 @@ class HomeViewModel @Inject constructor(
             listings.forEach { listRepo.deleteById(it.id) }
             _uiState.emit(UiState.Filtered)
         }
+    }
+    fun checkAndHandleNewListing() {
+        val currentListingsCount = listings.value.size
+        if (!_isProUser.value && currentListingsCount >= 1) {
+            _showProLimitDialog.value = true
+        } else {
+            _showProLimitDialog.value = false
+        }
+    }
+
+    fun onProLimitProceed() {
+        _showProLimitDialog.value = false
+    }
+
+    fun onProLimitDismiss() {
+        _showProLimitDialog.value = false
     }
 
     fun clearData() {
