@@ -17,6 +17,7 @@ import com.songlib.data.models.ListingUi
 @Composable
 fun ChoosingListingSheet(
     listings: List<ListingUi>,
+    isProUser: Boolean,
     onDismiss: () -> Unit,
     onNewListClick: () -> Unit,
     onListingClick: (ListingUi) -> Unit,
@@ -39,16 +40,51 @@ fun ChoosingListingSheet(
                     .padding(bottom = 12.dp)
             )
 
+            // Upgrade banner for free users with existing listings
+            if (!isProUser && listings.isNotEmpty()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Star,
+                            contentDescription = "Pro feature",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = "Free users can only have 1 listing",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
+
             LazyColumn(
                 modifier = Modifier
                     .weight(1f, fill = false)
                     .padding(bottom = 16.dp)
             ) {
-                item() {
+                item {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onNewListClick }
+                            .clickable { onNewListClick() }
                             .padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -76,7 +112,7 @@ fun ChoosingListingSheet(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onListingClick }
+                            .clickable { onListingClick(listing) }
                             .padding(vertical = 12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -109,4 +145,3 @@ fun ChoosingListingSheet(
         }
     }
 }
-

@@ -14,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class Step1ViewModel @Inject constructor(
     private val prefsRepo: PreferencesRepository,
+    private val subsRepo: SubscriptionsRepository,
     private val songbkRepo: SongBookRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -21,6 +22,15 @@ class Step1ViewModel @Inject constructor(
 
     private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
     val books: StateFlow<List<Selectable<Book>>> get() = _books
+
+    private val _showUpgradeDialog = MutableStateFlow(false)
+    val showUpgradeDialog: StateFlow<Boolean> = _showUpgradeDialog.asStateFlow()
+
+    private val _pendingBookSelection = MutableStateFlow<Selectable<Book>?>(null)
+    val pendingBookSelection: StateFlow<Selectable<Book>?> = _pendingBookSelection.asStateFlow()
+
+    private val _isProUser = MutableStateFlow(false)
+    val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
 
     private fun getSelectedIds(): Set<Int> =
         prefsRepo.selectedBooks
@@ -46,6 +56,7 @@ class Step1ViewModel @Inject constructor(
                 }
                 _books.emit(selectableBooks)
                 Log.d("TAG", "${_books.value.size} books fetched")
+                _isProUser.value = prefsRepo.isProUser
                 _uiState.tryEmit(UiState.Loaded)
             }
         }
@@ -57,6 +68,15 @@ class Step1ViewModel @Inject constructor(
 
     fun saveSelectedBooks() {
         saveBooks(getSelectedBookList())
+    }
+
+    private suspend fun refreshSubscription(isOnline: Boolean) {
+        if (!prefsRepo.isProUser) {
+            subsRepo.isProUser(isOnline) { isActive ->
+                prefsRepo.isProUser = isActive
+                _isProUser.value = isActive
+            }
+        }
     }
 
     private fun saveBooks(books: List<Book>) {
@@ -91,8 +111,35 @@ class Step1ViewModel @Inject constructor(
     }
 
     fun toggleBookSelection(book: Selectable<Book>) {
-        _books.value = _books.value.map {
-            if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
+        val currentSelectedCount = _books.value.count { it.isSelected }
+        val isCurrentlySelected = book.isSelected
+
+        if (isCurrentlySelected || _isProUser.value) {
+            _books.value = _books.value.map {
+                if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
+            }
+            return
+        }
+
+        if (currentSelectedCount >= 3) {
+            _pendingBookSelection.value = book
+            _showUpgradeDialog.value = true
+        } else {
+            _books.value = _books.value.map {
+                if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
+            }
         }
     }
+
+    fun onUpgradeProceed() {
+        _showUpgradeDialog.value = false
+        _pendingBookSelection.value = null
+//        refreshSubscription(on)
+    }
+
+    fun onUpgradeDismis() {
+        _showUpgradeDialog.value = false
+        _pendingBookSelection.value = null
+    }
+
 }

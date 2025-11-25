@@ -35,7 +35,8 @@ fun Step1Content(
             items(books) { book ->
                 SongBook(
                     item = book,
-                    onClick = { onBookClick(book) }
+                    onClick = { onBookClick(book) },
+                    modifier = Modifier.height(60.dp)
                 )
             }
         }

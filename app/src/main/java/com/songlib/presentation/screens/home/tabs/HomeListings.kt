@@ -3,11 +3,12 @@ package com.songlib.presentation.screens.home.tabs
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
+import com.revenuecat.purchases.ui.revenuecatui.*
 import com.songlib.presentation.screens.home.components.ListingsList
 import com.songlib.data.models.ListingUi
 import com.songlib.domain.entity.UiState
@@ -27,8 +28,20 @@ fun HomeListings(
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
     var showDeleteAlert by remember { mutableStateOf(false) }
+    var showPaywall by remember { mutableStateOf(false) }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
+    val isProUser by viewModel.isProUser.collectAsState()
+    val showProLimitDialog by viewModel.showProLimitDialog.collectAsState()
     var selectedListings by remember { mutableStateOf<Set<ListingUi>>(emptySet()) }
+
+    LaunchedEffect(showAddAlert) {
+        if (showAddAlert) {
+            if (!isProUser && listings.size >= 3) {
+                showAddAlert = false
+                viewModel.checkAndHandleNewListing()
+            }
+        }
+    }
 
     if (showAddAlert) {
         QuickFormDialog(
@@ -44,14 +57,41 @@ fun HomeListings(
 
     if (showDeleteAlert) {
         ConfirmDialog(
-            title = "Delete this listing${selectedListings.size} == 1 ? 's' : ''",
-            message = "Are you sure you want to deleted the selected listings?",
+            title = "Delete ${if (selectedListings.size == 1) "this listing" else "these listings"}",
+            message = "Are you sure you want to delete the selected listing${if (selectedListings.size != 1) "s" else ""}?",
             onDismiss = { showDeleteAlert = false },
             onConfirm = {
                 viewModel.deleteListings(selectedListings)
                 showDeleteAlert = false
+                selectedListings = emptySet()
             }
         )
+    }
+
+    if (showProLimitDialog) {
+        ProLimitDialog(
+            onDismiss = { viewModel.onProLimitDismiss() },
+            onUpgrade = {
+                viewModel.onProLimitProceed()
+                showPaywall = true
+            }
+        )
+    }
+
+    if (showPaywall) {
+        Dialog(
+            onDismissRequest = { showPaywall = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            val paywallOptions = remember {
+                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
+                    .setShouldDisplayDismissButton(true)
+                    .build()
+            }
+            Box {
+                Paywall(paywallOptions)
+            }
+        }
     }
 
     Scaffold(
@@ -60,7 +100,13 @@ fun HomeListings(
                 title = if (selectedListings.isEmpty()) "Song Listings" else "${selectedListings.size} selected",
                 actions = {
                     if (selectedListings.isEmpty()) {
-                        IconButton(onClick = { showAddAlert = true }) {
+                        IconButton(onClick = {
+                            if (!isProUser && listings.isNotEmpty()) {
+                                viewModel.checkAndHandleNewListing()
+                            } else {
+                                showAddAlert = true
+                            }
+                        }) {
                             Icon(Icons.Filled.Add, contentDescription = "New")
                         }
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
@@ -83,26 +129,34 @@ fun HomeListings(
                 .padding(innerPadding),
             contentAlignment = Alignment.Center
         ) {
-            when (uiState) {
-                is UiState.Filtered ->
-                    if (listings.isEmpty()) {
-                        EmptyState(
-                            message = "Start adding lists of songs,\\nif you don't want to see this again",
-                            messageIcon = Icons.Default.FormatListNumbered
-                        )
-                    } else {
-                        ListingsList(
-                            listings = listings,
-                            navController = navController,
-                            selectedListings = selectedListings,
-                            onListingSelected = { listing ->
-                                selectedListings =
-                                    if (selectedListings.contains(listing)) selectedListings - listing
-                                    else selectedListings + listing
-                            },
-                        )
-                    }
-                else -> EmptyState()
+            Column(modifier = Modifier.fillMaxSize()) {
+                if (!isProUser && listings.isNotEmpty()) {
+                    UpgradeBanner(
+                        onUpgradeClick = { showPaywall = true }
+                    )
+                }
+
+                when (uiState) {
+                    is UiState.Filtered ->
+                        if (listings.isEmpty()) {
+                            EmptyState(
+                                message = "Start adding lists of songs,\nif you don't want to see this again",
+                                messageIcon = Icons.Default.FormatListNumbered
+                            )
+                        } else {
+                            ListingsList(
+                                listings = listings,
+                                navController = navController,
+                                selectedListings = selectedListings,
+                                onListingSelected = { listing ->
+                                    selectedListings =
+                                        if (selectedListings.contains(listing)) selectedListings - listing
+                                        else selectedListings + listing
+                                },
+                            )
+                        }
+                    else -> EmptyState()
+                }
             }
         }
     }

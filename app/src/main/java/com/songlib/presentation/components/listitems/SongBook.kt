@@ -17,11 +17,11 @@ import com.songlib.core.utils.refineTitle
 import com.songlib.data.models.Book
 import com.songlib.data.sample.SampleBooks
 import com.songlib.domain.entity.Selectable
-
 @Composable
 fun SongBook(
     item: Selectable<Book>,
-    onClick: (Selectable<Book>) -> Unit
+    onClick: (Selectable<Book>) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val bgColor =
         if (item.isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
@@ -29,7 +29,7 @@ fun SongBook(
         if (item.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
 
     ElevatedCard(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(2.dp)
             .clickable { onClick(item) },
@@ -41,16 +41,10 @@ fun SongBook(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = if (item.isSelected) Icons.Filled.CheckBox else Icons.Filled.CheckBoxOutlineBlank,
-                contentDescription = null,
-                tint = txtColor,
-                modifier = Modifier.padding(end = 12.dp)
-            )
             Text(
                 text = buildAnnotatedString {
                     withStyle(style = SpanStyle(fontSize = 16.sp, color = txtColor)) {

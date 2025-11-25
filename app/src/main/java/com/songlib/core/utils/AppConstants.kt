@@ -28,7 +28,6 @@ object PrefConstants {
     const val DATA_LOADED = "dataLoaded"
     const val SELECT_AFRESH = "selectAfresh"
     const val IS_PRO_USER = "isProUser"
-    const val CAN_SHOW_PAYWALL = "canShowPaywall"
     const val INSTALL_DATE = "install_date"
     const val REVIEW_REQUESTED = "review_requested"
     const val IS_USER_A_KID = "is_user_a_kid"

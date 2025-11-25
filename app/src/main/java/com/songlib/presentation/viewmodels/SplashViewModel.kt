@@ -39,10 +39,9 @@ class SplashViewModel @Inject constructor(
     }
 
     private suspend fun checkSubscriptionAndTime(isOnline: Boolean) {
-        if (!prefsRepo.isProUser && prefsRepo.hasTimeExceeded(5)) {
+        if (!prefsRepo.isProUser) {
             subsRepo.isProUser(isOnline) { isActive ->
                 prefsRepo.isProUser = isActive
-                prefsRepo.canShowPaywall = !isActive
             }
         }
         prefsRepo.updateAppOpenTime()
@@ -51,9 +50,9 @@ class SplashViewModel @Inject constructor(
     private fun determineNextRoute() {
         _nextRoute.value = when {
             prefsRepo.selectAfresh -> Routes.STEP_1
-            prefsRepo.isDataLoaded -> Routes.HOME
-            prefsRepo.isDataSelected -> Routes.STEP_2
-            else -> Routes.STEP_1
+            prefsRepo.isDataSelected && prefsRepo.isDataLoaded -> Routes.HOME
+            prefsRepo.isDataSelected && !prefsRepo.isDataLoaded -> Routes.STEP_2
+            else -> Routes.HOME
         }
     }
 }

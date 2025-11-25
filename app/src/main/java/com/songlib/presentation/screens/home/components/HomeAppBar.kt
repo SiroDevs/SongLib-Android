@@ -4,7 +4,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import com.songlib.data.models.Song
+import com.songlib.domain.repository.PreferencesRepository
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.general.QuickFormDialog
 import com.songlib.presentation.viewmodels.HomeViewModel
@@ -19,8 +21,12 @@ fun HomeSearchAppBar(
     onShareClick: () -> Unit,
     onClearSelection: () -> Unit,
 ) {
+    val context = LocalContext.current
+    val prefs = remember { PreferencesRepository(context) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
+    val isProUser by viewModel.isProUser.collectAsState()
+    val listings by viewModel.listings.collectAsState(initial = emptyList())
 
     if (showAddDialog) {
         QuickFormDialog(
@@ -28,31 +34,37 @@ fun HomeSearchAppBar(
             label = "Listing title",
             onDismiss = { showAddDialog = false },
             onConfirm = { title ->
-                viewModel.saveListing(title)
-                showAddDialog = false
+                if (viewModel.checkAndHandleNewListing()) {
+                    viewModel.saveListing(title)
+                    showAddDialog = false
+                }
             }
         )
     }
 
     if (showListingSheet) {
-        val listings by viewModel.listings.collectAsState(initial = emptyList())
         ChoosingListingSheet(
             listings = listings,
+            isProUser = isProUser,
             onDismiss = { showListingSheet = false },
             onNewListClick = {
-
+                showListingSheet = false
+                if (viewModel.checkAndHandleNewListing()) {
+                    showAddDialog = true
+                }
             },
             onListingClick = { listing ->
                 viewModel.saveListItems(listing, selectedSongs)
                 showListingSheet = false
-                onClearSelection
+                onClearSelection()
             },
             onDone = { showListingSheet = false }
         )
     }
 
     AppTopBar(
-        title = if (selectedSongs.isEmpty()) "SongLib" else "${selectedSongs.size} selected",
+//        title = if (selectedSongs.isEmpty()) "SongLib" else "${selectedSongs.size} selected",
+        title = if (prefs.isDataLoaded) "True" else "False",
         actions = {
             if (selectedSongs.isEmpty()) {
                 IconButton(onClick = onSearchClick) {
@@ -73,7 +85,12 @@ fun HomeSearchAppBar(
                     }
                 }
                 IconButton(
-                    onClick = { showListingSheet = true }
+                    onClick = {
+                        // Only show listing sheet if we have songs selected
+                        if (selectedSongs.isNotEmpty()) {
+                            showListingSheet = true
+                        }
+                    }
                 ) {
                     Icon(Icons.Default.FormatListNumbered, contentDescription = "Listing")
                 }
@@ -83,4 +100,3 @@ fun HomeSearchAppBar(
         onNavIconClick = onClearSelection
     )
 }
-

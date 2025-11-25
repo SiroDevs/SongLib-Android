@@ -43,8 +43,11 @@ class HomeViewModel @Inject constructor(
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
 
-    private val _canShowPaywall = MutableStateFlow(false)
-    val canShowPaywall: StateFlow<Boolean> = _canShowPaywall.asStateFlow()
+    private val _isProUser = MutableStateFlow(false)
+    val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
+
+    private val _showProLimitDialog = MutableStateFlow(false)
+    val showProLimitDialog: StateFlow<Boolean> = _showProLimitDialog.asStateFlow()
 
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
@@ -53,7 +56,7 @@ class HomeViewModel @Inject constructor(
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            _canShowPaywall.value = prefsRepo.canShowPaywall
+            _isProUser.value = prefsRepo.isProUser
             _books.value = songbkRepo.fetchLocalBooks()
             _songs.value = songbkRepo.fetchLocalSongs()
             _listings.value = listRepo.fetchListings(0)
@@ -147,13 +150,50 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun clearData() {
-        viewModelScope.launch {
-            songbkRepo.deleteAllData()
-            listRepo.deleteAllListings()
-            prefsRepo.isDataLoaded = false
-            prefsRepo.isDataSelected = false
-            prefsRepo.selectedBooks = ""
+    fun checkAndHandleNewListing(): Boolean {
+        return !_isProUser.value && listings.value.isNotEmpty()
+    }
+
+    fun onProLimitProceed() {
+        _showProLimitDialog.value = false
+    }
+
+    fun onProLimitDismiss() {
+        _showProLimitDialog.value = false
+    }
+
+    fun clearData(onComplete: (Boolean) -> Unit) {
+        _uiState.tryEmit(UiState.Loading)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                songbkRepo.deleteAllData()
+                listRepo.deleteAllListings()
+
+                withContext(Dispatchers.Main) {
+                    prefsRepo.isDataLoaded = false
+                    prefsRepo.isDataSelected = false
+                    prefsRepo.selectAfresh = false
+                    prefsRepo.initialBooks = ""
+                    prefsRepo.selectedBooks = ""
+                }
+
+                withContext(Dispatchers.Main) {
+                    _books.value = emptyList()
+                    _songs.value = emptyList()
+                    _filtered.value = emptyList()
+                    _likes.value = emptyList()
+                    _listings.value = emptyList()
+                    _uiState.tryEmit(UiState.Loaded)
+                }
+
+                onComplete(true)
+            } catch (e: Exception) {
+                _uiState.tryEmit(UiState.Error("Error clearing data"))
+                Log.e("HomeViewModel", "Error clearing data", e)
+                onComplete(false)
+            }
         }
     }
+
 }

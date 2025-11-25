@@ -1,0 +1,45 @@
+#name: Deploy to Play Store
+#
+#on:
+#  push:
+#    branches: [ main ]
+#
+#jobs:
+#  build-and-deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#      - name: Set up JDK
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '17'
+#          distribution: 'temurin'
+#
+#      - name: Setup Android SDK
+#        uses: android-actions/setup-android@v3
+#
+#      - name: Build APK/AAB
+#        run: |
+#          chmod +x gradlew
+#          ./gradlew assembleRelease
+#
+#      - name: Build App Bundle
+#        run: ./gradlew bundleRelease
+#
+#      - name: Upload artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: app-bundle
+#          path: app/build/outputs/
+#
+#      - name: Deploy to Play Store
+#        uses: r0adkll/upload-google-play@v1
+#        with:
+#          serviceAccountJsonPlainText: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+#          packageName: com.yourcompany.yourapp
+#          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+#          track: internal
+#          status: completed

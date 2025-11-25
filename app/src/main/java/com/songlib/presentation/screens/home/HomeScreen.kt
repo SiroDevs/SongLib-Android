@@ -30,32 +30,8 @@ fun HomeScreen(
     val selectedTab by viewModel.selectedTab.collectAsState()
     val songs by viewModel.songs.collectAsState(initial = emptyList())
 
-    val canShowPaywall by viewModel.canShowPaywall.collectAsState()
-    var showPaywall by remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         viewModel.fetchData()
-        showPaywall = canShowPaywall
-    }
-
-    if (showPaywall) {
-        Dialog(
-            onDismissRequest = { showPaywall = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            val paywallOptions = remember {
-                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
-                    .setShouldDisplayDismissButton(true)
-                    .build()
-            }
-            Box() {
-                if (canShowPaywall) {
-                    Paywall(paywallOptions)
-                } else {
-                    CustomerCenter(onDismiss = { showPaywall = false })
-                }
-            }
-        }
     }
 
     when (uiState) {
@@ -82,10 +58,13 @@ fun HomeScreen(
                             message = "It appears you didn't finish your songbook selection, that's why it's empty here at the moment.\n\nLet's fix that asap!",
                             messageIcon = Icons.Default.EditNote,
                             onAction = {
-                                viewModel.clearData()
-                                navController.navigate(Routes.SPLASH) {
-                                    popUpTo(0) { inclusive = true }
-                                    launchSingleTop = true
+                                viewModel.clearData { success ->
+                                    if (success) {
+                                        navController.navigate(Routes.SPLASH) {
+                                            popUpTo(0) { inclusive = true }
+                                            launchSingleTop = true
+                                        }
+                                    }
                                 }
                             }
                         )
