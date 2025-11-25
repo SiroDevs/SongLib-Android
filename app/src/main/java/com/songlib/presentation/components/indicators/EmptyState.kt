@@ -24,7 +24,7 @@ fun EmptyState(
     message: String? = null,
     messageIcon: ImageVector? = null,
     actionTitle: String? = "Retry",
-    onAction: (() -> Unit)? = null,
+    onAction: @Composable (() -> Unit)? = null,
     titleColor: Color = MaterialTheme.colorScheme.primary,
     messageColor: Color = MaterialTheme.colorScheme.secondary,
     spacing: Dp = 20.dp

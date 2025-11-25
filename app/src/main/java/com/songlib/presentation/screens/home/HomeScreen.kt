@@ -58,10 +58,12 @@ fun HomeScreen(
                             message = "It appears you didn't finish your songbook selection, that's why it's empty here at the moment.\n\nLet's fix that asap!",
                             messageIcon = Icons.Default.EditNote,
                             onAction = {
-                                if (viewModel.clearData()) {
-                                    navController.navigate(Routes.SPLASH) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
+                                viewModel.clearData { success ->
+                                    if (success) {
+                                        navController.navigate(Routes.SPLASH) {
+                                            popUpTo(0) { inclusive = true }
+                                            launchSingleTop = true
+                                        }
                                     }
                                 }
                             }

@@ -162,10 +162,11 @@ class HomeViewModel @Inject constructor(
         _showProLimitDialog.value = false
     }
 
-    fun clearData(): Boolean {
-        return try {
-            _uiState.tryEmit(UiState.Loading)
-            viewModelScope.launch(Dispatchers.IO) {
+    fun clearData(onComplete: (Boolean) -> Unit) {
+        _uiState.tryEmit(UiState.Loading)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 songbkRepo.deleteAllData()
                 listRepo.deleteAllListings()
 
@@ -177,18 +178,22 @@ class HomeViewModel @Inject constructor(
                     prefsRepo.selectedBooks = ""
                 }
 
-                _books.value = emptyList()
-                _songs.value = emptyList()
-                _filtered.value = emptyList()
-                _likes.value = emptyList()
-                _listings.value = emptyList()
+                withContext(Dispatchers.Main) {
+                    _books.value = emptyList()
+                    _songs.value = emptyList()
+                    _filtered.value = emptyList()
+                    _likes.value = emptyList()
+                    _listings.value = emptyList()
+                    _uiState.tryEmit(UiState.Loaded)
+                }
+
+                onComplete(true)
+            } catch (e: Exception) {
+                _uiState.tryEmit(UiState.Error("Error clearing data"))
+                Log.e("HomeViewModel", "Error clearing data", e)
+                onComplete(false)
             }
-            _uiState.tryEmit(UiState.Loaded)
-            true
-        } catch (e: Exception) {
-            _uiState.tryEmit(UiState.Error("Error clearing data"))
-            Log.e("HomeViewModel", "Error clearing data", e)
-            false
         }
     }
+
 }
