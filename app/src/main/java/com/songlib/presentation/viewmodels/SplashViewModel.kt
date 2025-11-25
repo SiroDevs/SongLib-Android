@@ -50,9 +50,9 @@ class SplashViewModel @Inject constructor(
     private fun determineNextRoute() {
         _nextRoute.value = when {
             prefsRepo.selectAfresh -> Routes.STEP_1
-            prefsRepo.isDataLoaded -> Routes.HOME
-            prefsRepo.isDataSelected -> Routes.STEP_2
-            else -> Routes.STEP_1
+            prefsRepo.isDataSelected && prefsRepo.isDataLoaded -> Routes.HOME
+            prefsRepo.isDataSelected && !prefsRepo.isDataLoaded -> Routes.STEP_2
+            else -> Routes.HOME
         }
     }
 }

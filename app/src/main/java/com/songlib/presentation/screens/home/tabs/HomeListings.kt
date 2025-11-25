@@ -69,28 +69,11 @@ fun HomeListings(
     }
 
     if (showProLimitDialog) {
-        AlertDialog(
-            onDismissRequest = { viewModel.onProLimitDismiss() },
-            title = { Text("Support us by upgrading") },
-            text = {
-                Text("Please purchase a subscription if you want to continue using this feature and all other Pro features.")
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.onProLimitProceed()
-                        showPaywall = true
-                    }
-                ) {
-                    Text("Upgrade")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { viewModel.onProLimitDismiss() }
-                ) {
-                    Text("Not Now")
-                }
+        ProLimitDialog(
+            onDismiss = { viewModel.onProLimitDismiss() },
+            onUpgrade = {
+                viewModel.onProLimitProceed()
+                showPaywall = true
             }
         )
     }

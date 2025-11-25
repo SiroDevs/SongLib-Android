@@ -30,9 +30,6 @@ fun HomeScreen(
     val selectedTab by viewModel.selectedTab.collectAsState()
     val songs by viewModel.songs.collectAsState(initial = emptyList())
 
-    val isProUser by viewModel.isProUser.collectAsState()
-    var showPaywall by remember { mutableStateOf(false) }
-
     LaunchedEffect(Unit) {
         viewModel.fetchData()
     }
@@ -61,10 +58,11 @@ fun HomeScreen(
                             message = "It appears you didn't finish your songbook selection, that's why it's empty here at the moment.\n\nLet's fix that asap!",
                             messageIcon = Icons.Default.EditNote,
                             onAction = {
-                                viewModel.clearData()
-                                navController.navigate(Routes.SPLASH) {
-                                    popUpTo(0) { inclusive = true }
-                                    launchSingleTop = true
+                                if (viewModel.clearData()) {
+                                    navController.navigate(Routes.SPLASH) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
                                 }
                             }
                         )

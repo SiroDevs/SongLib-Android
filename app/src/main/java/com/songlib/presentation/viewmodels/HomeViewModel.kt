@@ -149,13 +149,9 @@ class HomeViewModel @Inject constructor(
             _uiState.emit(UiState.Filtered)
         }
     }
-    fun checkAndHandleNewListing() {
-        val currentListingsCount = listings.value.size
-        if (!_isProUser.value && currentListingsCount >= 1) {
-            _showProLimitDialog.value = true
-        } else {
-            _showProLimitDialog.value = false
-        }
+
+    fun checkAndHandleNewListing(): Boolean {
+        return !_isProUser.value && listings.value.isNotEmpty()
     }
 
     fun onProLimitProceed() {
@@ -166,13 +162,33 @@ class HomeViewModel @Inject constructor(
         _showProLimitDialog.value = false
     }
 
-    fun clearData() {
-        viewModelScope.launch {
-            songbkRepo.deleteAllData()
-            listRepo.deleteAllListings()
-            prefsRepo.isDataLoaded = false
-            prefsRepo.isDataSelected = false
-            prefsRepo.selectedBooks = ""
+    fun clearData(): Boolean {
+        return try {
+            _uiState.tryEmit(UiState.Loading)
+            viewModelScope.launch(Dispatchers.IO) {
+                songbkRepo.deleteAllData()
+                listRepo.deleteAllListings()
+
+                withContext(Dispatchers.Main) {
+                    prefsRepo.isDataLoaded = false
+                    prefsRepo.isDataSelected = false
+                    prefsRepo.selectAfresh = false
+                    prefsRepo.initialBooks = ""
+                    prefsRepo.selectedBooks = ""
+                }
+
+                _books.value = emptyList()
+                _songs.value = emptyList()
+                _filtered.value = emptyList()
+                _likes.value = emptyList()
+                _listings.value = emptyList()
+            }
+            _uiState.tryEmit(UiState.Loaded)
+            true
+        } catch (e: Exception) {
+            _uiState.tryEmit(UiState.Error("Error clearing data"))
+            Log.e("HomeViewModel", "Error clearing data", e)
+            false
         }
     }
 }

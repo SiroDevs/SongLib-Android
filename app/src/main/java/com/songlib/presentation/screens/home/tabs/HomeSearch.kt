@@ -13,6 +13,10 @@ import com.songlib.presentation.components.action.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.viewmodels.HomeViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import com.revenuecat.purchases.ui.revenuecatui.Paywall
+import com.revenuecat.purchases.ui.revenuecatui.PaywallOptions
 import com.songlib.data.models.Song
 import com.songlib.presentation.components.indicators.EmptyState
 import com.songlib.presentation.screens.home.components.*
@@ -28,6 +32,35 @@ fun HomeSearch(
     var searchQry by rememberSaveable { mutableStateOf("") }
     val songs by viewModel.filtered.collectAsState(initial = emptyList())
     var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
+    var showPaywall by remember { mutableStateOf(false) }
+    val isProUser by viewModel.isProUser.collectAsState()
+    val showProLimitDialog by viewModel.showProLimitDialog.collectAsState()
+
+    if (showProLimitDialog) {
+        ProLimitDialog(
+            onDismiss = { viewModel.onProLimitDismiss() },
+            onUpgrade = {
+                viewModel.onProLimitProceed()
+                showPaywall = true
+            }
+        )
+    }
+
+    if (showPaywall) {
+        Dialog(
+            onDismissRequest = { showPaywall = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            val paywallOptions = remember {
+                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
+                    .setShouldDisplayDismissButton(true)
+                    .build()
+            }
+            Box {
+                Paywall(paywallOptions)
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
