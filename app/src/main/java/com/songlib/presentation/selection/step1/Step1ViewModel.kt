@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.songlib.data.models.Book
 import com.songlib.domain.entity.Selectable
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repository.PreferencesRepository
-import com.songlib.domain.repository.SongBookRepository
-import com.songlib.domain.repository.SubscriptionsRepository
+import com.songlib.domain.repository.PrefsRepo
+import com.songlib.domain.repository.SongBookRepo
+import com.songlib.domain.repository.SubsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,9 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class Step1ViewModel @Inject constructor(
-    private val prefsRepo: PreferencesRepository,
-    private val subsRepo: SubscriptionsRepository,
-    private val songbkRepo: SongBookRepository,
+    private val prefsRepo: PrefsRepo,
+    private val subsRepo: SubsRepo,
+    private val songbkRepo: SongBookRepo,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()

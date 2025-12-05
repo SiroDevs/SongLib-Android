@@ -6,7 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.songlib.data.models.Song
-import com.songlib.domain.repository.PreferencesRepository
+import com.songlib.domain.repository.PrefsRepo
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.general.QuickFormDialog
 import com.songlib.presentation.home.HomeViewModel
@@ -22,7 +22,7 @@ fun HomeSearchAppBar(
     onClearSelection: () -> Unit,
 ) {
     val context = LocalContext.current
-    val prefs = remember { PreferencesRepository(context) }
+    val prefs = remember { PrefsRepo(context) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
     val isProUser by viewModel.isProUser.collectAsState()

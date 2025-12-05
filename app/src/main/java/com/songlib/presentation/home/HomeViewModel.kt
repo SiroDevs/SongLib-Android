@@ -8,9 +8,9 @@ import com.songlib.data.models.Book
 import com.songlib.data.models.ListingUi
 import com.songlib.data.models.Song
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repository.ListingRepository
-import com.songlib.domain.repository.PreferencesRepository
-import com.songlib.domain.repository.SongBookRepository
+import com.songlib.domain.repository.ListingRepo
+import com.songlib.domain.repository.PrefsRepo
+import com.songlib.domain.repository.SongBookRepo
 import com.songlib.presentation.home.components.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,9 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val prefsRepo: PreferencesRepository,
-    private val songbkRepo: SongBookRepository,
-    private val listRepo: ListingRepository,
+    private val prefsRepo: PrefsRepo,
+    private val songbkRepo: SongBookRepo,
+    private val listRepo: ListingRepo,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()

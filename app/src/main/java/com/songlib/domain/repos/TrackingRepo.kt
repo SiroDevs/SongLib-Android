@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 import javax.inject.*
 
 @Singleton
-class TrackingRepository @Inject constructor(
+class TrackingRepo @Inject constructor(
     context: Context,
 ) {
     private var historyDao: HistoryDao?

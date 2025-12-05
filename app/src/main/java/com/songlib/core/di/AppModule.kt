@@ -16,35 +16,35 @@ class AppModule {
     @Singleton
     fun provideListingRepository(
         @ApplicationContext context: Context,
-    ): ListingRepository = ListingRepository(context)
+    ): ListingRepo = ListingRepo(context)
 
     @Provides
     @Singleton
     fun providePreferencesRepository(
         @ApplicationContext context: Context,
-    ): PreferencesRepository = PreferencesRepository(context)
+    ): PrefsRepo = PrefsRepo(context)
 
     @Provides
     @Singleton
     fun provideSongBookRepository(
         @ApplicationContext context: Context,
         apiService: ApiService,
-    ): SongBookRepository = SongBookRepository(context, apiService)
+    ): SongBookRepo = SongBookRepo(context, apiService)
 
     @Provides
     @Singleton
     fun provideSubscriptionRepository(
-    ): SubscriptionsRepository = SubscriptionsRepository()
+    ): SubsRepo = SubsRepo()
 
     @Provides
     @Singleton
     fun provideThemeRepository(
-        prefsRepo: PreferencesRepository,
+        prefsRepo: PrefsRepo,
     ): ThemeRepository = ThemeRepository(prefsRepo)
 
     @Provides
     @Singleton
     fun provideTrackingRepository(
         @ApplicationContext context: Context,
-    ): TrackingRepository = TrackingRepository(context)
+    ): TrackingRepo = TrackingRepo(context)
 }

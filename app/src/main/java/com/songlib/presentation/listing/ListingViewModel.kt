@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.songlib.data.models.ListingUi
 import com.songlib.data.models.Song
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repository.ListingRepository
-import com.songlib.domain.repository.SongBookRepository
+import com.songlib.domain.repository.ListingRepo
+import com.songlib.domain.repository.SongBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,8 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListingViewModel @Inject constructor(
-    private val songbkRepo: SongBookRepository,
-    private val listRepo: ListingRepository,
+    private val songbkRepo: SongBookRepo,
+    private val listRepo: ListingRepo,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()

@@ -6,7 +6,7 @@ import com.songlib.core.utils.AppConstants
 import javax.inject.*
 
 @Singleton
-class SubscriptionsRepository @Inject constructor() {
+class SubsRepo @Inject constructor() {
     suspend fun isProUser(isOnline: Boolean, completion: (Boolean) -> Unit) {
         val fetchPolicy = if (isOnline) {
             CacheFetchPolicy.FETCH_CURRENT

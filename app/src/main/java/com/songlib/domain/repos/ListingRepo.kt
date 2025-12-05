@@ -9,7 +9,7 @@ import kotlinx.coroutines.*
 import javax.inject.*
 
 @Singleton
-class ListingRepository @Inject constructor(context: Context) {
+class ListingRepo @Inject constructor(context: Context) {
     private var listingDao: ListingDao?
 
     init {

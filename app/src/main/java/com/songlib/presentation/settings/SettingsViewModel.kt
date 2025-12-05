@@ -10,9 +10,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val prefsRepo: PreferencesRepository,
-    private val songbkRepo: SongBookRepository,
-    private val listRepo: ListingRepository,
+    private val prefsRepo: PrefsRepo,
+    private val songbkRepo: SongBookRepo,
+    private val listRepo: ListingRepo,
 ) : ViewModel() {
 
     var horizontalSlides by mutableStateOf(prefsRepo.horizontalSlides)

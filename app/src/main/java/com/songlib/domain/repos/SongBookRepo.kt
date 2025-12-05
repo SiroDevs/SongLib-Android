@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.*
 
 @Singleton
-class SongBookRepository @Inject constructor(
+class SongBookRepo @Inject constructor(
     context: Context,
     private val apiService: ApiService,
 ) {
