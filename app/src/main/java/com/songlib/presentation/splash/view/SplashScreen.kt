@@ -3,7 +3,6 @@ package com.songlib.presentation.splash.view
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.platform.LocalContext
@@ -14,10 +13,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
+import com.songlib.domain.repository.PrefsRepo
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.splash.components.AppDevelopersRow
-import com.songlib.presentation.splash.components.WithLoveFromRow
+import com.songlib.presentation.splash.components.*
 import com.songlib.presentation.splash.SplashViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
@@ -25,15 +25,24 @@ fun SplashScreen(
     viewModel: SplashViewModel,
 ) {
     val context = LocalContext.current
-    val nextRoute by viewModel.nextRoute.collectAsState()
+    val prefs = remember { PrefsRepo(context) }
     val isLoading by viewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.initializeApp(context)
     }
 
-    LaunchedEffect(isLoading, nextRoute) {
-        if (!isLoading && nextRoute != Routes.SPLASH) {
+    LaunchedEffect(Unit) {
+        delay(3000)
+
+        val nextRoute = when {
+            prefs.selectAfresh -> Routes.STEP_1
+            prefs.isDataLoaded -> Routes.HOME
+            prefs.isDataSelected -> Routes.STEP_2
+            else -> Routes.STEP_1
+        }
+
+        if (!isLoading) {
             navController.navigate(nextRoute) {
                 popUpTo(Routes.SPLASH) { inclusive = true }
             }
