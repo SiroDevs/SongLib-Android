@@ -1,16 +1,11 @@
 package com.songlib.presentation.splash
 
 import android.content.Context
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.songlib.core.helpers.NetworkUtils
-import com.songlib.domain.repository.PrefsRepo
-import com.songlib.domain.repository.SubsRepo
-import com.songlib.presentation.navigation.Routes
+import com.songlib.domain.repository.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,9 +25,9 @@ class SplashViewModel @Inject constructor(
                 } else {
                     checkSubscriptionAndTime(false)
                 }
-                determineNextRoute()
+                _isLoading.value = false
             } catch (e: Exception) {
-                determineNextRoute()
+                _isLoading.value = false
             } finally {
                 _isLoading.value = false
             }
@@ -46,14 +41,5 @@ class SplashViewModel @Inject constructor(
             }
         }
         prefsRepo.updateAppOpenTime()
-    }
-
-    private fun determineNextRoute() {
-        _nextRoute.value = when {
-            prefsRepo.selectAfresh -> Routes.STEP_1
-            prefsRepo.isDataSelected && prefsRepo.isDataLoaded -> Routes.HOME
-            prefsRepo.isDataSelected && !prefsRepo.isDataLoaded -> Routes.STEP_2
-            else -> Routes.HOME
-        }
     }
 }
