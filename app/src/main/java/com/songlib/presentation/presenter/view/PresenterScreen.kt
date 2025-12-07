@@ -17,8 +17,8 @@ import com.songlib.data.sample.*
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.screens.presenter.components.*
 import com.songlib.presentation.presenter.PresenterViewModel
+import com.songlib.presentation.presenter.components.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

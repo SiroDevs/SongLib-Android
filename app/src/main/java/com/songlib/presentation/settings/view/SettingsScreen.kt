@@ -13,8 +13,9 @@ import com.songlib.domain.repository.*
 import com.songlib.domain.repository.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.screens.settings.components.*
 import com.songlib.presentation.settings.SettingsViewModel
+import com.songlib.presentation.settings.components.ConfirmResetDialog
+import com.songlib.presentation.settings.components.SettingsSectionTitle
 
 @Composable
 fun SettingsScreen(

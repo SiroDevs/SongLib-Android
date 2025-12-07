@@ -17,8 +17,8 @@ import com.songlib.domain.repository.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.screens.selection.step1.components.Step1Fab
 import com.songlib.presentation.selection.step1.Step1ViewModel
+import com.songlib.presentation.selection.step1.components.Step1Fab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
