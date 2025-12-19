@@ -8,14 +8,20 @@ import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.*
 import com.songlib.domain.repository.ThemeRepository
-import com.songlib.presentation.screens.home.HomeScreen
-import com.songlib.presentation.screens.settings.SettingsScreen
-import com.songlib.presentation.screens.presenter.PresenterScreen
-import com.songlib.presentation.screens.selection.step1.Step1Screen
-import com.songlib.presentation.screens.selection.step2.Step2Screen
-import com.songlib.presentation.screens.listing.ListingScreen
-import com.songlib.presentation.screens.splash.SplashScreen
-import com.songlib.presentation.viewmodels.*
+import com.songlib.presentation.home.HomeViewModel
+import com.songlib.presentation.home.view.HomeScreen
+import com.songlib.presentation.listing.ListingViewModel
+import com.songlib.presentation.listing.view.ListingScreen
+import com.songlib.presentation.presenter.PresenterViewModel
+import com.songlib.presentation.presenter.view.PresenterScreen
+import com.songlib.presentation.selection.step1.Step1ViewModel
+import com.songlib.presentation.selection.step1.view.Step1Screen
+import com.songlib.presentation.selection.step2.Step2ViewModel
+import com.songlib.presentation.selection.step2.view.Step2Screen
+import com.songlib.presentation.settings.SettingsViewModel
+import com.songlib.presentation.settings.view.SettingsScreen
+import com.songlib.presentation.splash.SplashViewModel
+import com.songlib.presentation.splash.view.SplashScreen
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
