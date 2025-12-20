@@ -6,9 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.songlib.data.models.Book
 import com.songlib.domain.entity.Selectable
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repository.PrefsRepo
-import com.songlib.domain.repository.SongBookRepo
-import com.songlib.domain.repository.SubsRepo
+import com.songlib.domain.repos.PrefsRepo
+import com.songlib.domain.repos.SongBookRepo
+import com.songlib.domain.repos.SubsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

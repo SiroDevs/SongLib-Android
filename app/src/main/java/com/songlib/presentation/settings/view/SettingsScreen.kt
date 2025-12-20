@@ -9,8 +9,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.domain.repository.*
-import com.songlib.domain.repository.appThemeName
+import com.songlib.domain.repos.ThemeRepository
+import com.songlib.domain.repos.ThemeSelectorDialog
+import com.songlib.domain.repos.appThemeName
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.settings.SettingsViewModel

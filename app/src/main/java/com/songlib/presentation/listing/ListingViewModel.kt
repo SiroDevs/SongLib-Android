@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.songlib.data.models.ListingUi
 import com.songlib.data.models.Song
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repository.ListingRepo
-import com.songlib.domain.repository.SongBookRepo
+import com.songlib.domain.repos.ListingRepo
+import com.songlib.domain.repos.SongBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

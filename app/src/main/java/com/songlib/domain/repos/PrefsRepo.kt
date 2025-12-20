@@ -1,10 +1,10 @@
-package com.songlib.domain.repository
+package com.songlib.domain.repos
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.songlib.core.utils.PrefConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.*
+import androidx.core.content.edit
 
 @Singleton
 class PrefsRepo @Inject constructor(
@@ -71,16 +71,5 @@ class PrefsRepo @Inject constructor(
         val lastTime = lastAppOpenTime
         if (lastTime == 0L) return 0L
         return System.currentTimeMillis() - lastTime
-    }
-
-    private inline fun SharedPreferences.edit(
-        commit: Boolean = false,
-        action: SharedPreferences.Editor.() -> Unit
-    ) {
-        val editor = edit()
-        editor.action()
-        if (commit) {
-            editor.apply()
-        }
     }
 }

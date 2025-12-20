@@ -6,7 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.songlib.data.models.Song
-import com.songlib.domain.repository.PrefsRepo
+import com.songlib.domain.repos.PrefsRepo
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.general.QuickFormDialog
 import com.songlib.presentation.home.HomeViewModel

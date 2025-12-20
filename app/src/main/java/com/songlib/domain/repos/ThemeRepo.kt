@@ -1,4 +1,4 @@
-package com.songlib.domain.repository
+package com.songlib.domain.repos
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

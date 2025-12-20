@@ -7,7 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.data.models.*
-import com.songlib.domain.repository.ThemeRepository
+import com.songlib.domain.repos.ThemeRepository
 import com.songlib.presentation.home.HomeViewModel
 import com.songlib.presentation.home.view.HomeScreen
 import com.songlib.presentation.listing.ListingViewModel

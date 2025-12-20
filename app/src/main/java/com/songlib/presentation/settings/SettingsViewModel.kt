@@ -3,7 +3,9 @@ package com.songlib.presentation.settings
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.domain.repository.*
+import com.songlib.domain.repos.ListingRepo
+import com.songlib.domain.repos.PrefsRepo
+import com.songlib.domain.repos.SongBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
