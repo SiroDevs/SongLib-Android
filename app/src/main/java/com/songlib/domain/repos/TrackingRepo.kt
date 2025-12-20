@@ -1,4 +1,4 @@
-package com.songlib.domain.repository
+package com.songlib.domain.repos
 
 import android.content.*
 import com.songlib.data.models.*

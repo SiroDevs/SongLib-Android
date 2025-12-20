@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
-import com.songlib.domain.repository.PrefsRepo
+import com.songlib.domain.repos.PrefsRepo
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.splash.components.*
 import com.songlib.presentation.splash.SplashViewModel

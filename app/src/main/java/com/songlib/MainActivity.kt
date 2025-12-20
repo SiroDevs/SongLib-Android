@@ -7,7 +7,8 @@ import androidx.annotation.*
 import androidx.compose.foundation.*
 import androidx.compose.ui.*
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.songlib.domain.repository.*
+import com.songlib.domain.repos.ThemeMode
+import com.songlib.domain.repos.ThemeRepository
 import com.songlib.presentation.navigation.*
 import com.songlib.presentation.theme.*
 import dagger.hilt.android.AndroidEntryPoint

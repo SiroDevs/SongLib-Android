@@ -1,4 +1,4 @@
-package com.songlib.domain.repository
+package com.songlib.domain.repos
 
 import com.revenuecat.purchases.*
 import com.revenuecat.purchases.CacheFetchPolicy
