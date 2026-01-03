@@ -10,16 +10,16 @@ import javax.inject.*
 
 @Singleton
 class ListingRepo @Inject constructor(context: Context) {
-    private var listingDao: ListingDao?
+    private var listingsDao: ListingDao?
 
     init {
         val db = AppDatabase.getDatabase(context)
-        listingDao = db?.listingDao()
+        listingsDao = db?.listingsDao()
     }
 
     suspend fun fetchListings(parent: Int): List<ListingUi> {
         return withContext(Dispatchers.IO) {
-            val allListings = listingDao?.getAll(parent) ?: emptyList()
+            val allListings = listingsDao?.getAll(parent) ?: emptyList()
 
             allListings.map { listing ->
                 ListingUi(
@@ -29,7 +29,7 @@ class ListingRepo @Inject constructor(context: Context) {
                     song = listing.song,
                     created = listing.created,
                     modified = listing.modified,
-                    songCount = listingDao?.countSongs(listing.id) ?: 0,
+                    songCount = listingsDao?.countSongs(listing.id) ?: 0,
                     updatedAgo = listing.modified.toLongOrNull()?.toTimeAgo() ?: ""
                 )
             }
@@ -46,21 +46,21 @@ class ListingRepo @Inject constructor(context: Context) {
                 created = currentTime,
                 modified = currentTime
             )
-            listingDao?.insert(newListing)
+            listingsDao?.insert(newListing)
         }
     }
 
     suspend fun saveListItem(parent: ListingUi, song: Int) {
         withContext(Dispatchers.IO) {
             val currentTime = System.currentTimeMillis().toString()
-            listingDao?.insert(Listing(
+            listingsDao?.insert(Listing(
                 parent = parent.id,
                 title = "",
                 song = song,
                 created = currentTime,
                 modified = currentTime
             ))
-            listingDao?.update(Listing(
+            listingsDao?.update(Listing(
                 parent = parent.id,
                 title = parent.title,
                 song = song,
@@ -73,7 +73,7 @@ class ListingRepo @Inject constructor(context: Context) {
     suspend fun updateListing(listing: ListingUi) {
         val currentTime = System.currentTimeMillis().toString()
         withContext(Dispatchers.IO) {
-            listingDao?.update(Listing(
+            listingsDao?.update(Listing(
                 parent = listing.id,
                 title = listing.title,
                 song = listing.song,
@@ -85,13 +85,13 @@ class ListingRepo @Inject constructor(context: Context) {
 
     suspend fun deleteById(listId: Int) {
         withContext(Dispatchers.IO) {
-            listingDao?.deleteById(listId)
+            listingsDao?.deleteById(listId)
         }
     }
 
     suspend fun deleteAllListings() {
         withContext(Dispatchers.IO) {
-            listingDao?.deleteAll()
+            listingsDao?.deleteAll()
         }
     }
 

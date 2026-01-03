@@ -20,7 +20,7 @@ import com.songlib.presentation.selection.components.Step1Fab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Step1Screen(
+fun SelectionScreen(
     navController: NavHostController,
     viewModel: SelectionViewModel,
     themeRepo: ThemeRepository

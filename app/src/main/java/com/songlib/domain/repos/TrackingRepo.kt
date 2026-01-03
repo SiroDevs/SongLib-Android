@@ -11,31 +11,31 @@ import javax.inject.*
 class TrackingRepo @Inject constructor(
     context: Context,
 ) {
-    private var historyDao: HistoryDao?
-    private var searchDao: SearchDao?
+    private var historiesDao: HistoryDao?
+    private var searchesDao: SearchDao?
 
     init {
         val db = AppDatabase.getDatabase(context)
-        historyDao = db?.historyDao()
-        searchDao = db?.searchDao()
+        historiesDao = db?.historiesDao()
+        searchesDao = db?.searchesDao()
     }
 
     suspend fun saveHistory(history: History) {
         withContext(Dispatchers.IO) {
-            historyDao?.insert(history)
+            historiesDao?.insert(history)
         }
     }
 
     suspend fun saveSearch(search: Search) {
         withContext(Dispatchers.IO) {
-            searchDao?.insert(search)
+            searchesDao?.insert(search)
         }
     }
 
     suspend fun fetchHistories(): List<History> {
         var allHistories: List<History>
         withContext(Dispatchers.IO) {
-            allHistories = historyDao?.getAll() ?: emptyList()
+            allHistories = historiesDao?.getAll() ?: emptyList()
         }
         return allHistories
     }
@@ -43,38 +43,38 @@ class TrackingRepo @Inject constructor(
     suspend fun fetchSearches(): List<Search> {
         var allSearches: List<Search>
         withContext(Dispatchers.IO) {
-            allSearches = searchDao?.getAll() ?: emptyList()
+            allSearches = searchesDao?.getAll() ?: emptyList()
         }
         return allSearches
     }
 
     suspend fun updateSearch(search: Search) {
         withContext(Dispatchers.IO) {
-            searchDao?.update(search)
+            searchesDao?.update(search)
         }
     }
 
     suspend fun deleteHistoryById(id: Int) {
         withContext(Dispatchers.IO) {
-            historyDao?.deleteById(id)
+            historiesDao?.deleteById(id)
         }
     }
 
     suspend fun deleteAllHistories() {
         withContext(Dispatchers.IO) {
-            historyDao?.deleteAll()
+            historiesDao?.deleteAll()
         }
     }
 
     suspend fun deleteSearchById(id: Int) {
         withContext(Dispatchers.IO) {
-            searchDao?.deleteById(id)
+            searchesDao?.deleteById(id)
         }
     }
 
     suspend fun deleteAllSearches() {
         withContext(Dispatchers.IO) {
-            searchDao?.deleteAll()
+            searchesDao?.deleteAll()
         }
     }
 

@@ -98,11 +98,11 @@ class SelectionViewModel @Inject constructor(
 
                     prefsRepo.selectedBooks = newIds.joinToString(",")
                 } else {
+                    prefsRepo.isDataSelected = true
                     songbkRepo.saveBooks(books)
                     prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
                 }
 
-                prefsRepo.isDataSelected = true
                 fetchRemoteSongs(books.map { it.bookId })
             } catch (e: Exception) {
                 Log.e("SaveBooks", "Failed to save books", e)
@@ -118,6 +118,7 @@ class SelectionViewModel @Inject constructor(
                 songbkRepo.fetchAndSaveSongs(bookIds)
             }
 
+            prefsRepo.isDataLoaded = true
             Log.d("TAG", "Song fetch and save completed")
             _uiState.tryEmit(UiState.Saved)
 

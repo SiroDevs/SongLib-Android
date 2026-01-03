@@ -15,9 +15,7 @@ import com.songlib.presentation.listing.view.ListingScreen
 import com.songlib.presentation.presenter.PresenterViewModel
 import com.songlib.presentation.presenter.view.PresenterScreen
 import com.songlib.presentation.selection.SelectionViewModel
-import com.songlib.presentation.selection.view.Step1Screen
-import com.songlib.presentation.selection.step2.Step2ViewModel
-import com.songlib.presentation.selection.step2.view.Step2Screen
+import com.songlib.presentation.selection.view.SelectionScreen
 import com.songlib.presentation.settings.SettingsViewModel
 import com.songlib.presentation.settings.view.SettingsScreen
 import com.songlib.presentation.splash.SplashViewModel
@@ -39,20 +37,12 @@ fun AppNavHost(
             SplashScreen(navController = navController, viewModel = viewModel)
         }
 
-        composable(Routes.STEP_1) {
+        composable(Routes.SELECTION) {
             val viewModel: SelectionViewModel = hiltViewModel()
-            Step1Screen(
+            SelectionScreen(
                 navController = navController,
                 viewModel = viewModel,
                 themeRepo = themeRepo,
-            )
-        }
-
-        composable(Routes.STEP_2) {
-            val viewModel: Step2ViewModel = hiltViewModel()
-            Step2Screen(
-                navController = navController,
-                viewModel = viewModel,
             )
         }
 

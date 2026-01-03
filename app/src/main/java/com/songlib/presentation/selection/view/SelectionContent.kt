@@ -36,7 +36,7 @@ fun SelectionContent(
                 SongBook(
                     item = book,
                     onClick = { onBookClick(book) },
-                    modifier = Modifier.height(60.dp)
+                    modifier = Modifier.height(90.dp)
                 )
             }
         }

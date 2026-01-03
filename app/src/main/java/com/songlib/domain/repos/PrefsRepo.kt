@@ -22,20 +22,48 @@ class PrefsRepo @Inject constructor(
         set(value) = prefs.edit { putString(PrefConstants.SELECTED_BOOKS, value) }
 
     var isDataSelected: Boolean
-        get() = prefs.getBoolean(PrefConstants.DATA_SELECTED, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.DATA_SELECTED, value) }
+        get() = {
+            val value = prefs.getBoolean(PrefConstants.IS_DATA_SELECTED, false)
+            value
+        }()
+        set(value) = {
+            prefs.edit {
+                putBoolean(PrefConstants.IS_DATA_SELECTED, value)
+            }
+        }()
 
     var selectAfresh: Boolean
-        get() = prefs.getBoolean(PrefConstants.SELECT_AFRESH, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.SELECT_AFRESH, value) }
+        get() = {
+            val value = prefs.getBoolean(PrefConstants.SELECT_A_FRESH, false)
+            value
+        }()
+        set(value) = {
+            prefs.edit {
+                putBoolean(PrefConstants.SELECT_A_FRESH, value)
+            }
+        }()
 
     var isProUser: Boolean
-        get() = prefs.getBoolean(PrefConstants.IS_PRO_USER, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.IS_PRO_USER, value) }
+        get() = {
+            val value = prefs.getBoolean(PrefConstants.IS_PRO_USER, false)
+            value
+        }()
+        set(value) = {
+            prefs.edit {
+                putBoolean(PrefConstants.IS_PRO_USER, value)
+            }
+        }()
 
     var isDataLoaded: Boolean
-        get() = prefs.getBoolean(PrefConstants.DATA_LOADED, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.DATA_LOADED, value) }
+        get() = {
+            val value = prefs.getBoolean(PrefConstants.IS_DATA_LOADED, false)
+            value
+        }()
+        set(value) = {
+            prefs.edit {
+                putBoolean(PrefConstants.IS_DATA_LOADED, value)
+            }
+        }()
 
     var appThemeMode: ThemeMode
         get() = ThemeMode.valueOf(
@@ -45,8 +73,15 @@ class PrefsRepo @Inject constructor(
         set(value) = prefs.edit { putString(PrefConstants.THEME_MODE, value.name) }
 
     var horizontalSlides: Boolean
-        get() = prefs.getBoolean(PrefConstants.HORIZONTAL_SLIDES, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.HORIZONTAL_SLIDES, value) }
+        get() = {
+            val value = prefs.getBoolean(PrefConstants.HORIZONTAL_SLIDES, false)
+            value
+        }()
+        set(value) = {
+            prefs.edit {
+                putBoolean(PrefConstants.HORIZONTAL_SLIDES, value)
+            }
+        }()
 
     var lastAppOpenTime: Long
         get() = prefs.getLong(PrefConstants.LAST_APP_OPEN_TIME, 0L)
