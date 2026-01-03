@@ -1,4 +1,4 @@
-package com.songlib.presentation.selection.step1.view
+package com.songlib.presentation.selection.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -7,25 +7,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
-import com.revenuecat.purchases.ui.revenuecatui.Paywall
-import com.revenuecat.purchases.ui.revenuecatui.PaywallOptions
+import com.revenuecat.purchases.ui.revenuecatui.*
 import com.songlib.domain.entity.UiState
-import com.songlib.domain.repos.ThemeRepository
-import com.songlib.domain.repos.ThemeSelectorDialog
+import com.songlib.domain.repos.*
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.selection.step1.Step1ViewModel
-import com.songlib.presentation.selection.step1.components.Step1Fab
+import com.songlib.presentation.selection.SelectionViewModel
+import com.songlib.presentation.selection.components.Step1Fab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Step1Screen(
     navController: NavHostController,
-    viewModel: Step1ViewModel,
+    viewModel: SelectionViewModel,
     themeRepo: ThemeRepository
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
@@ -45,14 +42,14 @@ fun Step1Screen(
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
-            navController.navigate(Routes.STEP_2)
+            navController.navigate(Routes.HOME)
         }
     }
 
     if (showUpgradeDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.onUpgradeDismis() },
-            title = { Text("You selected more than 3 Songbooks...") },
+            title = { Text("You selected more than 4 Songbooks...") },
             text = {
                 Text("Please purchase a subscription if you want to have more than 3 songbooks in your collection.")
             },
@@ -145,7 +142,7 @@ fun Step1Screen(
                     )
 
                 is UiState.Loaded -> {
-                    Step1Content(
+                    SelectionContent(
                         books = books,
                         onBookClick = { viewModel.toggleBookSelection(it) },
                         modifier = Modifier.padding(paddingValues)

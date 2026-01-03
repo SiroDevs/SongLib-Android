@@ -14,8 +14,8 @@ import com.songlib.presentation.listing.ListingViewModel
 import com.songlib.presentation.listing.view.ListingScreen
 import com.songlib.presentation.presenter.PresenterViewModel
 import com.songlib.presentation.presenter.view.PresenterScreen
-import com.songlib.presentation.selection.step1.Step1ViewModel
-import com.songlib.presentation.selection.step1.view.Step1Screen
+import com.songlib.presentation.selection.SelectionViewModel
+import com.songlib.presentation.selection.view.Step1Screen
 import com.songlib.presentation.selection.step2.Step2ViewModel
 import com.songlib.presentation.selection.step2.view.Step2Screen
 import com.songlib.presentation.settings.SettingsViewModel
@@ -40,7 +40,7 @@ fun AppNavHost(
         }
 
         composable(Routes.STEP_1) {
-            val viewModel: Step1ViewModel = hiltViewModel()
+            val viewModel: SelectionViewModel = hiltViewModel()
             Step1Screen(
                 navController = navController,
                 viewModel = viewModel,

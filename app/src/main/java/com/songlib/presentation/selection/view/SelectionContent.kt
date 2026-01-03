@@ -1,4 +1,4 @@
-package com.songlib.presentation.selection.step1.view
+package com.songlib.presentation.selection.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,7 +14,7 @@ import com.songlib.domain.entity.*
 import com.songlib.presentation.components.listitems.SongBook
 
 @Composable
-fun Step1Content(
+fun SelectionContent(
     books: List<Selectable<Book>>,
     onBookClick: (Selectable<Book>) -> Unit,
     modifier: Modifier = Modifier
@@ -45,8 +45,8 @@ fun Step1Content(
 
 @Preview(showBackground = true)
 @Composable
-fun Step1ContentPreview() {
-    Step1Content(
+fun SelectionContentPreview() {
+    SelectionContent(
         books = SampleSelectableBooks,
         onBookClick = {},
         modifier = Modifier.fillMaxSize()
