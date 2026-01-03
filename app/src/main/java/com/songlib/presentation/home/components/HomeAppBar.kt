@@ -4,9 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import com.songlib.data.models.Song
-import com.songlib.domain.repos.PrefsRepo
 import com.songlib.presentation.components.action.AppTopBar
 import com.songlib.presentation.components.general.QuickFormDialog
 import com.songlib.presentation.home.HomeViewModel
@@ -21,8 +19,6 @@ fun HomeSearchAppBar(
     onShareClick: () -> Unit,
     onClearSelection: () -> Unit,
 ) {
-    val context = LocalContext.current
-    val prefs = remember { PrefsRepo(context) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
     val isProUser by viewModel.isProUser.collectAsState()
@@ -63,8 +59,7 @@ fun HomeSearchAppBar(
     }
 
     AppTopBar(
-//        title = if (selectedSongs.isEmpty()) "SongLib" else "${selectedSongs.size} selected",
-        title = if (prefs.isDataLoaded) "True" else "False",
+        title = "SongLib",
         actions = {
             if (selectedSongs.isEmpty()) {
                 IconButton(onClick = onSearchClick) {

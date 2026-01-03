@@ -1,26 +1,19 @@
-package com.songlib.presentation.selection.step1
+package com.songlib.presentation.selection
 
 import android.util.Log
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.songlib.data.models.Book
-import com.songlib.domain.entity.Selectable
-import com.songlib.domain.entity.UiState
-import com.songlib.domain.repos.PrefsRepo
-import com.songlib.domain.repos.SongBookRepo
-import com.songlib.domain.repos.SubsRepo
+import com.songlib.domain.entity.*
+import com.songlib.domain.repos.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
-class Step1ViewModel @Inject constructor(
+class SelectionViewModel @Inject constructor(
     private val prefsRepo: PrefsRepo,
     private val subsRepo: SubsRepo,
     private val songbkRepo: SongBookRepo,
@@ -51,10 +44,10 @@ class Step1ViewModel @Inject constructor(
 
         viewModelScope.launch {
             songbkRepo.fetchRemoteBooks().catch { exception ->
-                Log.d("TAG", "fetching books")
+                Log.d("TAG", "fetching books error")
                 val errorMessage = when (exception) {
-                    is HttpException -> "We're sorry. We can't access the songbooks at the moment due to a HTTP Error: ${exception.code()} error on our server. Kindly try again a little later."
-                    else -> "We're sorry. We can't access the songbooks at the moment due to a ${exception.message} error on our server. Kindly try again a little later."
+                    is HttpException -> "Oops! We can't access the songbooks at the moment due to a HTTP Error: ${exception.code()} error on our server. Kindly try again a little later."
+                    else -> "Oops! We can't access the songbooks at the moment due to a ${exception.message} error on our server. Kindly try again a little later."
                 }
                 Log.d("TAG", errorMessage)
                 _uiState.tryEmit(UiState.Error(errorMessage))
@@ -89,9 +82,9 @@ class Step1ViewModel @Inject constructor(
 
     private fun saveBooks(books: List<Book>) {
         _uiState.tryEmit(UiState.Saving)
-        Log.d("TAG", "saving books")
+        Log.d("TAG", "saving ${books.size} books")
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             try {
                 if (prefsRepo.selectAfresh) {
                     val existingIds = getSelectedIds()
@@ -100,21 +93,38 @@ class Step1ViewModel @Inject constructor(
                     val booksToInsert = books.filter { it.bookId !in existingIds }
                     val idsToDelete = existingIds - newIds
 
-                    booksToInsert.forEach { songbkRepo.saveBook(it) }
                     idsToDelete.forEach { songbkRepo.deleteById(it) }
+                    booksToInsert.forEach { songbkRepo.saveBook(it) }
 
                     prefsRepo.selectedBooks = newIds.joinToString(",")
                 } else {
-                    books.forEach { songbkRepo.saveBook(it) }
+                    prefsRepo.isDataSelected = true
+                    songbkRepo.saveBooks(books)
                     prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
                 }
 
-                prefsRepo.isDataSelected = true
-                _uiState.emit(UiState.Saved)
+                fetchRemoteSongs(books.map { it.bookId })
             } catch (e: Exception) {
                 Log.e("SaveBooks", "Failed to save books", e)
                 _uiState.emit(UiState.Error("Failed to save books: ${e.message}"))
             }
+        }
+    }
+
+    private suspend fun fetchRemoteSongs(bookIds: List<Int>) {
+        try {
+            Log.d("TAG", "Starting song fetch for ${bookIds.size} books")
+            withContext(Dispatchers.IO) {
+                songbkRepo.fetchAndSaveSongs(bookIds)
+            }
+
+            prefsRepo.isDataLoaded = true
+            Log.d("TAG", "Song fetch and save completed")
+            _uiState.tryEmit(UiState.Saved)
+
+        } catch (e: Exception) {
+            Log.e("TAG", "Song fetch failed: ${e.message}", e)
+            _uiState.tryEmit(UiState.Saved)
         }
     }
 
@@ -129,7 +139,7 @@ class Step1ViewModel @Inject constructor(
             return
         }
 
-        if (currentSelectedCount >= 3) {
+        if (currentSelectedCount >= 4) {
             _pendingBookSelection.value = book
             _showUpgradeDialog.value = true
         } else {
@@ -142,12 +152,10 @@ class Step1ViewModel @Inject constructor(
     fun onUpgradeProceed() {
         _showUpgradeDialog.value = false
         _pendingBookSelection.value = null
-//        refreshSubscription(on)
     }
 
     fun onUpgradeDismis() {
         _showUpgradeDialog.value = false
         _pendingBookSelection.value = null
     }
-
 }

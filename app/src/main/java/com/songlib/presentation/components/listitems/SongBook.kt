@@ -47,11 +47,11 @@ fun SongBook(
         ) {
             Text(
                 text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 16.sp, color = txtColor)) {
+                    withStyle(style = SpanStyle(fontSize = 18.sp, color = txtColor)) {
                         append(refineTitle(item.data.title))
                     }
                     append(" ")
-                    withStyle(style = SpanStyle(fontSize = 12.sp, color = txtColor.copy(alpha = 0.7f))) {
+                    withStyle(style = SpanStyle(fontSize = 14.sp, color = txtColor.copy(alpha = 0.7f))) {
                         append("(${item.data.songs})")
                     }
                 },

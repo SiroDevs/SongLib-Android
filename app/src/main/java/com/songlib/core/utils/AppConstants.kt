@@ -24,9 +24,9 @@ object PrefConstants {
     const val INITIAL_BOOKS = "initialBooks"
     const val SELECTED_BOOKS = "selectedBooks"
 
-    const val DATA_SELECTED = "dataSelected"
-    const val DATA_LOADED = "dataLoaded"
-    const val SELECT_AFRESH = "selectAfresh"
+    const val IS_DATA_SELECTED = "dataSelected"
+    const val IS_DATA_LOADED = "dataLoaded"
+    const val SELECT_A_FRESH = "selectAfresh"
     const val IS_PRO_USER = "isProUser"
     const val INSTALL_DATE = "install_date"
     const val REVIEW_REQUESTED = "review_requested"

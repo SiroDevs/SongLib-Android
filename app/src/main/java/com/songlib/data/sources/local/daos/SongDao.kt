@@ -15,6 +15,9 @@ interface SongDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(song: Song)
 
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    suspend fun insertAll(songs: List<Song>)
+
     @Update()
     fun update(song: Song)
 

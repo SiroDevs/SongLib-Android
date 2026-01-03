@@ -13,7 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
 import com.songlib.R
-import com.songlib.domain.repos.PrefsRepo
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.splash.components.*
 import com.songlib.presentation.splash.SplashViewModel
@@ -25,24 +24,29 @@ fun SplashScreen(
     viewModel: SplashViewModel,
 ) {
     val context = LocalContext.current
-    val prefs = remember { PrefsRepo(context) }
     val isLoading by viewModel.isLoading.collectAsState()
+    val selectAfresh by viewModel.selectAfresh.collectAsState()
+    val isDataLoaded by viewModel.isDataLoaded.collectAsState()
+    val isDataSelected by viewModel.isDataSelected.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.initializeApp(context)
     }
 
-    LaunchedEffect(Unit) {
-        delay(3000)
-
-        val nextRoute = when {
-            prefs.selectAfresh -> Routes.STEP_1
-            prefs.isDataLoaded -> Routes.HOME
-            prefs.isDataSelected -> Routes.STEP_2
-            else -> Routes.STEP_1
-        }
-
+    LaunchedEffect(isLoading, isDataLoaded) {
         if (!isLoading) {
+            delay(3000)
+//
+//            val nextRoute = if (selectAfresh || isDataSelected) {
+//                Routes.SELECTION
+//            } else if (isDataLoaded) {
+//                Routes.HOME
+//            } else {
+//                Routes.SELECTION
+//            }
+
+            val nextRoute = if (isDataLoaded) Routes.HOME else Routes.SELECTION
+
             navController.navigate(nextRoute) {
                 popUpTo(Routes.SPLASH) { inclusive = true }
             }

@@ -10,11 +10,11 @@ import com.songlib.data.sources.local.daos.*
     version = 2, exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun bookDao(): BookDao
-    abstract fun historyDao(): HistoryDao
-    abstract fun listingDao(): ListingDao
-    abstract fun searchDao(): SearchDao
-    abstract fun songDao(): SongDao
+    abstract fun booksDao(): BookDao
+    abstract fun historiesDao(): HistoryDao
+    abstract fun listingsDao(): ListingDao
+    abstract fun searchesDao(): SearchDao
+    abstract fun songsDao(): SongDao
 
     companion object {
         @Volatile

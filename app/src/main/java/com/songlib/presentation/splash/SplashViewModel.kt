@@ -18,8 +18,21 @@ class SplashViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _selectAfresh = MutableStateFlow(prefsRepo.selectAfresh)
+    val selectAfresh: StateFlow<Boolean> = _selectAfresh.asStateFlow()
+
+    private val _isDataLoaded = MutableStateFlow(prefsRepo.isDataLoaded)
+    val isDataLoaded: StateFlow<Boolean> = _isDataLoaded.asStateFlow()
+
+    private val _isDataSelected = MutableStateFlow(prefsRepo.isDataSelected)
+    val isDataSelected: StateFlow<Boolean> = _isDataSelected.asStateFlow()
+
     fun initializeApp(context: Context) {
         viewModelScope.launch {
+            _selectAfresh.value = prefsRepo.selectAfresh
+            _isDataLoaded.value = prefsRepo.isDataLoaded
+            _isDataSelected.value = prefsRepo.isDataSelected
+
             try {
                 if (NetworkUtils.isNetworkAvailable(context)) {
                     checkSubscriptionAndTime(true)
