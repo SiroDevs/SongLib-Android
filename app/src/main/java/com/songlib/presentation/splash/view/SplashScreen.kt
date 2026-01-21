@@ -25,9 +25,7 @@ fun SplashScreen(
 ) {
     val context = LocalContext.current
     val isLoading by viewModel.isLoading.collectAsState()
-    val selectAfresh by viewModel.selectAfresh.collectAsState()
     val isDataLoaded by viewModel.isDataLoaded.collectAsState()
-    val isDataSelected by viewModel.isDataSelected.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.initializeApp(context)
@@ -36,14 +34,6 @@ fun SplashScreen(
     LaunchedEffect(isLoading, isDataLoaded) {
         if (!isLoading) {
             delay(3000)
-//
-//            val nextRoute = if (selectAfresh || isDataSelected) {
-//                Routes.SELECTION
-//            } else if (isDataLoaded) {
-//                Routes.HOME
-//            } else {
-//                Routes.SELECTION
-//            }
 
             val nextRoute = if (isDataLoaded) Routes.HOME else Routes.SELECTION
 

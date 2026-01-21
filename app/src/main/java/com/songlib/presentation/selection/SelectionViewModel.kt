@@ -80,6 +80,18 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
+    fun checkProStatus() {
+        viewModelScope.launch {
+            try {
+                val isPro = subsRepo.checkProStatus() // Create this method in subsRepo
+                _isProUser.value = isPro
+                prefsRepo.isProUser = isPro
+            } catch (e: Exception) {
+                Log.e("SelectionViewModel", "Error checking pro status", e)
+            }
+        }
+    }
+
     private fun saveBooks(books: List<Book>) {
         _uiState.tryEmit(UiState.Saving)
         Log.d("TAG", "saving ${books.size} books")

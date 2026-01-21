@@ -49,9 +49,9 @@ fun SelectionScreen(
     if (showUpgradeDialog) {
         AlertDialog(
             onDismissRequest = { viewModel.onUpgradeDismis() },
-            title = { Text("You selected more than 4 Songbooks...") },
+            title = { Text("Please purchase a subscription ...") },
             text = {
-                Text("Please purchase a subscription if you want to have more than 3 songbooks in your collection.")
+                Text("Please purchase a subscription if you want to have more than 4 songbooks in your collection.")
             },
             confirmButton = {
                 TextButton(
