@@ -13,6 +13,7 @@ import com.songlib.presentation.components.action.*
 import com.songlib.presentation.navigation.Routes
 import com.songlib.presentation.home.HomeViewModel
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.revenuecat.purchases.ui.revenuecatui.Paywall
@@ -26,7 +27,8 @@ import com.songlib.presentation.home.components.SongsList
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSearch(
-    viewModel: HomeViewModel, navController: NavHostController
+    viewModel: HomeViewModel,
+    navController: NavHostController,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var isSearching by rememberSaveable { mutableStateOf(false) }
@@ -98,7 +100,10 @@ fun HomeSearch(
                         isSearching = true
                         searchByNo = true
                     },
-                    containerColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .padding(bottom = 30.dp)
                 ) { Icon(Icons.Filled.Dialpad, "Search by number") }
             }
         },

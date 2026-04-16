@@ -18,7 +18,8 @@ import com.songlib.presentation.home.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLikes(
-    viewModel: HomeViewModel, navController: NavHostController
+    viewModel: HomeViewModel,
+    navController: NavHostController,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val likes by viewModel.likes.collectAsState(initial = emptyList())

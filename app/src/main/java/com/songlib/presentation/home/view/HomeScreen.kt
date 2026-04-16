@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.indicators.*
@@ -82,37 +83,33 @@ private fun MainHomeContent(
     viewModel: HomeViewModel,
     navController: NavHostController
 ) {
-
     Scaffold(
-        content = { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                when (selectedTab) {
-                    HomeNavItem.Search -> HomeSearch(
-                        viewModel = viewModel,
-                        navController = navController,
-                    )
-
-                    HomeNavItem.Likes -> HomeLikes(
-                        viewModel = viewModel,
-                        navController = navController,
-                    )
-
-                    HomeNavItem.Listings -> HomeListings(
-                        viewModel = viewModel,
-                        navController = navController,
-                    )
-                }
-            }
-        },
         bottomBar = {
             BottomNavBar(
                 selectedItem = selectedTab,
                 onItemSelected = onTabSelected
             )
         }
-    )
+    ) { paddingValues ->
+        when (selectedTab) {
+            HomeNavItem.Search -> HomeSearch(
+                viewModel = viewModel,
+                navController = navController,
+            )
+            HomeNavItem.Likes -> HomeLikes(
+                viewModel = viewModel,
+                navController = navController,
+            )
+            HomeNavItem.Listings -> HomeListings(
+                viewModel = viewModel,
+                navController = navController,
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        )
+    }
 }
+
