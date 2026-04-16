@@ -102,11 +102,10 @@ fun HomeSearch(
                 ) { Icon(Icons.Filled.Dialpad, "Search by number") }
             }
         },
-    ) { innerPadding ->
-        Box(
+    ) { Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .padding(it)
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             when (uiState) {

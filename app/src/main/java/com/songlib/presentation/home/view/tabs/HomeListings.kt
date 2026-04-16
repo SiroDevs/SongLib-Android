@@ -122,11 +122,10 @@ fun HomeListings(
                 onNavIconClick = { selectedListings = emptySet() }
             )
         },
-    ) { innerPadding ->
-        Box(
+    ) { Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .padding(it)
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Column(modifier = Modifier.fillMaxSize()) {

@@ -13,11 +13,8 @@ import com.songlib.domain.entity.UiState
 import com.songlib.presentation.components.indicators.*
 import com.songlib.presentation.home.HomeViewModel
 import com.songlib.presentation.components.indicators.ErrorState
-import com.songlib.presentation.home.components.BottomNavBar
-import com.songlib.presentation.home.components.HomeNavItem
-import com.songlib.presentation.home.view.tabs.HomeLikes
-import com.songlib.presentation.home.view.tabs.HomeListings
-import com.songlib.presentation.home.view.tabs.HomeSearch
+import com.songlib.presentation.home.components.*
+import com.songlib.presentation.home.view.tabs.*
 import com.songlib.presentation.navigation.Routes
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -35,76 +32,87 @@ fun HomeScreen(
     }
 
     when (uiState) {
-        is UiState.Error -> Scaffold { padding ->
-            ScaffoldContent(padding) {
-                ErrorState(
-                    message = (uiState as UiState.Error).message,
-                    retryAction = { viewModel.fetchData() }
-                )
-            }
+        is UiState.Error -> {
+            ErrorState(
+                message = (uiState as UiState.Error).message,
+                retryAction = { viewModel.fetchData() }
+            )
         }
 
-        UiState.Loading -> Scaffold { padding ->
-            ScaffoldContent(padding) {
-                LoadingState(title = "", fileName = "circle-loader")
-            }
+        UiState.Loading -> {
+            LoadingState(title = "", fileName = "circle-loader")
         }
 
         UiState.Filtered -> {
             if (songs.isEmpty()) {
-                Scaffold { padding ->
-                    ScaffoldContent(padding) {
-                        EmptyState(
-                            message = "It appears you didn't finish your songbook selection, that's why it's empty here at the moment.\n\nLet's fix that asap!",
-                            messageIcon = Icons.Default.EditNote,
-                            onAction = {
-                                viewModel.clearData { success ->
-                                    if (success) {
-                                        navController.navigate(Routes.SPLASH) {
-                                            popUpTo(0) { inclusive = true }
-                                            launchSingleTop = true
-                                        }
-                                    }
+                EmptyState(
+                    message = "It appears you didn't finish your songbook selection, that's why it's empty here at the moment.\n\nLet's fix that asap!",
+                    messageIcon = Icons.Default.EditNote,
+                    onAction = {
+                        viewModel.clearData { success ->
+                            if (success) {
+                                navController.navigate(Routes.SPLASH) {
+                                    popUpTo(0) { inclusive = true }
+                                    launchSingleTop = true
                                 }
                             }
-                        )
-                    }
-                }
-            } else {
-                Scaffold(
-                    bottomBar = {
-                        BottomNavBar(
-                            selectedItem = selectedTab,
-                            onItemSelected = viewModel::setSelectedTab
-                        )
-                    }
-                ) { padding ->
-                    ScaffoldContent(padding) {
-                        when (selectedTab) {
-                            HomeNavItem.Search -> HomeSearch(viewModel, navController)
-                            HomeNavItem.Likes -> HomeLikes(viewModel, navController)
-                            HomeNavItem.Listings -> HomeListings(viewModel, navController)
                         }
                     }
-                }
+                )
+            } else {
+                MainHomeContent(
+                    selectedTab = selectedTab,
+                    onTabSelected = viewModel::setSelectedTab,
+                    viewModel = viewModel,
+                    navController = navController
+                )
             }
         }
 
-        else -> Scaffold { padding ->
-            ScaffoldContent(padding) { EmptyState() }
+        else -> {
+            EmptyState()
         }
     }
 }
 
 @Composable
-private fun ScaffoldContent(
-    padding: PaddingValues,
-    content: @Composable BoxScope.() -> Unit
+private fun MainHomeContent(
+    selectedTab: HomeNavItem,
+    onTabSelected: (HomeNavItem) -> Unit,
+    viewModel: HomeViewModel,
+    navController: NavHostController
 ) {
-    Box(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxSize(),
-        content = content
+
+    Scaffold(
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                when (selectedTab) {
+                    HomeNavItem.Search -> HomeSearch(
+                        viewModel = viewModel,
+                        navController = navController,
+                    )
+
+                    HomeNavItem.Likes -> HomeLikes(
+                        viewModel = viewModel,
+                        navController = navController,
+                    )
+
+                    HomeNavItem.Listings -> HomeListings(
+                        viewModel = viewModel,
+                        navController = navController,
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            BottomNavBar(
+                selectedItem = selectedTab,
+                onItemSelected = onTabSelected
+            )
+        }
     )
 }
