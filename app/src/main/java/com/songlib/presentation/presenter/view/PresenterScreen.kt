@@ -38,8 +38,8 @@ fun PresenterScreen(
         song?.let { viewModel.loadSong(it) }
     }
 
-    Scaffold(topBar = {
-        Surface(shadowElevation = 3.dp) {
+    Scaffold(
+        topBar = {
             AppTopBar(
                 title = title,
                 actions = {
@@ -51,9 +51,8 @@ fun PresenterScreen(
                 },
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
-            )
-        }
-    }, content = {
+            )},
+        content = {
         Box(
             modifier = Modifier
                 .padding(it)

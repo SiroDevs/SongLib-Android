@@ -6,10 +6,6 @@ object ApiConstants {
     const val SONGS = "api/songs"
 }
 
-object AppConstants {
-    const val ENTITLEMENTS = "songlib_offering_1"
-}
-
 object DbConstants {
     const val BOOKS = "books"
     const val HISTORIES = "histories"

@@ -1,8 +1,6 @@
 package com.songlib.domain.repos
 
 import com.revenuecat.purchases.*
-import com.revenuecat.purchases.CacheFetchPolicy
-import com.songlib.core.utils.AppConstants
 import javax.inject.*
 
 @Singleton
@@ -19,9 +17,8 @@ class SubsRepo @Inject constructor() {
                 completion(false)
             },
             onSuccess = { customerInfo ->
-                val isActive =
-                    customerInfo.entitlements[AppConstants.ENTITLEMENTS]?.isActive == true
-                completion(isActive)
+                val isActive = customerInfo.entitlements.active.isEmpty()
+                completion(!isActive)
             }
         )
     }

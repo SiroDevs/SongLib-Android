@@ -6,6 +6,8 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
 import com.revenuecat.purchases.ui.revenuecatui.*
@@ -23,7 +25,8 @@ import kotlin.collections.plus
 @Composable
 fun HomeListings(
     viewModel: HomeViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    bottomPadding: Dp = 0.dp
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
@@ -122,11 +125,10 @@ fun HomeListings(
                 onNavIconClick = { selectedListings = emptySet() }
             )
         },
-    ) { innerPadding ->
-        Box(
+    ) { Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .padding(it)
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
