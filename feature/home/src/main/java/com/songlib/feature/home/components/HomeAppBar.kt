@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.HomeViewModel
@@ -13,7 +13,7 @@ import com.songlib.feature.home.HomeViewModel
 @Composable
 fun HomeSearchAppBar(
     viewModel: HomeViewModel,
-    selectedSongs: Set<Song>,
+    selectedSongs: Set<SongEntity>,
     onSearchClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onShareClick: () -> Unit,
@@ -26,8 +26,8 @@ fun HomeSearchAppBar(
 
     if (showAddDialog) {
         QuickFormDialog(
-            title = "New Listing",
-            label = "Listing title",
+            title = "New ListingEntity",
+            label = "ListingEntity title",
             onDismiss = { showAddDialog = false },
             onConfirm = { title ->
                 if (viewModel.checkAndHandleNewListing()) {
@@ -63,7 +63,7 @@ fun HomeSearchAppBar(
         actions = {
             if (selectedSongs.isEmpty()) {
                 IconButton(onClick = onSearchClick) {
-                    Icon(Icons.Filled.Search, contentDescription = "Search")
+                    Icon(Icons.Filled.Search, contentDescription = "SearchEntity")
                 }
                 IconButton(onClick = onSettingsClick) {
                     Icon(Icons.Filled.Settings, contentDescription = "Settings")
@@ -87,7 +87,7 @@ fun HomeSearchAppBar(
                         }
                     }
                 ) {
-                    Icon(Icons.Default.FormatListNumbered, contentDescription = "Listing")
+                    Icon(Icons.Default.FormatListNumbered, contentDescription = "ListingEntity")
                 }
             }
         },

@@ -1,7 +1,5 @@
 package com.songlib.core.ui.sample
 
-import com.songlib.core.database.model.Song
-
 val SampleVerses = listOf(
     "They come from the East and West,\nThey come from the lands afar,\nTo feast with the King, to dine as\nHis guest\nHow Blessed these pilgrims are!\nBeholding His hallowed face\nAglow with light divine;\nBlest partakers of His grace,\nAs gems in His crown to shine.',",
     "CHORUS\nSince Jesus has set me free,\nI’m happy as heart can be;\nNo longer I bear the burden of care,\nHis yoke is so sweet to me,\nMy soul was as black as night,\nBut darkness has taken flight;\nNow I shout the victory,\nFor Jesus has set me free.",

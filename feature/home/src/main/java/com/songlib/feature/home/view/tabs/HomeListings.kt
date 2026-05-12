@@ -48,8 +48,8 @@ fun HomeListings(
 
     if (showAddAlert) {
         QuickFormDialog(
-            title = "New Listing",
-            label = "Listing title",
+            title = "New ListingEntity",
+            label = "ListingEntity title",
             onDismiss = { showAddAlert = false },
             onConfirm = { title ->
                 viewModel.saveListing(title)
@@ -100,7 +100,7 @@ fun HomeListings(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = if (selectedListings.isEmpty()) "Song Listings" else "${selectedListings.size} selected",
+                title = if (selectedListings.isEmpty()) "SongEntity Listings" else "${selectedListings.size} selected",
                 actions = {
                     if (selectedListings.isEmpty()) {
                         IconButton(onClick = {

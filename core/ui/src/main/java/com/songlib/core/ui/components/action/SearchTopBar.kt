@@ -45,7 +45,7 @@ fun SearchTopBar(
                     ),
                     placeholder = {
                         Text(
-                            text = "Search for songs",
+                            text = "SearchEntity for songs",
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 18.sp
                         )

@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.SongUtils
-import com.songlib.core.database.model.Book
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
@@ -36,17 +36,17 @@ class HomeViewModel @Inject constructor(
     private val _selectedTab: MutableStateFlow<HomeNavItem> = MutableStateFlow(HomeNavItem.Search)
     val selectedTab: StateFlow<HomeNavItem> = _selectedTab.asStateFlow()
 
-    private val _books = MutableStateFlow<List<Book>>(emptyList())
-    val books: StateFlow<List<Book>> get() = _books
+    private val _books = MutableStateFlow<List<BookEntity>>(emptyList())
+    val books: StateFlow<List<BookEntity>> get() = _books
 
-    private val _songs = MutableStateFlow<List<Song>>(emptyList())
-    val songs: StateFlow<List<Song>> get() = _songs
+    private val _songs = MutableStateFlow<List<SongEntity>>(emptyList())
+    val songs: StateFlow<List<SongEntity>> get() = _songs
 
-    private val _filtered = MutableStateFlow<List<Song>>(emptyList())
-    val filtered: StateFlow<List<Song>> get() = _filtered
+    private val _filtered = MutableStateFlow<List<SongEntity>>(emptyList())
+    val filtered: StateFlow<List<SongEntity>> get() = _filtered
 
-    private val _likes = MutableStateFlow<List<Song>>(emptyList())
-    val likes: StateFlow<List<Song>> get() = _likes
+    private val _likes = MutableStateFlow<List<SongEntity>>(emptyList())
+    val likes: StateFlow<List<SongEntity>> get() = _likes
 
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
@@ -108,7 +108,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun likeSongs(books: Set<Song>) {
+    fun likeSongs(books: Set<SongEntity>) {
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -140,7 +140,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun saveListItems(parent: ListingUi, listings: Set<Song>) {
+    fun saveListItems(parent: ListingUi, listings: Set<SongEntity>) {
         _uiState.tryEmit(UiState.Saving)
 
         viewModelScope.launch(Dispatchers.IO) {

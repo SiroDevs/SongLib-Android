@@ -8,15 +8,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.songlib.core.database.model.Book
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.ui.sample.SampleSelectableBooks
 import com.songlib.core.common.entity.*
 import com.songlib.core.ui.components.listitems.SongBook
 
 @Composable
 fun SelectionContent(
-    books: List<Selectable<Book>>,
-    onBookClick: (Selectable<Book>) -> Unit,
+    books: List<Selectable<BookEntity>>,
+    onBookClick: (Selectable<BookEntity>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(

@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.songlib.android.library)
     alias(libs.plugins.songlib.hilt)
-    kotlin("plugin.serialization") version "2.1.21"
 }
 
 android {
@@ -10,10 +9,10 @@ android {
 }
 
 dependencies {
+    api(project(":core:common"))
     api(project(":core:database"))
 
-    implementation(platform(libs.jan.tennert.supabase.bom))
-    implementation(libs.jan.tennert.supabase.postgrest)
-    implementation(libs.ktor.client.android)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.gson)
+    implementation(libs.squareup.okhttp3.logging)
 }

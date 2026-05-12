@@ -1,13 +1,12 @@
 package com.songlib
 
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.songlib.app.navigation.AppNavHost
-import com.songlib.core.data.repos.ThemeRepository
+import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.ThemeMode
 import com.songlib.core.designsystem.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,7 +18,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val themeRepo: ThemeRepository = hiltViewModel()
+            val themeRepo: ThemeRepo = hiltViewModel()
             val themeMode = themeRepo.selectedTheme
             val isDarkTheme = when (themeMode) {
                 ThemeMode.DARK -> true

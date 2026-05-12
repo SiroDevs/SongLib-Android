@@ -12,7 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.sample.*
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.ui.components.action.AppTopBar
@@ -25,7 +25,7 @@ import com.songlib.feature.presenter.components.*
 fun PresenterScreen(
     navController: NavHostController,
     viewModel: PresenterViewModel,
-    song: Song?,
+    song: SongEntity?,
 ) {
     val horizontalSlides = viewModel.horizontalSlides
     val uiState by viewModel.uiState.collectAsState()
@@ -83,8 +83,8 @@ fun PresenterScreen(
 @Composable
 private fun LikeSongButton(
     isLiked: Boolean,
-    song: Song?,
-    onLikeToggle: (Song) -> Unit
+    song: SongEntity?,
+    onLikeToggle: (SongEntity) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -101,7 +101,7 @@ private fun LikeSongButton(
     }) {
         Icon(
             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-            contentDescription = "Like Song",
+            contentDescription = "Like SongEntity",
             tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }

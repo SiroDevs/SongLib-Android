@@ -1,10 +1,10 @@
 package com.songlib.core.ui.sample
 
-import com.songlib.core.database.model.Book
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.common.entity.Selectable
 
 val SampleBooks = listOf(
-    Book(
+    BookEntity(
         bookId = 1,
         user = 1,
         title = "Songs of Worship",
@@ -15,7 +15,7 @@ val SampleBooks = listOf(
         enabled = true,
         created = ""
     ),
-    Book(
+    BookEntity(
         bookId = 2,
         user = 1,
         title = "Nyimbo za Injili",
@@ -26,7 +26,7 @@ val SampleBooks = listOf(
         enabled = true,
         created = ""
     ),
-    Book(
+    BookEntity(
         bookId = 3,
         user = 1,
         title = "Redemption Songs",
@@ -41,7 +41,7 @@ val SampleBooks = listOf(
 
 val SampleSelectableBooks = listOf(
     Selectable(
-        Book(
+        BookEntity(
             bookId = 1,
             bookNo = 1,
             created = "",
@@ -54,7 +54,7 @@ val SampleSelectableBooks = listOf(
         ),
     ),
     Selectable(
-        Book(
+        BookEntity(
             bookId = 2,
             bookNo = 2,
             created = "",
@@ -68,7 +68,7 @@ val SampleSelectableBooks = listOf(
         isSelected = true
     ),
     Selectable(
-        Book(
+        BookEntity(
             bookId = 3,
             bookNo = 3,
             created = "",
@@ -82,7 +82,7 @@ val SampleSelectableBooks = listOf(
         isSelected = true
     ),
     Selectable(
-        Book(
+        BookEntity(
             bookId = 4,
             bookNo = 4,
             created = "",

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.common.utils.songItemTitle
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
@@ -26,7 +26,7 @@ class PresenterViewModel @Inject constructor(
     private val _isLiked = MutableStateFlow(false)
     val isLiked: StateFlow<Boolean> get() = _isLiked
 
-    private val _title = MutableStateFlow("Song Presenter")
+    private val _title = MutableStateFlow("SongEntity Presenter")
     val title: StateFlow<String> get() = _title
 
     private val _indicators = MutableStateFlow<List<String>>(emptyList())
@@ -37,7 +37,7 @@ class PresenterViewModel @Inject constructor(
 
     val horizontalSlides = prefsRepo.horizontalSlides
 
-    fun loadSong(song: Song) {
+    fun loadSong(song: SongEntity) {
         _uiState.value = UiState.Loading
         _isLiked.value = song.liked
         val content = song.content
@@ -78,7 +78,7 @@ class PresenterViewModel @Inject constructor(
         _uiState.value = UiState.Loaded
     }
 
-    fun likeSong(song: Song) {
+    fun likeSong(song: SongEntity) {
         viewModelScope.launch {
             val updatedSong = song.copy(liked = !song.liked)
             songbkRepo.updateSong(updatedSong)

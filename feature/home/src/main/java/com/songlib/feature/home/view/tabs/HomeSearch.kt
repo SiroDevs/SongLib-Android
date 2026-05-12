@@ -18,7 +18,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.revenuecat.purchases.ui.revenuecatui.Paywall
 import com.revenuecat.purchases.ui.revenuecatui.PaywallOptions
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.components.DialPad
 import com.songlib.feature.home.components.HomeSearchAppBar
@@ -35,7 +35,7 @@ fun HomeSearch(
     var searchByNo by rememberSaveable { mutableStateOf(false) }
     var searchQry by rememberSaveable { mutableStateOf("") }
     val songs by viewModel.filtered.collectAsState(initial = emptyList())
-    var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
+    var selectedSongs by remember { mutableStateOf<Set<SongEntity>>(emptySet()) }
     var showPaywall by remember { mutableStateOf(false) }
     val isProUser by viewModel.isProUser.collectAsState()
     val showProLimitDialog by viewModel.showProLimitDialog.collectAsState()
@@ -104,7 +104,7 @@ fun HomeSearch(
                     modifier = Modifier
                         .navigationBarsPadding()
                         .padding(bottom = 30.dp)
-                ) { Icon(Icons.Filled.Dialpad, "Search by number") }
+                ) { Icon(Icons.Filled.Dialpad, "SearchEntity by number") }
             }
         },
     ) { Box(
