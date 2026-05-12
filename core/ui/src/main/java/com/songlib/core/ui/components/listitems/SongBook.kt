@@ -2,25 +2,22 @@ package com.songlib.core.ui.components.listitems
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.songlib.core.common.utils.refineTitle
-import com.songlib.core.database.model.Book
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.ui.sample.SampleBooks
 import com.songlib.core.common.entity.Selectable
 @Composable
 fun SongBook(
-    item: Selectable<Book>,
-    onClick: (Selectable<Book>) -> Unit,
+    item: Selectable<BookEntity>,
+    onClick: (Selectable<BookEntity>) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val bgColor =

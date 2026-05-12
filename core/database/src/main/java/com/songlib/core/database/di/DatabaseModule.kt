@@ -3,12 +3,11 @@ package com.songlib.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.songlib.core.database.AppDatabase
+import com.songlib.core.database.daos.BookDao
 import com.songlib.core.database.daos.HistoryDao
-import com.songlib.core.database.daos.IdiomDao
-import com.songlib.core.database.daos.ProverbDao
-import com.songlib.core.database.daos.SayingDao
+import com.songlib.core.database.daos.ListingDao
 import com.songlib.core.database.daos.SearchDao
-import com.songlib.core.database.daos.WordDao
+import com.songlib.core.database.daos.SongDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,18 +18,25 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object DatabaseModule {
-
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase =
-        Room.databaseBuilder(appContext, AppDatabase::class.java, "SwahiliLibrary")
+        Room.databaseBuilder(appContext, AppDatabase::class.java, "SongLib")
             .fallbackToDestructiveMigration()
             .build()
 
-    @Provides fun provideHistoryDao(db: AppDatabase): HistoryDao = db.historiesDao()
-    @Provides fun provideIdiomDao(db: AppDatabase): IdiomDao = db.idiomsDao()
-    @Provides fun provideProverbDao(db: AppDatabase): ProverbDao = db.proverbsDao()
-    @Provides fun provideSayingDao(db: AppDatabase): SayingDao = db.sayingsDao()
-    @Provides fun provideSearchDao(db: AppDatabase): SearchDao = db.searchesDao()
-    @Provides fun provideWordDao(db: AppDatabase): WordDao = db.wordsDao()
+    @Provides
+    fun provideBookDao(db: AppDatabase): BookDao = db.booksDao()
+
+    @Provides
+    fun provideHistoryDao(db: AppDatabase): HistoryDao = db.historiesDao()
+
+    @Provides
+    fun provideListingDao(db: AppDatabase): ListingDao = db.listingsDao()
+
+    @Provides
+    fun provideSearchDao(db: AppDatabase): SearchDao = db.searchesDao()
+
+    @Provides
+    fun provideSongDao(db: AppDatabase): SongDao = db.songsDao()
 }

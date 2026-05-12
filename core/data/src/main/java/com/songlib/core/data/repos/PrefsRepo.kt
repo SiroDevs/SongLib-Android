@@ -3,8 +3,9 @@ package com.songlib.core.data.repos
 import android.content.Context
 import com.songlib.core.common.utils.PrefConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.*
 import androidx.core.content.edit
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class PrefsRepo @Inject constructor(

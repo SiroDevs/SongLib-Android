@@ -7,7 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
 import com.songlib.core.database.model.*
-import com.songlib.core.data.repos.ThemeRepository
+import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.view.HomeScreen
 import com.songlib.feature.listing.ListingViewModel
@@ -26,7 +26,7 @@ import com.songlib.feature.splash.view.SplashScreen
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
-    themeRepo: ThemeRepository
+    themeRepo: ThemeRepo
 ) {
     NavHost(
         navController = navController,
@@ -58,7 +58,7 @@ fun AppNavHost(
         composable(route = Routes.PRESENTER) {
             val song = navController.previousBackStackEntry
                 ?.savedStateHandle
-                ?.get<Song>("song")
+                ?.get<SongEntity>("song")
 
             val viewModel: PresenterViewModel = hiltViewModel()
 

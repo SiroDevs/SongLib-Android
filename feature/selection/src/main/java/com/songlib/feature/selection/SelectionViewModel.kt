@@ -2,7 +2,7 @@ package com.songlib.feature.selection
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.songlib.core.database.model.Book
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.common.entity.*
 import com.songlib.core.data.repos.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,14 +21,14 @@ class SelectionViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _books = MutableStateFlow<List<Selectable<Book>>>(emptyList())
-    val books: StateFlow<List<Selectable<Book>>> get() = _books
+    private val _books = MutableStateFlow<List<Selectable<BookEntity>>>(emptyList())
+    val books: StateFlow<List<Selectable<BookEntity>>> get() = _books
 
     private val _showUpgradeDialog = MutableStateFlow(false)
     val showUpgradeDialog: StateFlow<Boolean> = _showUpgradeDialog.asStateFlow()
 
-    private val _pendingBookSelection = MutableStateFlow<Selectable<Book>?>(null)
-    val pendingBookSelection: StateFlow<Selectable<Book>?> = _pendingBookSelection.asStateFlow()
+    private val _pendingBookSelection = MutableStateFlow<Selectable<BookEntity>?>(null)
+    val pendingBookSelection: StateFlow<Selectable<BookEntity>?> = _pendingBookSelection.asStateFlow()
 
     private val _isProUser = MutableStateFlow(false)
     val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
@@ -63,7 +63,7 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
-    fun getSelectedBookList(): List<Book> {
+    fun getSelectedBookList(): List<BookEntity> {
         return _books.value.filter { it.isSelected }.map { it.data }
     }
 
@@ -80,7 +80,7 @@ class SelectionViewModel @Inject constructor(
         }
     }
 
-    private fun saveBooks(books: List<Book>) {
+    private fun saveBooks(books: List<BookEntity>) {
         _uiState.tryEmit(UiState.Saving)
         Log.d("TAG", "saving ${books.size} books")
 
@@ -119,16 +119,16 @@ class SelectionViewModel @Inject constructor(
             }
 
             prefsRepo.isDataLoaded = true
-            Log.d("TAG", "Song fetch and save completed")
+            Log.d("TAG", "SongEntity fetch and save completed")
             _uiState.tryEmit(UiState.Saved)
 
         } catch (e: Exception) {
-            Log.e("TAG", "Song fetch failed: ${e.message}", e)
+            Log.e("TAG", "SongEntity fetch failed: ${e.message}", e)
             _uiState.tryEmit(UiState.Saved)
         }
     }
 
-    fun toggleBookSelection(book: Selectable<Book>) {
+    fun toggleBookSelection(book: Selectable<BookEntity>) {
         val currentSelectedCount = _books.value.count { it.isSelected }
         val isCurrentlySelected = book.isSelected
 

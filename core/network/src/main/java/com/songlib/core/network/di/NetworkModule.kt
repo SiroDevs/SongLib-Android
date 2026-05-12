@@ -1,9 +1,11 @@
 package com.songlib.core.network.di
 
-import com.songlib.BuildConfig
+//import com.songlib.BuildConfig
 import com.songlib.core.common.utils.ApiConstants
 import com.songlib.core.network.ApiService
-import dagger.*
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
@@ -16,7 +18,6 @@ import javax.inject.Named
 @Module
 @Suppress("unused")
 object NetworkModule {
-
     @Provides
     @Reusable
     fun provideApiService(@Named("songlibApi") retrofit: Retrofit): ApiService {
@@ -39,13 +40,13 @@ object NetworkModule {
     fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
 
-        if (BuildConfig.DEBUG) {
+//        if (BuildConfig.DEBUG) {
             val loggingInterceptor = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
             builder.addInterceptor(loggingInterceptor)
-        }
+//        }
 
-        return builder.build() // <- Build the client here
+        return builder.build()
     }
 }

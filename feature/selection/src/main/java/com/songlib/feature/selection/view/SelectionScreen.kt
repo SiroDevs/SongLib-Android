@@ -15,6 +15,7 @@ import com.songlib.core.data.repos.*
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.*
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.components.Step1Fab
 
@@ -23,7 +24,7 @@ import com.songlib.feature.selection.components.Step1Fab
 fun SelectionScreen(
     navController: NavHostController,
     viewModel: SelectionViewModel,
-    themeRepo: ThemeRepository
+    themeRepo: ThemeRepo
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }

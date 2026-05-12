@@ -12,11 +12,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.songlib.core.common.utils.*
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.sample.SampleSongs
 
 @Composable
-fun SongItem(song: Song) {
+fun SongItem(song: SongEntity) {
     val verses = remember(song.content) { song.content.split("##") }
     val hasChorus = "CHORUS" in song.content
     val chorusText = if (hasChorus) "Chorus" else ""

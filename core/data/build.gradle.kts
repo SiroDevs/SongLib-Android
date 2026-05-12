@@ -8,9 +8,9 @@ android {
 }
 
 dependencies {
+    api(project(":core:common"))
     api(project(":core:database"))
     api(project(":core:network"))
-    implementation(project(":core:common"))
 
     api(libs.androidx.compose.material)
 
