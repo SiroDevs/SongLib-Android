@@ -1,12 +1,12 @@
-package com.songlib.presentation.selection.components
+package com.songlib.feature.selection.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import com.songlib.data.models.Book
-import com.songlib.presentation.components.general.*
-import com.songlib.presentation.selection.SelectionViewModel
+import com.songlib.core.database.model.Book
+import com.songlib.core.ui.components.general.*
+import com.songlib.feature.selection.SelectionViewModel
 
 @Composable
 fun Step1Fab(

@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.listitems
+package com.songlib.core.ui.components.listitems
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,9 +11,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.songlib.core.utils.*
-import com.songlib.data.models.Song
-import com.songlib.data.sample.SampleSongs
+import com.songlib.core.common.utils.*
+import com.songlib.core.database.model.Song
+import com.songlib.core.ui.sample.SampleSongs
 
 @Composable
 fun SongItem(song: Song) {

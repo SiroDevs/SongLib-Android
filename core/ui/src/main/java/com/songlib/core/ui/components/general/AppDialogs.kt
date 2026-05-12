@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.general
+package com.songlib.core.ui.components.general
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable

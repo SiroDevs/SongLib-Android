@@ -1,13 +1,13 @@
-package com.songlib.presentation.home.components
+package com.songlib.feature.home.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import com.songlib.data.models.Song
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.general.QuickFormDialog
-import com.songlib.presentation.home.HomeViewModel
+import com.songlib.core.database.model.Song
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.ui.components.general.QuickFormDialog
+import com.songlib.feature.home.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

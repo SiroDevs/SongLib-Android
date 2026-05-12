@@ -1,4 +1,4 @@
-package com.songlib.presentation.settings.components
+package com.songlib.feature.settings.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.listitems
+package com.songlib.core.ui.components.listitems
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.*
-import com.songlib.data.models.ListingUi
+import com.songlib.core.database.model.ListingUi
 
 @Composable
 fun ListingItem(listing: ListingUi) {

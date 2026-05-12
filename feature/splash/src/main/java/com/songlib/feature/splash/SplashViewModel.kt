@@ -1,10 +1,10 @@
-package com.songlib.presentation.splash
+package com.songlib.feature.splash
 
 import android.content.Context
 import androidx.lifecycle.*
-import com.songlib.core.helpers.NetworkUtils
-import com.songlib.domain.repos.PrefsRepo
-import com.songlib.domain.repos.SubsRepo
+import com.songlib.core.common.helpers.NetworkUtils
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.SubsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch

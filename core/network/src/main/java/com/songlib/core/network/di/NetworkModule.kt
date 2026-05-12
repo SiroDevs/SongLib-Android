@@ -1,8 +1,8 @@
-package com.songlib.core.di
+package com.songlib.core.network.di
 
 import com.songlib.BuildConfig
-import com.songlib.core.utils.ApiConstants
-import com.songlib.data.sources.remote.ApiService
+import com.songlib.core.common.utils.ApiConstants
+import com.songlib.core.network.ApiService
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

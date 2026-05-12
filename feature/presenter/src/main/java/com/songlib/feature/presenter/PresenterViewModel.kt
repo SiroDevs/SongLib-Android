@@ -1,13 +1,13 @@
-package com.songlib.presentation.presenter
+package com.songlib.feature.presenter
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.core.utils.getSongVerses
-import com.songlib.core.utils.songItemTitle
-import com.songlib.data.models.Song
-import com.songlib.domain.entity.UiState
-import com.songlib.domain.repos.PrefsRepo
-import com.songlib.domain.repos.SongBookRepo
+import com.songlib.core.common.utils.getSongVerses
+import com.songlib.core.common.utils.songItemTitle
+import com.songlib.core.database.model.Song
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.SongBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

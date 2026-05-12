@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.action
+package com.songlib.core.ui.components.action
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

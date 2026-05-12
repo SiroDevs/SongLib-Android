@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.indicators
+package com.songlib.core.ui.components.indicators
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

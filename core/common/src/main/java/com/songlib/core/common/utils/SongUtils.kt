@@ -1,6 +1,6 @@
-package com.songlib.core.utils
+package com.songlib.core.common.utils
 
-import com.songlib.data.models.Song
+import com.songlib.core.database.model.Song
 
 object SongUtils {
 

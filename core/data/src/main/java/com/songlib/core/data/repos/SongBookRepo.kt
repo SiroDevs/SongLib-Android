@@ -1,11 +1,11 @@
-package com.songlib.domain.repos
+package com.songlib.core.data.repos
 
 import android.content.*
 import android.util.Log
-import com.songlib.data.models.*
-import com.songlib.data.sources.local.*
-import com.songlib.data.sources.local.daos.*
-import com.songlib.data.sources.remote.ApiService
+import com.songlib.core.database.model.*
+import com.songlib.core.database.*
+import com.songlib.core.database.daos.*
+import com.songlib.core.network.ApiService
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import javax.inject.*

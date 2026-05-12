@@ -1,4 +1,4 @@
-package com.songlib.presentation.selection.view
+package com.songlib.feature.selection.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,10 +8,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.songlib.data.models.Book
-import com.songlib.data.sample.SampleSelectableBooks
-import com.songlib.domain.entity.*
-import com.songlib.presentation.components.listitems.SongBook
+import com.songlib.core.database.model.Book
+import com.songlib.core.ui.sample.SampleSelectableBooks
+import com.songlib.core.common.entity.*
+import com.songlib.core.ui.components.listitems.SongBook
 
 @Composable
 fun SelectionContent(

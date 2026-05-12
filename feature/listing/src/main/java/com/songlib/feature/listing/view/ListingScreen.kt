@@ -1,4 +1,4 @@
-package com.songlib.presentation.listing.view
+package com.songlib.feature.listing.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,12 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.data.models.*
-import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.general.*
-import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.listing.ListingViewModel
+import com.songlib.core.database.model.*
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.ui.components.general.*
+import com.songlib.core.ui.components.indicators.*
+import com.songlib.feature.listing.ListingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

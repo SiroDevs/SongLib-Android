@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.view.tabs
+package com.songlib.feature.home.view.tabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,14 +11,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
 import com.revenuecat.purchases.ui.revenuecatui.*
-import com.songlib.presentation.home.components.ListingsList
-import com.songlib.data.models.ListingUi
-import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.action.*
-import com.songlib.presentation.components.general.*
-import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.home.HomeViewModel
+import com.songlib.feature.home.components.ListingsList
+import com.songlib.core.database.model.ListingUi
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.ui.components.action.*
+import com.songlib.core.ui.components.general.*
+import com.songlib.core.ui.components.indicators.*
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.home.HomeViewModel
 import kotlin.collections.plus
 
 @OptIn(ExperimentalMaterial3Api::class)

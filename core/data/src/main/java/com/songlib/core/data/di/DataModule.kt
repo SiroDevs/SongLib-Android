@@ -1,13 +1,14 @@
-package com.songlib.core.di
+package com.songlib.core.data.di
 
 import android.content.Context
-import com.songlib.data.sources.remote.ApiService
-import com.songlib.domain.repos.ListingRepo
-import com.songlib.domain.repos.PrefsRepo
-import com.songlib.domain.repos.SongBookRepo
-import com.songlib.domain.repos.SubsRepo
-import com.songlib.domain.repos.ThemeRepository
-import com.songlib.domain.repos.TrackingRepo
+import com.songlib.core.network.ApiService
+import com.songlib.core.network.di.NetworkModule
+import com.songlib.core.data.repos.ListingRepo
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.SubsRepo
+import com.songlib.core.data.repos.ThemeRepository
+import com.songlib.core.data.repos.TrackingRepo
 import dagger.*
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -16,6 +17,8 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module(includes = [NetworkModule::class])
+object DataModule {
+
     @Provides
     @Singleton
     fun provideListingRepository(

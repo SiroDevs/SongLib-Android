@@ -1,4 +1,4 @@
-package com.songlib.presentation.presenter.components
+package com.songlib.feature.presenter.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.songlib.data.sample.*
-import com.songlib.presentation.components.autosize.AutoResizingText
-import com.songlib.presentation.components.autosize.AutoSizeText
+import com.songlib.core.ui.sample.*
+import com.songlib.core.ui.components.autosize.AutoResizingText
+import com.songlib.core.ui.components.autosize.AutoSizeText
 
 @Composable
 fun PresenterTabs(

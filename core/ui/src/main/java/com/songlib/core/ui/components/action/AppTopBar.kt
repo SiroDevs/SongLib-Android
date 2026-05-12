@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.action
+package com.songlib.core.ui.components.action
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

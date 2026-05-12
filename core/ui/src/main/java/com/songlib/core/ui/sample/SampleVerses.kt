@@ -1,6 +1,6 @@
-package com.songlib.data.sample
+package com.songlib.core.ui.sample
 
-import com.songlib.data.models.Song
+import com.songlib.core.database.model.Song
 
 val SampleVerses = listOf(
     "They come from the East and West,\nThey come from the lands afar,\nTo feast with the King, to dine as\nHis guest\nHow Blessed these pilgrims are!\nBeholding His hallowed face\nAglow with light divine;\nBlest partakers of His grace,\nAs gems in His crown to shine.',",

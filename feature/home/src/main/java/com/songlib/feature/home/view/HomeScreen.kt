@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.view
+package com.songlib.feature.home.view
 
 import androidx.compose.foundation.layout.*
 //noinspection UsingMaterialAndMaterial3Libraries
@@ -10,13 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.home.HomeViewModel
-import com.songlib.presentation.components.indicators.ErrorState
-import com.songlib.presentation.home.components.*
-import com.songlib.presentation.home.view.tabs.*
-import com.songlib.presentation.navigation.Routes
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.ui.components.indicators.*
+import com.songlib.feature.home.HomeViewModel
+import com.songlib.core.ui.components.indicators.ErrorState
+import com.songlib.feature.home.components.*
+import com.songlib.feature.home.view.tabs.*
+import com.songlib.core.common.utils.Routes
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

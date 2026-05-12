@@ -1,8 +1,8 @@
-package com.songlib.data.models
+package com.songlib.core.database.model
 
 import androidx.annotation.Keep
 import androidx.room.*
-import com.songlib.core.utils.DbConstants
+import com.songlib.core.common.utils.DbConstants
 import java.util.Date
 
 @Keep

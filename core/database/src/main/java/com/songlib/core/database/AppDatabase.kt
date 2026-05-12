@@ -1,9 +1,9 @@
-package com.songlib.data.sources.local
+package com.songlib.core.database
 
 import android.content.Context
 import androidx.room.*
-import com.songlib.data.models.*
-import com.songlib.data.sources.local.daos.*
+import com.songlib.core.database.model.*
+import com.songlib.core.database.daos.*
 
 @Database(
     entities = [Book::class, History::class, Listing::class, Search::class, Song::class],

@@ -1,8 +1,8 @@
-package com.songlib.data.sources.local.daos
+package com.songlib.core.database.daos
 
 import androidx.room.*
-import com.songlib.core.utils.DbConstants
-import com.songlib.data.models.Search
+import com.songlib.core.common.utils.DbConstants
+import com.songlib.core.database.model.Search
 
 @Dao
 interface SearchDao {

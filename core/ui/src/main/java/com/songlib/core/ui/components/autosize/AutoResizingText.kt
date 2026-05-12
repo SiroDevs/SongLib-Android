@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.autosize
+package com.songlib.core.ui.components.autosize
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.BoxWithConstraints

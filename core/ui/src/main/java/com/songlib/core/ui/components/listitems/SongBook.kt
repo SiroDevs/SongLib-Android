@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.listitems
+package com.songlib.core.ui.components.listitems
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -13,10 +13,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.songlib.core.utils.refineTitle
-import com.songlib.data.models.Book
-import com.songlib.data.sample.SampleBooks
-import com.songlib.domain.entity.Selectable
+import com.songlib.core.common.utils.refineTitle
+import com.songlib.core.database.model.Book
+import com.songlib.core.ui.sample.SampleBooks
+import com.songlib.core.common.entity.Selectable
 @Composable
 fun SongBook(
     item: Selectable<Book>,

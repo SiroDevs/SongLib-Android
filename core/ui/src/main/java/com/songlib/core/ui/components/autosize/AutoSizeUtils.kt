@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.autosize
+package com.songlib.core.ui.components.autosize
 
 import androidx.compose.ui.unit.TextUnit
 

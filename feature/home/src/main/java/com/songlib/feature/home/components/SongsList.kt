@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.components
+package com.songlib.feature.home.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavHostController
-import com.songlib.data.models.Song
-import com.songlib.presentation.components.listitems.*
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.home.HomeViewModel
+import com.songlib.core.database.model.Song
+import com.songlib.core.ui.components.listitems.*
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.home.HomeViewModel
 
 @Composable
 fun SongsList(

@@ -6,21 +6,21 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import com.songlib.data.models.*
-import com.songlib.domain.repos.ThemeRepository
-import com.songlib.presentation.home.HomeViewModel
-import com.songlib.presentation.home.view.HomeScreen
-import com.songlib.presentation.listing.ListingViewModel
-import com.songlib.presentation.listing.view.ListingScreen
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.presenter.PresenterViewModel
-import com.songlib.presentation.presenter.view.PresenterScreen
-import com.songlib.presentation.selection.SelectionViewModel
-import com.songlib.presentation.selection.view.SelectionScreen
-import com.songlib.presentation.settings.SettingsViewModel
-import com.songlib.presentation.settings.view.SettingsScreen
-import com.songlib.presentation.splash.SplashViewModel
-import com.songlib.presentation.splash.view.SplashScreen
+import com.songlib.core.database.model.*
+import com.songlib.core.data.repos.ThemeRepository
+import com.songlib.feature.home.HomeViewModel
+import com.songlib.feature.home.view.HomeScreen
+import com.songlib.feature.listing.ListingViewModel
+import com.songlib.feature.listing.view.ListingScreen
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.presenter.PresenterViewModel
+import com.songlib.feature.presenter.view.PresenterScreen
+import com.songlib.feature.selection.SelectionViewModel
+import com.songlib.feature.selection.view.SelectionScreen
+import com.songlib.feature.settings.SettingsViewModel
+import com.songlib.feature.settings.view.SettingsScreen
+import com.songlib.feature.splash.SplashViewModel
+import com.songlib.feature.splash.view.SplashScreen
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable

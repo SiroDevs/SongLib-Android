@@ -1,4 +1,4 @@
-package com.songlib.presentation.presenter.view
+package com.songlib.feature.presenter.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
@@ -12,13 +12,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.songlib.data.models.Song
-import com.songlib.data.sample.*
-import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.presenter.PresenterViewModel
-import com.songlib.presentation.presenter.components.*
+import com.songlib.core.database.model.Song
+import com.songlib.core.ui.sample.*
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.ui.components.indicators.*
+import com.songlib.feature.presenter.PresenterViewModel
+import com.songlib.feature.presenter.components.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

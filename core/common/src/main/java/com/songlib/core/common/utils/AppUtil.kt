@@ -1,4 +1,4 @@
-package com.songlib.core.utils
+package com.songlib.core.common.utils
 
 fun refineTitle(textTitle: String): String {
     return textTitle.replace("''", "'")

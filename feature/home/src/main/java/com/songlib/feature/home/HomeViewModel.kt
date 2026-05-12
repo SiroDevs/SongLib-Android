@@ -1,17 +1,17 @@
-package com.songlib.presentation.home
+package com.songlib.feature.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.core.utils.SongUtils
-import com.songlib.data.models.Book
-import com.songlib.data.models.ListingUi
-import com.songlib.data.models.Song
-import com.songlib.domain.entity.UiState
-import com.songlib.domain.repos.ListingRepo
-import com.songlib.domain.repos.PrefsRepo
-import com.songlib.domain.repos.SongBookRepo
-import com.songlib.presentation.home.components.HomeNavItem
+import com.songlib.core.common.utils.SongUtils
+import com.songlib.core.database.model.Book
+import com.songlib.core.database.model.ListingUi
+import com.songlib.core.database.model.Song
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.ListingRepo
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.feature.home.components.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

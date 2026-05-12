@@ -1,4 +1,4 @@
-package com.songlib.core.utils
+package com.songlib.core.common.utils
 
 object ApiConstants {
     const val BASE = "https://songlive.vercel.app/"

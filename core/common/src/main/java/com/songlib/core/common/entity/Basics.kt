@@ -1,4 +1,4 @@
-package com.songlib.domain.entity
+package com.songlib.core.common.entity
 
 data class Selectable<T>(
     val data: T,

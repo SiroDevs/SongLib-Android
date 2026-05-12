@@ -1,4 +1,4 @@
-package com.songlib.domain.entity
+package com.songlib.core.common.entity
 
 sealed class UiState {
     object Idle : UiState()

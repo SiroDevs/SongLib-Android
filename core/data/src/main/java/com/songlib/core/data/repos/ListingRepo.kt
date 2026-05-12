@@ -1,10 +1,10 @@
-package com.songlib.domain.repos
+package com.songlib.core.data.repos
 
 import android.content.*
-import com.songlib.core.utils.toTimeAgo
-import com.songlib.data.models.*
-import com.songlib.data.sources.local.*
-import com.songlib.data.sources.local.daos.*
+import com.songlib.core.common.utils.toTimeAgo
+import com.songlib.core.database.model.*
+import com.songlib.core.database.*
+import com.songlib.core.database.daos.*
 import kotlinx.coroutines.*
 import javax.inject.*
 

@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.view.tabs
+package com.songlib.feature.home.view.tabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -7,13 +7,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
-import com.songlib.data.models.Song
-import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.home.components.SongsList
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.home.HomeViewModel
+import com.songlib.core.database.model.Song
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.ui.components.indicators.*
+import com.songlib.feature.home.components.SongsList
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.home.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

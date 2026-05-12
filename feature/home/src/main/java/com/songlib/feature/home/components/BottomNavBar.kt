@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.components
+package com.songlib.feature.home.components
 
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*

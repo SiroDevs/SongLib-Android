@@ -1,4 +1,4 @@
-package com.songlib.presentation.settings.view
+package com.songlib.feature.settings.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,14 +9,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.domain.repos.ThemeRepository
-import com.songlib.domain.repos.ThemeSelectorDialog
-import com.songlib.domain.repos.appThemeName
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.settings.SettingsViewModel
-import com.songlib.presentation.settings.components.ConfirmResetDialog
-import com.songlib.presentation.settings.components.SettingsSectionTitle
+import com.songlib.core.data.repos.ThemeRepository
+import com.songlib.core.data.repos.ThemeSelectorDialog
+import com.songlib.core.data.repos.appThemeName
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.settings.SettingsViewModel
+import com.songlib.feature.settings.components.ConfirmResetDialog
+import com.songlib.feature.settings.components.SettingsSectionTitle
 
 @Composable
 fun SettingsScreen(

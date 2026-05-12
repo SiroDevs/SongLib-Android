@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.components
+package com.songlib.feature.home.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,7 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.songlib.data.models.ListingUi
+import com.songlib.core.database.model.ListingUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

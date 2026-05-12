@@ -1,10 +1,10 @@
-package com.songlib.presentation.selection
+package com.songlib.feature.selection
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.songlib.data.models.Book
-import com.songlib.domain.entity.*
-import com.songlib.domain.repos.*
+import com.songlib.core.database.model.Book
+import com.songlib.core.common.entity.*
+import com.songlib.core.data.repos.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

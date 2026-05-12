@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.components
+package com.songlib.feature.home.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

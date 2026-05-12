@@ -1,4 +1,4 @@
-package com.songlib.presentation.splash.components
+package com.songlib.feature.splash.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

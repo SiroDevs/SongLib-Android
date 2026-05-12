@@ -1,4 +1,4 @@
-package com.songlib.presentation.components.listitems
+package com.songlib.core.ui.components.listitems
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*

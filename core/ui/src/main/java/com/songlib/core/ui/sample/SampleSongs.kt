@@ -1,6 +1,6 @@
-package com.songlib.data.sample
+package com.songlib.core.ui.sample
 
-import com.songlib.data.models.Song
+import com.songlib.core.database.model.Song
 
 val SampleSongs = listOf(
     Song(

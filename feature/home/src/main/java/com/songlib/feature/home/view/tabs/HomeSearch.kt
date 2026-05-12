@@ -1,4 +1,4 @@
-package com.songlib.presentation.home.view.tabs
+package com.songlib.feature.home.view.tabs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -8,21 +8,21 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
-import com.songlib.domain.entity.UiState
-import com.songlib.presentation.components.action.*
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.home.HomeViewModel
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.ui.components.action.*
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.home.HomeViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.revenuecat.purchases.ui.revenuecatui.Paywall
 import com.revenuecat.purchases.ui.revenuecatui.PaywallOptions
-import com.songlib.data.models.Song
-import com.songlib.presentation.components.indicators.EmptyState
-import com.songlib.presentation.home.components.DialPad
-import com.songlib.presentation.home.components.HomeSearchAppBar
-import com.songlib.presentation.home.components.SongsList
+import com.songlib.core.database.model.Song
+import com.songlib.core.ui.components.indicators.EmptyState
+import com.songlib.feature.home.components.DialPad
+import com.songlib.feature.home.components.HomeSearchAppBar
+import com.songlib.feature.home.components.SongsList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

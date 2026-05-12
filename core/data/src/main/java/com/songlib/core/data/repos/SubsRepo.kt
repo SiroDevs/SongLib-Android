@@ -1,4 +1,4 @@
-package com.songlib.domain.repos
+package com.songlib.core.data.repos
 
 import com.revenuecat.purchases.*
 import javax.inject.*

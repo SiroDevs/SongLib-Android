@@ -1,4 +1,4 @@
-package com.songlib.presentation.selection.view
+package com.songlib.feature.selection.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -10,13 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
 import com.revenuecat.purchases.ui.revenuecatui.*
-import com.songlib.domain.entity.UiState
-import com.songlib.domain.repos.*
-import com.songlib.presentation.components.action.AppTopBar
-import com.songlib.presentation.components.indicators.*
-import com.songlib.presentation.navigation.Routes
-import com.songlib.presentation.selection.SelectionViewModel
-import com.songlib.presentation.selection.components.Step1Fab
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.*
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.ui.components.indicators.*
+import com.songlib.core.common.utils.Routes
+import com.songlib.feature.selection.SelectionViewModel
+import com.songlib.feature.selection.components.Step1Fab
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.songlib.presentation.presenter.components
+package com.songlib.feature.presenter.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.pager.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.tooling.preview.Preview
-import com.songlib.data.sample.*
+import com.songlib.core.ui.sample.*
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.ui.text.TextStyle
