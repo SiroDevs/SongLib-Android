@@ -41,7 +41,7 @@ fun BookItem(
 @Composable
 fun PreviewBookItem() {
     BookItem(
-        text = "Song of Worship",
+        text = "SongEntity of Worship",
         isSelected = false,
         onPressed = {}
     )

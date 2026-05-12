@@ -10,16 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.listitems.*
 import com.songlib.core.common.utils.Routes
 
 @Composable
 fun ListedSongs(
-    songs: List<Song>,
+    songs: List<SongEntity>,
     navController: NavHostController,
-    selectedSongs: Set<Song>,
-    onSongSelected: (Song) -> Unit
+    selectedSongs: Set<SongEntity>,
+    onSongSelected: (SongEntity) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),

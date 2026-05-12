@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.database.model.ListingUi
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.SongBookRepo
@@ -24,11 +24,11 @@ class ListingViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _listingTitle = MutableStateFlow("Untitled Listing")
+    private val _listingTitle = MutableStateFlow("Untitled ListingEntity")
     val listingTitle: StateFlow<String> get() = _listingTitle
 
-    private val _listedSongs = MutableStateFlow<List<Song>>(emptyList())
-    val listedSongs: StateFlow<List<Song>> get() = _listedSongs
+    private val _listedSongs = MutableStateFlow<List<SongEntity>>(emptyList())
+    val listedSongs: StateFlow<List<SongEntity>> get() = _listedSongs
 
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
@@ -43,7 +43,7 @@ class ListingViewModel @Inject constructor(
             val listItems = listRepo.fetchListings(listing.id)
             _listingTitle.value = listing.title
 
-            val songs = mutableListOf<Song>()
+            val songs = mutableListOf<SongEntity>()
             listItems.forEach { item ->
                 try {
                     songs.add(songbkRepo.fetchSong(item.song))

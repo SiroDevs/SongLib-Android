@@ -9,11 +9,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.core.data.repos.ThemeRepository
-import com.songlib.core.data.repos.ThemeSelectorDialog
+import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.appThemeName
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.feature.settings.SettingsViewModel
 import com.songlib.feature.settings.components.ConfirmResetDialog
 import com.songlib.feature.settings.components.SettingsSectionTitle
@@ -22,7 +22,7 @@ import com.songlib.feature.settings.components.SettingsSectionTitle
 fun SettingsScreen(
     navController: NavHostController,
     viewModel: SettingsViewModel,
-    themeRepo: ThemeRepository,
+    themeRepo: ThemeRepo,
 ) {
     val theme = themeRepo.selectedTheme
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -78,7 +78,7 @@ fun SettingsScreen(
                         Icons.Default.Swipe, contentDescription = "slides"
                     )
                 },
-                headlineContent = { Text("Song Slides") },
+                headlineContent = { Text("SongEntity Slides") },
                 supportingContent = { Text("Swipe verses horizontally") },
                 trailingContent = {
                     Switch(

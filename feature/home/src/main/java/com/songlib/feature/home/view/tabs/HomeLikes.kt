@@ -7,7 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.navigation.NavHostController
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.*
@@ -23,7 +23,7 @@ fun HomeLikes(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val likes by viewModel.likes.collectAsState(initial = emptyList())
-    var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
+    var selectedSongs by remember { mutableStateOf<Set<SongEntity>>(emptySet()) }
 
     Scaffold(
         topBar = {
@@ -44,7 +44,7 @@ fun HomeLikes(
                             }
                         }
                         IconButton(onClick = {}) {
-                            Icon(Icons.Default.FormatListNumbered, contentDescription = "Listing")
+                            Icon(Icons.Default.FormatListNumbered, contentDescription = "ListingEntity")
                         }
                     }
                 },

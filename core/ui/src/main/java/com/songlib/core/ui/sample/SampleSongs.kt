@@ -1,9 +1,9 @@
 package com.songlib.core.ui.sample
 
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 
 val SampleSongs = listOf(
-    Song(
+    SongEntity(
         book = 1,
         songId = 1,
         songNo = 1,
@@ -15,7 +15,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 2,
         songNo = 2,
@@ -27,7 +27,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 3,
         songNo = 3,
@@ -39,7 +39,7 @@ val SampleSongs = listOf(
         liked = false,
         created = "2023-08-23T09:36:48.560Z"
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 4,
         songNo = 4,
@@ -51,7 +51,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 5,
         songNo = 5,
@@ -63,7 +63,7 @@ val SampleSongs = listOf(
         liked = false,
         created = "2023-08-23T09:36:48.561Z"
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 6,
         songNo = 6,
@@ -75,7 +75,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 7,
         songNo = 7,
@@ -87,7 +87,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 8,
         songNo = 8,
@@ -99,7 +99,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 9,
         songNo = 9,
@@ -111,7 +111,7 @@ val SampleSongs = listOf(
         liked = false,
         created = ""
     ),
-    Song(
+    SongEntity(
         book = 1,
         songId = 10,
         songNo = 10,

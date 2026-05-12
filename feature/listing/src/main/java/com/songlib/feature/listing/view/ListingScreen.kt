@@ -23,14 +23,14 @@ fun ListingScreen(
     val uiState by viewModel.uiState.collectAsState()
     val listingTitle by viewModel.listingTitle.collectAsState()
     val listedSongs by viewModel.listedSongs.collectAsState(initial = emptyList())
-    var selectedSongs by remember { mutableStateOf<Set<Song>>(emptySet()) }
+    var selectedSongs by remember { mutableStateOf<Set<SongEntity>>(emptySet()) }
     var showEditAlert by rememberSaveable { mutableStateOf(false) }
     var showDeleteAlert by rememberSaveable { mutableStateOf(false) }
 
     if (showEditAlert) {
         QuickFormDialog(
             title = "Edit List Title",
-            label = "Listing title",
+            label = "ListingEntity title",
             initialValue = listingTitle,
             onDismiss = { showEditAlert = false },
             onConfirm = { title ->

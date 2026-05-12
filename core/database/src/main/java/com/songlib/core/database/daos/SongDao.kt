@@ -1,32 +1,36 @@
 package com.songlib.core.database.daos
 
-import androidx.room.*
-import com.songlib.core.common.utils.DbConstants
-import com.songlib.core.database.model.Song
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.songlib.core.database.model.SongEntity
 
 @Dao
 interface SongDao {
-    @Query("SELECT * FROM ${DbConstants.SONGS}")
-    fun getAll(): List<Song>
+    @Query("SELECT * FROM songs")
+    fun getAll(): List<SongEntity>
 
-    @Query("SELECT * FROM ${DbConstants.SONGS} WHERE songId = :songId")
-    fun getSong(songId: Int): Song
+    @Query("SELECT * FROM songs WHERE songId = :songId")
+    fun getSong(songId: Int): SongEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(song: Song)
+    suspend fun insert(song: SongEntity)
 
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    suspend fun insertAll(songs: List<Song>)
+    suspend fun insertAll(songs: List<SongEntity>)
 
     @Update()
-    fun update(song: Song)
+    fun update(song: SongEntity)
 
     @Delete()
-    fun delete(song: Song)
+    fun delete(song: SongEntity)
 
-    @Query("DELETE FROM ${DbConstants.SONGS} WHERE book = :id")
+    @Query("DELETE FROM songs WHERE book = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("DELETE FROM ${DbConstants.SONGS}")
+    @Query("DELETE FROM songs")
     suspend fun deleteAll()
 }

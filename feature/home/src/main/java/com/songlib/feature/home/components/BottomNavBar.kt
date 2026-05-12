@@ -48,7 +48,7 @@ fun BottomNavBarPreview() {
 }
 
 sealed class HomeNavItem(var icon: ImageVector, var title: String) {
-    object Search : HomeNavItem(Icons.Default.Search, "Search")
+    object Search : HomeNavItem(Icons.Default.Search, "SearchEntity")
     object Likes : HomeNavItem(Icons.Default.FavoriteBorder, "Likes")
     object Listings : HomeNavItem(Icons.Default.FormatListNumbered, "Listings")
 }

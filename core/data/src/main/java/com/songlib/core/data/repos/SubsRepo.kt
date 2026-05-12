@@ -1,7 +1,10 @@
 package com.songlib.core.data.repos
 
-import com.revenuecat.purchases.*
-import javax.inject.*
+import com.revenuecat.purchases.CacheFetchPolicy
+import com.revenuecat.purchases.Purchases
+import com.revenuecat.purchases.getCustomerInfoWith
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class SubsRepo @Inject constructor() {
