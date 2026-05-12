@@ -1,24 +1,20 @@
 package com.songlib
 
-import android.os.*
-import androidx.activity.*
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.*
-import androidx.compose.foundation.*
-import androidx.compose.ui.*
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.songlib.domain.repos.ThemeMode
-import com.songlib.domain.repos.ThemeRepository
-import com.songlib.presentation.navigation.*
-import com.songlib.presentation.theme.*
+import com.songlib.app.navigation.AppNavHost
+import com.songlib.core.data.repos.ThemeRepository
+import com.songlib.core.data.repos.ThemeMode
+import com.songlib.core.designsystem.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-@ExperimentalComposeUiApi
-@ExperimentalFoundationApi
-@Keep
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.S)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
