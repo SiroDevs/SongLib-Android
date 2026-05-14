@@ -1,14 +1,14 @@
 package com.songlib.core.common.utils
 
-import com.songlib.core.database.model.Song
+import com.songlib.core.database.model.SongEntity
 
 object SongUtils {
 
     fun searchSongs(
-        allSongs: List<Song>,
+        allSongs: List<SongEntity>,
         qry: String,
         byNo: Boolean = false
-    ): List<Song> {
+    ): List<SongEntity> {
         val query = qry.trim()
 
         if (query.isBlank()) {
