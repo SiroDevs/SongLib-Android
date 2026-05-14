@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.navigation.NavHostController
-import com.songlib.R
+import com.songlib.feature.splash.R
 import com.songlib.core.common.utils.Routes
 import com.songlib.feature.splash.components.*
 import com.songlib.feature.splash.SplashViewModel
