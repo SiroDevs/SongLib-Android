@@ -1,6 +1,0 @@
-/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/java/com/songlib/core/common/entity/Basics.kt
-/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/java/com/songlib/core/common/utils/AppConstants.kt
-/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/java/com/songlib/core/common/utils/AppUtil.kt
-/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/java/com/songlib/core/common/entity/UiState.kt
-/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/java/com/songlib/core/common/helpers/NetworkHelpers.kt
-/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/java/com/songlib/core/common/utils/SongUtils.kt

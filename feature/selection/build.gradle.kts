@@ -12,4 +12,5 @@ dependencies {
     implementation(project(":core:data"))
     implementation(libs.revenuecat)
     implementation(libs.revenuecat.ui)
+    implementation(libs.squareup.retrofit)
 }
