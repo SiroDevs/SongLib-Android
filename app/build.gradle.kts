@@ -19,14 +19,14 @@ val localProperties = Properties()
 localProperties.load(project.rootProject.file("local.properties").inputStream())
 
 android {
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 826
-        versionName = "1.0.826"
+        versionCode = 830
+        versionName = "1.0.83"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
