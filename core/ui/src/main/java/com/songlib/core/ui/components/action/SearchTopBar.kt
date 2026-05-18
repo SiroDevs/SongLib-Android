@@ -3,6 +3,7 @@ package com.songlib.core.ui.components.action
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -59,7 +60,7 @@ fun SearchTopBar(
                     ),
                     placeholder = {
                         Text(
-                            text = "SearchEntity for songs",
+                            text = "Search for songs",
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
                             fontSize = 18.sp
                         )
@@ -77,6 +78,7 @@ fun SearchTopBar(
                 )
             }
         },
+        windowInsets = WindowInsets(0, 0, 0, 0),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,

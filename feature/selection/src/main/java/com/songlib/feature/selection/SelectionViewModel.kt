@@ -1,21 +1,27 @@
 package com.songlib.feature.selection
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.songlib.core.common.entity.Selectable
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.database.model.BookEntity
-import com.songlib.core.common.entity.*
-import com.songlib.core.data.repos.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
 class SelectionViewModel @Inject constructor(
     private val prefsRepo: PrefsRepo,
-    private val subsRepo: SubsRepo,
     private val songbkRepo: SongBookRepo,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -23,15 +29,6 @@ class SelectionViewModel @Inject constructor(
 
     private val _books = MutableStateFlow<List<Selectable<BookEntity>>>(emptyList())
     val books: StateFlow<List<Selectable<BookEntity>>> get() = _books
-
-    private val _showUpgradeDialog = MutableStateFlow(false)
-    val showUpgradeDialog: StateFlow<Boolean> = _showUpgradeDialog.asStateFlow()
-
-    private val _pendingBookSelection = MutableStateFlow<Selectable<BookEntity>?>(null)
-    val pendingBookSelection: StateFlow<Selectable<BookEntity>?> = _pendingBookSelection.asStateFlow()
-
-    private val _isProUser = MutableStateFlow(false)
-    val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
 
     private fun getSelectedIds(): Set<Int> =
         prefsRepo.selectedBooks
@@ -57,7 +54,6 @@ class SelectionViewModel @Inject constructor(
                 }
                 _books.emit(selectableBooks)
                 Log.d("TAG", "${_books.value.size} books fetched")
-                _isProUser.value = prefsRepo.isProUser
                 _uiState.tryEmit(UiState.Loaded)
             }
         }
@@ -69,15 +65,6 @@ class SelectionViewModel @Inject constructor(
 
     fun saveSelectedBooks() {
         saveBooks(getSelectedBookList())
-    }
-
-    private suspend fun refreshSubscription(isOnline: Boolean) {
-        if (!prefsRepo.isProUser) {
-            subsRepo.isProUser(isOnline) { isActive ->
-                prefsRepo.isProUser = isActive
-                _isProUser.value = isActive
-            }
-        }
     }
 
     private fun saveBooks(books: List<BookEntity>) {
@@ -129,33 +116,8 @@ class SelectionViewModel @Inject constructor(
     }
 
     fun toggleBookSelection(book: Selectable<BookEntity>) {
-        val currentSelectedCount = _books.value.count { it.isSelected }
-        val isCurrentlySelected = book.isSelected
-
-        if (isCurrentlySelected || _isProUser.value) {
-            _books.value = _books.value.map {
-                if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
-            }
-            return
+        _books.value = _books.value.map {
+            if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
         }
-
-        if (currentSelectedCount >= 4) {
-            _pendingBookSelection.value = book
-            _showUpgradeDialog.value = true
-        } else {
-            _books.value = _books.value.map {
-                if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
-            }
-        }
-    }
-
-    fun onUpgradeProceed() {
-        _showUpgradeDialog.value = false
-        _pendingBookSelection.value = null
-    }
-
-    fun onUpgradeDismis() {
-        _showUpgradeDialog.value = false
-        _pendingBookSelection.value = null
     }
 }

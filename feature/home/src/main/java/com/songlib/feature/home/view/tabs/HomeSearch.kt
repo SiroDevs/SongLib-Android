@@ -1,24 +1,32 @@
 package com.songlib.feature.home.view.tabs
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Dialpad
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.*
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.ui.components.action.*
 import com.songlib.core.common.utils.Routes
 import com.songlib.feature.home.HomeViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import com.revenuecat.purchases.ui.revenuecatui.Paywall
-import com.revenuecat.purchases.ui.revenuecatui.PaywallOptions
 import com.songlib.core.database.model.SongEntity
+import com.songlib.core.ui.components.action.SearchTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.components.DialPad
 import com.songlib.feature.home.components.HomeSearchAppBar
@@ -36,35 +44,6 @@ fun HomeSearch(
     var searchQry by rememberSaveable { mutableStateOf("") }
     val songs by viewModel.filtered.collectAsState(initial = emptyList())
     var selectedSongs by remember { mutableStateOf<Set<SongEntity>>(emptySet()) }
-    var showPaywall by remember { mutableStateOf(false) }
-    val isProUser by viewModel.isProUser.collectAsState()
-    val showProLimitDialog by viewModel.showProLimitDialog.collectAsState()
-
-    if (showProLimitDialog) {
-        ProLimitDialog(
-            onDismiss = { viewModel.onProLimitDismiss() },
-            onUpgrade = {
-                viewModel.onProLimitProceed()
-                showPaywall = true
-            }
-        )
-    }
-
-    if (showPaywall) {
-        Dialog(
-            onDismissRequest = { showPaywall = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            val paywallOptions = remember {
-                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
-                    .setShouldDisplayDismissButton(true)
-                    .build()
-            }
-            Box {
-                Paywall(paywallOptions)
-            }
-        }
-    }
 
     Scaffold(
         topBar = {
