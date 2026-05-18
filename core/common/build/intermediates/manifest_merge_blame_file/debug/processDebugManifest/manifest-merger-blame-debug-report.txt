@@ -3,6 +3,8 @@
 3    package="com.songlib.core.common" >
 4
 5    <uses-sdk android:minSdkVersion="26" />
+5-->INJECTED
+5-->INJECTED
 6
 7    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 7-->/Users/sirodaves/Developer/Android/Projects/SongLib-Android/core/common/src/main/AndroidManifest.xml:3:5-79

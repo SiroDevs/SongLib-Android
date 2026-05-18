@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.songlib.feature.home" >
+    package="com.songlib.feature.selection" >
 
     <uses-sdk android:minSdkVersion="26" />
 

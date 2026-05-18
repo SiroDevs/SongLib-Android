@@ -32,7 +32,6 @@ fun HomeSearchAppBar(
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
-    val isProUser by viewModel.isProUser.collectAsState()
     val listings by viewModel.listings.collectAsState(initial = emptyList())
 
     if (showAddDialog) {
@@ -52,7 +51,6 @@ fun HomeSearchAppBar(
     if (showListingSheet) {
         ChoosingListingSheet(
             listings = listings,
-            isProUser = isProUser,
             onDismiss = { showListingSheet = false },
             onNewListClick = {
                 showListingSheet = false

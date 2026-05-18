@@ -4,7 +4,7 @@
     "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
     "kind": "Directory"
   },
-  "applicationId": "com.songlib.feature.home",
+  "applicationId": "com.songlib.feature.presenter",
   "variantName": "debug",
   "elements": [
     {
