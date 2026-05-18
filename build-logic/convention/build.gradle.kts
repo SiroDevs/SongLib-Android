@@ -20,7 +20,6 @@ kotlin {
 dependencies {
     compileOnly(libs.plugins.android.application.toDep())
     compileOnly(libs.plugins.android.library.toDep())
-    compileOnly(libs.plugins.kotlin.android.toDep())
     compileOnly(libs.plugins.kotlin.compose.toDep())
     compileOnly(libs.plugins.dagger.hilt.toDep())
     compileOnly(libs.plugins.devtools.ksp.toDep())

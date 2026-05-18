@@ -6,7 +6,6 @@ import com.songlib.core.network.di.NetworkModule
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
-import com.songlib.core.data.repos.SubsRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.TrackingRepo
 import com.songlib.core.database.daos.BookDao
@@ -43,11 +42,6 @@ object DataModule {
         booksDao: BookDao,
         songsDao: SongDao,
     ): SongBookRepo = SongBookRepo(apiService, booksDao, songsDao)
-
-    @Provides
-    @Singleton
-    fun provideSubsRepo(
-    ): SubsRepo = SubsRepo()
 
     @Provides
     @Singleton

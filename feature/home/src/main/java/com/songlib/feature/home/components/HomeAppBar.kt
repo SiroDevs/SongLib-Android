@@ -1,9 +1,20 @@
 package com.songlib.feature.home.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.QuickFormDialog
@@ -21,7 +32,6 @@ fun HomeSearchAppBar(
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
-    val isProUser by viewModel.isProUser.collectAsState()
     val listings by viewModel.listings.collectAsState(initial = emptyList())
 
     if (showAddDialog) {
@@ -41,7 +51,6 @@ fun HomeSearchAppBar(
     if (showListingSheet) {
         ChoosingListingSheet(
             listings = listings,
-            isProUser = isProUser,
             onDismiss = { showListingSheet = false },
             onNewListClick = {
                 showListingSheet = false
@@ -81,7 +90,6 @@ fun HomeSearchAppBar(
                 }
                 IconButton(
                     onClick = {
-                        // Only show listing sheet if we have songs selected
                         if (selectedSongs.isNotEmpty()) {
                             showListingSheet = true
                         }

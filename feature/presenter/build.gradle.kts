@@ -4,12 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.home"
+    namespace = "com.songlib.feature.presenter"
 }
 
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
-    implementation(libs.revenuecat)
-    implementation(libs.revenuecat.ui)
 }
