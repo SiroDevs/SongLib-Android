@@ -1,3 +1,0 @@
-com.songlib.core.ui
-drawable app_icon
-drawable empty
