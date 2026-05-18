@@ -30,10 +30,6 @@ class PrefsRepo @Inject constructor(
         get() = prefs.getBoolean(PrefConstants.SELECT_A_FRESH, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.SELECT_A_FRESH, value) }
 
-    var isProUser: Boolean
-        get() = prefs.getBoolean(PrefConstants.IS_PRO_USER, false)
-        set(value) = prefs.edit { putBoolean(PrefConstants.IS_PRO_USER, value) }
-
     var isDataLoaded: Boolean
         get() = prefs.getBoolean(PrefConstants.IS_DATA_LOADED, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.IS_DATA_LOADED, value) }

@@ -1,22 +1,29 @@
 package com.songlib.feature.home.view
 
-import androidx.compose.foundation.layout.*
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.ui.components.indicators.*
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.core.ui.components.indicators.ErrorState
-import com.songlib.feature.home.components.*
-import com.songlib.feature.home.view.tabs.*
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.ui.components.indicators.EmptyState
+import com.songlib.core.ui.components.indicators.LoadingState
+import com.songlib.feature.home.components.BottomNavBar
+import com.songlib.feature.home.components.HomeNavItem
+import com.songlib.feature.home.view.tabs.HomeLikes
+import com.songlib.feature.home.view.tabs.HomeListings
+import com.songlib.feature.home.view.tabs.HomeSearch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -70,9 +77,7 @@ fun HomeScreen(
             }
         }
 
-        else -> {
-            EmptyState()
-        }
+        else ->  EmptyState()
     }
 }
 

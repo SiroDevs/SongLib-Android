@@ -51,9 +51,6 @@ class HomeViewModel @Inject constructor(
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
 
-    private val _isProUser = MutableStateFlow(false)
-    val isProUser: StateFlow<Boolean> = _isProUser.asStateFlow()
-
     private val _showProLimitDialog = MutableStateFlow(false)
     val showProLimitDialog: StateFlow<Boolean> = _showProLimitDialog.asStateFlow()
 
@@ -64,7 +61,6 @@ class HomeViewModel @Inject constructor(
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            _isProUser.value = prefsRepo.isProUser
             _books.value = songbkRepo.fetchLocalBooks()
             _songs.value = songbkRepo.fetchLocalSongs()
             _listings.value = listRepo.fetchListings(0)
@@ -159,7 +155,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun checkAndHandleNewListing(): Boolean {
-        return !_isProUser.value && listings.value.isNotEmpty()
+        return listings.value.isNotEmpty()
     }
 
     fun onProLimitProceed() {

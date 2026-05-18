@@ -1,21 +1,32 @@
 package com.songlib.feature.selection.view
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
-import com.revenuecat.purchases.ui.revenuecatui.*
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.*
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.core.ui.components.indicators.*
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
+import com.songlib.core.ui.components.indicators.EmptyState
+import com.songlib.core.ui.components.indicators.ErrorState
+import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.components.Step1Fab
 
@@ -28,7 +39,6 @@ fun SelectionScreen(
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
-    var showPaywall by remember { mutableStateOf(false) }
 
     if (fetchData == 0) {
         viewModel.fetchBooks()
@@ -37,56 +47,11 @@ fun SelectionScreen(
 
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
-    val showUpgradeDialog by viewModel.showUpgradeDialog.collectAsState()
-    val isProUser by viewModel.isProUser.collectAsState()
     val theme = themeRepo.selectedTheme
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
             navController.navigate(Routes.HOME)
-        }
-    }
-
-    if (showUpgradeDialog) {
-        AlertDialog(
-            onDismissRequest = { viewModel.onUpgradeDismis() },
-            title = { Text("Please purchase a subscription ...") },
-            text = {
-                Text("Please purchase a subscription if you want to have more than 4 songbooks in your collection.")
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        viewModel.onUpgradeProceed()
-                        showPaywall = true
-                    }
-                ) {
-                    Text("OKAY")
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { viewModel.onUpgradeDismis() }
-                ) {
-                    Text("CANCEL")
-                }
-            }
-        )
-    }
-
-    if (showPaywall) {
-        Dialog(
-            onDismissRequest = { showPaywall = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            val paywallOptions = remember {
-                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
-                    .setShouldDisplayDismissButton(true)
-                    .build()
-            }
-            Box() {
-                Paywall(paywallOptions)
-            }
         }
     }
 

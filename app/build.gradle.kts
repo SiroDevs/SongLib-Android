@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.songlib.hilt)
     alias(libs.plugins.devtools.ksp)
@@ -59,22 +58,13 @@ android {
                 "proguard-rules.pro"
             )
         }
-        create("staging") {
-            isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("release")
-            applicationIdSuffix = ".stg"
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions { jvmTarget = "11" }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -83,6 +73,12 @@ android {
         disable += "NullSafeMutableLiveData"
     }
     namespace = "com.songlib"
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+    }
 }
 
 dependencies {
@@ -110,9 +106,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
-    // Subscriptions & Monitoring
-    implementation(libs.revenuecat)
-    implementation(libs.revenuecat.ui)
+    // Monitoring
     implementation(libs.android.billing)
     implementation(libs.androidx.concurrent.futures)
 

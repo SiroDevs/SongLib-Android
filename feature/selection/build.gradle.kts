@@ -4,13 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.home"
+    namespace = "com.songlib.feature.selection"
 }
 
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
-    implementation(libs.revenuecat)
-    implementation(libs.revenuecat.ui)
     implementation(libs.squareup.retrofit)
 }

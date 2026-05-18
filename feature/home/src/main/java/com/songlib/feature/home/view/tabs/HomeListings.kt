@@ -8,9 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.*
 import androidx.navigation.NavHostController
-import com.revenuecat.purchases.ui.revenuecatui.*
 import com.songlib.feature.home.components.ListingsList
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.common.entity.UiState
@@ -31,15 +29,12 @@ fun HomeListings(
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
     var showDeleteAlert by remember { mutableStateOf(false) }
-    var showPaywall by remember { mutableStateOf(false) }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
-    val isProUser by viewModel.isProUser.collectAsState()
-    val showProLimitDialog by viewModel.showProLimitDialog.collectAsState()
     var selectedListings by remember { mutableStateOf<Set<ListingUi>>(emptySet()) }
 
     LaunchedEffect(showAddAlert) {
         if (showAddAlert) {
-            if (!isProUser && listings.size >= 3) {
+            if (listings.size >= 3) {
                 showAddAlert = false
                 viewModel.checkAndHandleNewListing()
             }
@@ -71,32 +66,6 @@ fun HomeListings(
         )
     }
 
-    if (showProLimitDialog) {
-        ProLimitDialog(
-            onDismiss = { viewModel.onProLimitDismiss() },
-            onUpgrade = {
-                viewModel.onProLimitProceed()
-                showPaywall = true
-            }
-        )
-    }
-
-    if (showPaywall) {
-        Dialog(
-            onDismissRequest = { showPaywall = false },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            val paywallOptions = remember {
-                PaywallOptions.Builder(dismissRequest = { showPaywall = false })
-                    .setShouldDisplayDismissButton(true)
-                    .build()
-            }
-            Box {
-                Paywall(paywallOptions)
-            }
-        }
-    }
-
     Scaffold(
         topBar = {
             AppTopBar(
@@ -104,7 +73,7 @@ fun HomeListings(
                 actions = {
                     if (selectedListings.isEmpty()) {
                         IconButton(onClick = {
-                            if (!isProUser && listings.isNotEmpty()) {
+                            if (listings.isNotEmpty()) {
                                 viewModel.checkAndHandleNewListing()
                             } else {
                                 showAddAlert = true
@@ -132,12 +101,6 @@ fun HomeListings(
             contentAlignment = Alignment.Center
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                if (!isProUser && listings.isNotEmpty()) {
-                    UpgradeBanner(
-                        onUpgradeClick = { showPaywall = true }
-                    )
-                }
-
                 when (uiState) {
                     is UiState.Filtered ->
                         if (listings.isEmpty()) {
