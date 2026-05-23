@@ -26,7 +26,7 @@ class PresenterViewModel @Inject constructor(
     private val _isLiked = MutableStateFlow(false)
     val isLiked: StateFlow<Boolean> get() = _isLiked
 
-    private val _title = MutableStateFlow("SongEntity Presenter")
+    private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
 
     private val _indicators = MutableStateFlow<List<String>>(emptyList())
