@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FormatListNumbered
@@ -38,6 +39,7 @@ import com.songlib.feature.home.HomeViewModel
 fun HomeLikes(
     viewModel: HomeViewModel,
     navController: NavHostController,
+    onShowThemeDialog: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val searchQry by viewModel.searchQuery.collectAsState()
@@ -54,6 +56,11 @@ fun HomeLikes(
                 title = if (selectedSongs.isEmpty()) "Liked Songs" else "${selectedSongs.size} selected",
                 actions = {
                     if (selectedSongs.isEmpty()) {
+                        IconButton(onClick = onShowThemeDialog ) {
+                            Icon(
+                                imageVector = Icons.Filled.Brightness6, contentDescription = ""
+                            )
+                        }
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }

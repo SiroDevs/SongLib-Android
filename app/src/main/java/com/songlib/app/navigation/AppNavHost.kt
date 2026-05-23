@@ -55,6 +55,7 @@ fun AppNavHost(
             HomeScreen(
                 navController = navController,
                 viewModel = viewModel,
+                themeRepo = themeRepo,
             )
         }
 
@@ -69,6 +70,7 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 song = song,
+                themeRepo = themeRepo,
             )
         }
 

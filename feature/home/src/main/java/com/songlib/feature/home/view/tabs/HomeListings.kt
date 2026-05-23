@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Settings
@@ -38,7 +39,8 @@ import com.songlib.feature.home.components.ListingsList
 @Composable
 fun HomeListings(
     viewModel: HomeViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    onShowThemeDialog: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
@@ -94,6 +96,11 @@ fun HomeListings(
                         IconButton(onClick = { showDeleteAlert = true }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
+                    }
+                    IconButton(onClick = onShowThemeDialog ) {
+                        Icon(
+                            imageVector = Icons.Filled.Brightness6, contentDescription = ""
+                        )
                     }
                 },
                 showGoBack = selectedListings.isNotEmpty(),

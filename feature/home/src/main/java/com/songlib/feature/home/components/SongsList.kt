@@ -47,7 +47,7 @@ fun SongsList(
         contentPadding = contentPadding,
     ) {
         if (showSearch){
-            item {
+            stickyHeader {
                 SearchBox(
                     searchQuery = searchQuery,
                     onQueryChange = onQueryChange,

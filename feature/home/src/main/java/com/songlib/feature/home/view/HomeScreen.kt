@@ -14,11 +14,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.data.repos.ThemeRepo
+import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.indicators.LoadingState
@@ -35,6 +40,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel,
+    themeRepo: ThemeRepo
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val songs by viewModel.songs.collectAsState(initial = emptyList())
@@ -77,7 +83,11 @@ fun HomeScreen(
                     }
                 )
             } else {
-                MainHomeContent(viewModel = viewModel, navController = navController)
+                MainHomeContent(
+                    viewModel = viewModel,
+                    navController = navController,
+                    themeRepo = themeRepo
+                )
             }
         }
         else -> EmptyState()
@@ -89,9 +99,12 @@ fun HomeScreen(
 private fun MainHomeContent(
     viewModel: HomeViewModel,
     navController: NavHostController,
+    themeRepo: ThemeRepo
 ) {
     val tabs = listOf(HomeNavItem.Search, HomeNavItem.Likes, HomeNavItem.Listings)
     val selectedTab by viewModel.selectedTab.collectAsState()
+    var showThemeDialog by remember { mutableStateOf(false) }
+    val theme = themeRepo.selectedTheme
     val pagerState = rememberPagerState(
         initialPage = tabs.indexOf(selectedTab).coerceAtLeast(0),
         pageCount = { tabs.size }
@@ -106,6 +119,17 @@ private fun MainHomeContent(
         if (idx >= 0 && pagerState.currentPage != idx) {
             pagerState.animateScrollToPage(idx)
         }
+    }
+
+    if (showThemeDialog) {
+        ThemeSelectorDialog(
+            current = theme,
+            onDismiss = { showThemeDialog = false },
+            onThemeSelected = {
+                themeRepo.setTheme(it)
+                showThemeDialog = false
+            }
+        )
     }
 
     Scaffold(
@@ -127,14 +151,23 @@ private fun MainHomeContent(
                 HomeNavItem.Search -> HomeSearch(
                     viewModel = viewModel,
                     navController = navController,
+                    onShowThemeDialog = {
+                        showThemeDialog = true
+                    }
                 )
                 HomeNavItem.Likes -> HomeLikes(
                     viewModel = viewModel,
                     navController = navController,
+                    onShowThemeDialog = {
+                        showThemeDialog = true
+                    }
                 )
                 HomeNavItem.Listings -> HomeListings(
                     viewModel = viewModel,
                     navController = navController,
+                    onShowThemeDialog = {
+                        showThemeDialog = true
+                    }
                 )
             }
         }

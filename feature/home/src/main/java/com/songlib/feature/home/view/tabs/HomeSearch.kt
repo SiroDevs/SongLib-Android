@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
 import com.songlib.core.database.model.SongEntity
@@ -49,7 +51,7 @@ import com.songlib.feature.home.components.SongsList
 fun HomeSearch(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    bottomPadding: Dp = 0.dp,
+    onShowThemeDialog: () -> Unit,
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsState()
@@ -100,8 +102,13 @@ fun HomeSearch(
                     AppTopBar(
                         title = "SongLib",
                         actions = {
+                            IconButton(onClick = onShowThemeDialog ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Brightness6, contentDescription = ""
+                                )
+                            }
                             IconButton(onClick = {
-                                navController.navigate(com.songlib.core.common.utils.Routes.SETTINGS)
+                                navController.navigate(Routes.SETTINGS)
                             }) {
                                 Icon(Icons.Filled.Settings, contentDescription = "Settings")
                             }
@@ -152,7 +159,7 @@ fun HomeSearch(
                         containerColor = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier
                             .navigationBarsPadding()
-                            .padding(bottom = bottomPadding + 8.dp)
+                            .padding(bottom = 10.dp)
                     ) {
                         Icon(Icons.Filled.Dialpad, contentDescription = "Search by number")
                     }
