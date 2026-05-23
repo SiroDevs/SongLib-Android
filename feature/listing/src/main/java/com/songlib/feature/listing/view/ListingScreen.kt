@@ -30,7 +30,7 @@ fun ListingScreen(
     if (showEditAlert) {
         QuickFormDialog(
             title = "Edit List Title",
-            label = "ListingEntity title",
+            label = "Listing title",
             initialValue = listingTitle,
             onDismiss = { showEditAlert = false },
             onConfirm = { title ->

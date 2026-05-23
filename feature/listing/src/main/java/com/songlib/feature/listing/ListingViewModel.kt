@@ -24,7 +24,7 @@ class ListingViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    private val _listingTitle = MutableStateFlow("Untitled ListingEntity")
+    private val _listingTitle = MutableStateFlow("Untitled Listing")
     val listingTitle: StateFlow<String> get() = _listingTitle
 
     private val _listedSongs = MutableStateFlow<List<SongEntity>>(emptyList())

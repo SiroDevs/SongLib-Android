@@ -106,7 +106,7 @@ class SongBookRepo @Inject constructor(
     suspend fun fetchSong(songId: Int): SongEntity {
         var song: SongEntity
         withContext(Dispatchers.IO) {
-            song = songsDao.getSong(songId)!!
+            song = songsDao.getSong(songId)
         }
         return song
     }

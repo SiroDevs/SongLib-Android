@@ -101,7 +101,7 @@ private fun LikeSongButton(
     }) {
         Icon(
             imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-            contentDescription = "Like SongEntity",
+            contentDescription = "Like Song",
             tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
