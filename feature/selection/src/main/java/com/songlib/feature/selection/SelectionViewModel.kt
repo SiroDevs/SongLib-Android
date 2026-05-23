@@ -106,11 +106,11 @@ class SelectionViewModel @Inject constructor(
             }
 
             prefsRepo.isDataLoaded = true
-            Log.d("TAG", "SongEntity fetch and save completed")
+            Log.d("TAG", "Song fetch and save completed")
             _uiState.tryEmit(UiState.Saved)
 
         } catch (e: Exception) {
-            Log.e("TAG", "SongEntity fetch failed: ${e.message}", e)
+            Log.e("TAG", "Song fetch failed: ${e.message}", e)
             _uiState.tryEmit(UiState.Saved)
         }
     }

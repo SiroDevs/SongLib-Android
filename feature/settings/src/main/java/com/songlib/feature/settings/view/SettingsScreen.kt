@@ -78,7 +78,7 @@ fun SettingsScreen(
                         Icons.Default.Swipe, contentDescription = "slides"
                     )
                 },
-                headlineContent = { Text("SongEntity Slides") },
+                headlineContent = { Text("Song Slides") },
                 supportingContent = { Text("Swipe verses horizontally") },
                 trailingContent = {
                     Switch(

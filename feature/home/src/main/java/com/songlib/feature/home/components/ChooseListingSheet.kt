@@ -44,7 +44,7 @@ fun ChoosingListingSheet(
                 .padding(16.dp)
         ) {
             Text(
-                text = "Choose a ListingEntity",
+                text = "Choose a Listing",
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
