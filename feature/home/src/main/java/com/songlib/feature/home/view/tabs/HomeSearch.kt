@@ -156,10 +156,7 @@ fun HomeSearch(
                 if (selectedSongs.isEmpty()) {
                     FloatingActionButton(
                         onClick = { dialPadVisible = true },
-                        containerColor = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier
-                            .navigationBarsPadding()
-                            .padding(bottom = 10.dp)
+                        containerColor = MaterialTheme.colorScheme.onPrimary
                     ) {
                         Icon(Icons.Filled.Dialpad, contentDescription = "Search by number")
                     }
@@ -205,7 +202,6 @@ fun HomeSearch(
                 },
                 onDismiss = {
                     dialPadVisible = false
-                    viewModel.searchSongs("")
                 }
             )
         }
