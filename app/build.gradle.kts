@@ -23,16 +23,13 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 830
-        versionName = "1.0.83"
+        versionCode = 833
+        versionName = "1.0.833"
         minSdk = 26
         targetSdk = 37
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField("String", "RcCatId", "\"${localProperties.getProperty("REVENUECAT_ID")}\"")
-        buildConfigField("String", "RcApiKey", "\"${localProperties.getProperty("REVENUECAT_API_KEY")}\"")
     }
 
     signingConfigs {
