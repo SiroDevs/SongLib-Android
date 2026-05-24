@@ -89,6 +89,11 @@ fun HomeListings(
                         IconButton(onClick = { showAddAlert = true }) {
                             Icon(Icons.Filled.Add, contentDescription = "New listing")
                         }
+                        IconButton(onClick = onShowThemeDialog ) {
+                            Icon(
+                                imageVector = Icons.Filled.Brightness6, contentDescription = ""
+                            )
+                        }
                         IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
                             Icon(Icons.Filled.Settings, contentDescription = "Settings")
                         }
@@ -96,11 +101,6 @@ fun HomeListings(
                         IconButton(onClick = { showDeleteAlert = true }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
-                    }
-                    IconButton(onClick = onShowThemeDialog ) {
-                        Icon(
-                            imageVector = Icons.Filled.Brightness6, contentDescription = ""
-                        )
                     }
                 },
                 showGoBack = selectedListings.isNotEmpty(),
