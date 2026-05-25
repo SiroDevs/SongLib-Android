@@ -23,8 +23,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 834
-        versionName = "1.0.834"
+        versionCode = 835
+        versionName = "1.0.835"
         minSdk = 26
         targetSdk = 37
 

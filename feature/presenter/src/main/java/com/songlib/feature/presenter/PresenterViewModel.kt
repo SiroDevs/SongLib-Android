@@ -9,10 +9,12 @@ import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,9 +39,68 @@ class PresenterViewModel @Inject constructor(
 
     val horizontalSlides = prefsRepo.horizontalSlides
 
+    val demoMode = prefsRepo.demoMode
+
+    // All songs in same book for prev/next navigation
+    private val _bookSongs = MutableStateFlow<List<SongEntity>>(emptyList())
+    val bookSongs: StateFlow<List<SongEntity>> = _bookSongs.asStateFlow()
+
+    private val _currentSongIndex = MutableStateFlow(-1)
+    val currentSongIndex: StateFlow<Int> = _currentSongIndex.asStateFlow()
+
+    private val _currentSong = MutableStateFlow<SongEntity?>(null)
+    val currentSong: StateFlow<SongEntity?> = _currentSong.asStateFlow()
+
     fun loadSong(song: SongEntity) {
         _uiState.value = UiState.Loading
+        _currentSong.value = song
         _isLiked.value = song.liked
+        parseSong(song)
+
+        // Load sibling songs from same book for navigation
+        viewModelScope.launch {
+            val allSongs = withContext(Dispatchers.IO) {
+                songbkRepo.fetchLocalSongs()
+            }
+            val siblingsSorted = allSongs
+                .filter { it.book == song.book }
+                .sortedBy { it.songNo }
+            _bookSongs.value = siblingsSorted
+            _currentSongIndex.value = siblingsSorted.indexOfFirst { it.songId == song.songId }
+        }
+    }
+
+    fun navigateToSong(song: SongEntity) {
+        _uiState.value = UiState.Loading
+        _currentSong.value = song
+        _isLiked.value = song.liked
+        parseSong(song)
+        _currentSongIndex.value = _bookSongs.value.indexOfFirst { it.songId == song.songId }
+    }
+
+    fun navigateToNext() {
+        val idx = _currentSongIndex.value
+        val songs = _bookSongs.value
+        if (idx >= 0 && idx < songs.size - 1) {
+            navigateToSong(songs[idx + 1])
+        }
+    }
+
+    fun navigateToPrevious() {
+        val idx = _currentSongIndex.value
+        val songs = _bookSongs.value
+        if (idx > 0) {
+            navigateToSong(songs[idx - 1])
+        }
+    }
+
+    val hasPreviousSong: Boolean
+        get() = _currentSongIndex.value > 0
+
+    val hasNextSong: Boolean
+        get() = _currentSongIndex.value in 0 until _bookSongs.value.size - 1
+
+    private fun parseSong(song: SongEntity) {
         val content = song.content
         val hasChorus = content.contains("CHORUS")
 
@@ -85,5 +146,4 @@ class PresenterViewModel @Inject constructor(
             _isLiked.value = updatedSong.liked
         }
     }
-
 }

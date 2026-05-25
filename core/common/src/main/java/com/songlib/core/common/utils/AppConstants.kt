@@ -21,6 +21,7 @@ object PrefConstants {
     const val THEME_MODE = "themeMode"
     const val HORIZONTAL_SLIDES = "horizontalSlides"
     const val LAST_APP_OPEN_TIME = "lastAppOpenTime"
+    const val DEMO_MODE = "demoMode"
 }
 
 object Routes {

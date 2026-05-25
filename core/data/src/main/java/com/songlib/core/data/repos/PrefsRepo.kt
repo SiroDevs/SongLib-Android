@@ -69,4 +69,8 @@ class PrefsRepo @Inject constructor(
         if (lastTime == 0L) return 0L
         return System.currentTimeMillis() - lastTime
     }
+
+    var demoMode: Boolean
+        get() = prefs.getBoolean(PrefConstants.DEMO_MODE, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.DEMO_MODE, value) }
 }

@@ -35,6 +35,14 @@ class HomeViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val _demoMode = MutableStateFlow(prefsRepo.demoMode)
+    val demoMode: StateFlow<Boolean> = _demoMode.asStateFlow()
+
+    fun dismissDemo() {
+        prefsRepo.demoMode = false
+        _demoMode.value = false
+    }
+
     private val _selectedBook: MutableStateFlow<Int> = MutableStateFlow<Int>(-1)
     val selectedBook: StateFlow<Int> = _selectedBook.asStateFlow()
 

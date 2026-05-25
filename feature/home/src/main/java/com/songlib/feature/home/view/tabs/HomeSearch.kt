@@ -10,13 +10,17 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.components.ChoosingListingSheet
+import com.songlib.feature.home.components.DemoOverlay
+import com.songlib.feature.home.components.DemoTargetBounds
 import com.songlib.feature.home.components.DialPad
 import com.songlib.feature.home.components.SongsList
 
@@ -31,10 +35,14 @@ fun HomeSearch(
     val songs by viewModel.filtered.collectAsState(initial = emptyList())
     val listings by viewModel.listings.collectAsState(initial = emptyList())
     val selectedSongs by viewModel.selectedSongs.collectAsState()
+    val demoMode by viewModel.demoMode.collectAsState()
 
     var dialPadVisible by rememberSaveable { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
+
+    // Demo bounds tracking
+    var demoBounds by remember { mutableStateOf(DemoTargetBounds()) }
 
     if (showAddDialog) {
         QuickFormDialog(
@@ -78,6 +86,15 @@ fun HomeSearch(
                     searchQuery = searchQry,
                     onQueryChange = { query -> viewModel.searchSongs(query, byNo = false) },
                     onSongSelected = { song -> viewModel.toggleSongSelection(song) },
+                    onSearchBoxPositioned = { rect ->
+                        demoBounds = demoBounds.copy(searchBox = rect)
+                    },
+                    onSongbooksPositioned = { rect ->
+                        demoBounds = demoBounds.copy(songbooks = rect)
+                    },
+                    onThirdSongPositioned = { rect ->
+                        demoBounds = demoBounds.copy(songItem = rect)
+                    },
                 )
 
             else -> Box(
@@ -94,6 +111,9 @@ fun HomeSearch(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
+                .onGloballyPositioned { coords ->
+                    demoBounds = demoBounds.copy(fabButton = coords.boundsInRoot())
+                }
         ) {
             Icon(Icons.Filled.Dialpad, contentDescription = "Search by number")
         }
@@ -110,5 +130,12 @@ fun HomeSearch(
                 onDismiss = { dialPadVisible = false }
             )
         }
+
+        // Demo overlay – rendered on top of everything
+        DemoOverlay(
+            isVisible = demoMode,
+            targetBounds = demoBounds,
+            onDismiss = { viewModel.dismissDemo() }
+        )
     }
 }

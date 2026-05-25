@@ -91,6 +91,26 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
+            SettingsSectionTitle("Demo")
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.PlayCircleOutline, contentDescription = "Demo Mode"
+                    )
+                },
+                headlineContent = { Text("Demo Mode") },
+                supportingContent = { Text("Show guided tour on home screen") },
+                trailingContent = {
+                    Switch(
+                        checked = viewModel.demoMode,
+                        onCheckedChange = {
+                            viewModel.updateDemoMode(it)
+                        }
+                    )
+                }
+            )
+            HorizontalDivider()
+
             SettingsSectionTitle("Display")
             ListItem(
                 leadingContent = {

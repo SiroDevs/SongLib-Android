@@ -20,7 +20,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -42,6 +45,10 @@ fun SongsList(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     showSearch: Boolean = true,
     showBookFilter: Boolean = true,
+    // Demo bounds callbacks
+    onSearchBoxPositioned: ((Rect) -> Unit)? = null,
+    onSongbooksPositioned: ((Rect) -> Unit)? = null,
+    onThirdSongPositioned: ((Rect) -> Unit)? = null,
 ) {
     val selectedBook by viewModel.selectedBook.collectAsState(initial = -1)
     val books by viewModel.books.collectAsState(initial = emptyList())
@@ -56,12 +63,18 @@ fun SongsList(
             end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
         ),
     ) {
-        if (showSearch){
+        if (showSearch) {
             stickyHeader {
-                SearchBox(
-                    searchQuery = searchQuery,
-                    onQueryChange = onQueryChange,
-                )
+                Box(
+                    modifier = Modifier.onGloballyPositioned { coords ->
+                        onSearchBoxPositioned?.invoke(coords.boundsInRoot())
+                    }
+                ) {
+                    SearchBox(
+                        searchQuery = searchQuery,
+                        onQueryChange = onQueryChange,
+                    )
+                }
             }
         }
 
@@ -70,7 +83,10 @@ fun SongsList(
                 LazyRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(40.dp),
+                        .height(40.dp)
+                        .onGloballyPositioned { coords ->
+                            onSongbooksPositioned?.invoke(coords.boundsInRoot())
+                        },
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
@@ -92,7 +108,7 @@ fun SongsList(
             }
         }
 
-        itemsIndexed(songs) { _, song ->
+        itemsIndexed(songs) { index, song ->
             val isSelected = selectedSongs.contains(song)
             Box(
                 modifier = Modifier
@@ -112,6 +128,13 @@ fun SongsList(
                     .background(
                         if (isSelected) MaterialTheme.colorScheme.onPrimary
                         else Color.Transparent
+                    )
+                    .then(
+                        if (index == 2) {
+                            Modifier.onGloballyPositioned { coords ->
+                                onThirdSongPositioned?.invoke(coords.boundsInRoot())
+                            }
+                        } else Modifier
                     )
             ) {
                 SongItem(song = song)
