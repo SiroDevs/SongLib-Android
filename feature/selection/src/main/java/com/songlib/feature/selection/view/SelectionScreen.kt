@@ -3,11 +3,17 @@ package com.songlib.feature.selection.view
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -39,6 +45,7 @@ fun SelectionScreen(
 ) {
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showMoreMenu by remember { mutableStateOf(false) }
 
     if (fetchData == 0) {
         viewModel.fetchBooks()
@@ -84,6 +91,30 @@ fun SelectionScreen(
                     IconButton(onClick = { showThemeDialog = true }) {
                         Icon(
                             imageVector = Icons.Filled.Brightness6, contentDescription = ""
+                        )
+                    }
+                    IconButton(onClick = { showMoreMenu = true }) {
+                        Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                    }
+                    DropdownMenu(
+                        expanded = showMoreMenu,
+                        onDismissRequest = { showMoreMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("How It Works") },
+                            leadingIcon = { Icon(Icons.Filled.Info, contentDescription = null) },
+                            onClick = {
+                                showMoreMenu = false
+                                navController.navigate(Routes.HOW_IT_WORKS)
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Help & Feedback") },
+                            leadingIcon = { Icon(Icons.Filled.HelpOutline, contentDescription = null) },
+                            onClick = {
+                                showMoreMenu = false
+                                navController.navigate(Routes.HELP)
+                            }
                         )
                     }
                 }

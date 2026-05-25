@@ -16,6 +16,8 @@ import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
+import com.songlib.feature.help.view.HelpScreen
+import com.songlib.feature.howitworks.view.HowItWorksScreen
 import com.songlib.feature.presenter.PresenterViewModel
 import com.songlib.feature.presenter.view.PresenterScreen
 import com.songlib.feature.selection.SelectionViewModel
@@ -95,6 +97,14 @@ fun AppNavHost(
                 viewModel = viewModel,
                 themeRepo = themeRepo,
             )
+        }
+
+        composable(Routes.HOW_IT_WORKS) {
+            HowItWorksScreen(navController = navController)
+        }
+
+        composable(Routes.HELP) {
+            HelpScreen(navController = navController)
         }
     }
 }

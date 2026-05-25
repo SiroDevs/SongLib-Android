@@ -23,8 +23,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 833
-        versionName = "1.0.833"
+        versionCode = 834
+        versionName = "1.0.834"
         minSdk = 26
         targetSdk = 37
 
@@ -94,6 +94,8 @@ dependencies {
     implementation(project(":feature:listing"))
     implementation(project(":feature:presenter"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:help"))
+    implementation(project(":feature:howitworks"))
 
     // Navigation
     implementation(libs.compose.navigation)
