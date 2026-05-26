@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +54,6 @@ fun PresenterScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
     val theme = themeRepo.selectedTheme
 
-    // Demo mode
     var showPresenterDemo by remember { mutableStateOf(viewModel.demoMode) }
 
     LaunchedEffect(song) {
@@ -74,7 +75,7 @@ fun PresenterScreen(
         topBar = {
             AppTopBar(
                 title = title,
-                titleMaxLines = 2,
+//                titleMaxLines = 2,
                 actions = {
                     LikeSongButton(
                         isLiked = isLiked,
@@ -123,7 +124,8 @@ fun PresenterScreen(
                         }
                         context.startActivity(Intent.createChooser(intent, "Share song via"))
                     },
-                    containerColor = MaterialTheme.colorScheme.onPrimary
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(bottom = 100.dp)
                 ) {
                     Icon(Icons.Default.Share, contentDescription = "Share song")
                 }
@@ -159,7 +161,6 @@ fun PresenterScreen(
                     else -> EmptyState()
                 }
 
-                // Presenter demo overlay
                 PresenterDemoOverlay(
                     isVisible = showPresenterDemo,
                     onDismiss = { showPresenterDemo = false }

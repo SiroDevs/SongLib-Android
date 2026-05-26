@@ -115,7 +115,6 @@ private fun MainHomeContent(
     val listings by viewModel.listings.collectAsState(initial = emptyList())
     val context = LocalContext.current
 
-    // Signals from child tabs -> lifted actions
     var showListingSheet by remember { mutableStateOf(false) }
     var showAddListingDialog by remember { mutableStateOf(false) }
 

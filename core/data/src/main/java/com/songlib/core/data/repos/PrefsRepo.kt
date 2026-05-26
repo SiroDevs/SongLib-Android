@@ -45,32 +45,7 @@ class PrefsRepo @Inject constructor(
         get() = prefs.getBoolean(PrefConstants.HORIZONTAL_SLIDES, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.HORIZONTAL_SLIDES, value) }
 
-    var lastAppOpenTime: Long
-        get() = prefs.getLong(PrefConstants.LAST_APP_OPEN_TIME, 0L)
-        set(value) = prefs.edit { putLong(PrefConstants.LAST_APP_OPEN_TIME, value) }
-
-    fun hasTimeExceeded(hours: Int = 5): Boolean {
-        val lastTime = lastAppOpenTime
-        if (lastTime == 0L) return false
-
-        val currentTime = System.currentTimeMillis()
-        val timeDifference = currentTime - lastTime
-        val hoursInMillis = hours * 60 * 60 * 1000L
-
-        return timeDifference >= hoursInMillis
-    }
-
-    fun updateAppOpenTime() {
-        lastAppOpenTime = System.currentTimeMillis()
-    }
-
-    fun getTimeSinceLastOpen(): Long {
-        val lastTime = lastAppOpenTime
-        if (lastTime == 0L) return 0L
-        return System.currentTimeMillis() - lastTime
-    }
-
     var demoMode: Boolean
-        get() = prefs.getBoolean(PrefConstants.DEMO_MODE, false)
+        get() = prefs.getBoolean(PrefConstants.DEMO_MODE, true)
         set(value) = prefs.edit { putBoolean(PrefConstants.DEMO_MODE, value) }
 }

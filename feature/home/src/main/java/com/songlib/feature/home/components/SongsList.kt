@@ -45,7 +45,6 @@ fun SongsList(
     contentPadding: PaddingValues = PaddingValues(0.dp),
     showSearch: Boolean = true,
     showBookFilter: Boolean = true,
-    // Demo bounds callbacks
     onSearchBoxPositioned: ((Rect) -> Unit)? = null,
     onSongbooksPositioned: ((Rect) -> Unit)? = null,
     onThirdSongPositioned: ((Rect) -> Unit)? = null,
@@ -139,10 +138,6 @@ fun SongsList(
             ) {
                 SongItem(song = song)
             }
-            Divider(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                thickness = 1.dp,
-            )
         }
     }
 }
