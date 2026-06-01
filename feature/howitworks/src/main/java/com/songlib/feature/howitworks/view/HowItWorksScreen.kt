@@ -2,14 +2,40 @@ package com.songlib.feature.howitworks.view
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FormatListNumbered
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Slideshow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -26,7 +52,7 @@ data class HowItWorksSection(
 
 private val sections = listOf(
     HowItWorksSection(
-        icon = Icons.Default.LibraryMusic,
+        icon = Icons.Default.CheckCircle,
         title = "Selection",
         description = "When you first open SongLib, you'll be presented with a list of available songbooks. " +
                 "Tap on any songbook to select or deselect it. You can choose one or more songbooks to include " +
@@ -43,7 +69,7 @@ private val sections = listOf(
     ),
     HowItWorksSection(
         icon = Icons.Default.Favorite,
-        title = "Liking",
+        title = "Song Likes",
         description = "Found a song you love? You can like it while viewing it in the presenter by tapping the " +
                 "heart icon in the top bar. You can also like songs from the search list — long press a song " +
                 "to select it, then use the like button. All your liked songs are collected in the Likes tab " +
@@ -51,7 +77,7 @@ private val sections = listOf(
     ),
     HowItWorksSection(
         icon = Icons.Default.FormatListNumbered,
-        title = "Listings",
+        title = "Song Listings",
         description = "Listings let you group songs together into custom playlists — useful for worship sets, " +
                 "events, or personal collections. Create a new listing from the Listings tab or while selecting " +
                 "songs in Search. Tap a listing to view or manage its songs. You can have up to 3 listings at " +
