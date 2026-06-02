@@ -23,8 +23,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
+import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.action.AppTopBar
 import kotlin.collections.isNotEmpty
 
@@ -40,15 +42,27 @@ fun HomeAppBar(
     onShareSong: () -> Unit,
     onShowListingSheet: () -> Unit,
     onDeleteListings: () -> Unit,
-    onShowThemeDialog: () -> Unit,
     onAddListing: () -> Unit,
     onNavigateSettings: () -> Unit,
     onNavigateHowItWorks: () -> Unit,
     onNavigateHelp: () -> Unit,
+    themeRepo: ThemeRepo,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
-
+    var showThemeDialog by remember { mutableStateOf(false) }
+    val theme = themeRepo.selectedTheme
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
+
+    if (showThemeDialog) {
+        ThemeSelectorDialog(
+            current = theme,
+            onDismiss = { showThemeDialog = false },
+            onThemeSelected = {
+                themeRepo.setTheme(it)
+                showThemeDialog = false
+            }
+        )
+    }
 
     AppTopBar(
         title = title,
@@ -72,7 +86,7 @@ fun HomeAppBar(
                         }
                     }
 
-                    IconButton(onClick = onShowThemeDialog) {
+                    IconButton(onClick = { showThemeDialog = true }) {
                         Icon(
                             Icons.Default.Brightness6,
                             contentDescription = "Theme"

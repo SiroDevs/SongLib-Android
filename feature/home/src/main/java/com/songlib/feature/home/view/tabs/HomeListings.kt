@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.ui.components.general.ConfirmDialog
 import com.songlib.core.ui.components.general.QuickFormDialog
@@ -29,10 +30,13 @@ import com.songlib.feature.home.components.ListingsList
 fun HomeListings(
     viewModel: HomeViewModel,
     navController: NavHostController,
+    prefsRepo: PrefsRepo,
+    onShowDonationDialog: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
     var showDeleteAlert by remember { mutableStateOf(false) }
+    val showDonation = remember { prefsRepo.shouldShowDonation() }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
     val selectedListings by viewModel.selectedListings.collectAsState()
 
@@ -95,6 +99,8 @@ fun HomeListings(
                         navController = navController,
                         selectedListings = selectedListings,
                         onListingSelected = { listing -> viewModel.toggleListingSelection(listing) },
+                        showDonation = showDonation,
+                        onShowDonationDialog = onShowDonationDialog
                     )
                 }
             else -> EmptyState()

@@ -22,10 +22,10 @@ import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
-import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.components.BottomNavBar
+import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.home.components.HomeAppBar
 import com.songlib.feature.home.components.HomeNavItem
 import com.songlib.feature.home.view.tabs.HomeLikes
@@ -42,10 +42,7 @@ fun HomeContent(
 ) {
     val tabs = listOf(HomeNavItem.Search, HomeNavItem.Likes, HomeNavItem.Listings)
     val selectedTab by viewModel.selectedTab.collectAsState()
-    var showThemeDialog by remember { mutableStateOf(false) }
-    var showMoreMenu by remember { mutableStateOf(false) }
     var showDonationDialog by remember { mutableStateOf(false) }
-    val theme = themeRepo.selectedTheme
     val pagerState = rememberPagerState(
         initialPage = tabs.indexOf(selectedTab).coerceAtLeast(0),
         pageCount = { tabs.size }
@@ -70,17 +67,6 @@ fun HomeContent(
         }
     }
 
-    if (showThemeDialog) {
-        ThemeSelectorDialog(
-            current = theme,
-            onDismiss = { showThemeDialog = false },
-            onThemeSelected = {
-                themeRepo.setTheme(it)
-                showThemeDialog = false
-            }
-        )
-    }
-
     if (showAddListingDialog) {
         QuickFormDialog(
             title = "New Listing",
@@ -96,7 +82,7 @@ fun HomeContent(
     }
 
     if (showListingSheet) {
-        com.songlib.feature.home.components.ChoosingListingSheet(
+        ChoosingListingSheet(
             listings = listings,
             onDismiss = { showListingSheet = false },
             onNewListClick = {
@@ -111,8 +97,6 @@ fun HomeContent(
             onDone = { showListingSheet = false }
         )
     }
-
-    val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
 
     val topBarTitle = when {
         selectedSongs.isNotEmpty() -> "${selectedSongs.size} selected"
@@ -154,18 +138,11 @@ fun HomeContent(
 
                     viewModel.clearSongSelection()
                 },
-                onShowListingSheet = {
-                    showListingSheet = true
-                },
+                onShowListingSheet = { showListingSheet = true },
                 onDeleteListings = {
                     viewModel.deleteListings(selectedListings)
                 },
-                onShowThemeDialog = {
-                    showThemeDialog = true
-                },
-                onAddListing = {
-                    showAddListingDialog = true
-                },
+                onAddListing = { showAddListingDialog = true },
                 onNavigateSettings = {
                     navController.navigate(Routes.SETTINGS)
                 },
@@ -174,7 +151,8 @@ fun HomeContent(
                 },
                 onNavigateHelp = {
                     navController.navigate(Routes.HELP)
-                }
+                },
+                themeRepo = themeRepo
             )
         },
         bottomBar = {
@@ -199,10 +177,12 @@ fun HomeContent(
                     prefsRepo = prefsRepo,
                     onShowDonationDialog = { showDonationDialog = true },
                 )
+
                 HomeNavItem.Likes -> HomeLikes(
                     viewModel = viewModel,
                     navController = navController,
                 )
+
                 HomeNavItem.Listings -> HomeListings(
                     viewModel = viewModel,
                     navController = navController,

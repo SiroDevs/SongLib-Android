@@ -49,6 +49,7 @@ fun HomeSearch(
     val selectedSongs by viewModel.selectedSongs.collectAsState()
     val demoMode by viewModel.demoMode.collectAsState()
 
+    val showDonation = remember { prefsRepo.shouldShowDonation() }
     var dialPadVisible by rememberSaveable { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
@@ -106,6 +107,8 @@ fun HomeSearch(
                     onThirdSongPositioned = { rect ->
                         demoBounds = demoBounds.copy(songItem = rect)
                     },
+                    showDonation = showDonation,
+                    onShowDonationDialog = onShowDonationDialog
                 )
 
             else -> Box(

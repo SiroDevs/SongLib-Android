@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.database.model.ListingUi
+import com.songlib.core.ui.components.donation.DonationBanner
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -44,13 +45,16 @@ fun ListingsList(
     navController: NavHostController,
     selectedListings: Set<ListingUi>,
     onListingSelected: (ListingUi) -> Unit,
+    showDonation: Boolean = false,
+    onShowDonationDialog: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        itemsIndexed(listings) { index, listing ->
+        itemsIndexed(listings, key = { _, l -> l.id }) { index, listing ->
+            if (index == 3) DonationBanner(show = showDonation, onTap = onShowDonationDialog)
             val isSelected = selectedListings.contains(listing)
             val accent = cardAccents[index % cardAccents.size]
 
