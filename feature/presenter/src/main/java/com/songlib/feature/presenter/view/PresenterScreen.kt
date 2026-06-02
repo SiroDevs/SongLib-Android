@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
@@ -39,7 +40,8 @@ fun PresenterScreen(
     navController: NavHostController,
     viewModel: PresenterViewModel,
     song: SongEntity?,
-    themeRepo: ThemeRepo
+    themeRepo: ThemeRepo,
+    prefsRepo: PrefsRepo,
 ) {
     val horizontalSlides = viewModel.horizontalSlides
     val uiState by viewModel.uiState.collectAsState()

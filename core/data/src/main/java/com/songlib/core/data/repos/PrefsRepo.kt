@@ -14,6 +14,10 @@ class PrefsRepo @Inject constructor(
     private val prefs =
         context.getSharedPreferences(PrefConstants.PREFERENCE_FILE, Context.MODE_PRIVATE)
 
+    var installDate: Long
+        get() = prefs.getLong(PrefConstants.INSTALL_DATE, 0L)
+        set(value) = prefs.edit { putLong(PrefConstants.INSTALL_DATE, value) }
+
     var initialBooks: String
         get() = prefs.getString(PrefConstants.INITIAL_BOOKS, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.INITIAL_BOOKS, value) }
@@ -48,4 +52,26 @@ class PrefsRepo @Inject constructor(
     var demoMode: Boolean
         get() = prefs.getBoolean(PrefConstants.DEMO_MODE, true)
         set(value) = prefs.edit { putBoolean(PrefConstants.DEMO_MODE, value) }
+
+    var donationDoneAt: Long
+        get() = prefs.getLong(PrefConstants.DONATION_DONE_AT, 0L)
+        set(value) = prefs.edit { putLong(PrefConstants.DONATION_DONE_AT, value) }
+
+    var donationRemindNextOpen: Boolean
+        get() = prefs.getBoolean(PrefConstants.DONATION_REMIND_NEXT_OPEN, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.DONATION_REMIND_NEXT_OPEN, value) }
+
+    fun shouldShowDonation(): Boolean {
+        val now = System.currentTimeMillis()
+        val oneDayMs = 24 * 60 * 60 * 1000L
+        val sixtyDaysMs = 60 * oneDayMs
+        if (installDate == 0L || now - installDate < oneDayMs) return false
+        val donated = donationDoneAt
+        return donated == 0L || now - donated > sixtyDaysMs
+    }
+
+    fun recordDonation() {
+        donationDoneAt = System.currentTimeMillis()
+        donationRemindNextOpen = false
+    }
 }

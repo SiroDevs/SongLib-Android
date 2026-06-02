@@ -74,7 +74,6 @@ class HomeViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    // Unified selection state for top bar
     private val _selectedSongs = MutableStateFlow<Set<SongEntity>>(emptySet())
     val selectedSongs: StateFlow<Set<SongEntity>> = _selectedSongs.asStateFlow()
 

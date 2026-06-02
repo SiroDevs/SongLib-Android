@@ -14,6 +14,7 @@ import com.songlib.feature.home.view.HomeScreen
 import com.songlib.feature.listing.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.help.view.HelpScreen
@@ -31,7 +32,8 @@ import com.songlib.feature.splash.view.SplashScreen
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
-    themeRepo: ThemeRepo
+    themeRepo: ThemeRepo,
+    prefsRepo: PrefsRepo,
 ) {
     NavHost(
         navController = navController,
@@ -58,6 +60,7 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 themeRepo = themeRepo,
+                prefsRepo = prefsRepo
             )
         }
 
@@ -73,6 +76,7 @@ fun AppNavHost(
                 viewModel = viewModel,
                 song = song,
                 themeRepo = themeRepo,
+                prefsRepo = prefsRepo
             )
         }
 
@@ -87,6 +91,7 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 listing = listing,
+                prefsRepo = prefsRepo
             )
         }
 
