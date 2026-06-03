@@ -31,7 +31,7 @@ fun HomeListings(
     viewModel: HomeViewModel,
     navController: NavHostController,
     prefsRepo: PrefsRepo,
-    onShowDonationDialog: () -> Unit,
+    onShowDonation: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
@@ -100,7 +100,7 @@ fun HomeListings(
                         selectedListings = selectedListings,
                         onListingSelected = { listing -> viewModel.toggleListingSelection(listing) },
                         showDonation = showDonation,
-                        onShowDonationDialog = onShowDonationDialog
+                        onShowDonation = onShowDonation
                     )
                 }
             else -> EmptyState()

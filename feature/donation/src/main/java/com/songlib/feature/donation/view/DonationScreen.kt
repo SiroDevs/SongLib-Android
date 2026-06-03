@@ -34,9 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.swahilib.core.ui.components.action.AppTopBar
-import com.swahilib.feature.donation.DonationState
-import com.swahilib.feature.donation.DonationViewModel
+import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.feature.donation.DonationState
+import com.songlib.feature.donation.DonationViewModel
 import kotlinx.coroutines.launch
 
 private const val DEFAULT_PRESET = 10
@@ -65,7 +65,7 @@ fun DonationScreen(
         when (state) {
             is DonationState.Success -> {
                 scope.launch {
-                    snackbarHostState.showSnackbar("Asante kwa mchango wako! Tumeupokea 🎉")
+                    snackbarHostState.showSnackbar("Thank you for your donation 🎉")
                 }
                 viewModel.resetState()
                 navController.popBackStack()
@@ -95,7 +95,7 @@ fun DonationScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Changia SwahiLib",
+                title = "Donate to SongLib",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
             )
@@ -126,7 +126,7 @@ fun DonationScreen(
                 DonationHeaderCard()
 
                 Text(
-                    text = "Chagua kiasi (USD)",
+                    text = "Choose amount (USD)",
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 0.5.sp,
@@ -152,8 +152,8 @@ fun DonationScreen(
                             if (filtered.isNotBlank()) selectedPreset = null
                         }
                     },
-                    label = { Text("Au weka kiasi chako (USD)") },
-                    placeholder = { Text("Mfano: 15.00") },
+                    label = { Text("Or Input your amount (USD)") },
+                    placeholder = { Text("Example: 15.00") },
                     prefix = { Text("$") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -163,7 +163,7 @@ fun DonationScreen(
 
                 Spacer(Modifier.height(4.dp))
 
-                ChangaSasaButton(
+                DonateNowButton(
                     isLoading = state is DonationState.Loading,
                     enabled = state !is DonationState.Loading && activeAmount != null && activeAmount > 0,
                     onClick = {
@@ -172,7 +172,7 @@ fun DonationScreen(
                 )
 
                 Text(
-                    text = "Malipo yanafanywa kwa usalama kupitia PesaPal",
+                    text = "Donations are made securely using PesaPal",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,

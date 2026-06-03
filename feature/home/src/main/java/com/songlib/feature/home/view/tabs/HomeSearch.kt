@@ -40,7 +40,7 @@ fun HomeSearch(
     viewModel: HomeViewModel,
     navController: NavHostController,
     prefsRepo: PrefsRepo,
-    onShowDonationDialog: () -> Unit,
+    onShowDonation: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val searchQry by viewModel.searchQuery.collectAsState()
@@ -108,7 +108,7 @@ fun HomeSearch(
                         demoBounds = demoBounds.copy(songItem = rect)
                     },
                     showDonation = showDonation,
-                    onShowDonationDialog = onShowDonationDialog
+                    onShowDonation = onShowDonation
                 )
 
             else -> Box(

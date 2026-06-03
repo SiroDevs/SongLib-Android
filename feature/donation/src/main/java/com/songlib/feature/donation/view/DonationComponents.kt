@@ -52,7 +52,7 @@ fun DonationHeaderCard() {
                 modifier = Modifier.size(36.dp),
             )
             Text(
-                text = "Tunahitaji usaidizi wako",
+                text = "We need your support",
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
@@ -60,10 +60,10 @@ fun DonationHeaderCard() {
                 textAlign = TextAlign.Center,
             )
             Text(
-                text = "Mchango wako wowote — mdogo au mkubwa — " +
-                    "unasaidia SwahiLib kuendelea kukua na kukuhudumia wewe na wengine." +
-                    "\n\nMchango wako utatusaidia kuepuka kukuonyesha matangazo ya kibiashara" +
-                " na pia kuendelea kukudumisha server zetu wakati wote",
+                text = "Your donation — small or big — " +
+                    "will help SongLib to continue to grow and serve you and others." +
+                    "\n\nYour donation will help us to avoid showing adverts" +
+                " and also maintaining our server all the time",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
                 textAlign = TextAlign.Center,
@@ -137,7 +137,7 @@ fun PresetAmountButton(
 }
 
 @Composable
-fun ChangaSasaButton(
+fun DonateNowButton(
     isLoading: Boolean,
     enabled: Boolean,
     onClick: () -> Unit,
@@ -163,7 +163,7 @@ fun ChangaSasaButton(
                 modifier = Modifier.size(20.dp),
             )
             Text(
-                text = "  CHANGA SASA",
+                text = "  DONATE NOW",
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp,

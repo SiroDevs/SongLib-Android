@@ -1,9 +1,17 @@
 package com.songlib.core.common.utils
 
 object ApiConstants {
-    const val BASE = "https://songlive.vercel.app/"
-    const val BOOKS = "api/books"
-    const val SONGS = "api/songs"
+    const val SONGLIB_BASE = "https://songlive.vercel.app/"
+    const val SONGLIB_BOOKS = "api/books"
+    const val SONGLIB_SONGS = "api/songs"
+
+    const val PESAPAL_BASE_URL = "https://pay.pesapal.com/v3/api/"
+
+    const val PESAPAL_AUTH  = "Auth/RequestToken"
+    const val PESAPAL_ORDER = "Transactions/SubmitOrderRequest"
+
+    const val CALLBACK_URL = "https://songlive.vercel.app/donation/callback"
+    const val DONOR_EMAIL  = "donor@swahilib.app"
 }
 
 object PrefConstants {

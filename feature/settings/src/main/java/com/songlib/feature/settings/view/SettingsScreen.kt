@@ -149,6 +149,19 @@ fun SettingsScreen(
                 modifier = Modifier.clickable { showResetDialog = true },
             )
             HorizontalDivider()
+
+            SettingsSectionTitle("DONATE TO SONGLIB")
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.Brightness6, contentDescription = ""
+                    )
+                },
+                headlineContent = { Text("Donate Now") },
+                supportingContent = { Text("We need your donation to continue serving you") },
+                modifier = Modifier.clickable { navController.navigate(Routes.DONATION) },
+            )
+            HorizontalDivider()
         }
     }
 }

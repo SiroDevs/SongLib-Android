@@ -42,7 +42,6 @@ fun HomeContent(
 ) {
     val tabs = listOf(HomeNavItem.Search, HomeNavItem.Likes, HomeNavItem.Listings)
     val selectedTab by viewModel.selectedTab.collectAsState()
-    var showDonationDialog by remember { mutableStateOf(false) }
     val pagerState = rememberPagerState(
         initialPage = tabs.indexOf(selectedTab).coerceAtLeast(0),
         pageCount = { tabs.size }
@@ -175,21 +174,21 @@ fun HomeContent(
                     viewModel = viewModel,
                     navController = navController,
                     prefsRepo = prefsRepo,
-                    onShowDonationDialog = { showDonationDialog = true },
+                    onShowDonation = { navController.navigate(Routes.DONATION) },
                 )
 
                 HomeNavItem.Likes -> HomeLikes(
                     viewModel = viewModel,
                     navController = navController,
                     prefsRepo = prefsRepo,
-                    onShowDonationDialog = { showDonationDialog = true },
+                    onShowDonation = { navController.navigate(Routes.DONATION) },
                 )
 
                 HomeNavItem.Listings -> HomeListings(
                     viewModel = viewModel,
                     navController = navController,
                     prefsRepo = prefsRepo,
-                    onShowDonationDialog = { showDonationDialog = true },
+                    onShowDonation = { navController.navigate(Routes.DONATION) },
                 )
             }
         }

@@ -20,7 +20,7 @@ fun HomeLikes(
     viewModel: HomeViewModel,
     navController: NavHostController,
     prefsRepo: PrefsRepo,
-    onShowDonationDialog: () -> Unit,
+    onShowDonation: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val searchQry by viewModel.searchQuery.collectAsState()
@@ -57,7 +57,7 @@ fun HomeLikes(
                         searchQuery = searchQry,
                         onSongSelected = { song -> viewModel.toggleSongSelection(song) },
                         showDonation = showDonation,
-                        onShowDonationDialog = onShowDonationDialog
+                        onShowDonation = onShowDonation
                     )
                 }
             else -> EmptyState()

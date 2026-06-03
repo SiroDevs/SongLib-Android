@@ -54,7 +54,7 @@ fun ConfirmDonationDialog(
         },
         title = {
             Text(
-                text = "Uko Tayari na Mchango?",
+                text = "Ready With your Donation?",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),
@@ -63,8 +63,8 @@ fun ConfirmDonationDialog(
         },
         text = {
             Text(
-                text = "Je, uko tayari kuendelea na mchango wako wa \$$displayAmount " +
-                    "ili kuunga mkono SwahiLib?",
+                text = "Are you ready with your donation of \$$displayAmount " +
+                    "so as to support SongLib?",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
@@ -76,7 +76,7 @@ fun ConfirmDonationDialog(
                 shape = RoundedCornerShape(10.dp),
             ) {
                 Text(
-                    text = "Ndio, Changa",
+                    text = "Yes, Donate",
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.Bold,
                     ),
@@ -85,7 +85,7 @@ fun ConfirmDonationDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Rudi Nyuma")
+                Text("Go Back")
             }
         },
     )

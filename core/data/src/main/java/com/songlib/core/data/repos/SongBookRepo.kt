@@ -5,7 +5,7 @@ import com.songlib.core.database.daos.BookDao
 import com.songlib.core.database.daos.SongDao
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
-import com.songlib.core.network.ApiService
+import com.songlib.core.network.services.SongLibService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,13 +16,13 @@ import kotlin.collections.isNotEmpty
 
 @Singleton
 class SongBookRepo @Inject constructor(
-    private val apiService: ApiService,
+    private val songlibService: SongLibService,
     private var booksDao: BookDao,
     private var songsDao: SongDao,
 ) {
     fun fetchRemoteBooks(): Flow<List<BookEntity>> = flow {
         try {
-            val books = apiService.getBooks()
+            val books = songlibService.getBooks()
             if (books.isNotEmpty()) {
                 emit(books)
             } else {
@@ -38,7 +38,7 @@ class SongBookRepo @Inject constructor(
     suspend fun fetchAndSaveSongs(bookIds: List<Int>) {
         try {
             val booksParam = bookIds.joinToString(",")
-            val songs = apiService.getSongs(booksParam)
+            val songs = songlibService.getSongs(booksParam)
             Log.d("TAG", "✅ ${songs.size} songs fetched for books: $booksParam")
 
             if (songs.isNotEmpty()) {

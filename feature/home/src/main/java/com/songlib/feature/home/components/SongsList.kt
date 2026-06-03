@@ -49,7 +49,7 @@ fun SongsList(
     onSongbooksPositioned: ((Rect) -> Unit)? = null,
     onThirdSongPositioned: ((Rect) -> Unit)? = null,
     showDonation: Boolean = false,
-    onShowDonationDialog: () -> Unit,
+    onShowDonation: () -> Unit,
 ) {
     val selectedBook by viewModel.selectedBook.collectAsState(initial = -1)
     val books by viewModel.books.collectAsState(initial = emptyList())
@@ -110,7 +110,7 @@ fun SongsList(
         }
 
         itemsIndexed(songs, key = { _, s -> s.songId }) { index, song ->
-            if (index == 3) DonationBanner(show = showDonation, onTap = onShowDonationDialog)
+            if (index == 3 || index == 7) DonationBanner(show = showDonation, onTap = onShowDonation)
             val isSelected = selectedSongs.contains(song)
             Box(
                 modifier = Modifier

@@ -1,7 +1,8 @@
 package com.songlib.core.network.di
 
 import com.songlib.core.common.utils.ApiConstants
-import com.songlib.core.network.ApiService
+import com.songlib.core.network.services.PesaPalService
+import com.songlib.core.network.services.SongLibService
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -19,23 +20,6 @@ import javax.inject.Named
 object NetworkModule {
     @Provides
     @Reusable
-    fun provideApiService(@Named("songlibApi") retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
-    }
-
-    @Provides
-    @Named("songlibApi")
-    @Reusable
-    fun provideSonglibApi(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
-            .build()
-    }
-
-    @Provides
-    @Reusable
     fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
 
@@ -45,5 +29,39 @@ object NetworkModule {
         builder.addInterceptor(loggingInterceptor)
 
         return builder.build()
+    }
+
+    @Provides
+    @Reusable
+    fun provideSonglibApiService(@Named("songlibApi") retrofit: Retrofit): SongLibService {
+        return retrofit.create(SongLibService::class.java)
+    }
+
+    @Provides
+    @Named("songlibApi")
+    @Reusable
+    fun provideSonglibApi(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(ApiConstants.SONGLIB_BASE)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Reusable
+    fun providePesapalApiService(@Named("pesapalApi") retrofit: Retrofit): PesaPalService {
+        return retrofit.create(PesaPalService::class.java)
+    }
+
+    @Provides
+    @Named("pesapalApi")
+    @Reusable
+    fun providePesapalApi(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(ApiConstants.PESAPAL_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
     }
 }

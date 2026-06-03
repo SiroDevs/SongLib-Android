@@ -46,7 +46,7 @@ fun ListingsList(
     selectedListings: Set<ListingUi>,
     onListingSelected: (ListingUi) -> Unit,
     showDonation: Boolean = false,
-    onShowDonationDialog: () -> Unit,
+    onShowDonation: () -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -54,7 +54,7 @@ fun ListingsList(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         itemsIndexed(listings, key = { _, l -> l.id }) { index, listing ->
-            if (index == 3) DonationBanner(show = showDonation, onTap = onShowDonationDialog)
+            if (index == 3) DonationBanner(show = showDonation, onTap = onShowDonation)
             val isSelected = selectedListings.contains(listing)
             val accent = cardAccents[index % cardAccents.size]
 
