@@ -181,11 +181,15 @@ fun HomeContent(
                 HomeNavItem.Likes -> HomeLikes(
                     viewModel = viewModel,
                     navController = navController,
+                    prefsRepo = prefsRepo,
+                    onShowDonationDialog = { showDonationDialog = true },
                 )
 
                 HomeNavItem.Listings -> HomeListings(
                     viewModel = viewModel,
                     navController = navController,
+                    prefsRepo = prefsRepo,
+                    onShowDonationDialog = { showDonationDialog = true },
                 )
             }
         }

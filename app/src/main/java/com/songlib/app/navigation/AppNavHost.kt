@@ -17,6 +17,8 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
+import com.songlib.feature.donation.DonationViewModel
+import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.help.view.HelpScreen
 import com.songlib.feature.howitworks.view.HowItWorksScreen
 import com.songlib.feature.presenter.PresenterViewModel
@@ -110,6 +112,14 @@ fun AppNavHost(
 
         composable(Routes.HELP) {
             HelpScreen(navController = navController)
+        }
+
+        composable(Routes.DONATION) {
+            val viewModel: DonationViewModel = hiltViewModel()
+            DonationScreen(
+                navController = navController,
+                viewModel = viewModel,
+            )
         }
     }
 }

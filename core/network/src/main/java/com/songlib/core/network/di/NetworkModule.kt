@@ -1,6 +1,5 @@
 package com.songlib.core.network.di
 
-//import com.songlib.BuildConfig
 import com.songlib.core.common.utils.ApiConstants
 import com.songlib.core.network.ApiService
 import dagger.Module
@@ -40,12 +39,10 @@ object NetworkModule {
     fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
 
-//        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            builder.addInterceptor(loggingInterceptor)
-//        }
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        builder.addInterceptor(loggingInterceptor)
 
         return builder.build()
     }

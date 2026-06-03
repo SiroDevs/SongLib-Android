@@ -5,7 +5,6 @@ plugins {
 
 android {
     namespace = "com.songlib.core.network"
-    buildFeatures { buildConfig = true }
 }
 
 dependencies {

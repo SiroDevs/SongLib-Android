@@ -30,6 +30,10 @@ android {
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "PesapalConsumerKey", "\"${localProperties.getProperty("PESAPAL_CONSUMER_KEY") ?: ""}\"")
+        buildConfigField("String", "PesapalConsumerSecret", "\"${localProperties.getProperty("PESAPAL_CONSUMER_SECRET") ?: ""}\"")
+        buildConfigField("String", "PesapalIpnId", "\"${localProperties.getProperty("PESAPAL_IPN_ID") ?: ""}\"")
     }
 
     signingConfigs {
@@ -96,6 +100,7 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":feature:help"))
     implementation(project(":feature:howitworks"))
+    implementation(project(":feature:donation"))
 
     // Navigation
     implementation(libs.compose.navigation)

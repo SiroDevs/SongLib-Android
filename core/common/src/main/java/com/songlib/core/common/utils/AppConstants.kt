@@ -33,4 +33,5 @@ object Routes {
     const val SETTINGS = "settings"
     const val HOW_IT_WORKS = "how_it_works"
     const val HELP = "help"
+    const val DONATION = "donation"
 }
