@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.ui.components.action.AppTopBar
@@ -43,6 +44,8 @@ fun SelectionScreen(
     viewModel: SelectionViewModel,
     themeRepo: ThemeRepo
 ) {
+    val context = LocalContext.current
+
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showMoreMenu by remember { mutableStateOf(false) }
@@ -56,9 +59,12 @@ fun SelectionScreen(
     val uiState by viewModel.uiState.collectAsState()
     val theme = themeRepo.selectedTheme
 
+    // Navigate to HOME once books are saved and worker is enqueued
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
-            navController.navigate(Routes.HOME)
+            navController.navigate(Routes.HOME) {
+                popUpTo(Routes.SELECTION) { inclusive = true }
+            }
         }
     }
 
@@ -79,19 +85,13 @@ fun SelectionScreen(
                 title = "Select Songbooks",
                 actions = {
                     if (uiState != UiState.Loading && uiState != UiState.Saving) {
-                        IconButton(
-                            onClick = { viewModel.fetchBooks() }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Refresh, contentDescription = "",
-                            )
+                        IconButton(onClick = { viewModel.fetchBooks() }) {
+                            Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Refresh")
                         }
                     }
 
                     IconButton(onClick = { showThemeDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.Brightness6, contentDescription = ""
-                        )
+                        Icon(imageVector = Icons.Filled.Brightness6, contentDescription = "Theme")
                     }
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Filled.MoreVert, contentDescription = "More")
@@ -132,11 +132,10 @@ fun SelectionScreen(
                     fileName = "loading-hand"
                 )
 
-                is UiState.Saving ->
-                    LoadingState(
-                        title = "Saving books ...",
-                        fileName = "cloud-download"
-                    )
+                is UiState.Saving -> LoadingState(
+                    title = "Saving books ...",
+                    fileName = "cloud-download"
+                )
 
                 is UiState.Loaded -> {
                     SelectionContent(
@@ -153,7 +152,8 @@ fun SelectionScreen(
             if (uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
-                    onSaveConfirmed = { viewModel.saveSelectedBooks() }
+                    // Pass context so WorkManager can be enqueued from the ViewModel
+                    onSaveConfirmed = { viewModel.saveSelectedBooks(context) }
                 )
             }
         }

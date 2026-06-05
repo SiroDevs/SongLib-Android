@@ -20,17 +20,39 @@ class SongBookRepo @Inject constructor(
     private var booksDao: BookDao,
     private var songsDao: SongDao,
 ) {
-    fun fetchRemoteBooks(): Flow<List<BookEntity>> = flow {
+    fun fetchRemoteBooks(bookIds: Set<Int>? = null): Flow<List<BookEntity>> = flow {
         try {
             val books = songlibService.getBooks()
             if (books.isNotEmpty()) {
-                emit(books)
+                val filteredBooks = if (!bookIds.isNullOrEmpty()) {
+                    books.filter { it.bookId in bookIds }
+                } else {
+                    books
+                }
+
+                if (filteredBooks.isNotEmpty()) emit(filteredBooks) else emit(books)
             } else {
                 Log.d("TAG", "⚠️ No books fetched from remote")
                 emit(emptyList())
             }
         } catch (e: Exception) {
             Log.e("TAG", "❌ Error fetching books: ${e.message}", e)
+            throw e
+        }
+    }
+
+    fun fetchRemoteSongs(bookIds: List<Int>): Flow<List<SongEntity>> = flow {
+        try {
+            val booksParam = bookIds.joinToString(",")
+            val songs = songlibService.getSongs(booksParam)
+            if (songs.isNotEmpty()) {
+                emit(songs)
+            } else {
+                Log.d("TAG", "⚠️ No songs fetched from remote")
+                emit(emptyList())
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", "❌ Error fetching songs: ${e.message}", e)
             throw e
         }
     }
