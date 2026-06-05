@@ -1,5 +1,10 @@
 package com.songlib.feature.home.components
 
+import android.app.Activity
+import android.content.Intent
+import android.speech.RecognizerIntent
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +37,7 @@ import com.songlib.core.ui.components.donation.DonationBanner
 import com.songlib.core.ui.components.listitems.BookItem
 import com.songlib.core.ui.components.listitems.SongItem
 import com.songlib.feature.home.HomeViewModel
+import java.util.Locale
 
 @Composable
 fun SongsList(
@@ -54,6 +60,28 @@ fun SongsList(
     val selectedBook by viewModel.selectedBook.collectAsState(initial = -1)
     val books by viewModel.books.collectAsState(initial = emptyList())
 
+    val speechLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val text = result.data
+                ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                ?.firstOrNull() ?: ""
+            onQueryChange(text)
+        }
+    }
+
+    fun startVoiceSearch() = speechLauncher.launch(
+        Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Sema unachotafuta ...")
+        }
+    )
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -71,9 +99,12 @@ fun SongsList(
                         onSearchBoxPositioned?.invoke(coords.boundsInRoot())
                     }
                 ) {
-                    SearchBox(
-                        searchQuery = searchQuery,
+                    SearchFieldRow(
+                        query = searchQuery,
+                        placeholder = "Search songs by title or lyrics …",
                         onQueryChange = onQueryChange,
+                        onClear = { onQueryChange("") },
+                        onVoiceSearch = { startVoiceSearch() }
                     )
                 }
             }
@@ -110,7 +141,10 @@ fun SongsList(
         }
 
         itemsIndexed(songs, key = { _, s -> s.songId }) { index, song ->
-            if (index == 3 || index == 7) DonationBanner(show = showDonation, onTap = onShowDonation)
+            if (index == 3 || index == 7) DonationBanner(
+                show = showDonation,
+                onTap = onShowDonation
+            )
             val isSelected = selectedSongs.contains(song)
             Box(
                 modifier = Modifier
