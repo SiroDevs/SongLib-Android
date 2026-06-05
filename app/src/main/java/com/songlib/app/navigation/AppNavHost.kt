@@ -15,6 +15,7 @@ import com.songlib.feature.listing.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.donation.DonationViewModel
@@ -67,6 +68,9 @@ fun AppNavHost(
         }
 
         composable(route = Routes.PRESENTER) {
+            val book = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<BookEntity>("book")
             val song = navController.previousBackStackEntry
                 ?.savedStateHandle
                 ?.get<SongEntity>("song")
@@ -76,6 +80,7 @@ fun AppNavHost(
             PresenterScreen(
                 navController = navController,
                 viewModel = viewModel,
+                book = book,
                 song = song,
                 themeRepo = themeRepo,
                 prefsRepo = prefsRepo

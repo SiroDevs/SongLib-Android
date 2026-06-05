@@ -137,7 +137,6 @@ fun SwipeableContent(
             )
         }
 
-        // Long-press hint indicator
         if (isLongPressing && !isFlipping) {
             Box(
                 modifier = Modifier

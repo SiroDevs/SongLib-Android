@@ -28,9 +28,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val prefsRepo: PrefsRepo,
     private val songbkRepo: SongBookRepo,
     private val listRepo: ListingRepo,
+    private val prefsRepo: PrefsRepo,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()

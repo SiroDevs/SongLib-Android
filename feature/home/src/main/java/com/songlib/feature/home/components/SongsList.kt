@@ -80,7 +80,7 @@ fun SongsList(
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your search ...")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your song!")
         }
     )
 
@@ -156,6 +156,9 @@ fun SongsList(
                             if (selectedSongs.isNotEmpty()) {
                                 onSongSelected(song)
                             } else {
+                                navController.currentBackStackEntry
+                                    ?.savedStateHandle
+                                    ?.set("book", books.first { it.bookId == song.book })
                                 navController.currentBackStackEntry
                                     ?.savedStateHandle
                                     ?.set("song", song)

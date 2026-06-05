@@ -25,22 +25,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.action.AppTopBar
+import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.indicators.LoadingState
+import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.presenter.PresenterViewModel
 import com.songlib.feature.presenter.components.LikeSongButton
 import com.songlib.feature.presenter.components.PresenterDemoOverlay
@@ -52,6 +55,7 @@ fun PresenterScreen(
     navController: NavHostController,
     viewModel: PresenterViewModel,
     song: SongEntity?,
+    book: BookEntity?,
     themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
 ) {
@@ -62,13 +66,21 @@ fun PresenterScreen(
     val verses by viewModel.verses.collectAsState()
     val indicators by viewModel.indicators.collectAsState()
     val currentSong by viewModel.currentSong.collectAsState()
+    val listings by viewModel.listings.collectAsState()
     val context = LocalContext.current
 
+    val theme = themeRepo.selectedTheme
     var showMoreMenu by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
-    val theme = themeRepo.selectedTheme
+    var showListingSheet by remember { mutableStateOf(false) }
+    var showAddListingDialog by remember { mutableStateOf(false) }
+    var showPresenterDemo by rememberSaveable { mutableStateOf(viewModel.demoMode) }
 
-    var showPresenterDemo by remember { mutableStateOf(viewModel.demoMode) }
+    LaunchedEffect(Unit) {
+        viewModel.toastEvent.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     LaunchedEffect(song) {
         song?.let { viewModel.loadSong(it) }
@@ -85,11 +97,42 @@ fun PresenterScreen(
         )
     }
 
+    if (showAddListingDialog) {
+        QuickFormDialog(
+            title = "New Listing",
+            label = "Listing title",
+            onDismiss = { showAddListingDialog = false },
+            onConfirm = { newTitle ->
+                viewModel.saveListing(newTitle)
+                showAddListingDialog = false
+            }
+        )
+    }
+
+    if (showListingSheet) {
+        ChoosingListingSheet(
+            listings = listings,
+            onDismiss = { showListingSheet = false },
+            onNewListClick = {
+                // No existing listings — close sheet, open create dialog
+                showListingSheet = false
+                showAddListingDialog = true
+            },
+            onListingClick = { listing ->
+                viewModel.saveListItem(listing, currentSong?.songId ?: song?.songId ?: 0)
+                showListingSheet = false
+            },
+            onDone = { showListingSheet = false }
+        )
+    }
+
     Scaffold(
         topBar = {
             AppTopBar(
                 title = title,
-//                titleMaxLines = 2,
+                tagline = book?.title,
+                showGoBack = true,
+                onNavIconClick = { navController.popBackStack() },
                 actions = {
                     LikeSongButton(
                         isLiked = isLiked,
@@ -104,11 +147,17 @@ fun PresenterScreen(
                         onDismissRequest = { showMoreMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("App Theme") },
-                            leadingIcon = { Icon(Icons.Default.Brightness6, contentDescription = null) },
+                            text = { Text("Add to a List") },
+                            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                             onClick = {
                                 showMoreMenu = false
-                                showThemeDialog = true
+                                // If no listings exist yet, go straight to create;
+                                // otherwise show the picker sheet
+                                if (viewModel.checkAndHandleNewListing()) {
+                                    showListingSheet = true
+                                } else {
+                                    showAddListingDialog = true
+                                }
                             }
                         )
                         DropdownMenuItem(
@@ -120,10 +169,16 @@ fun PresenterScreen(
                                 Toast.makeText(context, "Edit Song coming soon!", Toast.LENGTH_SHORT).show()
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("App Theme") },
+                            leadingIcon = { Icon(Icons.Default.Brightness6, contentDescription = null) },
+                            onClick = {
+                                showMoreMenu = false
+                                showThemeDialog = true
+                            }
+                        )
                     }
                 },
-                showGoBack = true,
-                onNavIconClick = { navController.popBackStack() },
             )
         },
         floatingActionButton = {
@@ -139,46 +194,45 @@ fun PresenterScreen(
                         context.startActivity(Intent.createChooser(intent, "Share song via"))
                     },
                     containerColor = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.padding(bottom = 100.dp)
                 ) {
                     Icon(Icons.Default.Share, contentDescription = "Share song")
                 }
             }
         },
-        content = {
-            Box(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize()
-            ) {
-                when (uiState) {
-                    is UiState.Error -> ErrorState(
-                        message = (uiState as UiState.Error).message,
-                        retryAction = { }
-                    )
-
-                    UiState.Loaded -> SwipeableContent(
-                        verses = verses,
-                        indicators = indicators,
-                        horizontalSlides = horizontalSlides,
-                        onNavigateNext = { viewModel.navigateToNext() },
-                        onNavigatePrevious = { viewModel.navigateToPrevious() },
-                        hasPrevious = viewModel.hasPreviousSong,
-                        hasNext = viewModel.hasNextSong,
-                    )
-
-                    UiState.Loading -> LoadingState(
-                        title = "Loading song ...",
-                        fileName = "circle-loader"
-                    )
-
-                    else -> EmptyState()
-                }
-
-                PresenterDemoOverlay(
-                    isVisible = showPresenterDemo,
-                    onDismiss = { showPresenterDemo = false }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+        ) {
+            when (uiState) {
+                is UiState.Error -> ErrorState(
+                    message = (uiState as UiState.Error).message,
+                    retryAction = {}
                 )
+
+                UiState.Loaded -> SwipeableContent(
+                    verses = verses,
+                    indicators = indicators,
+                    horizontalSlides = horizontalSlides,
+                    onNavigateNext = { viewModel.navigateToNext() },
+                    onNavigatePrevious = { viewModel.navigateToPrevious() },
+                    hasPrevious = viewModel.hasPreviousSong,
+                    hasNext = viewModel.hasNextSong,
+                )
+
+                UiState.Loading -> LoadingState(
+                    title = "Loading song ...",
+                    fileName = "circle-loader"
+                )
+
+                else -> EmptyState()
             }
-        })
+
+            PresenterDemoOverlay(
+                isVisible = showPresenterDemo,
+                onDismiss = { showPresenterDemo = false }
+            )
+        }
+    }
 }

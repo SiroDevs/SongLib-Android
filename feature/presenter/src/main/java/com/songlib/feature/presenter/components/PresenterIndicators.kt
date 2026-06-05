@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.songlib.core.ui.sample.*
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -24,10 +25,10 @@ fun PresenterIndicators(
     val scope = rememberCoroutineScope()
 
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 65.dp),
+        columns = GridCells.Adaptive(minSize = 50.dp),
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp),
+            .padding(start = 10.dp, end = 70.dp),
         verticalArrangement = Arrangement.spacedBy(5.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         contentPadding = PaddingValues(8.dp)
