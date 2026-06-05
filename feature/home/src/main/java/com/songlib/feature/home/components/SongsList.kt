@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +47,7 @@ fun SongsList(
     navController: NavHostController,
     selectedSongs: Set<SongEntity>,
     searchQuery: String,
+    listState: LazyListState,
     onQueryChange: (String) -> Unit,
     onSongSelected: (SongEntity) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -78,11 +80,12 @@ fun SongsList(
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-            putExtra(RecognizerIntent.EXTRA_PROMPT, "Sema unachotafuta ...")
+            putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your search ...")
         }
     )
 
     LazyColumn(
+        state = listState,
         modifier = Modifier
             .fillMaxSize()
             .padding(top = contentPadding.calculateTopPadding()),

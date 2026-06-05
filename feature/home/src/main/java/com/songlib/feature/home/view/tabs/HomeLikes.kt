@@ -2,6 +2,7 @@ package com.songlib.feature.home.view.tabs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
@@ -22,6 +23,7 @@ fun HomeLikes(
     prefsRepo: PrefsRepo,
     onShowDonation: () -> Unit,
 ) {
+    val listState = rememberLazyListState()
     val uiState by viewModel.uiState.collectAsState()
     val searchQry by viewModel.searchQuery.collectAsState()
     val likes by viewModel.likes.collectAsState(initial = emptyList())
@@ -54,6 +56,7 @@ fun HomeLikes(
                         showSearch = false,
                         showBookFilter = false,
                         onQueryChange = {},
+                        listState = listState,
                         searchQuery = searchQry,
                         onSongSelected = { song -> viewModel.toggleSongSelection(song) },
                         showDonation = showDonation,

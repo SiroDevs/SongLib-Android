@@ -1,20 +1,32 @@
 package com.songlib.feature.home.view.tabs
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dialpad
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,6 +45,7 @@ import com.songlib.feature.home.components.DemoOverlay
 import com.songlib.feature.home.components.DemoTargetBounds
 import com.songlib.feature.home.components.DialPad
 import com.songlib.feature.home.components.SongsList
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,8 +66,13 @@ fun HomeSearch(
     var dialPadVisible by rememberSaveable { mutableStateOf(false) }
     var showAddDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
-
     var demoBounds by remember { mutableStateOf(DemoTargetBounds()) }
+
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    val isAtTop by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+    val showScrollToTop by remember { derivedStateOf { !isAtTop } }
 
     if (showAddDialog) {
         QuickFormDialog(
@@ -96,6 +114,7 @@ fun HomeSearch(
                     navController = navController,
                     selectedSongs = selectedSongs,
                     searchQuery = searchQry,
+                    listState = listState,
                     onQueryChange = { query -> viewModel.searchSongs(query, byNo = false) },
                     onSongSelected = { song -> viewModel.toggleSongSelection(song) },
                     onSearchBoxPositioned = { rect ->
@@ -119,18 +138,42 @@ fun HomeSearch(
             }
         }
 
-        FloatingActionButton(
-            onClick = { dialPadVisible = true },
-            containerColor = MaterialTheme.colorScheme.onPrimary,
+        Column(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .navigationBarsPadding()
-                .padding(end = 15.dp)
-                .onGloballyPositioned { coords ->
-                    demoBounds = demoBounds.copy(fabButton = coords.boundsInRoot())
-                }
+                .padding(end = 15.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.End,
         ) {
-            Icon(Icons.Filled.Dialpad, contentDescription = "Search by number")
+            AnimatedVisibility(
+                visible = showScrollToTop,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                SmallFloatingActionButton(
+                    onClick = { scope.launch { listState.animateScrollToItem(0) } },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Go to Top")
+                }
+            }
+
+            ExtendedFloatingActionButton(
+                onClick = { dialPadVisible = true },
+                expanded = isAtTop,                         // collapses to icon-only on scroll
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                icon = {
+                    Icon(
+                        Icons.Filled.Dialpad,
+                        contentDescription = "Search by Number",
+                        modifier = Modifier.onGloballyPositioned { coords ->
+                            demoBounds = demoBounds.copy(fabButton = coords.boundsInRoot())
+                        }
+                    )
+                },
+                text = { Text("Search by Number") },
+            )
         }
 
         if (dialPadVisible) {
