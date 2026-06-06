@@ -2,33 +2,23 @@ package com.songlib.feature.home.view.tabs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Brightness6
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.common.utils.Routes
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.ListingUi
-import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.ConfirmDialog
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
@@ -40,13 +30,15 @@ import com.songlib.feature.home.components.ListingsList
 fun HomeListings(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    onShowThemeDialog: () -> Unit,
+    prefsRepo: PrefsRepo,
+    onShowDonation: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showAddAlert by remember { mutableStateOf(false) }
     var showDeleteAlert by remember { mutableStateOf(false) }
+    val showDonation = remember { prefsRepo.shouldShowDonation() }
     val listings by viewModel.listings.collectAsState(initial = emptyList())
-    var selectedListings by remember { mutableStateOf<Set<ListingUi>>(emptySet()) }
+    val selectedListings by viewModel.selectedListings.collectAsState()
 
     LaunchedEffect(showAddAlert) {
         if (showAddAlert && listings.size >= 3) {
@@ -75,66 +67,43 @@ fun HomeListings(
             onConfirm = {
                 viewModel.deleteListings(selectedListings)
                 showDeleteAlert = false
-                selectedListings = emptySet()
             }
         )
     }
 
-    Scaffold(
-        topBar = {
-            AppTopBar(
-                title = if (selectedListings.isEmpty()) "Song Listings" else "${selectedListings.size} selected",
-                actions = {
-                    if (selectedListings.isEmpty()) {
-                        IconButton(onClick = { showAddAlert = true }) {
-                            Icon(Icons.Filled.Add, contentDescription = "New listing")
-                        }
-                        IconButton(onClick = onShowThemeDialog ) {
-                            Icon(
-                                imageVector = Icons.Filled.Brightness6, contentDescription = ""
-                            )
-                        }
-                        IconButton(onClick = { navController.navigate(Routes.SETTINGS) }) {
-                            Icon(Icons.Filled.Settings, contentDescription = "Settings")
-                        }
-                    } else {
-                        IconButton(onClick = { showDeleteAlert = true }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete")
-                        }
-                    }
-                },
-                showGoBack = selectedListings.isNotEmpty(),
-                onNavIconClick = { selectedListings = emptySet() }
-            )
-        },
-    ) { innerPadding ->
-        Box(
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        FloatingActionButton(
+            onClick = { showAddAlert = true },
+            containerColor = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding()
+                .padding(end = 15.dp)
         ) {
-            when (uiState) {
-                is UiState.Filtered ->
-                    if (listings.isEmpty()) {
-                        EmptyState(
-                            message = "Create your first listing to group songs together",
-                            messageIcon = Icons.Default.FormatListNumbered,
-                        )
-                    } else {
-                        ListingsList(
-                            listings = listings,
-                            navController = navController,
-                            selectedListings = selectedListings,
-                            onListingSelected = { listing ->
-                                selectedListings =
-                                    if (selectedListings.contains(listing)) selectedListings - listing
-                                    else selectedListings + listing
-                            },
-                        )
-                    }
-                else -> EmptyState()
-            }
+            Icon(Icons.Filled.Add, contentDescription = "New listing")
+        }
+
+        when (uiState) {
+            is UiState.Filtered ->
+                if (listings.isEmpty()) {
+                    EmptyState(
+                        message = "Create your first listing to group songs together",
+                        messageIcon = Icons.Default.FormatListNumbered,
+                    )
+                } else {
+                    ListingsList(
+                        listings = listings,
+                        navController = navController,
+                        selectedListings = selectedListings,
+                        onListingSelected = { listing -> viewModel.toggleListingSelection(listing) },
+                        showDonation = showDonation,
+                        onShowDonation = onShowDonation
+                    )
+                }
+            else -> EmptyState()
         }
     }
 }

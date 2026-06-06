@@ -1,9 +1,17 @@
 package com.songlib.core.common.utils
 
 object ApiConstants {
-    const val BASE = "https://songlive.vercel.app/"
-    const val BOOKS = "api/books"
-    const val SONGS = "api/songs"
+    const val SONGLIB_BASE = "https://songlive.vercel.app/"
+    const val SONGLIB_BOOKS = "api/books"
+    const val SONGLIB_SONGS = "api/songs"
+
+    const val PESAPAL_BASE_URL = "https://pay.pesapal.com/v3/api/"
+
+    const val PESAPAL_AUTH  = "Auth/RequestToken"
+    const val PESAPAL_ORDER = "Transactions/SubmitOrderRequest"
+
+    const val CALLBACK_URL = "https://songlive.vercel.app/donation/callback"
+    const val DONOR_EMAIL  = "donor@swahilib.app"
 }
 
 object PrefConstants {
@@ -16,11 +24,13 @@ object PrefConstants {
     const val IS_DATA_LOADED = "dataLoaded"
     const val SELECT_A_FRESH = "selectAfresh"
     const val INSTALL_DATE = "install_date"
-    const val REVIEW_REQUESTED = "review_requested"
-    const val IS_USER_A_KID = "is_user_a_kid"
     const val THEME_MODE = "themeMode"
     const val HORIZONTAL_SLIDES = "horizontalSlides"
-    const val LAST_APP_OPEN_TIME = "lastAppOpenTime"
+    const val DEMO_MODE = "demoMode"
+
+    const val DONATION_DONE_AT = "donation_done_at"
+    const val DONATION_REMIND_NEXT_OPEN = "donation_remind_next"
+    const val LAST_SYNCED_AT = "last_synced_at"
 }
 
 object Routes {
@@ -30,4 +40,7 @@ object Routes {
     const val PRESENTER = "presenter"
     const val LISTING = "listing"
     const val SETTINGS = "settings"
+    const val HOW_IT_WORKS = "how_it_works"
+    const val HELP = "help"
+    const val DONATION = "donation"
 }

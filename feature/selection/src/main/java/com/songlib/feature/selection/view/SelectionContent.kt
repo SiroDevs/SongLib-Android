@@ -28,15 +28,13 @@ fun SelectionContent(
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 150.dp),
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 2.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp)
+            contentPadding = PaddingValues(horizontal = 2.dp)
         ) {
             items(books) { book ->
                 SongBook(
                     item = book,
                     onClick = { onBookClick(book) },
-                    modifier = Modifier.height(90.dp)
+                    modifier = Modifier.height(100.dp)
                 )
             }
         }

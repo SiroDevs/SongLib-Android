@@ -91,6 +91,26 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
+            SettingsSectionTitle("Demo")
+            ListItem(
+                leadingContent = {
+                    Icon(
+                        Icons.Default.PlayCircleOutline, contentDescription = "Demo Mode"
+                    )
+                },
+                headlineContent = { Text("Demo Mode") },
+                supportingContent = { Text("Show guided tour on home screen") },
+                trailingContent = {
+                    Switch(
+                        checked = viewModel.demoMode,
+                        onCheckedChange = {
+                            viewModel.updateDemoMode(it)
+                        }
+                    )
+                }
+            )
+            HorizontalDivider()
+
             SettingsSectionTitle("Display")
             ListItem(
                 leadingContent = {
@@ -129,6 +149,19 @@ fun SettingsScreen(
                 modifier = Modifier.clickable { showResetDialog = true },
             )
             HorizontalDivider()
+
+//            SettingsSectionTitle("DONATE TO SONGLIB")
+//            ListItem(
+//                leadingContent = {
+//                    Icon(
+//                        Icons.Default.Brightness6, contentDescription = ""
+//                    )
+//                },
+//                headlineContent = { Text("Donate Now") },
+//                supportingContent = { Text("We need your donation to continue serving you") },
+//                modifier = Modifier.clickable { navController.navigate(Routes.DONATION) },
+//            )
+//            HorizontalDivider()
         }
     }
 }

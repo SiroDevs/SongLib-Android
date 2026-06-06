@@ -1,7 +1,7 @@
 package com.songlib.core.data.di
 
 import android.content.Context
-import com.songlib.core.network.ApiService
+import com.songlib.core.network.services.SongLibService
 import com.songlib.core.network.di.NetworkModule
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
@@ -38,7 +38,7 @@ object DataModule {
     @Provides
     @Singleton
     fun provideSongBookRepo(
-        apiService: ApiService,
+        apiService: SongLibService,
         booksDao: BookDao,
         songsDao: SongDao,
     ): SongBookRepo = SongBookRepo(apiService, booksDao, songsDao)

@@ -28,12 +28,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val prefsRepo: PrefsRepo,
     private val songbkRepo: SongBookRepo,
     private val listRepo: ListingRepo,
+    private val prefsRepo: PrefsRepo,
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
+
+    private val _demoMode = MutableStateFlow(prefsRepo.demoMode)
+    val demoMode: StateFlow<Boolean> = _demoMode.asStateFlow()
+
+    fun dismissDemo() {
+        prefsRepo.demoMode = false
+        _demoMode.value = false
+    }
 
     private val _selectedBook: MutableStateFlow<Int> = MutableStateFlow<Int>(-1)
     val selectedBook: StateFlow<Int> = _selectedBook.asStateFlow()
@@ -65,6 +73,26 @@ class HomeViewModel @Inject constructor(
     private val _searchByNo = MutableStateFlow(false)
 
     private var searchJob: Job? = null
+
+    private val _selectedSongs = MutableStateFlow<Set<SongEntity>>(emptySet())
+    val selectedSongs: StateFlow<Set<SongEntity>> = _selectedSongs.asStateFlow()
+
+    private val _selectedListings = MutableStateFlow<Set<ListingUi>>(emptySet())
+    val selectedListings: StateFlow<Set<ListingUi>> = _selectedListings.asStateFlow()
+
+    fun toggleSongSelection(song: SongEntity) {
+        _selectedSongs.value = if (_selectedSongs.value.contains(song))
+            _selectedSongs.value - song else _selectedSongs.value + song
+    }
+
+    fun clearSongSelection() { _selectedSongs.value = emptySet() }
+
+    fun toggleListingSelection(listing: ListingUi) {
+        _selectedListings.value = if (_selectedListings.value.contains(listing))
+            _selectedListings.value - listing else _selectedListings.value + listing
+    }
+
+    fun clearListingSelection() { _selectedListings.value = emptySet() }
 
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
@@ -147,6 +175,7 @@ class HomeViewModel @Inject constructor(
                         if (s.songId in updatedIds) s.copy(liked = !s.liked) else s
                     }
                     _likes.value = newSongList.filter { it.liked }
+                    _selectedSongs.value = emptySet()
                     _uiState.tryEmit(UiState.Filtered)
 
                     val msg = if (allLiked) {
@@ -192,6 +221,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             listings.forEach { listRepo.deleteById(it.id) }
             _listings.value = listRepo.fetchListings(0)
+            _selectedListings.value = emptySet()
             _uiState.emit(UiState.Filtered)
         }
     }

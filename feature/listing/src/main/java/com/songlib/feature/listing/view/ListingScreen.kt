@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.core.database.model.*
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.*
 import com.songlib.core.ui.components.indicators.*
@@ -18,7 +19,10 @@ import com.songlib.feature.listing.ListingViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListingScreen(
-    navController: NavHostController, viewModel: ListingViewModel, listing: ListingUi?,
+    navController: NavHostController,
+    viewModel: ListingViewModel,
+    listing: ListingUi?,
+    prefsRepo: PrefsRepo,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val listingTitle by viewModel.listingTitle.collectAsState()

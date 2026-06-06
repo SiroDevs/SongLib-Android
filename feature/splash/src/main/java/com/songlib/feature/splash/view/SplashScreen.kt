@@ -24,24 +24,28 @@ fun SplashScreen(
     viewModel: SplashViewModel,
 ) {
     val context = LocalContext.current
-    val isLoading by viewModel.isLoading.collectAsState()
-    val isDataLoaded by viewModel.isDataLoaded.collectAsState()
+    val isReady by viewModel.isReady.collectAsState()
+    val destination by viewModel.destination.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.initializeApp(context)
     }
 
-    LaunchedEffect(isLoading, isDataLoaded) {
-        if (!isLoading) {
+    LaunchedEffect(isReady) {
+        if (isReady) {
             delay(3000)
 
-            val nextRoute = if (isDataLoaded) Routes.HOME else Routes.SELECTION
+            val nextRoute = when (destination) {
+                is SplashViewModel.Destination.Selection -> Routes.SELECTION
+                is SplashViewModel.Destination.Home -> Routes.HOME
+            }
 
             navController.navigate(nextRoute) {
                 popUpTo(Routes.SPLASH) { inclusive = true }
             }
         }
     }
+
     SplashContent()
 }
 
