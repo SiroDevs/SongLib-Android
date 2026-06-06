@@ -36,9 +36,9 @@ import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.presenter.PresenterViewModel
 import com.songlib.feature.presenter.components.LikeSongButton
-import com.songlib.feature.presenter.components.PresenterDemoOverlay
-import com.songlib.feature.presenter.components.PresenterFabColumn
-import com.songlib.feature.presenter.components.PresenterMoreMenu
+import com.songlib.feature.presenter.components.DemoOverlay
+import com.songlib.feature.presenter.components.FabColumn
+import com.songlib.feature.presenter.components.MoreMenu
 import com.songlib.feature.presenter.components.SwipeableContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -134,7 +134,7 @@ fun PresenterScreen(
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
-                    PresenterMoreMenu(
+                    MoreMenu(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
                         onAddToList = {
@@ -151,7 +151,7 @@ fun PresenterScreen(
             )
         },
         floatingActionButton = {
-            PresenterFabColumn(
+            FabColumn(
                 fontSize = fontSize,
                 currentSong = currentSong,
                 onResetFontSize = { viewModel.updateFontSize(PresenterViewModel.DEFAULT_FONT_SP) },
@@ -195,7 +195,7 @@ fun PresenterScreen(
 
                 else -> EmptyState()
             }
-            PresenterDemoOverlay(
+            DemoOverlay(
                 isVisible = showPresenterDemo,
                 onDismiss = { showPresenterDemo = false }
             )

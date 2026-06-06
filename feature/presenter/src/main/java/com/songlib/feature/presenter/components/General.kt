@@ -32,7 +32,7 @@ import com.songlib.core.common.utils.songShareString
 import com.songlib.core.database.model.SongEntity
 
 @Composable
-fun PresenterMoreMenu(
+fun MoreMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     onAddToList: () -> Unit,
@@ -62,7 +62,7 @@ fun PresenterMoreMenu(
 }
 
 @Composable
-fun PresenterFabColumn(
+fun FabColumn(
     fontSize: Float,
     currentSong: SongEntity?,
     onResetFontSize: () -> Unit,

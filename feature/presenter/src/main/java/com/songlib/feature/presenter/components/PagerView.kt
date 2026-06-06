@@ -28,14 +28,13 @@ import com.songlib.core.ui.sample.SampleVerses
 import com.songlib.feature.presenter.PresenterViewModel
 
 @Composable
-fun PresenterTabs(
+fun PagerView(
     pagerState: PagerState,
     verses: List<String>,
     modifier: Modifier = Modifier,
     horizontalSlides: Boolean = false,
     fontSize: Float = PresenterViewModel.DEFAULT_FONT_SP,
 ) {
-    // Smoothly animate font-size changes from pinch gesture
     val animatedFontSize by animateFloatAsState(
         targetValue = fontSize,
         animationSpec = tween(durationMillis = 100),
@@ -90,10 +89,10 @@ fun PresenterTabs(
 
 @Preview(showBackground = true)
 @Composable
-fun PresenterTabsPreview() {
+fun PagerPreview() {
     val pagerState = rememberPagerState { SampleVerses.size }
     LaunchedEffect(Unit) { pagerState.scrollToPage(0) }
-    PresenterTabs(
+    PagerView(
         pagerState = pagerState,
         verses = SampleVerses,
         modifier = Modifier

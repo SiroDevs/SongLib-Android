@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.geometry.Offset
 
 @Composable
-fun PresenterDemoOverlay(
+fun DemoOverlay(
     isVisible: Boolean,
     onDismiss: () -> Unit,
 ) {

@@ -3,7 +3,6 @@ package com.songlib.feature.presenter.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.pager.*
 import androidx.compose.foundation.shape.CircleShape
@@ -17,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PresenterIndicators(
+fun VerseIndicators(
     pagerState: PagerState,
     indicators: List<String>,
     modifier: Modifier = Modifier
@@ -67,13 +66,13 @@ fun PresenterIndicators(
 
 @Preview(showBackground = true)
 @Composable
-fun PresenterIndicatorsPreview() {
+fun VerseIndicatorsPreview() {
     val pagerState = rememberPagerState { SampleVerses.size }
     LaunchedEffect(Unit) {
         pagerState.scrollToPage(0)
     }
 
-    PresenterIndicators(
+    VerseIndicators(
         pagerState = pagerState,
         indicators = SampleIndicators,
         modifier = Modifier.padding(16.dp)

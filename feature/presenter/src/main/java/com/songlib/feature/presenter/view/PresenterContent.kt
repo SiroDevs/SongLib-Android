@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import com.songlib.core.ui.sample.SampleIndicators
 import com.songlib.core.ui.sample.SampleVerses
 import com.songlib.feature.presenter.PresenterViewModel
-import com.songlib.feature.presenter.components.PresenterIndicators
-import com.songlib.feature.presenter.components.PresenterTabs
+import com.songlib.feature.presenter.components.VerseIndicators
+import com.songlib.feature.presenter.components.PagerView
 
 @Composable
 fun PresenterContent(
@@ -29,7 +29,7 @@ fun PresenterContent(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        PresenterTabs(
+        PagerView(
             pagerState = pagerState,
             verses = verses,
             modifier = Modifier.weight(1f),
@@ -37,7 +37,7 @@ fun PresenterContent(
             fontSize = fontSize,
         )
 
-        PresenterIndicators(
+        VerseIndicators(
             pagerState = pagerState,
             indicators = indicators,
             modifier = Modifier

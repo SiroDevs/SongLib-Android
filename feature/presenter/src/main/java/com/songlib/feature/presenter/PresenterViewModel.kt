@@ -144,10 +144,6 @@ class PresenterViewModel @Inject constructor(
         _uiState.value = UiState.Loaded
     }
 
-    // -------------------------------------------------------------------------
-    // Like
-    // -------------------------------------------------------------------------
-
     fun likeSong(song: SongEntity) {
         viewModelScope.launch {
             val updatedSong = song.copy(liked = !song.liked)
@@ -156,10 +152,6 @@ class PresenterViewModel @Inject constructor(
             _currentSong.value = updatedSong
         }
     }
-
-    // -------------------------------------------------------------------------
-    // Listings — isolated from uiState so the verse screen is undisturbed
-    // -------------------------------------------------------------------------
 
     fun saveListing(title: String) {
         viewModelScope.launch(Dispatchers.IO) {
