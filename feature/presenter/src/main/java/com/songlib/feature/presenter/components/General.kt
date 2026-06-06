@@ -62,7 +62,7 @@ fun MoreMenu(
 }
 
 @Composable
-fun FabColumn(
+fun PresentorFab(
     fontSize: Float,
     currentSong: SongEntity?,
     onResetFontSize: () -> Unit,
@@ -102,7 +102,7 @@ fun FabColumn(
 }
 
 @Composable
-fun LikeSongButton(
+fun LikeSongBtn(
     isLiked: Boolean,
     song: SongEntity?,
     onLikeToggle: (SongEntity) -> Unit
