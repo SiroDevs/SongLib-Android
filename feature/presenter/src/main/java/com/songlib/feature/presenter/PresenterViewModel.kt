@@ -37,7 +37,6 @@ class PresenterViewModel @Inject constructor(
     private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
 
-    // Separate flow for one-shot user feedback — not tied to uiState
     private val _toastEvent = MutableSharedFlow<String>()
     val toastEvent: SharedFlow<String> = _toastEvent.asSharedFlow()
 
@@ -62,6 +61,19 @@ class PresenterViewModel @Inject constructor(
     private val _currentSong = MutableStateFlow<SongEntity?>(null)
     val currentSong: StateFlow<SongEntity?> = _currentSong.asStateFlow()
 
+    companion object {
+        const val DEFAULT_FONT_SP = 28f
+        const val MIN_FONT_SP = 14f
+        const val MAX_FONT_SP = 60f
+    }
+
+    private val _fontSize = MutableStateFlow(DEFAULT_FONT_SP)
+    val fontSize: StateFlow<Float> = _fontSize.asStateFlow()
+
+    fun updateFontSize(newSp: Float) {
+        _fontSize.value = newSp.coerceIn(MIN_FONT_SP, MAX_FONT_SP)
+    }
+
     fun loadSong(song: SongEntity) {
         _uiState.value = UiState.Loading
         _currentSong.value = song
@@ -70,10 +82,7 @@ class PresenterViewModel @Inject constructor(
 
         viewModelScope.launch {
             _listings.value = listRepo.fetchListings(0)
-
-            val allSongs = withContext(Dispatchers.IO) {
-                songbkRepo.fetchLocalSongs()
-            }
+            val allSongs = withContext(Dispatchers.IO) { songbkRepo.fetchLocalSongs() }
             val siblingsSorted = allSongs
                 .filter { it.book == song.book }
                 .sortedBy { it.songNo }
@@ -102,36 +111,26 @@ class PresenterViewModel @Inject constructor(
         if (idx > 0) navigateToSong(songs[idx - 1])
     }
 
-    val hasPreviousSong: Boolean
-        get() = _currentSongIndex.value > 0
-
-    val hasNextSong: Boolean
-        get() = _currentSongIndex.value in 0 until _bookSongs.value.size - 1
+    val hasPreviousSong: Boolean get() = _currentSongIndex.value > 0
+    val hasNextSong: Boolean get() = _currentSongIndex.value in 0 until _bookSongs.value.size - 1
 
     private fun parseSong(song: SongEntity) {
         val content = song.content
         val hasChorus = content.contains("CHORUS")
-
         _title.value = songItemTitle(song.songNo, song.title)
 
         val songVerses = getSongVerses(content)
         val verseCount = songVerses.size
-
         val tempIndicators = mutableListOf<String>()
         val tempVerses = mutableListOf<String>()
 
         if (hasChorus && verseCount > 1) {
             val chorus = songVerses[1].replace("CHORUS#", "")
-            tempIndicators.add("1")
-            tempIndicators.add("C")
-            tempVerses.add(songVerses[0])
-            tempVerses.add(chorus)
-
+            tempIndicators.add("1"); tempIndicators.add("C")
+            tempVerses.add(songVerses[0]); tempVerses.add(chorus)
             for (i in 2 until verseCount) {
-                tempIndicators.add(i.toString())
-                tempIndicators.add("C")
-                tempVerses.add(songVerses[i])
-                tempVerses.add(chorus)
+                tempIndicators.add(i.toString()); tempIndicators.add("C")
+                tempVerses.add(songVerses[i]); tempVerses.add(chorus)
             }
         } else {
             for (i in 0 until verseCount) {
@@ -154,17 +153,18 @@ class PresenterViewModel @Inject constructor(
             val updatedSong = song.copy(liked = !song.liked)
             withContext(Dispatchers.IO) { songbkRepo.updateSong(updatedSong) }
             _isLiked.value = updatedSong.liked
-            // Also keep _currentSong in sync so the screen reflects the change
-            // if it re-reads currentSong elsewhere
             _currentSong.value = updatedSong
         }
     }
+
+    // -------------------------------------------------------------------------
+    // Listings — isolated from uiState so the verse screen is undisturbed
+    // -------------------------------------------------------------------------
 
     fun saveListing(title: String) {
         viewModelScope.launch(Dispatchers.IO) {
             listRepo.saveListing(0, title, 0)
             _listings.value = listRepo.fetchListings(0)
-            // No uiState emit — the song presenter must not re-trigger Loading/Loaded
         }
     }
 
@@ -176,7 +176,5 @@ class PresenterViewModel @Inject constructor(
         }
     }
 
-    fun checkAndHandleNewListing(): Boolean {
-        return listings.value.isNotEmpty()
-    }
+    fun checkAndHandleNewListing(): Boolean = listings.value.isNotEmpty()
 }

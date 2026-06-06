@@ -6,19 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Brightness6
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,8 +23,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.common.utils.lyricsString
-import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.BookEntity
@@ -47,6 +37,8 @@ import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.presenter.PresenterViewModel
 import com.songlib.feature.presenter.components.LikeSongButton
 import com.songlib.feature.presenter.components.PresenterDemoOverlay
+import com.songlib.feature.presenter.components.PresenterFabColumn
+import com.songlib.feature.presenter.components.PresenterMoreMenu
 import com.songlib.feature.presenter.components.SwipeableContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -67,6 +59,7 @@ fun PresenterScreen(
     val indicators by viewModel.indicators.collectAsState()
     val currentSong by viewModel.currentSong.collectAsState()
     val listings by viewModel.listings.collectAsState()
+    val fontSize by viewModel.fontSize.collectAsState()
     val context = LocalContext.current
 
     val theme = themeRepo.selectedTheme
@@ -114,7 +107,6 @@ fun PresenterScreen(
             listings = listings,
             onDismiss = { showListingSheet = false },
             onNewListClick = {
-                // No existing listings — close sheet, open create dialog
                 showListingSheet = false
                 showAddListingDialog = true
             },
@@ -142,62 +134,35 @@ fun PresenterScreen(
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
-                    DropdownMenu(
+                    PresenterMoreMenu(
                         expanded = showMoreMenu,
-                        onDismissRequest = { showMoreMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Add to a List") },
-                            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                            onClick = {
-                                showMoreMenu = false
-                                // If no listings exist yet, go straight to create;
-                                // otherwise show the picker sheet
-                                if (viewModel.checkAndHandleNewListing()) {
-                                    showListingSheet = true
-                                } else {
-                                    showAddListingDialog = true
-                                }
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Edit Song (WIP)") },
-                            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
-                            enabled = false,
-                            onClick = {
-                                showMoreMenu = false
-                                Toast.makeText(context, "Edit Song coming soon!", Toast.LENGTH_SHORT).show()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("App Theme") },
-                            leadingIcon = { Icon(Icons.Default.Brightness6, contentDescription = null) },
-                            onClick = {
-                                showMoreMenu = false
-                                showThemeDialog = true
-                            }
-                        )
-                    }
+                        onDismiss = { showMoreMenu = false },
+                        onAddToList = {
+                            showMoreMenu = false
+                            if (viewModel.checkAndHandleNewListing()) showListingSheet = true
+                            else showAddListingDialog = true
+                        },
+                        onAppTheme = {
+                            showMoreMenu = false
+                            showThemeDialog = true
+                        },
+                    )
                 },
             )
         },
         floatingActionButton = {
-            val activeSong = currentSong
-            if (activeSong != null) {
-                FloatingActionButton(
-                    onClick = {
-                        val shareText = songShareString(activeSong.title, lyricsString(activeSong.content))
-                        val intent = Intent(Intent.ACTION_SEND).apply {
-                            type = "text/plain"
-                            putExtra(Intent.EXTRA_TEXT, shareText)
-                        }
-                        context.startActivity(Intent.createChooser(intent, "Share song via"))
-                    },
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                ) {
-                    Icon(Icons.Default.Share, contentDescription = "Share song")
-                }
-            }
+            PresenterFabColumn(
+                fontSize = fontSize,
+                currentSong = currentSong,
+                onResetFontSize = { viewModel.updateFontSize(PresenterViewModel.DEFAULT_FONT_SP) },
+                onShare = { shareText ->
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    context.startActivity(Intent.createChooser(intent, "Share song via"))
+                },
+            )
         },
     ) { paddingValues ->
         Box(
@@ -219,6 +184,8 @@ fun PresenterScreen(
                     onNavigatePrevious = { viewModel.navigateToPrevious() },
                     hasPrevious = viewModel.hasPreviousSong,
                     hasNext = viewModel.hasNextSong,
+                    fontSize = fontSize,
+                    onFontSizeChange = { viewModel.updateFontSize(it) },
                 )
 
                 UiState.Loading -> LoadingState(
@@ -228,7 +195,6 @@ fun PresenterScreen(
 
                 else -> EmptyState()
             }
-
             PresenterDemoOverlay(
                 isVisible = showPresenterDemo,
                 onDismiss = { showPresenterDemo = false }
