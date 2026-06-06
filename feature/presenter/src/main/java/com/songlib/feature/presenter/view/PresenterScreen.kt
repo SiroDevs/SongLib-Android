@@ -35,11 +35,10 @@ import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.presenter.PresenterViewModel
-import com.songlib.feature.presenter.components.LikeSongButton
 import com.songlib.feature.presenter.components.DemoOverlay
-import com.songlib.feature.presenter.components.FabColumn
+import com.songlib.feature.presenter.components.PresentorFab
+import com.songlib.feature.presenter.components.LikeSongBtn
 import com.songlib.feature.presenter.components.MoreMenu
-import com.songlib.feature.presenter.components.SwipeableContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +53,8 @@ fun PresenterScreen(
     val horizontalSlides = viewModel.horizontalSlides
     val uiState by viewModel.uiState.collectAsState()
     val isLiked by viewModel.isLiked.collectAsState()
+    val hasPreviousSong by viewModel.hasPreviousSong.collectAsState()
+    val hasNextSong by viewModel.hasNextSong.collectAsState()
     val title by viewModel.title.collectAsState()
     val verses by viewModel.verses.collectAsState()
     val indicators by viewModel.indicators.collectAsState()
@@ -126,7 +127,7 @@ fun PresenterScreen(
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
                 actions = {
-                    LikeSongButton(
+                    LikeSongBtn(
                         isLiked = isLiked,
                         song = currentSong,
                         onLikeToggle = { viewModel.likeSong(it) }
@@ -151,7 +152,7 @@ fun PresenterScreen(
             )
         },
         floatingActionButton = {
-            FabColumn(
+            PresentorFab(
                 fontSize = fontSize,
                 currentSong = currentSong,
                 onResetFontSize = { viewModel.updateFontSize(PresenterViewModel.DEFAULT_FONT_SP) },
@@ -176,16 +177,16 @@ fun PresenterScreen(
                     retryAction = {}
                 )
 
-                UiState.Loaded -> SwipeableContent(
+                UiState.Loaded -> PresenterContent(
                     verses = verses,
                     indicators = indicators,
                     horizontalSlides = horizontalSlides,
-                    onNavigateNext = { viewModel.navigateToNext() },
-                    onNavigatePrevious = { viewModel.navigateToPrevious() },
-                    hasPrevious = viewModel.hasPreviousSong,
-                    hasNext = viewModel.hasNextSong,
+                    hasPrevious = hasPreviousSong,
+                    hasNext = hasNextSong,
                     fontSize = fontSize,
                     onFontSizeChange = { viewModel.updateFontSize(it) },
+                    onNavigatePrevious = { viewModel.navigateToPrevious() },
+                    onNavigateNext = { viewModel.navigateToNext() },
                 )
 
                 UiState.Loading -> LoadingState(
@@ -195,6 +196,7 @@ fun PresenterScreen(
 
                 else -> EmptyState()
             }
+
             DemoOverlay(
                 isVisible = showPresenterDemo,
                 onDismiss = { showPresenterDemo = false }

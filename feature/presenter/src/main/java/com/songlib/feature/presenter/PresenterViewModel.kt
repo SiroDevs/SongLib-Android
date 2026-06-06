@@ -55,6 +55,12 @@ class PresenterViewModel @Inject constructor(
     private val _currentSongIndex = MutableStateFlow(-1)
     val currentSongIndex: StateFlow<Int> = _currentSongIndex.asStateFlow()
 
+    private val _hasPreviousSong = MutableStateFlow(false)
+    val hasPreviousSong: StateFlow<Boolean> get() = _hasPreviousSong
+
+    private val _hasNextSong = MutableStateFlow(false)
+    val hasNextSong: StateFlow<Boolean> get() = _hasNextSong
+
     private val _listings = MutableStateFlow<List<ListingUi>>(emptyList())
     val listings: StateFlow<List<ListingUi>> get() = _listings
 
@@ -88,6 +94,9 @@ class PresenterViewModel @Inject constructor(
                 .sortedBy { it.songNo }
             _bookSongs.value = siblingsSorted
             _currentSongIndex.value = siblingsSorted.indexOfFirst { it.songId == song.songId }
+            _hasPreviousSong.value = _currentSongIndex.value > 0
+            _hasNextSong.value = _currentSongIndex.value in 0 until _bookSongs.value.size - 1
+
         }
     }
 
@@ -110,9 +119,6 @@ class PresenterViewModel @Inject constructor(
         val songs = _bookSongs.value
         if (idx > 0) navigateToSong(songs[idx - 1])
     }
-
-    val hasPreviousSong: Boolean get() = _currentSongIndex.value > 0
-    val hasNextSong: Boolean get() = _currentSongIndex.value in 0 until _bookSongs.value.size - 1
 
     private fun parseSong(song: SongEntity) {
         val content = song.content
