@@ -64,7 +64,6 @@ fun DemoOverlay(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            // Arrow up
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowUp,
                 contentDescription = "Swipe up",
@@ -79,7 +78,6 @@ fun DemoOverlay(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Explanation text
             Text(
                 text = "Swipe up and down to move between song verses",
                 color = Color.White,
@@ -99,7 +97,6 @@ fun DemoOverlay(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Arrow down
             Icon(
                 imageVector = Icons.Filled.KeyboardArrowDown,
                 contentDescription = "Swipe down",
@@ -114,7 +111,6 @@ fun DemoOverlay(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Buttons
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
             ) {

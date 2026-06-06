@@ -34,6 +34,7 @@ fun PagerView(
     modifier: Modifier = Modifier,
     horizontalSlides: Boolean = false,
     fontSize: Float = PresenterViewModel.DEFAULT_FONT_SP,
+    cornerOverlay: (@Composable () -> Unit)? = null,
 ) {
     val animatedFontSize by animateFloatAsState(
         targetValue = fontSize,
@@ -50,39 +51,42 @@ fun PagerView(
         ),
         elevation = CardDefaults.cardElevation(5.dp),
     ) {
-        val pager: @Composable (content: @Composable (page: Int) -> Unit) -> Unit =
-            if (horizontalSlides) {
-                { content ->
-                    HorizontalPager(
-                        state = pagerState,
-                        modifier = modifier.fillMaxSize()
-                    ) { page -> content(page) }
+        Box(modifier = Modifier.fillMaxSize()) {
+            val pager: @Composable (content: @Composable (page: Int) -> Unit) -> Unit =
+                if (horizontalSlides) {
+                    { content ->
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page -> content(page) }
+                    }
+                } else {
+                    { content ->
+                        VerticalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page -> content(page) }
+                    }
                 }
-            } else {
-                { content ->
-                    VerticalPager(
-                        state = pagerState,
-                        modifier = modifier.fillMaxSize()
-                    ) { page -> content(page) }
-                }
-            }
 
-        pager { page ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(20.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = verses[page],
-                    fontSize = animatedFontSize.sp,
-                    fontWeight = FontWeight.Medium,
-                    lineHeight = (animatedFontSize * 1.45f).sp,
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+            pager { page ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = verses[page],
+                        fontSize = animatedFontSize.sp,
+                        fontWeight = FontWeight.Medium,
+                        lineHeight = (animatedFontSize * 1.25f).sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
+            cornerOverlay?.invoke()
         }
     }
 }
