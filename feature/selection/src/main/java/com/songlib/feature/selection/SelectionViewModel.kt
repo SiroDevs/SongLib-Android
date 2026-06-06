@@ -1,5 +1,6 @@
 package com.songlib.feature.selection
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,23 +8,23 @@ import com.songlib.core.common.entity.Selectable
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.worker.SyncScheduler
 import com.songlib.core.database.model.BookEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
 class SelectionViewModel @Inject constructor(
-    private val prefsRepo: PrefsRepo,
     private val songbkRepo: SongBookRepo,
+    private val prefsRepo: PrefsRepo,
 ) : ViewModel() {
+
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
@@ -33,7 +34,7 @@ class SelectionViewModel @Inject constructor(
     private fun getSelectedIds(): Set<Int> =
         prefsRepo.selectedBooks
             .split(",")
-            .mapNotNull { it.toIntOrNull() }
+            .mapNotNull { it.trim().toIntOrNull() }
             .toSet()
 
     fun fetchBooks() {
@@ -41,39 +42,46 @@ class SelectionViewModel @Inject constructor(
 
         viewModelScope.launch {
             songbkRepo.fetchRemoteBooks().catch { exception ->
-                Log.d("TAG", "fetching books error")
                 val errorMessage = when (exception) {
-                    is HttpException -> "Oops! We can't access the songbooks at the moment due to a HTTP Error: ${exception.code()} error on our server. Kindly try again a little later."
-                    else -> "Oops! We can't access the songbooks at the moment due to a ${exception.message} error on our server. Kindly try again a little later."
+                    is HttpException -> "Can't access songbooks right now (HTTP ${exception.code()}). Please try again shortly."
+                    else -> "Can't access songbooks right now: ${exception.message}. Please try again shortly."
                 }
-                Log.d("TAG", errorMessage)
+                Log.e(TAG, "fetchBooks error: $errorMessage")
                 _uiState.tryEmit(UiState.Error(errorMessage))
             }.collect { respData ->
-                val selectableBooks = respData.map { book->
+                val selectableBooks = respData.map { book ->
                     Selectable(book, book.bookId in getSelectedIds())
                 }
                 _books.emit(selectableBooks)
-                Log.d("TAG", "${_books.value.size} books fetched")
+                Log.d(TAG, "${_books.value.size} books fetched")
                 _uiState.tryEmit(UiState.Loaded)
             }
         }
     }
 
-    fun getSelectedBookList(): List<BookEntity> {
-        return _books.value.filter { it.isSelected }.map { it.data }
+    fun getSelectedBookList(): List<BookEntity> =
+        _books.value.filter { it.isSelected }.map { it.data }
+
+    /**
+     * Saves the user's current book selection then hands off to WorkManager
+     * so song fetching happens in the background (survives process death, retries
+     * on network failure, does not block the UI thread).
+     *
+     * @param context Needed only to enqueue WorkManager – safe to pass from Composable
+     *                via LocalContext.
+     */
+    fun saveSelectedBooks(context: Context) {
+        saveBooks(getSelectedBookList(), context)
     }
 
-    fun saveSelectedBooks() {
-        saveBooks(getSelectedBookList())
-    }
-
-    private fun saveBooks(books: List<BookEntity>) {
+    private fun saveBooks(books: List<BookEntity>, context: Context) {
         _uiState.tryEmit(UiState.Saving)
-        Log.d("TAG", "saving ${books.size} books")
+        Log.d(TAG, "Saving ${books.size} books")
 
         viewModelScope.launch {
             try {
                 if (prefsRepo.selectAfresh) {
+                    // Re-selection: only insert new, delete removed
                     val existingIds = getSelectedIds()
                     val newIds = books.map { it.bookId }.toSet()
 
@@ -84,34 +92,28 @@ class SelectionViewModel @Inject constructor(
                     booksToInsert.forEach { songbkRepo.saveBook(it) }
 
                     prefsRepo.selectedBooks = newIds.joinToString(",")
+                    prefsRepo.selectAfresh = false   // clear the flag
                 } else {
-                    prefsRepo.isDataSelected = true
+                    // First-time selection
                     songbkRepo.saveBooks(books)
                     prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
+                    prefsRepo.isDataSelected = true
                 }
 
-                fetchRemoteSongs(books.map { it.bookId })
+                // Mark data as NOT loaded so the worker knows it needs to sync
+                prefsRepo.isDataLoaded = false
+
+                // Hand off to WorkManager – this runs in the background and retries
+                // automatically if the network is unavailable at this moment.
+                SyncScheduler.scheduleInstallSync(context)
+
+                Log.d(TAG, "Books saved, WorkManager sync enqueued")
+                _uiState.tryEmit(UiState.Saved)
+
             } catch (e: Exception) {
-                Log.e("SaveBooks", "Failed to save books", e)
+                Log.e(TAG, "Failed to save books", e)
                 _uiState.emit(UiState.Error("Failed to save books: ${e.message}"))
             }
-        }
-    }
-
-    private suspend fun fetchRemoteSongs(bookIds: List<Int>) {
-        try {
-            Log.d("TAG", "Starting song fetch for ${bookIds.size} books")
-            withContext(Dispatchers.IO) {
-                songbkRepo.fetchAndSaveSongs(bookIds)
-            }
-
-            prefsRepo.isDataLoaded = true
-            Log.d("TAG", "Song fetch and save completed")
-            _uiState.tryEmit(UiState.Saved)
-
-        } catch (e: Exception) {
-            Log.e("TAG", "Song fetch failed: ${e.message}", e)
-            _uiState.tryEmit(UiState.Saved)
         }
     }
 
@@ -119,5 +121,9 @@ class SelectionViewModel @Inject constructor(
         _books.value = _books.value.map {
             if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
         }
+    }
+
+    companion object {
+        private const val TAG = "SelectionViewModel"
     }
 }

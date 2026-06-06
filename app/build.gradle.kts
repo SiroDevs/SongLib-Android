@@ -23,13 +23,17 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 833
-        versionName = "1.0.833"
+        versionCode = 838
+        versionName = "1.0.838"
         minSdk = 26
         targetSdk = 37
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "PesapalConsumerKey", "\"${localProperties.getProperty("PESAPAL_CONSUMER_KEY") ?: ""}\"")
+        buildConfigField("String", "PesapalConsumerSecret", "\"${localProperties.getProperty("PESAPAL_CONSUMER_SECRET") ?: ""}\"")
+        buildConfigField("String", "PesapalIpnId", "\"${localProperties.getProperty("PESAPAL_IPN_ID") ?: ""}\"")
     }
 
     signingConfigs {
@@ -94,6 +98,9 @@ dependencies {
     implementation(project(":feature:listing"))
     implementation(project(":feature:presenter"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:help"))
+    implementation(project(":feature:howitworks"))
+    implementation(project(":feature:donation"))
 
     // Navigation
     implementation(libs.compose.navigation)
@@ -106,6 +113,11 @@ dependencies {
     // Monitoring
     implementation(libs.android.billing)
     implementation(libs.androidx.concurrent.futures)
+
+    // WorkManager (Configuration.Provider in SongLibApp)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
 
     // Testing
     testImplementation(libs.junit)

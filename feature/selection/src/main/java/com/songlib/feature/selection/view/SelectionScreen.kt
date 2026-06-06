@@ -3,11 +3,17 @@ package com.songlib.feature.selection.view
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.ui.components.action.AppTopBar
@@ -37,8 +44,11 @@ fun SelectionScreen(
     viewModel: SelectionViewModel,
     themeRepo: ThemeRepo
 ) {
+    val context = LocalContext.current
+
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showMoreMenu by remember { mutableStateOf(false) }
 
     if (fetchData == 0) {
         viewModel.fetchBooks()
@@ -49,9 +59,12 @@ fun SelectionScreen(
     val uiState by viewModel.uiState.collectAsState()
     val theme = themeRepo.selectedTheme
 
+    // Navigate to HOME once books are saved and worker is enqueued
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
-            navController.navigate(Routes.HOME)
+            navController.navigate(Routes.HOME) {
+                popUpTo(Routes.SELECTION) { inclusive = true }
+            }
         }
     }
 
@@ -72,18 +85,36 @@ fun SelectionScreen(
                 title = "Select Songbooks",
                 actions = {
                     if (uiState != UiState.Loading && uiState != UiState.Saving) {
-                        IconButton(
-                            onClick = { viewModel.fetchBooks() }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Refresh, contentDescription = "",
-                            )
+                        IconButton(onClick = { viewModel.fetchBooks() }) {
+                            Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Refresh")
                         }
                     }
 
                     IconButton(onClick = { showThemeDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Filled.Brightness6, contentDescription = ""
+                        Icon(imageVector = Icons.Filled.Brightness6, contentDescription = "Theme")
+                    }
+                    IconButton(onClick = { showMoreMenu = true }) {
+                        Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                    }
+                    DropdownMenu(
+                        expanded = showMoreMenu,
+                        onDismissRequest = { showMoreMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("How It Works") },
+                            leadingIcon = { Icon(Icons.Filled.Info, contentDescription = null) },
+                            onClick = {
+                                showMoreMenu = false
+                                navController.navigate(Routes.HOW_IT_WORKS)
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Help & Feedback") },
+                            leadingIcon = { Icon(Icons.Filled.HelpOutline, contentDescription = null) },
+                            onClick = {
+                                showMoreMenu = false
+                                navController.navigate(Routes.HELP)
+                            }
                         )
                     }
                 }
@@ -101,11 +132,10 @@ fun SelectionScreen(
                     fileName = "loading-hand"
                 )
 
-                is UiState.Saving ->
-                    LoadingState(
-                        title = "Saving books ...",
-                        fileName = "cloud-download"
-                    )
+                is UiState.Saving -> LoadingState(
+                    title = "Saving books ...",
+                    fileName = "cloud-download"
+                )
 
                 is UiState.Loaded -> {
                     SelectionContent(
@@ -122,7 +152,8 @@ fun SelectionScreen(
             if (uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
-                    onSaveConfirmed = { viewModel.saveSelectedBooks() }
+                    // Pass context so WorkManager can be enqueued from the ViewModel
+                    onSaveConfirmed = { viewModel.saveSelectedBooks(context) }
                 )
             }
         }

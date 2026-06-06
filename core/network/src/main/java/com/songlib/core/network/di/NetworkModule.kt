@@ -1,8 +1,8 @@
 package com.songlib.core.network.di
 
-//import com.songlib.BuildConfig
 import com.songlib.core.common.utils.ApiConstants
-import com.songlib.core.network.ApiService
+import com.songlib.core.network.services.PesaPalService
+import com.songlib.core.network.services.SongLibService
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -20,8 +20,21 @@ import javax.inject.Named
 object NetworkModule {
     @Provides
     @Reusable
-    fun provideApiService(@Named("songlibApi") retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
+    fun provideOkHttpClient(): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+
+        val loggingInterceptor = HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+        builder.addInterceptor(loggingInterceptor)
+
+        return builder.build()
+    }
+
+    @Provides
+    @Reusable
+    fun provideSonglibApiService(@Named("songlibApi") retrofit: Retrofit): SongLibService {
+        return retrofit.create(SongLibService::class.java)
     }
 
     @Provides
@@ -29,7 +42,7 @@ object NetworkModule {
     @Reusable
     fun provideSonglibApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.BASE)
+            .baseUrl(ApiConstants.SONGLIB_BASE)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()
@@ -37,16 +50,18 @@ object NetworkModule {
 
     @Provides
     @Reusable
-    fun provideOkHttpClient(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
+    fun providePesapalApiService(@Named("pesapalApi") retrofit: Retrofit): PesaPalService {
+        return retrofit.create(PesaPalService::class.java)
+    }
 
-//        if (BuildConfig.DEBUG) {
-            val loggingInterceptor = HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            }
-            builder.addInterceptor(loggingInterceptor)
-//        }
-
-        return builder.build()
+    @Provides
+    @Named("pesapalApi")
+    @Reusable
+    fun providePesapalApi(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(ApiConstants.PESAPAL_BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
     }
 }

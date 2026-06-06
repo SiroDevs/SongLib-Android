@@ -14,8 +14,14 @@ import com.songlib.feature.home.view.HomeScreen
 import com.songlib.feature.listing.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
+import com.songlib.feature.donation.DonationViewModel
+import com.songlib.feature.donation.view.DonationScreen
+import com.songlib.feature.help.view.HelpScreen
+import com.songlib.feature.howitworks.view.HowItWorksScreen
 import com.songlib.feature.presenter.PresenterViewModel
 import com.songlib.feature.presenter.view.PresenterScreen
 import com.songlib.feature.selection.SelectionViewModel
@@ -29,7 +35,8 @@ import com.songlib.feature.splash.view.SplashScreen
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
-    themeRepo: ThemeRepo
+    themeRepo: ThemeRepo,
+    prefsRepo: PrefsRepo,
 ) {
     NavHost(
         navController = navController,
@@ -56,10 +63,14 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 themeRepo = themeRepo,
+                prefsRepo = prefsRepo
             )
         }
 
         composable(route = Routes.PRESENTER) {
+            val book = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<BookEntity>("book")
             val song = navController.previousBackStackEntry
                 ?.savedStateHandle
                 ?.get<SongEntity>("song")
@@ -69,8 +80,10 @@ fun AppNavHost(
             PresenterScreen(
                 navController = navController,
                 viewModel = viewModel,
+                book = book,
                 song = song,
                 themeRepo = themeRepo,
+                prefsRepo = prefsRepo
             )
         }
 
@@ -85,6 +98,7 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 listing = listing,
+                prefsRepo = prefsRepo
             )
         }
 
@@ -94,6 +108,22 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 themeRepo = themeRepo,
+            )
+        }
+
+        composable(Routes.HOW_IT_WORKS) {
+            HowItWorksScreen(navController = navController)
+        }
+
+        composable(Routes.HELP) {
+            HelpScreen(navController = navController)
+        }
+
+        composable(Routes.DONATION) {
+            val viewModel: DonationViewModel = hiltViewModel()
+            DonationScreen(
+                navController = navController,
+                viewModel = viewModel,
             )
         }
     }

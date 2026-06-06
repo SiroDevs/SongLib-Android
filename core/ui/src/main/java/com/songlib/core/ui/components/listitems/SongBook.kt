@@ -1,81 +1,159 @@
 package com.songlib.core.ui.components.listitems
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.songlib.core.common.entity.Selectable
 import com.songlib.core.common.utils.refineTitle
 import com.songlib.core.database.model.BookEntity
-import com.songlib.core.ui.sample.SampleBooks
-import com.songlib.core.common.entity.Selectable
+import com.songlib.core.ui.sample.SampleSelectableBooks
 
 @Composable
 fun SongBook(
     item: Selectable<BookEntity>,
     onClick: (Selectable<BookEntity>) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val bgColor =
-        if (item.isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.inversePrimary
-    val txtColor =
-        if (item.isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.scrim
+    val selected = item.isSelected
+    val book = item.data
 
-    ElevatedCard(
+    val containerColor by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.surfaceVariant,
+        animationSpec = spring(stiffness = Spring.StiffnessMedium),
+        label = "containerColor",
+    )
+    val onContainerColor by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.onPrimary
+        else MaterialTheme.colorScheme.onSurfaceVariant,
+        animationSpec = spring(stiffness = Spring.StiffnessMedium),
+        label = "onContainerColor",
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (selected) MaterialTheme.colorScheme.primary
+        else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+        animationSpec = spring(stiffness = Spring.StiffnessMedium),
+        label = "borderColor",
+    )
+
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(2.dp)
-            .clickable { onClick(item) },
-        colors = CardDefaults.cardColors(
-            containerColor = bgColor,
-            contentColor = txtColor,
-        ),
-        elevation = CardDefaults.cardElevation(5.dp),
+            .padding(horizontal = 5.dp, vertical = 5.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .border(
+                width = if (selected) 2.dp else 1.dp,
+                color = borderColor,
+                shape = RoundedCornerShape(10.dp),
+            )
+            .background(
+                brush = if (selected) {
+                    Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primaryContainer,
+                        )
+                    )
+                } else {
+                    Brush.horizontalGradient(
+                        listOf(containerColor, containerColor)
+                    )
+                }
+            )
+            .clickable { onClick(item) }
+            .padding(horizontal = 10.dp, vertical = 10.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(5.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontSize = 18.sp, color = txtColor)) {
-                        append(refineTitle(item.data.title))
-                    }
-                    append(" ")
-                    withStyle(style = SpanStyle(fontSize = 14.sp, color = txtColor.copy(alpha = 0.7f))) {
-                        append("(${item.data.songs})")
-                    }
-                },
-                maxLines = 3
-            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text       = refineTitle(book.title),
+                    fontSize   = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color      = if (selected) onContainerColor
+                    else MaterialTheme.colorScheme.onSurface,
+                    maxLines   = 2,
+                    overflow   = TextOverflow.Ellipsis,
+                )
+                Spacer(Modifier.height(4.dp))
+                SongCountChip(
+                    count    = book.songs,
+                    selected = selected,
+                    textColor = onContainerColor,
+                )
+            }
+
+            if (selected) {
+                Icon(
+                    imageVector        = Icons.Default.CheckCircle,
+                    contentDescription = "Selected",
+                    tint               = onContainerColor,
+                    modifier           = Modifier.size(22.dp),
+                )
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+private fun SongCountChip(count: Int, selected: Boolean, textColor: Color) {
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = if (selected) textColor.copy(alpha = 0.18f)
+        else MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+    ) {
+        Text(
+            text       = "$count Songs",
+            fontSize   = 12.sp,
+            fontWeight = FontWeight.Medium,
+            color      = if (selected) textColor
+            else MaterialTheme.colorScheme.primary,
+            modifier   = Modifier.padding(horizontal = 15.dp, vertical = 3.dp),
+        )
+    }
+}
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFBFF)
 @Composable
 fun PreviewSongBook() {
-    val sampleBook = SampleBooks[0]
-
-    val selectableBook = Selectable(data = sampleBook, isSelected = true)
-
-    SongBook(
-        item = selectableBook,
-        onClick = {}
-    )
+    MaterialTheme {
+        Column {
+            SampleSelectableBooks.forEach { book ->
+                SongBook(item = book, onClick = {})
+            }
+        }
+    }
 }

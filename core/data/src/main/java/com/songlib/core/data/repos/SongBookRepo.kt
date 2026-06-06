@@ -5,7 +5,7 @@ import com.songlib.core.database.daos.BookDao
 import com.songlib.core.database.daos.SongDao
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
-import com.songlib.core.network.ApiService
+import com.songlib.core.network.services.SongLibService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,15 +16,21 @@ import kotlin.collections.isNotEmpty
 
 @Singleton
 class SongBookRepo @Inject constructor(
-    private val apiService: ApiService,
+    private val songlibService: SongLibService,
     private var booksDao: BookDao,
     private var songsDao: SongDao,
 ) {
-    fun fetchRemoteBooks(): Flow<List<BookEntity>> = flow {
+    fun fetchRemoteBooks(bookIds: Set<Int>? = null): Flow<List<BookEntity>> = flow {
         try {
-            val books = apiService.getBooks()
+            val books = songlibService.getBooks()
             if (books.isNotEmpty()) {
-                emit(books)
+                val filteredBooks = if (!bookIds.isNullOrEmpty()) {
+                    books.filter { it.bookId in bookIds }
+                } else {
+                    books
+                }
+
+                if (filteredBooks.isNotEmpty()) emit(filteredBooks) else emit(books)
             } else {
                 Log.d("TAG", "⚠️ No books fetched from remote")
                 emit(emptyList())
@@ -35,10 +41,26 @@ class SongBookRepo @Inject constructor(
         }
     }
 
+    fun fetchRemoteSongs(bookIds: List<Int>): Flow<List<SongEntity>> = flow {
+        try {
+            val booksParam = bookIds.joinToString(",")
+            val songs = songlibService.getSongs(booksParam)
+            if (songs.isNotEmpty()) {
+                emit(songs)
+            } else {
+                Log.d("TAG", "⚠️ No songs fetched from remote")
+                emit(emptyList())
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", "❌ Error fetching songs: ${e.message}", e)
+            throw e
+        }
+    }
+
     suspend fun fetchAndSaveSongs(bookIds: List<Int>) {
         try {
             val booksParam = bookIds.joinToString(",")
-            val songs = apiService.getSongs(booksParam)
+            val songs = songlibService.getSongs(booksParam)
             Log.d("TAG", "✅ ${songs.size} songs fetched for books: $booksParam")
 
             if (songs.isNotEmpty()) {
