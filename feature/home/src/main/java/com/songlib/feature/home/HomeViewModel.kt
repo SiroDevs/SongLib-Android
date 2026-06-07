@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(
     private val _selectedBook = MutableStateFlow(-1)
     val selectedBook: StateFlow<Int> = _selectedBook.asStateFlow()
 
-    private val _selectedTab = MutableStateFlow(HomeNavItem.Search)
+    private val _selectedTab: MutableStateFlow<HomeNavItem> = MutableStateFlow(HomeNavItem.Search)
     val selectedTab: StateFlow<HomeNavItem> = _selectedTab.asStateFlow()
 
     private val _books = MutableStateFlow<List<BookEntity>>(emptyList())
@@ -96,26 +96,32 @@ class HomeViewModel @Inject constructor(
             _selectedSongs.value - song else _selectedSongs.value + song
     }
 
-    fun clearSongSelection() { _selectedSongs.value = emptySet() }
+    fun clearSongSelection() {
+        _selectedSongs.value = emptySet()
+    }
 
     fun toggleListingSelection(listing: ListingUi) {
         _selectedListings.value = if (_selectedListings.value.contains(listing))
             _selectedListings.value - listing else _selectedListings.value + listing
     }
 
-    fun clearListingSelection() { _selectedListings.value = emptySet() }
+    fun clearListingSelection() {
+        _selectedListings.value = emptySet()
+    }
 
-    fun setSelectedTab(tab: HomeNavItem) { _selectedTab.value = tab }
+    fun setSelectedTab(tab: HomeNavItem) {
+        _selectedTab.value = tab
+    }
 
     fun fetchData() {
         _uiState.tryEmit(UiState.Loading)
         viewModelScope.launch {
-            _books.value   = songbkRepo.fetchLocalBooks()
-            _songs.value   = songbkRepo.fetchLocalSongs()
+            _books.value = songbkRepo.fetchLocalBooks()
+            _songs.value = songbkRepo.fetchLocalSongs()
             _listings.value = listRepo.fetchListings(0)
             _selectedBook.value = -1
             _filtered.value = _songs.value
-            _likes.value   = _songs.value.filter { it.liked }
+            _likes.value = _songs.value.filter { it.liked }
 
             // Check history and edits visibility
             val histories = trackingRepo.fetchHistories()
@@ -157,7 +163,6 @@ class HomeViewModel @Inject constructor(
             else SongUtils.searchSongs(pool, qry, byNo)
             _uiState.tryEmit(UiState.Filtered)
 
-            // Record non-numeric search terms
             if (qry.isNotBlank() && !byNo) {
                 trackingRepo.recordSearch(qry)
                 val histories = trackingRepo.fetchHistories()
@@ -168,14 +173,15 @@ class HomeViewModel @Inject constructor(
 
     private fun songsForCurrentBook(): List<SongEntity> {
         val bookIndex = _selectedBook.value
-        val bookList  = _books.value
-        val songList  = _songs.value
+        val bookList = _books.value
+        val songList = _songs.value
         return when {
             bookIndex == -1 -> songList
             bookIndex in bookList.indices -> {
                 val bookId = bookList[bookIndex].bookId
                 songList.filter { it.book == bookId }
             }
+
             else -> songList
         }
     }
@@ -256,15 +262,15 @@ class HomeViewModel @Inject constructor(
                 songbkRepo.deleteAllData()
                 listRepo.deleteAllListings()
                 withContext(Dispatchers.Main) {
-                    prefsRepo.isDataLoaded   = false
+                    prefsRepo.isDataLoaded = false
                     prefsRepo.isDataSelected = false
-                    prefsRepo.selectAfresh   = false
-                    prefsRepo.initialBooks   = ""
-                    prefsRepo.selectedBooks  = ""
-                    _books.value    = emptyList()
-                    _songs.value    = emptyList()
+                    prefsRepo.selectAfresh = false
+                    prefsRepo.initialBooks = ""
+                    prefsRepo.selectedBooks = ""
+                    _books.value = emptyList()
+                    _songs.value = emptyList()
                     _filtered.value = emptyList()
-                    _likes.value    = emptyList()
+                    _likes.value = emptyList()
                     _listings.value = emptyList()
                     _uiState.tryEmit(UiState.Loaded)
                 }

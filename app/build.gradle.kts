@@ -24,8 +24,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 840
-        versionName = "1.0.84"
+        versionCode = 842
+        versionName = "1.0.842"
         minSdk = 26
         targetSdk = 37
 
@@ -123,6 +123,11 @@ dependencies {
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
+
+    // Google Sign-In
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.google.identity.googleid)
 
     // Testing
     testImplementation(libs.junit)
