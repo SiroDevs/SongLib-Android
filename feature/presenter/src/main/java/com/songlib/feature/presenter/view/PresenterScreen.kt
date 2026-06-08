@@ -27,7 +27,6 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
-import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
@@ -35,10 +34,12 @@ import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.presenter.PresenterViewModel
+import com.songlib.feature.presenter.ReportUiState
 import com.songlib.feature.presenter.components.DemoOverlay
-import com.songlib.feature.presenter.components.PresentorFab
 import com.songlib.feature.presenter.components.LikeSongBtn
 import com.songlib.feature.presenter.components.MoreMenu
+import com.songlib.feature.presenter.components.PresentorFab
+import com.songlib.feature.presenter.components.ReportSongDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,11 +62,11 @@ fun PresenterScreen(
     val currentSong by viewModel.currentSong.collectAsState()
     val listings by viewModel.listings.collectAsState()
     val fontSize by viewModel.fontSize.collectAsState()
+    val reportState by viewModel.reportState.collectAsState()
     val context = LocalContext.current
 
-    val theme = themeRepo.selectedTheme
     var showMoreMenu by remember { mutableStateOf(false) }
-    var showThemeDialog by remember { mutableStateOf(false) }
+    var showReportDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
     var showAddListingDialog by remember { mutableStateOf(false) }
     var showPresenterDemo by rememberSaveable { mutableStateOf(viewModel.demoMode) }
@@ -80,21 +81,40 @@ fun PresenterScreen(
         song?.let { viewModel.loadSong(it) }
     }
 
-    if (showThemeDialog) {
-        ThemeSelectorDialog(
-            current = theme,
-            onDismiss = { showThemeDialog = false },
-            onThemeSelected = {
-                themeRepo.setTheme(it)
-                showThemeDialog = false
+    // Dismiss report dialog on success
+    LaunchedEffect(reportState) {
+        if (reportState is ReportUiState.Success) {
+            showReportDialog = false
+            viewModel.resetReportState()
+        }
+    }
+
+    if (showReportDialog) {
+        ReportSongDialog(
+            songTitle    = currentSong?.title ?: song?.title ?: "",
+            isSubmitting = reportState is ReportUiState.Submitting,
+            onDismiss    = {
+                showReportDialog = false
+                viewModel.resetReportState()
+            },
+            onSubmit = { type, desc ->
+                val s = currentSong ?: song
+                s?.let {
+                    viewModel.submitReport(
+                        song        = it,
+                        bookId      = book?.bookId ?: it.book,
+                        reportType  = type,
+                        description = desc
+                    )
+                }
             }
         )
     }
 
     if (showAddListingDialog) {
         QuickFormDialog(
-            title = "New Listing",
-            label = "Listing title",
+            title    = "New Listing",
+            label    = "Listing title",
             onDismiss = { showAddListingDialog = false },
             onConfirm = { newTitle ->
                 viewModel.saveListing(newTitle)
@@ -105,8 +125,8 @@ fun PresenterScreen(
 
     if (showListingSheet) {
         ChoosingListingSheet(
-            listings = listings,
-            onDismiss = { showListingSheet = false },
+            listings     = listings,
+            onDismiss    = { showListingSheet = false },
             onNewListClick = {
                 showListingSheet = false
                 showAddListingDialog = true
@@ -122,39 +142,35 @@ fun PresenterScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = title,
-                tagline = book?.title,
+                title     = title,
+                tagline   = book?.title,
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
                 actions = {
                     LikeSongBtn(
-                        isLiked = isLiked,
-                        song = currentSong,
+                        isLiked     = isLiked,
+                        song        = currentSong,
                         onLikeToggle = { viewModel.likeSong(it) }
                     )
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
                     MoreMenu(
-                        expanded = showMoreMenu,
-                        onDismiss = { showMoreMenu = false },
-                        onAddToList = {
-                            showMoreMenu = false
+                        expanded     = showMoreMenu,
+                        onDismiss    = { showMoreMenu = false },
+                        onAddToList  = {
                             if (viewModel.checkAndHandleNewListing()) showListingSheet = true
                             else showAddListingDialog = true
                         },
-                        onAppTheme = {
-                            showMoreMenu = false
-                            showThemeDialog = true
-                        },
+                        onReportSong = { showReportDialog = true },
                     )
                 },
             )
         },
         floatingActionButton = {
             PresentorFab(
-                fontSize = fontSize,
-                currentSong = currentSong,
+                fontSize      = fontSize,
+                currentSong   = currentSong,
                 onResetFontSize = { viewModel.updateFontSize(PresenterViewModel.DEFAULT_FONT_SP) },
                 onShare = { shareText ->
                     val intent = Intent(Intent.ACTION_SEND).apply {
@@ -173,27 +189,24 @@ fun PresenterScreen(
         ) {
             when (uiState) {
                 is UiState.Error -> ErrorState(
-                    message = (uiState as UiState.Error).message,
+                    message     = (uiState as UiState.Error).message,
                     retryAction = {}
                 )
-
                 UiState.Loaded -> PresenterContent(
-                    verses = verses,
-                    indicators = indicators,
-                    horizontalSlides = horizontalSlides,
-                    hasPrevious = hasPreviousSong,
-                    hasNext = hasNextSong,
-                    fontSize = fontSize,
-                    onFontSizeChange = { viewModel.updateFontSize(it) },
+                    verses            = verses,
+                    indicators        = indicators,
+                    horizontalSlides  = horizontalSlides,
+                    hasPrevious       = hasPreviousSong,
+                    hasNext           = hasNextSong,
+                    fontSize          = fontSize,
+                    onFontSizeChange  = { viewModel.updateFontSize(it) },
                     onNavigatePrevious = { viewModel.navigateToPrevious() },
-                    onNavigateNext = { viewModel.navigateToNext() },
+                    onNavigateNext    = { viewModel.navigateToNext() },
                 )
-
                 UiState.Loading -> LoadingState(
-                    title = "Loading song ...",
+                    title    = "Loading song ...",
                     fileName = "circle-loader"
                 )
-
                 else -> EmptyState()
             }
 

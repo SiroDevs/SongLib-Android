@@ -9,11 +9,12 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FormatSize
+import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -36,7 +37,7 @@ fun MoreMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     onAddToList: () -> Unit,
-    onAppTheme: () -> Unit,
+    onReportSong: () -> Unit,
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -44,19 +45,19 @@ fun MoreMenu(
     ) {
         DropdownMenuItem(
             text = { Text("Add to a List") },
-            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
-            onClick = onAddToList,
+            leadingIcon = { Icon(Icons.Default.PlaylistAdd, contentDescription = null) },
+            onClick = {
+                onDismiss()
+                onAddToList()
+            },
         )
         DropdownMenuItem(
-            text = { Text("Edit Song (WIP)") },
-            leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
-            enabled = false,
-            onClick = {},
-        )
-        DropdownMenuItem(
-            text = { Text("App Theme") },
-            leadingIcon = { Icon(Icons.Default.Brightness6, contentDescription = null) },
-            onClick = onAppTheme,
+            text = { Text("Report this song") },
+            leadingIcon = { Icon(Icons.Default.Flag, contentDescription = null) },
+            onClick = {
+                onDismiss()
+                onReportSong()
+            },
         )
     }
 }

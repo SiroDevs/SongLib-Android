@@ -9,4 +9,7 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+
+    // Profile photo loading
+    implementation(libs.coil.compose)
 }

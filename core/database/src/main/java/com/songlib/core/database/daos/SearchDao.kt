@@ -10,16 +10,16 @@ import com.songlib.core.database.model.SearchEntity
 
 @Dao
 interface SearchDao {
-    @Query("SELECT * FROM searches")
+    @Query("SELECT * FROM searches ORDER BY hits DESC, created DESC")
     fun getAll(): List<SearchEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(search: SearchEntity)
 
-    @Update()
+    @Update
     fun update(search: SearchEntity)
 
-    @Delete()
+    @Delete
     fun delete(search: SearchEntity)
 
     @Query("DELETE FROM searches WHERE id = :id")
@@ -27,4 +27,12 @@ interface SearchDao {
 
     @Query("DELETE FROM searches")
     suspend fun deleteAll()
+
+    /** Increment hits if term exists, otherwise insert fresh */
+    @Query("""
+        INSERT INTO searches (title, hits, created)
+        VALUES (:title, 1, :now)
+        ON CONFLICT(title) DO UPDATE SET hits = hits + 1
+    """)
+    suspend fun upsertSearch(title: String, now: String)
 }

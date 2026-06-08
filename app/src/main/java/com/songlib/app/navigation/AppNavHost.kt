@@ -8,26 +8,34 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.songlib.core.data.repos.ThemeRepo
-import com.songlib.feature.home.HomeViewModel
-import com.songlib.feature.home.view.HomeScreen
-import com.songlib.feature.listing.ListingViewModel
-import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.donation.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.help.view.HelpScreen
+import com.songlib.feature.home.DraftsViewModel
+import com.songlib.feature.home.HistoryViewModel
+import com.songlib.feature.home.HomeViewModel
+import com.songlib.feature.home.MyEditsViewModel
+import com.songlib.feature.home.view.DraftsScreen
+import com.songlib.feature.home.view.HistoryScreen
+import com.songlib.feature.home.view.HomeScreen
+import com.songlib.feature.home.view.MyEditsScreen
 import com.songlib.feature.howitworks.view.HowItWorksScreen
+import com.songlib.feature.listing.ListingViewModel
+import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.feature.presenter.PresenterViewModel
 import com.songlib.feature.presenter.view.PresenterScreen
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.view.SelectionScreen
 import com.songlib.feature.settings.SettingsViewModel
+import com.songlib.feature.settings.UserProfileViewModel
 import com.songlib.feature.settings.view.SettingsScreen
+import com.songlib.feature.settings.view.UserProfileScreen
 import com.songlib.feature.splash.SplashViewModel
 import com.songlib.feature.splash.view.SplashScreen
 
@@ -37,9 +45,10 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
+    onSignInRequest: (callback: (googleId: String, email: String, name: String, photo: String) -> Unit) -> Unit,
 ) {
     NavHost(
-        navController = navController,
+        navController  = navController,
         startDestination = Routes.SPLASH
     ) {
 
@@ -52,8 +61,8 @@ fun AppNavHost(
             val viewModel: SelectionViewModel = hiltViewModel()
             SelectionScreen(
                 navController = navController,
-                viewModel = viewModel,
-                themeRepo = themeRepo,
+                viewModel     = viewModel,
+                themeRepo     = themeRepo,
             )
         }
 
@@ -61,44 +70,37 @@ fun AppNavHost(
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 navController = navController,
-                viewModel = viewModel,
-                themeRepo = themeRepo,
-                prefsRepo = prefsRepo
+                viewModel     = viewModel,
+                themeRepo     = themeRepo,
+                prefsRepo     = prefsRepo
             )
         }
 
-        composable(route = Routes.PRESENTER) {
+        composable(Routes.PRESENTER) {
             val book = navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.get<BookEntity>("book")
+                ?.savedStateHandle?.get<BookEntity>("book")
             val song = navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.get<SongEntity>("song")
-
+                ?.savedStateHandle?.get<SongEntity>("song")
             val viewModel: PresenterViewModel = hiltViewModel()
-
             PresenterScreen(
                 navController = navController,
-                viewModel = viewModel,
-                book = book,
-                song = song,
-                themeRepo = themeRepo,
-                prefsRepo = prefsRepo
+                viewModel     = viewModel,
+                book          = book,
+                song          = song,
+                themeRepo     = themeRepo,
+                prefsRepo     = prefsRepo
             )
         }
 
-        composable(route = Routes.LISTING) {
+        composable(Routes.LISTING) {
             val listing = navController.previousBackStackEntry
-                ?.savedStateHandle
-                ?.get<ListingUi>("listing")
-
+                ?.savedStateHandle?.get<ListingUi>("listing")
             val viewModel: ListingViewModel = hiltViewModel()
-
             ListingScreen(
                 navController = navController,
-                viewModel = viewModel,
-                listing = listing,
-                prefsRepo = prefsRepo
+                viewModel     = viewModel,
+                listing       = listing,
+                prefsRepo     = prefsRepo
             )
         }
 
@@ -106,8 +108,8 @@ fun AppNavHost(
             val viewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
                 navController = navController,
-                viewModel = viewModel,
-                themeRepo = themeRepo,
+                viewModel     = viewModel,
+                themeRepo     = themeRepo,
             )
         }
 
@@ -123,8 +125,34 @@ fun AppNavHost(
             val viewModel: DonationViewModel = hiltViewModel()
             DonationScreen(
                 navController = navController,
-                viewModel = viewModel,
+                viewModel     = viewModel,
             )
+        }
+
+        // ── New routes ────────────────────────────────────────────────────
+
+        composable(Routes.DRAFTS) {
+            val viewModel: DraftsViewModel = hiltViewModel()
+            DraftsScreen(navController = navController, viewModel = viewModel)
+        }
+
+        composable(Routes.HISTORY) {
+            val viewModel: HistoryViewModel = hiltViewModel()
+            HistoryScreen(navController = navController, viewModel = viewModel)
+        }
+
+        composable(Routes.USER_PROFILE) {
+            val viewModel: UserProfileViewModel = hiltViewModel()
+            UserProfileScreen(
+                navController     = navController,
+                viewModel         = viewModel,
+                onSignInRequested = onSignInRequest
+            )
+        }
+
+        composable(Routes.MY_EDITS) {
+            val viewModel: MyEditsViewModel = hiltViewModel()
+            MyEditsScreen(navController = navController, viewModel = viewModel)
         }
     }
 }

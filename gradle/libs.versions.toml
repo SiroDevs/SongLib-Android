@@ -28,6 +28,8 @@ compiler = "3.2.0-alpha11"
 foundation = "1.11.1"
 workmanager = "2.11.2"
 hilt-work = "1.2.0"
+google-auth = "21.2.0"
+coil = "2.6.0"
 
 [libraries]
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
@@ -71,6 +73,9 @@ androidx-foundation = { group = "androidx.compose.foundation", name = "foundatio
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
+# New
+google-play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "google-auth" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

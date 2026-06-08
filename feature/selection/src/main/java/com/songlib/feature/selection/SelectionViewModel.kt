@@ -8,6 +8,7 @@ import com.songlib.core.common.entity.Selectable
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.data.worker.SyncScheduler
 import com.songlib.core.database.model.BookEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ import javax.inject.Inject
 class SelectionViewModel @Inject constructor(
     private val songbkRepo: SongBookRepo,
     private val prefsRepo: PrefsRepo,
+    private val userRepo: UserRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -62,14 +64,6 @@ class SelectionViewModel @Inject constructor(
     fun getSelectedBookList(): List<BookEntity> =
         _books.value.filter { it.isSelected }.map { it.data }
 
-    /**
-     * Saves the user's current book selection then hands off to WorkManager
-     * so song fetching happens in the background (survives process death, retries
-     * on network failure, does not block the UI thread).
-     *
-     * @param context Needed only to enqueue WorkManager – safe to pass from Composable
-     *                via LocalContext.
-     */
     fun saveSelectedBooks(context: Context) {
         saveBooks(getSelectedBookList(), context)
     }
@@ -81,10 +75,8 @@ class SelectionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (prefsRepo.selectAfresh) {
-                    // Re-selection: only insert new, delete removed
                     val existingIds = getSelectedIds()
                     val newIds = books.map { it.bookId }.toSet()
-
                     val booksToInsert = books.filter { it.bookId !in existingIds }
                     val idsToDelete = existingIds - newIds
 
@@ -92,21 +84,22 @@ class SelectionViewModel @Inject constructor(
                     booksToInsert.forEach { songbkRepo.saveBook(it) }
 
                     prefsRepo.selectedBooks = newIds.joinToString(",")
-                    prefsRepo.selectAfresh = false   // clear the flag
+                    prefsRepo.selectAfresh  = false
                 } else {
-                    // First-time selection
                     songbkRepo.saveBooks(books)
-                    prefsRepo.selectedBooks = books.joinToString(",") { it.bookId.toString() }
+                    prefsRepo.selectedBooks  = books.joinToString(",") { it.bookId.toString() }
                     prefsRepo.isDataSelected = true
                 }
 
-                // Mark data as NOT loaded so the worker knows it needs to sync
                 prefsRepo.isDataLoaded = false
 
-                // Hand off to WorkManager – this runs in the background and retries
-                // automatically if the network is unavailable at this moment.
-                SyncScheduler.scheduleInstallSync(context)
+                // Sync book selection to remote if user is logged in
+                val userId = prefsRepo.loggedInUserId
+                if (userId > 0) {
+                    userRepo.syncBookSelection(userId)
+                }
 
+                SyncScheduler.scheduleInstallSync(context)
                 Log.d(TAG, "Books saved, WorkManager sync enqueued")
                 _uiState.tryEmit(UiState.Saved)
 

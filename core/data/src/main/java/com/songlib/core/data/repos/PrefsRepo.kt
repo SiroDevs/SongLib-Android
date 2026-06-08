@@ -86,4 +86,35 @@ class PrefsRepo @Inject constructor(
         val oneDayMs = 24 * 60 * 60 * 1000L
         return elapsed >= oneDayMs
     }
+
+    // ── User auth ─────────────────────────────────────────────────────────
+    var loggedInUserId: Int
+        get() = prefs.getInt(PrefConstants.LOGGED_IN_USER_ID, 0)
+        set(value) = prefs.edit { putInt(PrefConstants.LOGGED_IN_USER_ID, value) }
+
+    var loggedInEmail: String
+        get() = prefs.getString(PrefConstants.LOGGED_IN_EMAIL, "") ?: ""
+        set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_EMAIL, value) }
+
+    var loggedInName: String
+        get() = prefs.getString(PrefConstants.LOGGED_IN_NAME, "") ?: ""
+        set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_NAME, value) }
+
+    var loggedInPhotoUrl: String
+        get() = prefs.getString(PrefConstants.LOGGED_IN_PHOTO_URL, "") ?: ""
+        set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_PHOTO_URL, value) }
+
+    val isLoggedIn: Boolean get() = loggedInUserId > 0
+
+    fun clearUser() {
+        loggedInUserId   = 0
+        loggedInEmail    = ""
+        loggedInName     = ""
+        loggedInPhotoUrl = ""
+    }
+
+    // ── Delta sync ────────────────────────────────────────────────────────
+    var lastSinceDateIso: String
+        get() = prefs.getString(PrefConstants.LAST_SINCE_DATE, "") ?: ""
+        set(value) = prefs.edit { putString(PrefConstants.LAST_SINCE_DATE, value) }
 }
