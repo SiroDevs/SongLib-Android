@@ -26,6 +26,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavHostController
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
@@ -44,13 +46,8 @@ fun HomeAppBar(
     onShowListingSheet: () -> Unit,
     onDeleteListings: () -> Unit,
     onAddListing: () -> Unit,
-    onNavigateSettings: () -> Unit,
-    onNavigateHowItWorks: () -> Unit,
-    onNavigateHelp: () -> Unit,
-    onNavigateDrafts: () -> Unit,
-    onNavigateHistory: () -> Unit,
-    onNavigateMyEdits: () -> Unit,
     viewModel: HomeViewModel,
+    navController: NavHostController,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
@@ -73,16 +70,16 @@ fun HomeAppBar(
                         }
                     }
 
-                    // History icon — only shown when history exists
                     if (hasHistory) {
-                        IconButton(onClick = onNavigateHistory) {
+                        IconButton(onClick = { navController.navigate(Routes.HISTORY) }) {
                             Icon(Icons.Default.History, contentDescription = "History")
                         }
                     }
 
-                    // Drafts icon (replaces old theme icon)
-                    IconButton(onClick = onNavigateDrafts) {
-                        Icon(Icons.Default.EditNote, contentDescription = "Drafts")
+                    if (selectedTab == HomeNavItem.Search) {
+                        IconButton(onClick = { navController.navigate(Routes.DRAFTS) }) {
+                            Icon(Icons.Default.EditNote, contentDescription = "Drafts")
+                        }
                     }
 
                     IconButton(onClick = { showMoreMenu = true }) {
@@ -93,29 +90,34 @@ fun HomeAppBar(
                         expanded = showMoreMenu,
                         onDismissRequest = { showMoreMenu = false }
                     ) {
-                        DropdownMenuItem(
-                            text = { Text("Settings") },
-                            leadingIcon = { Icon(Icons.Default.Settings, null) },
-                            onClick = { showMoreMenu = false; onNavigateSettings() }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("How It Works") },
-                            leadingIcon = { Icon(Icons.Default.Info, null) },
-                            onClick = { showMoreMenu = false; onNavigateHowItWorks() }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Help & Feedback") },
-                            leadingIcon = { Icon(Icons.Default.HelpOutline, null) },
-                            onClick = { showMoreMenu = false; onNavigateHelp() }
-                        )
-                        // My Edits — only shown when user has edits
                         if (hasEdits) {
                             DropdownMenuItem(
                                 text = { Text("My Edits") },
                                 leadingIcon = { Icon(Icons.Default.Checklist, null) },
-                                onClick = { showMoreMenu = false; onNavigateMyEdits() }
+                                onClick = {
+                                    showMoreMenu = false; navController.navigate(Routes.MY_EDITS)
+                                }
                             )
                         }
+                        DropdownMenuItem(
+                            text = { Text("How It Works") },
+                            leadingIcon = { Icon(Icons.Default.Info, null) },
+                            onClick = {
+                                showMoreMenu = false; navController.navigate(Routes.HOW_IT_WORKS)
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Help & Feedback") },
+                            leadingIcon = { Icon(Icons.Default.HelpOutline, null) },
+                            onClick = { showMoreMenu = false; navController.navigate(Routes.HELP) }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Settings") },
+                            leadingIcon = { Icon(Icons.Default.Settings, null) },
+                            onClick = {
+                                showMoreMenu = false; navController.navigate(Routes.SETTINGS)
+                            }
+                        )
                     }
                 }
 
@@ -126,7 +128,7 @@ fun HomeAppBar(
                             imageVector = if (allLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             contentDescription = if (allLiked) "Unlike" else "Like",
                             tint = if (allLiked) MaterialTheme.colorScheme.primary
-                                   else MaterialTheme.colorScheme.onPrimaryContainer
+                            else MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                     if (selectedSongs.size == 1) {
@@ -135,7 +137,10 @@ fun HomeAppBar(
                         }
                     }
                     IconButton(onClick = onShowListingSheet) {
-                        Icon(Icons.Default.FormatListNumbered, contentDescription = "Add to listing")
+                        Icon(
+                            Icons.Default.FormatListNumbered,
+                            contentDescription = "Add to listing"
+                        )
                     }
                 }
 

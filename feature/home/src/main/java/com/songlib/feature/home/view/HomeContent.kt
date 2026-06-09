@@ -21,7 +21,6 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PrefsRepo
-import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.components.BottomNavBar
@@ -37,7 +36,6 @@ import com.songlib.feature.home.view.tabs.HomeSearch
 fun HomeContent(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
 ) {
     val tabs = listOf(HomeNavItem.Search, HomeNavItem.Likes, HomeNavItem.Listings)
@@ -68,8 +66,8 @@ fun HomeContent(
 
     if (showAddListingDialog) {
         QuickFormDialog(
-            title    = "New Listing",
-            label    = "Listing title",
+            title = "New Listing",
+            label = "Listing title",
             onDismiss = { showAddListingDialog = false },
             onConfirm = { title ->
                 if (viewModel.checkAndHandleNewListing()) viewModel.saveListing(title)
@@ -80,8 +78,8 @@ fun HomeContent(
 
     if (showListingSheet) {
         ChoosingListingSheet(
-            listings     = listings,
-            onDismiss    = { showListingSheet = false },
+            listings = listings,
+            onDismiss = { showListingSheet = false },
             onNewListClick = {
                 showListingSheet = false
                 if (viewModel.checkAndHandleNewListing()) showAddListingDialog = true
@@ -96,10 +94,10 @@ fun HomeContent(
     }
 
     val topBarTitle = when {
-        selectedSongs.isNotEmpty()    -> "${selectedSongs.size} selected"
+        selectedSongs.isNotEmpty() -> "${selectedSongs.size} selected"
         selectedListings.isNotEmpty() -> "${selectedListings.size} selected"
-        selectedTab == HomeNavItem.Search   -> "SongLib"
-        selectedTab == HomeNavItem.Likes    -> "Liked Songs"
+        selectedTab == HomeNavItem.Search -> "SongLib"
+        selectedTab == HomeNavItem.Likes -> "Liked Songs"
         selectedTab == HomeNavItem.Listings -> "Song Listings"
         else -> "SongLib"
     }
@@ -107,13 +105,13 @@ fun HomeContent(
     Scaffold(
         topBar = {
             HomeAppBar(
-                title                 = topBarTitle,
-                selectedTab           = selectedTab,
-                selectedSongs         = selectedSongs,
-                selectedListings      = selectedListings,
-                onClearSongSelection  = viewModel::clearSongSelection,
+                title = topBarTitle,
+                selectedTab = selectedTab,
+                selectedSongs = selectedSongs,
+                selectedListings = selectedListings,
+                onClearSongSelection = viewModel::clearSongSelection,
                 onClearListingSelection = viewModel::clearListingSelection,
-                onLikeSongs           = { viewModel.likeSongs(selectedSongs) },
+                onLikeSongs = { viewModel.likeSongs(selectedSongs) },
                 onShareSong = {
                     val song = selectedSongs.first()
                     val shareText = songShareString(song.title, lyricsString(song.content))
@@ -124,16 +122,11 @@ fun HomeContent(
                     context.startActivity(Intent.createChooser(intent, "Share song via"))
                     viewModel.clearSongSelection()
                 },
-                onShowListingSheet    = { showListingSheet = true },
-                onDeleteListings      = { viewModel.deleteListings(selectedListings) },
-                onAddListing          = { showAddListingDialog = true },
-                onNavigateSettings    = { navController.navigate(Routes.SETTINGS) },
-                onNavigateHowItWorks  = { navController.navigate(Routes.HOW_IT_WORKS) },
-                onNavigateHelp        = { navController.navigate(Routes.HELP) },
-                onNavigateDrafts      = { navController.navigate(Routes.DRAFTS) },
-                onNavigateHistory     = { navController.navigate(Routes.HISTORY) },
-                onNavigateMyEdits     = { navController.navigate(Routes.MY_EDITS) },
-                viewModel             = viewModel,
+                onShowListingSheet = { showListingSheet = true },
+                onDeleteListings = { viewModel.deleteListings(selectedListings) },
+                onAddListing = { showAddListingDialog = true },
+                viewModel = viewModel,
+                navController = navController,
             )
         },
         bottomBar = {
@@ -153,21 +146,23 @@ fun HomeContent(
         ) { page ->
             when (tabs[page]) {
                 HomeNavItem.Search -> HomeSearch(
-                    viewModel    = viewModel,
+                    viewModel = viewModel,
                     navController = navController,
-                    prefsRepo    = prefsRepo,
+                    prefsRepo = prefsRepo,
                     onShowDonation = { navController.navigate(Routes.DONATION) },
                 )
+
                 HomeNavItem.Likes -> HomeLikes(
-                    viewModel    = viewModel,
+                    viewModel = viewModel,
                     navController = navController,
-                    prefsRepo    = prefsRepo,
+                    prefsRepo = prefsRepo,
                     onShowDonation = { navController.navigate(Routes.DONATION) },
                 )
+
                 HomeNavItem.Listings -> HomeListings(
-                    viewModel    = viewModel,
+                    viewModel = viewModel,
                     navController = navController,
-                    prefsRepo    = prefsRepo,
+                    prefsRepo = prefsRepo,
                     onShowDonation = { navController.navigate(Routes.DONATION) },
                 )
             }

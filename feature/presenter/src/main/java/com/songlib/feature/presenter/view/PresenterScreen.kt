@@ -91,9 +91,9 @@ fun PresenterScreen(
 
     if (showReportDialog) {
         ReportSongDialog(
-            songTitle    = currentSong?.title ?: song?.title ?: "",
+            songTitle = currentSong?.title ?: song?.title ?: "",
             isSubmitting = reportState is ReportUiState.Submitting,
-            onDismiss    = {
+            onDismiss = {
                 showReportDialog = false
                 viewModel.resetReportState()
             },
@@ -101,9 +101,9 @@ fun PresenterScreen(
                 val s = currentSong ?: song
                 s?.let {
                     viewModel.submitReport(
-                        song        = it,
-                        bookId      = book?.bookId ?: it.book,
-                        reportType  = type,
+                        song = it,
+                        bookId = book?.bookId ?: it.book,
+                        reportType = type,
                         description = desc
                     )
                 }
@@ -113,8 +113,8 @@ fun PresenterScreen(
 
     if (showAddListingDialog) {
         QuickFormDialog(
-            title    = "New Listing",
-            label    = "Listing title",
+            title = "New Listing",
+            label = "Listing title",
             onDismiss = { showAddListingDialog = false },
             onConfirm = { newTitle ->
                 viewModel.saveListing(newTitle)
@@ -125,8 +125,8 @@ fun PresenterScreen(
 
     if (showListingSheet) {
         ChoosingListingSheet(
-            listings     = listings,
-            onDismiss    = { showListingSheet = false },
+            listings = listings,
+            onDismiss = { showListingSheet = false },
             onNewListClick = {
                 showListingSheet = false
                 showAddListingDialog = true
@@ -142,23 +142,23 @@ fun PresenterScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title     = title,
-                tagline   = book?.title,
+                title = title,
+                tagline = book?.title,
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
                 actions = {
                     LikeSongBtn(
-                        isLiked     = isLiked,
-                        song        = currentSong,
+                        isLiked = isLiked,
+                        song = currentSong,
                         onLikeToggle = { viewModel.likeSong(it) }
                     )
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
                     MoreMenu(
-                        expanded     = showMoreMenu,
-                        onDismiss    = { showMoreMenu = false },
-                        onAddToList  = {
+                        expanded = showMoreMenu,
+                        onDismiss = { showMoreMenu = false },
+                        onAddToList = {
                             if (viewModel.checkAndHandleNewListing()) showListingSheet = true
                             else showAddListingDialog = true
                         },
@@ -169,8 +169,8 @@ fun PresenterScreen(
         },
         floatingActionButton = {
             PresentorFab(
-                fontSize      = fontSize,
-                currentSong   = currentSong,
+                fontSize = fontSize,
+                currentSong = currentSong,
                 onResetFontSize = { viewModel.updateFontSize(PresenterViewModel.DEFAULT_FONT_SP) },
                 onShare = { shareText ->
                     val intent = Intent(Intent.ACTION_SEND).apply {
@@ -189,24 +189,27 @@ fun PresenterScreen(
         ) {
             when (uiState) {
                 is UiState.Error -> ErrorState(
-                    message     = (uiState as UiState.Error).message,
+                    message = (uiState as UiState.Error).message,
                     retryAction = {}
                 )
+
                 UiState.Loaded -> PresenterContent(
-                    verses            = verses,
-                    indicators        = indicators,
-                    horizontalSlides  = horizontalSlides,
-                    hasPrevious       = hasPreviousSong,
-                    hasNext           = hasNextSong,
-                    fontSize          = fontSize,
-                    onFontSizeChange  = { viewModel.updateFontSize(it) },
+                    verses = verses,
+                    indicators = indicators,
+                    horizontalSlides = horizontalSlides,
+                    hasPrevious = hasPreviousSong,
+                    hasNext = hasNextSong,
+                    fontSize = fontSize,
+                    onFontSizeChange = { viewModel.updateFontSize(it) },
                     onNavigatePrevious = { viewModel.navigateToPrevious() },
-                    onNavigateNext    = { viewModel.navigateToNext() },
+                    onNavigateNext = { viewModel.navigateToNext() },
                 )
+
                 UiState.Loading -> LoadingState(
-                    title    = "Loading song ...",
+                    title = "Loading song ...",
                     fileName = "circle-loader"
                 )
+
                 else -> EmptyState()
             }
 

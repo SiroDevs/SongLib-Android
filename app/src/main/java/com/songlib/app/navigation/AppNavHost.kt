@@ -129,8 +129,6 @@ fun AppNavHost(
             )
         }
 
-        // ── New routes ────────────────────────────────────────────────────
-
         composable(Routes.DRAFTS) {
             val viewModel: DraftsViewModel = hiltViewModel()
             DraftsScreen(navController = navController, viewModel = viewModel)
