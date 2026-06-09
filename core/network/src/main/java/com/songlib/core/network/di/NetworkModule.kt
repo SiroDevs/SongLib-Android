@@ -1,6 +1,5 @@
 package com.songlib.core.network.di
 
-import com.songlib.core.network.BuildConfig
 import com.songlib.core.network.services.PesaPalService
 import com.songlib.core.network.services.SongLibService
 import com.songlib.core.common.utils.ApiConstants
@@ -23,10 +22,12 @@ object NetworkModule {
 
     @Provides
     @Reusable
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        @Named("songlib_api_key") apiKey: String
+    ): OkHttpClient {
         val apiKeyInterceptor = Interceptor { chain ->
             val request = chain.request().newBuilder()
-                .addHeader("x-api-key", BuildConfig.SONGLIB_API_KEY)
+                .addHeader("x-api-key", apiKey)
                 .build()
             chain.proceed(request)
         }

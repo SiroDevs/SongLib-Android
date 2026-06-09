@@ -9,6 +9,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.songlib.BuildConfig
 import com.songlib.app.navigation.AppNavHost
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeMode
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
             GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .requestProfile()
-                .requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+                .requestIdToken(BuildConfig.GoogleWebClientId)
                 .build()
         )
     }

@@ -2,14 +2,14 @@
 agp = "9.2.1"
 concurrentFutures = "1.3.0"
 kotlin = "2.3.21"
-coreKtx = "1.18.0"
+coreKtx = "1.19.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
-composeBom = "2026.05.00"
-compose = "1.11.1"
+composeBom = "2026.05.01"
+compose = "1.11.2"
 composeMaterial = "1.7.8"
 hilt = "2.59.2"
 hiltNav = "1.3.0"
@@ -23,13 +23,13 @@ kotlinx-serialization = "1.11.0"
 material3 = "1.4.0"
 lottie-compose = "6.6.9"
 sentry = "6.7.0"
-billing = "8.3.0"
+billing = "9.0.0"
 compiler = "3.2.0-alpha11"
-foundation = "1.11.1"
+foundation = "1.11.2"
 workmanager = "2.11.2"
-hilt-work = "1.2.0"
-google-auth = "21.2.0"
-coil = "2.6.0"
+hilt-work = "1.3.0"
+coil = "2.7.0"
+google-services = "4.4.4"
 
 [libraries]
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
@@ -73,8 +73,6 @@ androidx-foundation = { group = "androidx.compose.foundation", name = "foundatio
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hilt-work" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-work" }
-# New
-google-play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "google-auth" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 [plugins]
@@ -84,6 +82,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 io-sentry = { id = "io.sentry.android.gradle", version.ref = "sentry" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 
 # Convention plugin aliases (defined in build-logic)
 songlib-android-library = { id = "songlib.android.library", version = "unspecified" }

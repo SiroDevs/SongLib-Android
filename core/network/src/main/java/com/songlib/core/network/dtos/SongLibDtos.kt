@@ -1,6 +1,5 @@
 package com.songlib.core.network.dtos
 
-// ── Paginated wrapper ─────────────────────────────────────────────────────────
 data class PaginationMeta(
     val page: Int,
     val limit: Int,
@@ -14,7 +13,6 @@ data class PagedSongsResponse(
     val pagination: PaginationMeta
 )
 
-// ── User ─────────────────────────────────────────────────────────────────────
 data class UserDto(
     val userId: Int = 0,
     val username: String,
@@ -27,7 +25,6 @@ data class UserDto(
     val updated: String? = null
 )
 
-// ── Draft ─────────────────────────────────────────────────────────────────────
 data class DraftDto(
     val draftId: Int = 0,
     val title: String,
@@ -39,7 +36,6 @@ data class DraftDto(
     val updated: String? = null
 )
 
-// ── Edit ─────────────────────────────────────────────────────────────────────
 data class EditDto(
     val editId: Int = 0,
     val songId: Int,
@@ -51,7 +47,6 @@ data class EditDto(
     val updated: String? = null
 )
 
-// ── Report ────────────────────────────────────────────────────────────────────
 data class SongReportRequest(
     val songId: Int,
     val bookId: Int,
@@ -67,12 +62,10 @@ data class SongReportResponse(
     val reportId: Int
 )
 
-// ── Like toggle ───────────────────────────────────────────────────────────────
 data class LikeToggleRequest(val userId: Int, val songId: Int)
 data class LikeToggleResponse(val userId: Int, val songId: Int, val liked: Boolean)
 data class LikedSongsResponse(val userId: Int, val likedSongIds: List<Int>)
 
-// ── Organisation ──────────────────────────────────────────────────────────────
 data class OrganisationDto(
     val orgId: Int = 0,
     val title: String,
@@ -81,7 +74,6 @@ data class OrganisationDto(
     val created: String? = null
 )
 
-// ── Listing ───────────────────────────────────────────────────────────────────
 data class ListingDto(
     val listingId: Int = 0,
     val title: String,
