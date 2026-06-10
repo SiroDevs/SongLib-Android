@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.songlib.hilt)
     alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.google.services)
     kotlin("plugin.serialization") version "2.1.21"
     id("kotlin-parcelize")
 }
@@ -23,8 +24,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 840
-        versionName = "1.0.84"
+        versionCode = 842
+        versionName = "1.0.842"
         minSdk = 26
         targetSdk = 37
 
@@ -34,26 +35,28 @@ android {
         buildConfigField("String", "PesapalConsumerKey", "\"${localProperties.getProperty("PESAPAL_CONSUMER_KEY") ?: ""}\"")
         buildConfigField("String", "PesapalConsumerSecret", "\"${localProperties.getProperty("PESAPAL_CONSUMER_SECRET") ?: ""}\"")
         buildConfigField("String", "PesapalIpnId", "\"${localProperties.getProperty("PESAPAL_IPN_ID") ?: ""}\"")
+        buildConfigField("String", "GoogleWebClientId", "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\"")
+        buildConfigField("String", "SonglibApiKey", "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\"")
     }
 
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
+            keyAlias     = keystoreProperties["keyAlias"] as String
+            keyPassword  = keystoreProperties["keyPassword"] as String
             storePassword = keystoreProperties["storePassword"] as String
-            storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
+            storeFile    = keystoreProperties["storeFile"]?.let { file(it as String) }
         }
     }
 
     buildTypes {
         getByName("debug") {
-            applicationIdSuffix = ".dev"
-            versionNameSuffix = "-dev"
-            isDebuggable = true
+            applicationIdSuffix  = ".dev"
+            versionNameSuffix    = "-dev"
+            isDebuggable         = true
         }
         getByName("release") {
             isMinifyEnabled = true
-            signingConfig = signingConfigs.getByName("release")
+            signingConfig   = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -67,12 +70,14 @@ android {
     }
 
     buildFeatures {
-        compose = true
+        compose     = true
         buildConfig = true
     }
+
     lint {
         disable += "NullSafeMutableLiveData"
     }
+
     namespace = "com.songlib"
 }
 
@@ -114,10 +119,15 @@ dependencies {
     implementation(libs.android.billing)
     implementation(libs.androidx.concurrent.futures)
 
-    // WorkManager (Configuration.Provider in SongLibApp)
+    // WorkManager
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
+
+    // Google Sign-In
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.google.identity.googleid)
 
     // Testing
     testImplementation(libs.junit)

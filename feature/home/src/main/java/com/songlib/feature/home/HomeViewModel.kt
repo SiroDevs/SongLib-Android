@@ -4,13 +4,15 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.SongUtils
+import com.songlib.core.data.repos.EditRepo
+import com.songlib.core.data.repos.ListingRepo
+import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.TrackingRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.ListingRepo
-import com.songlib.core.data.repos.PrefsRepo
-import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.feature.home.components.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +33,11 @@ class HomeViewModel @Inject constructor(
     private val songbkRepo: SongBookRepo,
     private val listRepo: ListingRepo,
     private val prefsRepo: PrefsRepo,
+    private val trackingRepo: TrackingRepo,
+    private val editRepo: EditRepo,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _demoMode = MutableStateFlow(prefsRepo.demoMode)
@@ -43,7 +48,7 @@ class HomeViewModel @Inject constructor(
         _demoMode.value = false
     }
 
-    private val _selectedBook: MutableStateFlow<Int> = MutableStateFlow<Int>(-1)
+    private val _selectedBook = MutableStateFlow(-1)
     val selectedBook: StateFlow<Int> = _selectedBook.asStateFlow()
 
     private val _selectedTab: MutableStateFlow<HomeNavItem> = MutableStateFlow(HomeNavItem.Search)
@@ -71,7 +76,6 @@ class HomeViewModel @Inject constructor(
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
     private val _searchByNo = MutableStateFlow(false)
-
     private var searchJob: Job? = null
 
     private val _selectedSongs = MutableStateFlow<Set<SongEntity>>(emptySet())
@@ -80,19 +84,30 @@ class HomeViewModel @Inject constructor(
     private val _selectedListings = MutableStateFlow<Set<ListingUi>>(emptySet())
     val selectedListings: StateFlow<Set<ListingUi>> = _selectedListings.asStateFlow()
 
+    // ── New: History and Edits visibility ────────────────────────────────
+    private val _hasHistory = MutableStateFlow(false)
+    val hasHistory: StateFlow<Boolean> = _hasHistory.asStateFlow()
+
+    private val _hasEdits = MutableStateFlow(false)
+    val hasEdits: StateFlow<Boolean> = _hasEdits.asStateFlow()
+
     fun toggleSongSelection(song: SongEntity) {
         _selectedSongs.value = if (_selectedSongs.value.contains(song))
             _selectedSongs.value - song else _selectedSongs.value + song
     }
 
-    fun clearSongSelection() { _selectedSongs.value = emptySet() }
+    fun clearSongSelection() {
+        _selectedSongs.value = emptySet()
+    }
 
     fun toggleListingSelection(listing: ListingUi) {
         _selectedListings.value = if (_selectedListings.value.contains(listing))
             _selectedListings.value - listing else _selectedListings.value + listing
     }
 
-    fun clearListingSelection() { _selectedListings.value = emptySet() }
+    fun clearListingSelection() {
+        _selectedListings.value = emptySet()
+    }
 
     fun setSelectedTab(tab: HomeNavItem) {
         _selectedTab.value = tab
@@ -104,10 +119,19 @@ class HomeViewModel @Inject constructor(
             _books.value = songbkRepo.fetchLocalBooks()
             _songs.value = songbkRepo.fetchLocalSongs()
             _listings.value = listRepo.fetchListings(0)
-
             _selectedBook.value = -1
             _filtered.value = _songs.value
             _likes.value = _songs.value.filter { it.liked }
+
+            // Check history and edits visibility
+            val histories = trackingRepo.fetchHistories()
+            _hasHistory.value = histories.isNotEmpty()
+
+            val userId = prefsRepo.loggedInUserId
+            if (userId > 0) {
+                _hasEdits.value = editRepo.hasEdits(userId)
+            }
+
             _uiState.tryEmit(UiState.Filtered)
         }
     }
@@ -135,23 +159,29 @@ class HomeViewModel @Inject constructor(
             if (!byNo) delay(150)
 
             val pool = songsForCurrentBook()
-
             _filtered.value = if (qry.isBlank()) pool
             else SongUtils.searchSongs(pool, qry, byNo)
             _uiState.tryEmit(UiState.Filtered)
+
+            if (qry.isNotBlank() && !byNo) {
+                trackingRepo.recordSearch(qry)
+                val histories = trackingRepo.fetchHistories()
+                _hasHistory.value = histories.isNotEmpty()
+            }
         }
     }
 
     private fun songsForCurrentBook(): List<SongEntity> {
         val bookIndex = _selectedBook.value
-        val bookList  = _books.value
-        val songList  = _songs.value
+        val bookList = _books.value
+        val songList = _songs.value
         return when {
             bookIndex == -1 -> songList
             bookIndex in bookList.indices -> {
                 val bookId = bookList[bookIndex].bookId
                 songList.filter { it.book == bookId }
             }
+
             else -> songList
         }
     }
@@ -161,10 +191,8 @@ class HomeViewModel @Inject constructor(
             try {
                 val allLiked = songs.all { it.liked }
                 songs.forEach { song ->
-                    val updated = song.copy(liked = !song.liked)
-                    songbkRepo.updateSong(updated)
+                    songbkRepo.updateSong(song.copy(liked = !song.liked))
                 }
-
                 val updatedIds = songs.map { it.songId }.toSet()
                 val newSongList = _songs.value.map { s ->
                     if (s.songId in updatedIds) s.copy(liked = !s.liked) else s
@@ -177,7 +205,6 @@ class HomeViewModel @Inject constructor(
                     _likes.value = newSongList.filter { it.liked }
                     _selectedSongs.value = emptySet()
                     _uiState.tryEmit(UiState.Filtered)
-
                     val msg = if (allLiked) {
                         if (songs.size == 1) "Removed from likes" else "Removed ${songs.size} songs from likes"
                     } else {
@@ -226,9 +253,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun checkAndHandleNewListing(): Boolean {
-        return listings.value.isNotEmpty()
-    }
+    fun checkAndHandleNewListing(): Boolean = listings.value.isNotEmpty()
 
     fun clearData(onComplete: (Boolean) -> Unit) {
         _uiState.tryEmit(UiState.Loading)

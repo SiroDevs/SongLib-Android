@@ -9,11 +9,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.appThemeName
-import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.core.common.utils.Routes
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
+import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.settings.SettingsViewModel
 import com.songlib.feature.settings.components.ConfirmResetDialog
 import com.songlib.feature.settings.components.SettingsSectionTitle
@@ -60,7 +60,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "App Settings",
+                title      = "App Settings",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() }
             )
@@ -71,97 +71,76 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
+            // ── Account ───────────────────────────────────────────────────
+            SettingsSectionTitle("Account")
+            ListItem(
+                leadingContent   = { Icon(Icons.Default.AccountCircle, "Profile") },
+                headlineContent  = { Text("Your Profile") },
+                supportingContent = { Text("Manage your Profile") },
+                modifier         = Modifier.clickable {
+                    navController.navigate(Routes.USER_PROFILE)
+                }
+            )
+            HorizontalDivider()
+
+            // ── Slides ────────────────────────────────────────────────────
             SettingsSectionTitle("Slides")
             ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.Swipe, contentDescription = "slides"
-                    )
-                },
-                headlineContent = { Text("Song Slides") },
+                leadingContent   = { Icon(Icons.Default.Swipe, "slides") },
+                headlineContent  = { Text("Song Slides") },
                 supportingContent = { Text("Swipe verses horizontally") },
-                trailingContent = {
+                trailingContent  = {
                     Switch(
-                        checked = viewModel.horizontalSlides,
-                        onCheckedChange = {
-                            viewModel.updateHorizontalSlides(it)
-                        }
+                        checked         = viewModel.horizontalSlides,
+                        onCheckedChange = { viewModel.updateHorizontalSlides(it) }
                     )
                 }
             )
             HorizontalDivider()
 
+            // ── Demo ──────────────────────────────────────────────────────
             SettingsSectionTitle("Demo")
             ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.PlayCircleOutline, contentDescription = "Demo Mode"
-                    )
-                },
-                headlineContent = { Text("Demo Mode") },
+                leadingContent   = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
+                headlineContent  = { Text("Demo Mode") },
                 supportingContent = { Text("Show guided tour on home screen") },
-                trailingContent = {
+                trailingContent  = {
                     Switch(
-                        checked = viewModel.demoMode,
-                        onCheckedChange = {
-                            viewModel.updateDemoMode(it)
-                        }
+                        checked         = viewModel.demoMode,
+                        onCheckedChange = { viewModel.updateDemoMode(it) }
                     )
                 }
             )
             HorizontalDivider()
 
+            // ── Display ───────────────────────────────────────────────────
             SettingsSectionTitle("Display")
             ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.Brightness6, contentDescription = "Theme"
-                    )
-                },
-                headlineContent = { Text("App Theme") },
+                leadingContent   = { Icon(Icons.Default.Brightness6, "Theme") },
+                headlineContent  = { Text("App Theme") },
                 supportingContent = { Text(appThemeName(theme)) },
-                modifier = Modifier.clickable { showThemeDialog = true },
+                modifier         = Modifier.clickable { showThemeDialog = true }
             )
             HorizontalDivider()
 
+            // ── Selection ─────────────────────────────────────────────────
             SettingsSectionTitle("Selection")
             ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.EditNote, contentDescription = "Reset"
-                    )
-                },
-                headlineContent = { Text("Modify Collection") },
+                leadingContent   = { Icon(Icons.Default.EditNote, "Reset") },
+                headlineContent  = { Text("Modify Collection") },
                 supportingContent = { Text("Add or Remove Songbooks") },
-                modifier = Modifier.clickable {
+                modifier         = Modifier.clickable {
                     viewModel.updateSelection(true)
                     navigateToSplash()
-                },
+                }
             )
             ListItem(
-                leadingContent = {
-                    Icon(
-                        Icons.Default.Refresh, contentDescription = "Reset"
-                    )
-                },
-                headlineContent = { Text("Select Afresh") },
+                leadingContent   = { Icon(Icons.Default.Refresh, "Reset") },
+                headlineContent  = { Text("Select Afresh") },
                 supportingContent = { Text("Reset everything and start over") },
-                modifier = Modifier.clickable { showResetDialog = true },
+                modifier         = Modifier.clickable { showResetDialog = true }
             )
             HorizontalDivider()
-
-//            SettingsSectionTitle("DONATE TO SONGLIB")
-//            ListItem(
-//                leadingContent = {
-//                    Icon(
-//                        Icons.Default.Brightness6, contentDescription = ""
-//                    )
-//                },
-//                headlineContent = { Text("Donate Now") },
-//                supportingContent = { Text("We need your donation to continue serving you") },
-//                modifier = Modifier.clickable { navController.navigate(Routes.DONATION) },
-//            )
-//            HorizontalDivider()
         }
     }
 }

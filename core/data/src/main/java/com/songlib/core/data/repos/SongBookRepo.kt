@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.collections.isNotEmpty
 
 @Singleton
 class SongBookRepo @Inject constructor(
@@ -29,7 +28,6 @@ class SongBookRepo @Inject constructor(
                 } else {
                     books
                 }
-
                 if (filteredBooks.isNotEmpty()) emit(filteredBooks) else emit(books)
             } else {
                 Log.d("TAG", "⚠️ No books fetched from remote")
@@ -41,50 +39,55 @@ class SongBookRepo @Inject constructor(
         }
     }
 
-    fun fetchRemoteSongs(bookIds: List<Int>): Flow<List<SongEntity>> = flow {
-        try {
-            val booksParam = bookIds.joinToString(",")
-            val songs = songlibService.getSongs(booksParam)
-            if (songs.isNotEmpty()) {
-                emit(songs)
-            } else {
-                Log.d("TAG", "⚠️ No songs fetched from remote")
-                emit(emptyList())
-            }
-        } catch (e: Exception) {
-            Log.e("TAG", "❌ Error fetching songs: ${e.message}", e)
-            throw e
-        }
-    }
+    /**
+     * Paginated fetch — loops all pages until hasMore=false.
+     * Pass [since] for delta sync (only changes after that ISO timestamp).
+     */
+    suspend fun fetchAndSaveSongs(bookIds: List<Int>, since: String? = null) {
+        val booksParam = bookIds.joinToString(",")
+        var page = 1
+        var totalFetched = 0
 
-    suspend fun fetchAndSaveSongs(bookIds: List<Int>) {
-        try {
-            val booksParam = bookIds.joinToString(",")
-            val songs = songlibService.getSongs(booksParam)
-            Log.d("TAG", "✅ ${songs.size} songs fetched for books: $booksParam")
-
+        while (true) {
+            val response = songlibService.getSongsPage(
+                bookIds = booksParam,
+                page    = page,
+                limit   = 500,
+                since   = since
+            )
+            val songs = response.data
             if (songs.isNotEmpty()) {
                 saveSongs(songs)
-            } else {
-                Log.d("TAG", "⚠️ No songs fetched from remote")
+                totalFetched += songs.size
+                Log.d("TAG", "✅ Page $page: fetched ${songs.size} songs (total: $totalFetched)")
             }
-        } catch (e: Exception) {
-            Log.e("TAG", "❌ Error fetching songs: ${e.message}", e)
+            if (!response.pagination.hasMore) break
+            page++
         }
+        Log.d("TAG", "✅ All pages done. Total songs fetched: $totalFetched")
+    }
+
+    /** Flow-based paginated fetch used by SelectionScreen (no local save). */
+    fun fetchRemoteSongs(bookIds: List<Int>): Flow<List<SongEntity>> = flow {
+        val booksParam = bookIds.joinToString(",")
+        var page = 1
+        val allSongs = mutableListOf<SongEntity>()
+
+        while (true) {
+            val response = songlibService.getSongsPage(bookIds = booksParam, page = page, limit = 500)
+            allSongs.addAll(response.data)
+            if (!response.pagination.hasMore) break
+            page++
+        }
+        emit(allSongs)
     }
 
     suspend fun saveBook(book: BookEntity) {
-        withContext(Dispatchers.IO) {
-            booksDao.insert(book)
-        }
+        withContext(Dispatchers.IO) { booksDao.insert(book) }
     }
 
     suspend fun saveBooks(books: List<BookEntity>) {
-        if (books.isEmpty()) {
-            Log.d("TAG", "⚠️ No books to save")
-            return
-        }
-
+        if (books.isEmpty()) { Log.d("TAG", "⚠️ No books to save"); return }
         try {
             booksDao.insertAll(books)
             Log.d("TAG", "✅ ${books.size} books saved successfully")
@@ -95,11 +98,7 @@ class SongBookRepo @Inject constructor(
     }
 
     suspend fun saveSongs(songs: List<SongEntity>) {
-        if (songs.isEmpty()) {
-            Log.d("TAG", "⚠️ No songs to save")
-            return
-        }
-
+        if (songs.isEmpty()) { Log.d("TAG", "⚠️ No songs to save"); return }
         try {
             songsDao.insertAll(songs)
             Log.d("TAG", "✅ ${songs.size} songs saved successfully")
@@ -110,39 +109,23 @@ class SongBookRepo @Inject constructor(
     }
 
     suspend fun fetchLocalBooks(): List<BookEntity> {
-        var allBooks: List<BookEntity>
-        withContext(Dispatchers.IO) {
-            allBooks = booksDao.getAll() ?: emptyList()
-        }
-        return allBooks
+        return withContext(Dispatchers.IO) { booksDao.getAll() ?: emptyList() }
     }
 
     suspend fun fetchLocalSongs(): List<SongEntity> {
-        var allSongs: List<SongEntity>
-        withContext(Dispatchers.IO) {
-            allSongs = songsDao.getAll() ?: emptyList()
-        }
-        return allSongs
+        return withContext(Dispatchers.IO) { songsDao.getAll() ?: emptyList() }
     }
 
     suspend fun fetchSong(songId: Int): SongEntity {
-        var song: SongEntity
-        withContext(Dispatchers.IO) {
-            song = songsDao.getSong(songId)
-        }
-        return song
+        return withContext(Dispatchers.IO) { songsDao.getSong(songId) }
     }
 
     suspend fun updateSong(song: SongEntity) {
-        withContext(Dispatchers.IO) {
-            songsDao.update(song)
-        }
+        withContext(Dispatchers.IO) { songsDao.update(song) }
     }
 
     suspend fun deleteById(bookId: Int) {
-        withContext(Dispatchers.IO) {
-            booksDao.deleteById(bookId)
-        }
+        withContext(Dispatchers.IO) { booksDao.deleteById(bookId) }
     }
 
     suspend fun deleteAllData() {
@@ -153,9 +136,6 @@ class SongBookRepo @Inject constructor(
     }
 
     suspend fun deleteByBookId(bookId: Int) {
-        withContext(Dispatchers.IO) {
-            songsDao.deleteById(bookId)
-        }
+        withContext(Dispatchers.IO) { songsDao.deleteById(bookId) }
     }
-
 }

@@ -1,13 +1,14 @@
 package com.songlib.core.network.di
 
-import com.songlib.core.common.utils.ApiConstants
 import com.songlib.core.network.services.PesaPalService
 import com.songlib.core.network.services.SongLibService
+import com.songlib.core.common.utils.ApiConstants
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -18,17 +19,27 @@ import javax.inject.Named
 @Module
 @Suppress("unused")
 object NetworkModule {
+
     @Provides
     @Reusable
-    fun provideOkHttpClient(): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+    fun provideOkHttpClient(
+        @Named("songlib_api_key") apiKey: String
+    ): OkHttpClient {
+        val apiKeyInterceptor = Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader("x-api-key", apiKey)
+                .build()
+            chain.proceed(request)
         }
-        builder.addInterceptor(loggingInterceptor)
 
-        return builder.build()
+        return OkHttpClient.Builder()
+            .addInterceptor(apiKeyInterceptor)
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            )
+            .build()
     }
 
     @Provides

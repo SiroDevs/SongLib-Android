@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.common.utils.songItemTitle
-import com.songlib.core.database.model.SongEntity
-import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.TrackingRepo
 import com.songlib.core.database.model.ListingUi
+import com.songlib.core.database.model.SongEntity
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -22,13 +25,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+sealed interface ReportUiState {
+    object Idle        : ReportUiState
+    object Submitting  : ReportUiState
+    object Success     : ReportUiState
+    data class Error(val message: String) : ReportUiState
+}
+
 @HiltViewModel
 class PresenterViewModel @Inject constructor(
     private val songbkRepo: SongBookRepo,
     private val listRepo: ListingRepo,
     private val prefsRepo: PrefsRepo,
+    private val reportRepo: ReportRepo,
+    private val trackingRepo: TrackingRepo,
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<UiState> = MutableStateFlow(UiState.Loading)
+
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     private val _isLiked = MutableStateFlow(false)
@@ -67,6 +80,9 @@ class PresenterViewModel @Inject constructor(
     private val _currentSong = MutableStateFlow<SongEntity?>(null)
     val currentSong: StateFlow<SongEntity?> = _currentSong.asStateFlow()
 
+    private val _reportState = MutableStateFlow<ReportUiState>(ReportUiState.Idle)
+    val reportState: StateFlow<ReportUiState> = _reportState.asStateFlow()
+
     companion object {
         const val DEFAULT_FONT_SP = 28f
         const val MIN_FONT_SP = 14f
@@ -87,6 +103,9 @@ class PresenterViewModel @Inject constructor(
         parseSong(song)
 
         viewModelScope.launch {
+            // Record song view in history
+            trackingRepo.recordSongView(song.songId)
+
             _listings.value = listRepo.fetchListings(0)
             val allSongs = withContext(Dispatchers.IO) { songbkRepo.fetchLocalSongs() }
             val siblingsSorted = allSongs
@@ -96,7 +115,6 @@ class PresenterViewModel @Inject constructor(
             _currentSongIndex.value = siblingsSorted.indexOfFirst { it.songId == song.songId }
             _hasPreviousSong.value = _currentSongIndex.value > 0
             _hasNextSong.value = _currentSongIndex.value in 0 until _bookSongs.value.size - 1
-
         }
     }
 
@@ -106,6 +124,8 @@ class PresenterViewModel @Inject constructor(
         _isLiked.value = song.liked
         parseSong(song)
         _currentSongIndex.value = _bookSongs.value.indexOfFirst { it.songId == song.songId }
+
+        viewModelScope.launch { trackingRepo.recordSongView(song.songId) }
     }
 
     fun navigateToNext() {
@@ -175,4 +195,35 @@ class PresenterViewModel @Inject constructor(
     }
 
     fun checkAndHandleNewListing(): Boolean = listings.value.isNotEmpty()
+
+    fun submitReport(
+        song: SongEntity,
+        bookId: Int,
+        reportType: String,
+        description: String
+    ) {
+        viewModelScope.launch {
+            _reportState.value = ReportUiState.Submitting
+            try {
+                reportRepo.submitReport(
+                    SongReportRequest(
+                        songId      = song.songId,
+                        bookId      = bookId,
+                        songNo      = song.songNo,
+                        songTitle   = song.title,
+                        reportType  = reportType,
+                        description = description,
+                        reportedBy  = prefsRepo.loggedInEmail.takeIf { it.isNotEmpty() }
+                    )
+                )
+                _reportState.value = ReportUiState.Success
+                _toastEvent.emit("Report submitted — thank you! ✅")
+            } catch (e: Exception) {
+                _reportState.value = ReportUiState.Error(e.message ?: "Failed to submit report")
+                _toastEvent.emit("Failed to submit report. Please try again.")
+            }
+        }
+    }
+
+    fun resetReportState() { _reportState.value = ReportUiState.Idle }
 }
