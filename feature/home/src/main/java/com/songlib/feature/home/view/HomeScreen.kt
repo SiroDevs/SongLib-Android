@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
-import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.indicators.LoadingState
@@ -25,7 +24,6 @@ import kotlinx.coroutines.flow.collectLatest
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel,
-    themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -72,7 +70,6 @@ fun HomeScreen(
                 HomeContent(
                     viewModel = viewModel,
                     navController = navController,
-                    themeRepo = themeRepo,
                     prefsRepo = prefsRepo
                 )
             }

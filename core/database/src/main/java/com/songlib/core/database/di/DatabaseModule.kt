@@ -19,9 +19,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/** Created the `feature` (drafts) and `edits` tables, plus searches index. */
 val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        // Add feature table
         db.execSQL("""
             CREATE TABLE IF NOT EXISTS feature (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -37,7 +37,6 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
             )
         """.trimIndent())
 
-        // Add edits table
         db.execSQL("""
             CREATE TABLE IF NOT EXISTS edits (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -53,9 +52,18 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
             )
         """.trimIndent())
 
-        // Add hits column to searches and rebuild index for upsert support
         db.execSQL("ALTER TABLE searches ADD COLUMN hits INTEGER NOT NULL DEFAULT 1")
         db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_searches_title ON searches(title)")
+    }
+}
+
+/**
+ * Version 4 only bumped the schema version; no structural changes were made.
+ * This no-op migration lets devices upgrading from 3 reach 4 without a crash.
+ */
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // No DDL changes between v3 and v4 — version bump only.
     }
 }
 
@@ -67,7 +75,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase =
         Room.databaseBuilder(appContext, AppDatabase::class.java, "SongLib")
-            .addMigrations(MIGRATION_2_3)
+            .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
             .build()
 
     @Provides fun provideBookDao(db: AppDatabase): BookDao = db.booksDao()

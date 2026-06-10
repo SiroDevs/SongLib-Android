@@ -34,7 +34,7 @@ import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.edits.admin.AdminEditsUiState
 import com.songlib.feature.edits.admin.AdminEditsViewModel
-import com.songlib.feature.edits.admin.view.components.PendingEditCard
+import com.songlib.feature.edits.admin.components.PendingEditCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

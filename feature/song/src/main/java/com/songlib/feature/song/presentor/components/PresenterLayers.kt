@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.view.components
+package com.songlib.feature.song.presentor.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

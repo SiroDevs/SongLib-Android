@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.PrefsRepo
-import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
@@ -35,11 +34,11 @@ import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.song.presentor.PresenterViewModel
 import com.songlib.feature.song.presentor.ReportUiState
-import com.songlib.feature.song.presentor.view.components.DemoOverlay
-import com.songlib.feature.song.presentor.view.components.LikeSongBtn
-import com.songlib.feature.song.presentor.view.components.MoreMenu
-import com.songlib.feature.song.presentor.view.components.PresentorFab
-import com.songlib.feature.song.presentor.view.components.ReportSongDialog
+import com.songlib.feature.song.presentor.components.DemoOverlay
+import com.songlib.feature.song.presentor.components.LikeSongBtn
+import com.songlib.feature.song.presentor.components.PresentorMoreMenu
+import com.songlib.feature.song.presentor.components.PresentorFab
+import com.songlib.feature.song.presentor.components.ReportSongDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +47,6 @@ fun PresenterScreen(
     viewModel: PresenterViewModel,
     song: SongEntity?,
     book: BookEntity?,
-    themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
 ) {
     val horizontalSlides = viewModel.horizontalSlides
@@ -155,7 +153,7 @@ fun PresenterScreen(
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
-                    MoreMenu(
+                    PresentorMoreMenu(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
                         onAddToList = {
@@ -163,6 +161,7 @@ fun PresenterScreen(
                             else showAddListingDialog = true
                         },
                         onReportSong = { showReportDialog = true },
+                        onEditSong = { },
                     )
                 },
             )

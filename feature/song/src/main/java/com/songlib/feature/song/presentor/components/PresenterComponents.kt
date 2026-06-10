@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.view.components
+package com.songlib.feature.song.presentor.components
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
@@ -33,7 +33,7 @@ import com.songlib.core.common.utils.songShareString
 import com.songlib.core.database.model.SongEntity
 
 @Composable
-fun MoreMenu(
+fun PresentorMoreMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     onAddToList: () -> Unit,

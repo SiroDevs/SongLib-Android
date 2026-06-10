@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!--
+        Base app theme — used for every screen after the splash.
+        No action bar; Compose draws everything.
+    -->
     <style name="Theme.SongLib" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!--
+        Splash screen theme (API 31+ SplashScreen).
+        Applied to the Activity in the manifest; MainActivity immediately
+        calls installSplashScreen() and then swaps to the Compose theme.
+
+        windowSplashScreenBackground    → amber brand colour
+        windowSplashScreenAnimatedIcon  → the adaptive-icon foreground (your app icon)
+        windowSplashScreenIconBackgroundColor → same amber so the icon sits cleanly
+        windowSplashScreenBrandingImage → "Futuristic Ke" wordmark shown below the icon
+        postSplashScreenTheme           → hands off to the normal app theme
+    -->
+    <style name="Theme.SongLib.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/primary</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/primary</item>
+        <item name="postSplashScreenTheme">@style/Theme.SongLib</item>
+    </style>
+
 </resources>

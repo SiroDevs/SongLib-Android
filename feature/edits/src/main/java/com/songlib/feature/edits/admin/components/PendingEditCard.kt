@@ -1,4 +1,4 @@
-package com.songlib.feature.edits.admin.view.components
+package com.songlib.feature.edits.admin.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,8 +44,6 @@ fun PendingEditCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-
-            // ── Header ────────────────────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -69,7 +67,6 @@ fun PendingEditCard(
                     CircularProgressIndicator(modifier = Modifier.padding(8.dp))
                 } else {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        // Approve
                         FilledTonalIconButton(
                             onClick = onApprove,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(
@@ -79,7 +76,6 @@ fun PendingEditCard(
                         ) {
                             Icon(Icons.Default.Check, contentDescription = "Approve")
                         }
-                        // Reject
                         FilledTonalIconButton(
                             onClick = onReject,
                             colors = IconButtonDefaults.filledTonalIconButtonColors(
@@ -93,13 +89,12 @@ fun PendingEditCard(
                 }
             }
 
-            // ── Lyric preview ─────────────────────────────────────────────
             if (!edit.content.isNullOrBlank()) {
                 Spacer(Modifier.height(8.dp))
                 HorizontalDivider()
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = edit.content,
+                    text = edit.content!!,
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontFamily = FontFamily.Monospace,
                     ),

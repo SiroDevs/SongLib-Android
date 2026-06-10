@@ -2,93 +2,81 @@ package com.songlib.core.designsystem.theme
 
 import android.app.Activity
 import android.os.Build
-import android.view.WindowInsets
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.shapes
-import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.*
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val LightTheme = lightColorScheme(
-    primary = LightColors.primary, // Main brand color
-    onPrimary = LightColors.onPrimary, // Text/icon color on primary
-    primaryContainer = LightColors.primaryContainer, // Primary color for large surfaces (e.g., cards, sheets)
-    onPrimaryContainer = LightColors.onPrimaryContainer, // Text/icon color on primary container
-
-    secondary = LightColors.secondary, // Secondary brand color (less emphasis than primary)
-    onSecondary = LightColors.onSecondary, // Text/icon color on secondary
-    secondaryContainer = LightColors.secondaryContainer, // Background using secondary color
-    onSecondaryContainer = LightColors.onSecondaryContainer, // Text/icon on secondary container
-
-    tertiary = LightColors.tertiary, // Optional 3rd brand color (e.g., for accents)
-    onTertiary = LightColors.onTertiary, // Text/icon on tertiary
-    tertiaryContainer = LightColors.tertiaryContainer, // Background using tertiary
-    onTertiaryContainer = LightColors.onTertiaryContainer, // Text/icon on tertiary container
-
-    error = LightColors.error, // Color for errors (e.g., validation)
-    errorContainer = LightColors.errorContainer, // Background for error messages
-    onError = LightColors.onError, // Text/icon on error color
-    onErrorContainer = LightColors.onErrorContainer, // Text/icon on error container
-
-    background = LightColors.background, // App background
-    onBackground = LightColors.onBackground, // Text/icon color on background
-
-    surface = LightColors.surface, // Surface color for UI components like cards
-    onSurface = LightColors.onSurface, // Text/icon color on surface
-
-    surfaceVariant = LightColors.surfaceVariant, // Variant surface for emphasis layering
-    onSurfaceVariant = LightColors.onSurfaceVariant, // Text/icon on surface variant
-
-    outline = LightColors.outline, // Used for thin dividers/borders
-    inverseOnSurface = LightColors.inverseOnSurface, // Text/icon on dark surface (e.g., bottom sheet in light mode)
-    inverseSurface = LightColors.inverseSurface, // Used for elevated surfaces in dark over light
-    inversePrimary = LightColors.inversePrimary, // Primary color when used over dark surfaces
-
-    surfaceTint = LightColors.surfaceTint, // Tint used in elevation overlay
-    outlineVariant = LightColors.outlineVariant, // Faint outlines, used for background dividers
-    scrim = LightColors.scrim, // Used for overlays like modals and dialogs
+    primary = LightColors.primary,
+    onPrimary = LightColors.onPrimary,
+    primaryContainer = LightColors.primaryContainer,
+    onPrimaryContainer = LightColors.onPrimaryContainer,
+    secondary = LightColors.secondary,
+    onSecondary = LightColors.onSecondary,
+    secondaryContainer = LightColors.secondaryContainer,
+    onSecondaryContainer = LightColors.onSecondaryContainer,
+    tertiary = LightColors.tertiary,
+    onTertiary = LightColors.onTertiary,
+    tertiaryContainer = LightColors.tertiaryContainer,
+    onTertiaryContainer = LightColors.onTertiaryContainer,
+    error = LightColors.error,
+    errorContainer = LightColors.errorContainer,
+    onError = LightColors.onError,
+    onErrorContainer = LightColors.onErrorContainer,
+    background = LightColors.background,
+    onBackground = LightColors.onBackground,
+    surface = LightColors.surface,
+    onSurface = LightColors.onSurface,
+    surfaceVariant = LightColors.surfaceVariant,
+    onSurfaceVariant = LightColors.onSurfaceVariant,
+    outline = LightColors.outline,
+    inverseOnSurface = LightColors.inverseOnSurface,
+    inverseSurface = LightColors.inverseSurface,
+    inversePrimary = LightColors.inversePrimary,
+    surfaceTint = LightColors.surfaceTint,
+    outlineVariant = LightColors.outlineVariant,
+    scrim = LightColors.scrim,
 )
 
 private val DarkTheme = darkColorScheme(
-    primary = DarkColors.primary, // Main brand color
-    onPrimary = DarkColors.onPrimary, // Text/icon color on primary
-    primaryContainer = DarkColors.primaryContainer, // Primary color for large surfaces
-    onPrimaryContainer = DarkColors.onPrimaryContainer, // Text/icon color on primary container
-
-    secondary = DarkColors.secondary, // Secondary brand color
-    onSecondary = DarkColors.onSecondary, // Text/icon color on secondary
-    secondaryContainer = DarkColors.secondaryContainer, // Background using secondary color
-    onSecondaryContainer = DarkColors.onSecondaryContainer, // Text/icon on secondary container
-
-    tertiary = DarkColors.tertiary, // Optional accent color
-    onTertiary = DarkColors.onTertiary, // Text/icon on tertiary
-    tertiaryContainer = DarkColors.tertiaryContainer, // Background using tertiary
-    onTertiaryContainer = DarkColors.onTertiaryContainer, // Text/icon on tertiary container
-
-    error = DarkColors.error, // Color for errors
-    errorContainer = DarkColors.errorContainer, // Background for error messages
-    onError = DarkColors.onError, // Text/icon on error color
-    onErrorContainer = DarkColors.onErrorContainer, // Text/icon on error container
-
-    background = DarkColors.background, // App background
-    onBackground = DarkColors.onBackground, // Text/icon color on background
-
-    surface = DarkColors.surface, // Surface color for UI components
-    onSurface = DarkColors.onSurface, // Text/icon color on surface
-
-    surfaceVariant = DarkColors.surfaceVariant, // Variant surface for emphasis layering
-    onSurfaceVariant = DarkColors.onSurfaceVariant, // Text/icon on surface variant
-
-    outline = DarkColors.outline, // Used for thin dividers/borders
-    inverseOnSurface = DarkColors.inverseOnSurface, // Text/icon on light surface (e.g., bottom sheet in dark mode)
-    inverseSurface = DarkColors.inverseSurface, // Used for elevated surfaces in light over dark
-    inversePrimary = DarkColors.inversePrimary, // Primary color when used over light surfaces
-
-    surfaceTint = DarkColors.surfaceTint, // Tint used in elevation overlay
-    outlineVariant = DarkColors.outlineVariant, // Faint outlines, used for background dividers
-    scrim = DarkColors.scrim, // Used for overlays like modals and dialogs
+    primary = DarkColors.primary,
+    onPrimary = DarkColors.onPrimary,
+    primaryContainer = DarkColors.primaryContainer,
+    onPrimaryContainer = DarkColors.onPrimaryContainer,
+    secondary = DarkColors.secondary,
+    onSecondary = DarkColors.onSecondary,
+    secondaryContainer = DarkColors.secondaryContainer,
+    onSecondaryContainer = DarkColors.onSecondaryContainer,
+    tertiary = DarkColors.tertiary,
+    onTertiary = DarkColors.onTertiary,
+    tertiaryContainer = DarkColors.tertiaryContainer,
+    onTertiaryContainer = DarkColors.onTertiaryContainer,
+    error = DarkColors.error,
+    errorContainer = DarkColors.errorContainer,
+    onError = DarkColors.onError,
+    onErrorContainer = DarkColors.onErrorContainer,
+    background = DarkColors.background,
+    onBackground = DarkColors.onBackground,
+    surface = DarkColors.surface,
+    onSurface = DarkColors.onSurface,
+    surfaceVariant = DarkColors.surfaceVariant,
+    onSurfaceVariant = DarkColors.onSurfaceVariant,
+    outline = DarkColors.outline,
+    inverseOnSurface = DarkColors.inverseOnSurface,
+    inverseSurface = DarkColors.inverseSurface,
+    inversePrimary = DarkColors.inversePrimary,
+    surfaceTint = DarkColors.surfaceTint,
+    outlineVariant = DarkColors.outlineVariant,
+    scrim = DarkColors.scrim,
 )
 
 @Composable
@@ -102,7 +90,6 @@ fun AppTheme(
             val context = LocalContext.current
             if (useDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         useDarkTheme -> DarkTheme
         else -> LightTheme
     }
@@ -111,21 +98,24 @@ fun AppTheme(
 
     if (!view.isInEditMode) {
         SideEffect {
-            val window = (view.context as Activity).window
+            // Guard: during the SplashScreen transition the view may not yet be
+            // attached to an Activity window — skip safely rather than crashing.
+            val activity = view.context as? Activity ?: return@SideEffect
+            val window = activity.window
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                window.decorView.setOnApplyWindowInsetsListener { view, insets ->
-                    val statusBarInsets = insets.getInsets(WindowInsets.Type.statusBars())
-                    view.setBackgroundColor(colorScheme.onPrimary.toArgb())
+            // Let Compose draw edge-to-edge behind the system bars.
+            WindowCompat.setDecorFitsSystemWindows(window, false)
 
-                    view.setPadding(0, statusBarInsets.top, 0, 0)
-                    insets
-                }
-            } else {
+            // On API 35+ (VANILLA_ICE_CREAM) the platform enforces edge-to-edge and
+            // ignores statusBarColor, so we only set the icon tint.
+            // On API 26-34 make the bar transparent; Compose content paints behind it.
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                 @Suppress("DEPRECATION")
-                window.statusBarColor = colorScheme.onPrimary.toArgb()
+                window.statusBarColor = android.graphics.Color.TRANSPARENT
             }
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !useDarkTheme
+
+            WindowCompat.getInsetsController(window, view)
+                .isAppearanceLightStatusBars = !useDarkTheme
         }
     }
 

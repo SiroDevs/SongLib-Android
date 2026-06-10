@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.view.components
+package com.songlib.feature.song.presentor.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
