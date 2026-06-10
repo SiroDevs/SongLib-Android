@@ -127,6 +127,7 @@ fun HomeContent(
                 onAddListing = { showAddListingDialog = true },
                 viewModel = viewModel,
                 navController = navController,
+                prefsRepo = prefsRepo,
             )
         },
         bottomBar = {

@@ -3,7 +3,7 @@ package com.songlib.feature.settings
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.data.repos.DraftRepo
-import com.songlib.core.data.repos.EditRepo
+import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.UserRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ class UserProfileViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val prefsRepo: PrefsRepo,
     private val draftRepo: DraftRepo,
-    private val editRepo: EditRepo,
+    private val editorRepo: EditorRepo,
 ) : ViewModel() {
 
     sealed interface AuthState {
@@ -43,8 +43,8 @@ class UserProfileViewModel @Inject constructor(
                 val userId = userRepo.loginOrRegister(googleId, email, name, photoUrl)
                 // Post-login sync
                 draftRepo.syncDraftsToRemote(userId)
-                editRepo.syncEditsToRemote(userId)
-                editRepo.syncEditStatuses(userId)
+                editorRepo.syncEditsToRemote(userId)
+                editorRepo.syncEditStatuses(userId)
                 userRepo.syncBookSelection(userId)
                 _authState.value = AuthState.Success(userId)
             } catch (e: Exception) {

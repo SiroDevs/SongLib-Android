@@ -21,9 +21,9 @@ import javax.inject.Singleton
 
 val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(db: SupportSQLiteDatabase) {
-        // Add drafts table
+        // Add feature table
         db.execSQL("""
-            CREATE TABLE IF NOT EXISTS drafts (
+            CREATE TABLE IF NOT EXISTS feature (
                 id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                 draftId INTEGER NOT NULL DEFAULT 0,
                 title TEXT NOT NULL,

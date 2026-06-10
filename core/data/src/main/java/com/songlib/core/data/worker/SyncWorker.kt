@@ -7,7 +7,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.songlib.core.common.helpers.NetworkUtils
 import com.songlib.core.data.repos.DraftRepo
-import com.songlib.core.data.repos.EditRepo
+import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.UserRepo
@@ -25,7 +25,7 @@ class SyncWorker @AssistedInject constructor(
     private val songbkRepo: SongBookRepo,
     private val prefsRepo: PrefsRepo,
     private val draftRepo: DraftRepo,
-    private val editRepo: EditRepo,
+    private val editorRepo: EditorRepo,
     private val userRepo: UserRepo,
 ) : CoroutineWorker(context, workerParams) {
 
@@ -66,12 +66,12 @@ class SyncWorker @AssistedInject constructor(
             prefsRepo.isDataLoaded = true
             prefsRepo.lastSyncedAt = System.currentTimeMillis()
 
-            // Post-login sync: push drafts/edits to remote if logged in
+            // Post-login sync: push feature/edits to remote if logged in
             val userId = prefsRepo.loggedInUserId
             if (userId > 0) {
                 draftRepo.syncDraftsToRemote(userId)
-                editRepo.syncEditsToRemote(userId)
-                editRepo.syncEditStatuses(userId)
+                editorRepo.syncEditsToRemote(userId)
+                editorRepo.syncEditStatuses(userId)
                 userRepo.syncBookSelection(userId)
                 Log.d(TAG, "✅ User data synced for userId=$userId")
             }

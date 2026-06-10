@@ -2,6 +2,7 @@ package com.songlib.feature.home.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditNote
@@ -28,6 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
@@ -48,6 +50,7 @@ fun HomeAppBar(
     onAddListing: () -> Unit,
     viewModel: HomeViewModel,
     navController: NavHostController,
+    prefsRepo: PrefsRepo,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
@@ -95,7 +98,30 @@ fun HomeAppBar(
                                 text = { Text("My Edits") },
                                 leadingIcon = { Icon(Icons.Default.Checklist, null) },
                                 onClick = {
-                                    showMoreMenu = false; navController.navigate(Routes.MY_EDITS)
+                                    showMoreMenu = false
+                                    navController.navigate(Routes.USER_EDITS)
+                                }
+                            )
+                        }
+                        // Admin-only: navigate to the pending edits review queue
+                        if (prefsRepo.isAdmin) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        "Admin: Pending Edits",
+                                        color = MaterialTheme.colorScheme.primary,
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        Icons.Default.AdminPanelSettings,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                },
+                                onClick = {
+                                    showMoreMenu = false
+                                    navController.navigate(Routes.ADMIN_EDITS)
                                 }
                             )
                         }
@@ -103,7 +129,8 @@ fun HomeAppBar(
                             text = { Text("How It Works") },
                             leadingIcon = { Icon(Icons.Default.Info, null) },
                             onClick = {
-                                showMoreMenu = false; navController.navigate(Routes.HOW_IT_WORKS)
+                                showMoreMenu = false
+                                navController.navigate(Routes.HOW_IT_WORKS)
                             }
                         )
                         DropdownMenuItem(
@@ -115,7 +142,8 @@ fun HomeAppBar(
                             text = { Text("Settings") },
                             leadingIcon = { Icon(Icons.Default.Settings, null) },
                             onClick = {
-                                showMoreMenu = false; navController.navigate(Routes.SETTINGS)
+                                showMoreMenu = false
+                                navController.navigate(Routes.SETTINGS)
                             }
                         )
                     }

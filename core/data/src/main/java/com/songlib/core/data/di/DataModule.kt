@@ -2,7 +2,7 @@ package com.songlib.core.data.di
 
 import android.content.Context
 import com.songlib.core.data.repos.DraftRepo
-import com.songlib.core.data.repos.EditRepo
+import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ReportRepo
@@ -64,8 +64,8 @@ object DataModule {
         DraftRepo(draftsDao, service)
 
     @Provides @Singleton
-    fun provideEditRepo(editDao: EditDao, service: SongLibService): EditRepo =
-        EditRepo(editDao, service)
+    fun provideEditRepo(editDao: EditDao, service: SongLibService): EditorRepo =
+        EditorRepo(editDao, service)
 
     @Provides @Singleton
     fun provideUserRepo(service: SongLibService, prefsRepo: PrefsRepo): UserRepo =

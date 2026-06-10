@@ -21,6 +21,7 @@ data class UserDto(
     val photoUrl: String? = null,
     val googleId: String? = null,
     val selectedBooks: String? = null,
+    val role: String = "user",
     val created: String? = null,
     val updated: String? = null
 )
@@ -39,12 +40,24 @@ data class DraftDto(
 data class EditDto(
     val editId: Int = 0,
     val songId: Int,
+    val book: Int = 0,
+    val songNo: Int = 0,
     val title: String,
+    val alias: String? = null,
     val content: String? = null,
     val userId: Int = 0,
     val status: String = "pending",
     val created: String? = null,
     val updated: String? = null
+)
+
+/** Body for admin approve/reject — reject carries an optional reason. */
+data class EditRejectRequest(val reason: String? = null)
+
+/** Thin wrapper the approve/reject endpoints return. */
+data class EditActionResponse(
+    val message: String,
+    val edit: EditDto
 )
 
 data class SongReportRequest(

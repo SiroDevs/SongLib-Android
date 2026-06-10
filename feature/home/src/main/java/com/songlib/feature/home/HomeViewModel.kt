@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.SongUtils
-import com.songlib.core.data.repos.EditRepo
+import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
     private val listRepo: ListingRepo,
     private val prefsRepo: PrefsRepo,
     private val trackingRepo: TrackingRepo,
-    private val editRepo: EditRepo,
+    private val editorRepo: EditorRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -129,7 +129,7 @@ class HomeViewModel @Inject constructor(
 
             val userId = prefsRepo.loggedInUserId
             if (userId > 0) {
-                _hasEdits.value = editRepo.hasEdits(userId)
+                _hasEdits.value = editorRepo.hasEdits(userId)
             }
 
             _uiState.tryEmit(UiState.Filtered)
