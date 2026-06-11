@@ -8,8 +8,7 @@ plugins {
     alias(libs.plugins.google.services)
     kotlin("plugin.serialization") version "2.1.21"
     id("kotlin-parcelize")
-
-    id("io.sentry.android.gradle") version "6.10.0"
+    alias(libs.plugins.io.sentry)
 }
 
 val keystoreProperties = Properties()
@@ -143,12 +142,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 }
 
-
 sentry {
+    debug.set(true)
+    includeSourceContext.set(true)
     org.set("futuristicken")
     projectName.set("songlib-android")
-
-    // this will upload your source code to Sentry to show it as part of the stack traces
-    // disable if you don't want to expose your sources
-    includeSourceContext.set(true)
+    authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
 }
