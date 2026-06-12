@@ -37,7 +37,6 @@ include(":core:ui")
 include(":core:designsystem")
 
 // Feature modules
-include(":feature:splash")
 include(":feature:selection")
 include(":feature:home")
 include(":feature:drafts")

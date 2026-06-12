@@ -2,12 +2,15 @@ package com.songlib.app.navigation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.songlib.MainViewModel
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
@@ -40,8 +43,6 @@ import com.songlib.feature.settings.view.SettingsScreen
 import com.songlib.feature.settings.view.UserProfileScreen
 import com.songlib.feature.song.editor.EditorViewModel
 import com.songlib.feature.song.editor.view.EditorScreen
-import com.songlib.feature.splash.SplashViewModel
-import com.songlib.feature.splash.view.SplashScreen
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -49,18 +50,20 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
+    mainViewModel: MainViewModel,
     onSignInRequest: (callback: (googleId: String, email: String, name: String, photo: String) -> Unit) -> Unit,
 ) {
+    val isReady by mainViewModel.isReady.collectAsState()
+    val destination by mainViewModel.destination.collectAsState()
+    val startDestination = when (destination) {
+        is MainViewModel.Destination.Selection -> Routes.SELECTION
+        is MainViewModel.Destination.Home -> Routes.HOME
+    }
+
     NavHost(
         navController = navController,
-        startDestination = Routes.SPLASH
+        startDestination = startDestination
     ) {
-
-        composable(Routes.SPLASH) {
-            val viewModel: SplashViewModel = hiltViewModel()
-            SplashScreen(navController = navController, viewModel = viewModel)
-        }
-
         composable(Routes.SELECTION) {
             val viewModel: SelectionViewModel = hiltViewModel()
             SelectionScreen(

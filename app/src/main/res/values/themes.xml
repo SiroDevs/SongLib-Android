@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="NightAdjusted.Theme.SongLib" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <!--
-        Base app theme — used for every screen after the splash.
-        No action bar; Compose draws everything.
-    -->
-    <style name="Theme.SongLib" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SongLib" parent="NightAdjusted.Theme.SongLib">
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
+    </style>
 
-    <!--
-        Splash screen theme (API 31+ SplashScreen).
-        Applied to the Activity in the manifest; MainActivity immediately
-        calls installSplashScreen() and then swaps to the Compose theme.
+    <style name="NightAdjusted.Theme.Splash" parent="Theme.SplashScreen">
+        <item name="android:windowLightStatusBar" tools:targetApi="23">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+    </style>
 
-        windowSplashScreenBackground    → amber brand colour
-        windowSplashScreenAnimatedIcon  → the adaptive-icon foreground (your app icon)
-        windowSplashScreenIconBackgroundColor → same amber so the icon sits cleanly
-        windowSplashScreenBrandingImage → "Futuristic Ke" wordmark shown below the icon
-        postSplashScreenTheme           → hands off to the normal app theme
-    -->
-    <style name="Theme.SongLib.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">@color/primary</item>
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/primary</item>
+    <style name="Theme.SongLib.Splash" parent="NightAdjusted.Theme.Splash">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
         <item name="postSplashScreenTheme">@style/Theme.SongLib</item>
     </style>
 

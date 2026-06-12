@@ -3,7 +3,9 @@ package com.songlib
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -21,7 +23,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import io.sentry.Sentry
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -57,29 +58,27 @@ class MainActivity : ComponentActivity() {
                     val googleIdTokenCredential =
                         GoogleIdTokenCredential.createFrom(credential.data)
                     callback(
-                        googleIdTokenCredential.id,                          // googleId
-                        googleIdTokenCredential.id,                          // email (same as id for Google)
-                        googleIdTokenCredential.displayName ?: "",           // name
-                        googleIdTokenCredential.profilePictureUri?.toString() ?: ""  // photo
+                        googleIdTokenCredential.id,
+                        googleIdTokenCredential.id,
+                        googleIdTokenCredential.displayName ?: "",
+                        googleIdTokenCredential.profilePictureUri?.toString() ?: ""
                     )
                 }
             } catch (e: GetCredentialException) {
-                // User cancelled or no accounts available — silently ignore
+
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-    // waiting for view to draw to better represent a captured error with a screenshot
-    findViewById<android.view.View>(android.R.id.content).viewTreeObserver.addOnGlobalLayoutListener {
-      try {
-        throw Exception("This app uses Sentry! :)")
-      } catch (e: Exception) {
-        Sentry.captureException(e)
-      }
-    }
 
+        val mainViewModel: MainViewModel by viewModels()
+
+        splashScreen.setKeepOnScreenCondition {
+            !mainViewModel.isReady.value
+        }
 
         setContent {
             val themeRepo: ThemeRepo = hiltViewModel()
@@ -94,6 +93,7 @@ class MainActivity : ComponentActivity() {
                 AppNavHost(
                     themeRepo = themeRepo,
                     prefsRepo = prefsRepo,
+                    mainViewModel = mainViewModel,
                     onSignInRequest = ::launchSignIn
                 )
             }

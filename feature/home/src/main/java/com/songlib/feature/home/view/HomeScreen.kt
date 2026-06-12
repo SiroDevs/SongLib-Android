@@ -58,7 +58,7 @@ fun HomeScreen(
                     onAction = {
                         viewModel.clearData { success ->
                             if (success) {
-                                navController.navigate(Routes.SPLASH) {
+                                navController.navigate(Routes.APP_START) {
                                     popUpTo(0) { inclusive = true }
                                     launchSingleTop = true
                                 }

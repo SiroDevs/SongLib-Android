@@ -29,7 +29,7 @@ fun SettingsScreen(
     var showResetDialog by remember { mutableStateOf(false) }
 
     fun navigateToSplash() {
-        navController.navigate(Routes.SPLASH) {
+        navController.navigate(Routes.APP_START) {
             popUpTo(0) { inclusive = true }
             launchSingleTop = true
         }
