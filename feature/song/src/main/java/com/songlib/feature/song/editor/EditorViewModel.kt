@@ -2,9 +2,11 @@ package com.songlib.feature.song.editor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.SongEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,10 +25,16 @@ sealed interface EditSubmitState {
     data class Error(val message: String) : EditSubmitState
 }
 
+sealed interface EditorMode {
+    data class Song(val entity: SongEntity) : EditorMode
+    data class Draft(val entity: DraftEntity) : EditorMode
+}
+
 @HiltViewModel
 class EditorViewModel @Inject constructor(
     private val editorRepo: EditorRepo,
     private val songbkRepo: SongBookRepo,
+    private val draftRepo: DraftRepo,
     private val prefsRepo: PrefsRepo,
 ) : ViewModel() {
 
@@ -36,74 +44,90 @@ class EditorViewModel @Inject constructor(
     private val _toastEvent = MutableSharedFlow<String>()
     val toastEvent: SharedFlow<String> = _toastEvent.asSharedFlow()
 
-    /** Title field value — initialised from the song when [initWith] is called. */
     private val _title = MutableStateFlow("")
     val title: StateFlow<String> = _title.asStateFlow()
 
-    /** Content (lyrics) field value. */
     private val _content = MutableStateFlow("")
     val content: StateFlow<String> = _content.asStateFlow()
 
-    private var originalSong: SongEntity? = null
+    /** Tracks which mode we're in — set exactly once */
+    private var editorMode: EditorMode? = null
 
-    fun initWith(song: SongEntity) {
-        if (originalSong != null) return   // already initialised — don't overwrite on recompose
-        originalSong = song
+    // ── Initialisation ────────────────────────────────────────────────────
+
+    fun initWithSong(song: SongEntity) {
+        if (editorMode != null) return
+        editorMode = EditorMode.Song(song)
         _title.value = song.title
         _content.value = song.content
     }
 
-    fun onTitleChange(value: String) {
-        _title.value = value
+    fun initWithDraft(draft: DraftEntity) {
+        if (editorMode != null) return
+        editorMode = EditorMode.Draft(draft)
+        _title.value = draft.title
+        _content.value = draft.content
     }
 
-    fun onContentChange(value: String) {
-        _content.value = value
-    }
+    fun onTitleChange(value: String) { _title.value = value }
+    fun onContentChange(value: String) { _content.value = value }
 
-    /** Save locally and submit to the API. */
+    // ── Submit ────────────────────────────────────────────────────────────
+
     fun submit() {
-        val song = originalSong ?: return
-        val userId = prefsRepo.loggedInUserId
-
-        if (!prefsRepo.isLoggedIn) {
-            viewModelScope.launch {
-                _toastEvent.emit("Please sign in to submit song edits.")
-            }
-            return
-        }
-
         if (_title.value.isBlank()) {
             viewModelScope.launch { _toastEvent.emit("Title cannot be empty.") }
             return
         }
+        when (val mode = editorMode) {
+            is EditorMode.Song  -> submitSongEdit(mode.entity)
+            is EditorMode.Draft -> submitDraftEdit(mode.entity)
+            null -> return
+        }
+    }
 
+    private fun submitSongEdit(song: SongEntity) {
+        if (!prefsRepo.isLoggedIn) {
+            viewModelScope.launch { _toastEvent.emit("Please sign in to submit song edits.") }
+            return
+        }
         _submitState.value = EditSubmitState.Submitting
-
         viewModelScope.launch {
             try {
-                // 1. Submit the edit record to the API + persist locally
                 editorRepo.submitSongEdit(
-                    song         = song,
-                    editedTitle  = _title.value.trim(),
+                    song          = song,
+                    editedTitle   = _title.value.trim(),
                     editedContent = _content.value.trim(),
-                    userId       = userId
+                    userId        = prefsRepo.loggedInUserId
                 )
-
-                // 2. Update the local song copy so it immediately reflects the edit
-                val updatedSong = song.copy(
+                val updated = song.copy(
                     title   = _title.value.trim(),
                     content = _content.value.trim()
                 )
-                songbkRepo.updateSong(updatedSong)
-
+                songbkRepo.updateSong(updated)
                 _submitState.value = EditSubmitState.Success
                 _toastEvent.emit("Your edit has been submitted and is awaiting review ✅")
             } catch (e: Exception) {
-                _submitState.value = EditSubmitState.Error(
-                    e.message ?: "Failed to submit edit"
-                )
+                _submitState.value = EditSubmitState.Error(e.message ?: "Failed to submit edit")
                 _toastEvent.emit("Failed to submit edit. Please try again.")
+            }
+        }
+    }
+
+    private fun submitDraftEdit(draft: DraftEntity) {
+        _submitState.value = EditSubmitState.Submitting
+        viewModelScope.launch {
+            try {
+                val updated = draft.copy(
+                    title   = _title.value.trim(),
+                    content = _content.value.trim()
+                )
+                draftRepo.updateDraft(updated)
+                _submitState.value = EditSubmitState.Success
+                _toastEvent.emit("Draft saved ✅")
+            } catch (e: Exception) {
+                _submitState.value = EditSubmitState.Error(e.message ?: "Failed to save draft")
+                _toastEvent.emit("Failed to save draft. Please try again.")
             }
         }
     }

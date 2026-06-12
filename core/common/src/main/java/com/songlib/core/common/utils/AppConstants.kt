@@ -56,9 +56,17 @@ object Routes {
     const val HELP = "help"
     const val DONATION = "donation"
     const val DRAFTS = "drafts"
+    const val DRAFT_PRESENT = "draft_present"
+    const val DRAFT_EDITOR  = "draft_editor"
     const val HISTORY = "history"
     const val USER_PROFILE = "user_profile"
     const val USER_EDITS = "user_edits"
     const val ADMIN_EDITS = "admin_edits"
     const val EDITOR = "editor"
+}
+
+object Presentor {
+    const val DEFAULT_FONT_SP = 28f
+    const val MIN_FONT_SP = 14f
+    const val MAX_FONT_SP = 60f
 }

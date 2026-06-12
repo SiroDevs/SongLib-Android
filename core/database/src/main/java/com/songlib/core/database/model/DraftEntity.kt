@@ -1,11 +1,14 @@
 package com.songlib.core.database.model
 
+import android.os.Parcelable
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
 @Keep
+@Parcelize
 @Entity(tableName = "feature")
 data class DraftEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -18,4 +21,4 @@ data class DraftEntity(
     @ColumnInfo(name = "created")  val created: String,
     @ColumnInfo(name = "updated")  val updated: String? = null,
     @ColumnInfo(name = "synced")   val synced: Boolean = false
-)
+) : Parcelable

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
@@ -79,7 +80,6 @@ fun PresenterScreen(
         song?.let { viewModel.loadSong(it) }
     }
 
-    // Dismiss report dialog on success
     LaunchedEffect(reportState) {
         if (reportState is ReportUiState.Success) {
             showReportDialog = false
@@ -161,7 +161,20 @@ fun PresenterScreen(
                             else showAddListingDialog = true
                         },
                         onReportSong = { showReportDialog = true },
-                        onEditSong = { },
+                        onEditSong = {
+                            // Navigate to the song editor
+                            val songToEdit = currentSong ?: song
+                            songToEdit?.let { s ->
+                                navController.currentBackStackEntry
+                                    ?.savedStateHandle
+                                    ?.set("song_to_edit", s)
+                                navController.navigate(Routes.EDITOR)
+                            }
+                        },
+                        onCopyToDrafts = {
+                            val songToCopy = currentSong ?: song
+                            songToCopy?.let { viewModel.copyToDrafts(it) }
+                        },
                     )
                 },
             )
@@ -170,7 +183,7 @@ fun PresenterScreen(
             PresentorFab(
                 fontSize = fontSize,
                 currentSong = currentSong,
-                onResetFontSize = { viewModel.updateFontSize(PresenterViewModel.DEFAULT_FONT_SP) },
+                onResetFontSize = { viewModel.updateFontSize(Presenter.DEFAULT_FONT_SP) },
                 onShare = { shareText ->
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"

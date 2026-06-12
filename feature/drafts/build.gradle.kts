@@ -4,11 +4,12 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.feature"
+    namespace = "com.songlib.feature.drafts"
 }
 
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
+    implementation(project(":feature:song"))
     implementation(libs.androidx.foundation)
 }

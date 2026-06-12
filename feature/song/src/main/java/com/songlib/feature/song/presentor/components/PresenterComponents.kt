@@ -9,6 +9,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -39,6 +40,7 @@ fun PresentorMoreMenu(
     onAddToList: () -> Unit,
     onReportSong: () -> Unit,
     onEditSong: () -> Unit,
+    onCopyToDrafts: () -> Unit,
 ) {
     DropdownMenu(
         expanded = expanded,
@@ -50,6 +52,14 @@ fun PresentorMoreMenu(
             onClick = {
                 onDismiss()
                 onEditSong()
+            },
+        )
+        DropdownMenuItem(
+            text = { Text("Copy to Drafts") },
+            leadingIcon = { Icon(Icons.Default.ContentCopy, contentDescription = null) },
+            onClick = {
+                onDismiss()
+                onCopyToDrafts()
             },
         )
         DropdownMenuItem(

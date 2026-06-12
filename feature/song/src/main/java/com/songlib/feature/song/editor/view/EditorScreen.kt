@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.LoadingState
@@ -37,25 +38,28 @@ import com.songlib.feature.song.editor.EditorViewModel
 @Composable
 fun EditorScreen(
     navController: NavHostController,
-    song: SongEntity,
+    song: SongEntity? = null,
+    draft: DraftEntity? = null,
     viewModel: EditorViewModel = hiltViewModel(),
 ) {
     val submitState by viewModel.submitState.collectAsState()
-    val title by viewModel.title.collectAsState()
-    val content by viewModel.content.collectAsState()
+    val titleField by viewModel.title.collectAsState()
+    val contentField by viewModel.content.collectAsState()
     val context = LocalContext.current
 
-    // Seed the VM fields once
-    LaunchedEffect(song) { viewModel.initWith(song) }
+    LaunchedEffect(song, draft) {
+        when {
+            song  != null -> viewModel.initWithSong(song)
+            draft != null -> viewModel.initWithDraft(draft)
+        }
+    }
 
-    // Toast events
     LaunchedEffect(Unit) {
         viewModel.toastEvent.collect { msg ->
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
         }
     }
 
-    // Navigate back on success
     LaunchedEffect(submitState) {
         if (submitState is EditSubmitState.Success) {
             viewModel.resetState()
@@ -65,11 +69,14 @@ fun EditorScreen(
 
     val isSubmitting = submitState is EditSubmitState.Submitting
 
+    val screenTitle = if (draft != null) "Edit Draft" else "Edit Song"
+    val tagline     = draft?.title ?: song?.title ?: ""
+
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Edit Song",
-                tagline = song.title,
+                title = screenTitle,
+                tagline = tagline,
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
             )
@@ -80,13 +87,16 @@ fun EditorScreen(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ) {
-                Icon(Icons.Default.Check, contentDescription = "Submit edit")
+                Icon(Icons.Default.Check, contentDescription = "Save")
             }
         }
     ) { paddingValues ->
 
         if (isSubmitting) {
-            LoadingState(title = "Submitting your edit…", fileName = "circle-loader")
+            LoadingState(
+                title = if (draft != null) "Saving draft…" else "Submitting your edit…",
+                fileName = "circle-loader"
+            )
             return@Scaffold
         }
 
@@ -99,18 +109,19 @@ fun EditorScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            // ── Helper note ───────────────────────────────────────────────
             Text(
-                text = "Your changes will be saved locally right away. " +
-                        "They will be reviewed before being merged into the public library.",
+                text = if (draft != null)
+                    "Changes are saved locally to your drafts."
+                else
+                    "Your changes will be saved locally right away. " +
+                            "They will be reviewed before being merged into the public library.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = 8.dp),
             )
 
-            // ── Title ─────────────────────────────────────────────────────
             OutlinedTextField(
-                value = title,
+                value = titleField,
                 onValueChange = viewModel::onTitleChange,
                 label = { Text("Title") },
                 singleLine = true,
@@ -118,15 +129,14 @@ fun EditorScreen(
                 enabled = !isSubmitting,
             )
 
-            // ── Lyrics / content ──────────────────────────────────────────
             OutlinedTextField(
-                value = content,
+                value = contentField,
                 onValueChange = viewModel::onContentChange,
                 label = { Text("Lyrics") },
                 minLines = 10,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 80.dp), // room for FAB
+                    .padding(bottom = 80.dp),
                 enabled = !isSubmitting,
             )
         }

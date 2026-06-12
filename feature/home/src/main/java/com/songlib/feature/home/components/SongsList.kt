@@ -32,8 +32,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.donation.DonationBanner
 import com.songlib.core.ui.components.listitems.BookItem
 import com.songlib.core.ui.components.listitems.SongItem
@@ -60,25 +60,22 @@ fun SongsList(
     onShowDonation: () -> Unit,
 ) {
     val selectedBook by viewModel.selectedBook.collectAsState(initial = -1)
-    val books by viewModel.books.collectAsState(initial = emptyList())
+    val books        by viewModel.books.collectAsState(initial = emptyList())
 
     val speechLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            val text = result.data
+            val spokenText = result.data
                 ?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 ?.firstOrNull() ?: ""
-            onQueryChange(text)
+            onQueryChange(spokenText)
         }
     }
 
     fun startVoiceSearch() = speechLauncher.launch(
         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
             putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your song!")
         }
@@ -91,10 +88,11 @@ fun SongsList(
             .padding(top = contentPadding.calculateTopPadding()),
         contentPadding = PaddingValues(
             bottom = contentPadding.calculateBottomPadding(),
-            start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
-            end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+            start  = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+            end    = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
         ),
     ) {
+        // ── Search bar ────────────────────────────────────────────────────
         if (showSearch) {
             stickyHeader {
                 Box(
@@ -107,12 +105,17 @@ fun SongsList(
                         placeholder = "Search songs by title or lyrics …",
                         onQueryChange = onQueryChange,
                         onClear = { onQueryChange("") },
-                        onVoiceSearch = { startVoiceSearch() }
+                        onVoiceSearch = { startVoiceSearch() },
+                        onSearch = { query ->
+                            // Save search when user presses the Search IME key
+                            if (query.isNotBlank()) viewModel.commitSearch(query)
+                        }
                     )
                 }
             }
         }
 
+        // ── Book filter chips ─────────────────────────────────────────────
         if (showBookFilter) {
             item {
                 LazyRow(
@@ -123,7 +126,7 @@ fun SongsList(
                             onSongbooksPositioned?.invoke(coords.boundsInRoot())
                         },
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     item {
                         BookItem(
@@ -143,11 +146,12 @@ fun SongsList(
             }
         }
 
+        // ── Song items ────────────────────────────────────────────────────
         itemsIndexed(songs, key = { _, s -> s.songId }) { index, song ->
-            if (index == 3 || index == 7) DonationBanner(
-                show = showDonation,
-                onTap = onShowDonation
-            )
+            if (index == 3 || index == 7) {
+                DonationBanner(show = showDonation, onTap = onShowDonation)
+            }
+
             val isSelected = selectedSongs.contains(song)
             Box(
                 modifier = Modifier
@@ -156,12 +160,12 @@ fun SongsList(
                             if (selectedSongs.isNotEmpty()) {
                                 onSongSelected(song)
                             } else {
-                                navController.currentBackStackEntry
-                                    ?.savedStateHandle
-                                    ?.set("book", books.first { it.bookId == song.book })
-                                navController.currentBackStackEntry
-                                    ?.savedStateHandle
-                                    ?.set("song", song)
+                                // Save the search query when tapping a result
+                                if (searchQuery.isNotBlank()) viewModel.commitSearch(searchQuery)
+                                // Pass book + song via savedStateHandle then navigate
+                                val book = books.firstOrNull { it.bookId == song.book }
+                                navController.currentBackStackEntry?.savedStateHandle?.set("book", book)
+                                navController.currentBackStackEntry?.savedStateHandle?.set("song", song)
                                 navController.navigate(Routes.PRESENT)
                             }
                         },
@@ -172,10 +176,8 @@ fun SongsList(
                         else Color.Transparent
                     )
                     .then(
-                        if (index == 2) {
-                            Modifier.onGloballyPositioned { coords ->
-                                onThirdSongPositioned?.invoke(coords.boundsInRoot())
-                            }
+                        if (index == 2) Modifier.onGloballyPositioned { coords ->
+                            onThirdSongPositioned?.invoke(coords.boundsInRoot())
                         } else Modifier
                     )
             ) {

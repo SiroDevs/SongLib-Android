@@ -4,14 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.common.utils.songItemTitle
+import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
+import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.common.utils.Presentor
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +26,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 
 sealed interface ReportUiState {
@@ -39,6 +45,7 @@ class PresenterViewModel @Inject constructor(
     private val prefsRepo: PrefsRepo,
     private val reportRepo: ReportRepo,
     private val trackingRepo: TrackingRepo,
+    private val draftRepo: DraftRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -83,17 +90,11 @@ class PresenterViewModel @Inject constructor(
     private val _reportState = MutableStateFlow<ReportUiState>(ReportUiState.Idle)
     val reportState: StateFlow<ReportUiState> = _reportState.asStateFlow()
 
-    companion object {
-        const val DEFAULT_FONT_SP = 28f
-        const val MIN_FONT_SP = 14f
-        const val MAX_FONT_SP = 60f
-    }
-
-    private val _fontSize = MutableStateFlow(DEFAULT_FONT_SP)
+    private val _fontSize = MutableStateFlow(Presentor.DEFAULT_FONT_SP)
     val fontSize: StateFlow<Float> = _fontSize.asStateFlow()
 
     fun updateFontSize(newSp: Float) {
-        _fontSize.value = newSp.coerceIn(MIN_FONT_SP, MAX_FONT_SP)
+        _fontSize.value = newSp.coerceIn(Presentor.MIN_FONT_SP, Presentor.MAX_FONT_SP)
     }
 
     fun loadSong(song: SongEntity) {
@@ -195,6 +196,24 @@ class PresenterViewModel @Inject constructor(
     }
 
     fun checkAndHandleNewListing(): Boolean = listings.value.isNotEmpty()
+
+    /** Copy the current song into the user's drafts */
+    fun copyToDrafts(song: SongEntity) {
+        viewModelScope.launch {
+            val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())
+            draftRepo.saveDraft(
+                DraftEntity(
+                    title   = song.title,
+                    content = song.content,
+                    songNo  = song.songNo,
+                    book    = song.book,
+                    userId  = prefsRepo.loggedInUserId,
+                    created = now,
+                )
+            )
+            _toastEvent.emit("Copied \"${song.title}\" to Drafts ✅")
+        }
+    }
 
     fun submitReport(
         song: SongEntity,

@@ -15,6 +15,7 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.BookEntity
+import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.donation.DonationViewModel
@@ -22,7 +23,9 @@ import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.view.AdminEditsScreen
 import com.songlib.feature.drafts.DraftsViewModel
+import com.songlib.feature.drafts.DraftPresenterViewModel
 import com.songlib.feature.drafts.view.DraftsScreen
+import com.songlib.feature.drafts.view.DraftPresenterScreen
 import com.songlib.feature.edits.user.EditsViewModel
 import com.songlib.feature.edits.user.view.EditsScreen
 import com.songlib.feature.help.view.HelpScreen
@@ -98,13 +101,45 @@ fun AppNavHost(
         }
 
         composable(Routes.EDITOR) {
-            val song = navController.previousBackStackEntry
+            val song  = navController.previousBackStackEntry
                 ?.savedStateHandle?.get<SongEntity>("song_to_edit")
             val viewModel: EditorViewModel = hiltViewModel()
             if (song != null) {
                 EditorScreen(
                     navController = navController,
                     song = song,
+                    viewModel = viewModel,
+                )
+            } else {
+                navController.popBackStack()
+            }
+        }
+
+        composable(Routes.DRAFT_PRESENT) {
+            val draft = navController.previousBackStackEntry
+                ?.savedStateHandle?.get<DraftEntity>("draft")
+            val horizontalSlides = prefsRepo.horizontalSlides
+            val viewModel: DraftPresenterViewModel = hiltViewModel()
+            if (draft != null) {
+                DraftPresenterScreen(
+                    navController = navController,
+                    draft = draft,
+                    horizontalSlides = horizontalSlides,
+                    viewModel = viewModel,
+                )
+            } else {
+                navController.popBackStack()
+            }
+        }
+
+        composable(Routes.DRAFT_EDITOR) {
+            val draft = navController.previousBackStackEntry
+                ?.savedStateHandle?.get<DraftEntity>("draft_to_edit")
+            val viewModel: EditorViewModel = hiltViewModel()
+            if (draft != null) {
+                EditorScreen(
+                    navController = navController,
+                    draft = draft,
                     viewModel = viewModel,
                 )
             } else {

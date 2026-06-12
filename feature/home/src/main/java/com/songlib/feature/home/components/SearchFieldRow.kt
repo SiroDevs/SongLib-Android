@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Mic
@@ -19,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +32,7 @@ fun SearchFieldRow(
     onQueryChange: (String) -> Unit,
     onClear: () -> Unit,
     onVoiceSearch: () -> Unit,
+    onSearch: ((String) -> Unit)? = null,   // called when user presses the search IME action
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -42,7 +46,8 @@ fun SearchFieldRow(
             value = query,
             onValueChange = onQueryChange,
             modifier = modifier
-                .fillMaxWidth().background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 5.dp, vertical = 5.dp),
             placeholder = { Text(placeholder) },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
@@ -59,7 +64,11 @@ fun SearchFieldRow(
                 }
             },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(
+                onSearch = { onSearch?.invoke(query) }
+            ),
         )
     }
 }

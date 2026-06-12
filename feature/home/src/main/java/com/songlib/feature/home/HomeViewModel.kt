@@ -162,12 +162,18 @@ class HomeViewModel @Inject constructor(
             _filtered.value = if (qry.isBlank()) pool
             else SongUtils.searchSongs(pool, qry, byNo)
             _uiState.tryEmit(UiState.Filtered)
+        }
+    }
 
-            if (qry.isNotBlank() && !byNo) {
-                trackingRepo.recordSearch(qry)
-                val histories = trackingRepo.fetchHistories()
-                _hasHistory.value = histories.isNotEmpty()
-            }
+    /**
+     * Explicitly commit the current search query to history.
+     * Called when the user presses the Search IME action or taps on a result.
+     */
+    fun commitSearch(qry: String = _searchQuery.value) {
+        if (qry.isBlank()) return
+        viewModelScope.launch {
+            trackingRepo.recordSearch(qry)
+            _hasHistory.value = true
         }
     }
 
