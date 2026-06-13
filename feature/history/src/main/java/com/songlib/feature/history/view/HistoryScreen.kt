@@ -1,47 +1,35 @@
 package com.songlib.feature.history.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.PrimaryTabRow
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.database.model.BookEntity
-import com.songlib.core.database.model.SearchEntity
-import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.core.ui.components.indicators.EmptyState
-import com.songlib.core.ui.components.listitems.SongItem
 import com.songlib.feature.history.HistoryViewModel
+import com.songlib.feature.history.view.tabs.SearchesTab
+import com.songlib.feature.history.view.tabs.ViewsTab
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -59,6 +47,8 @@ fun HistoryScreen(
     val bookMap by viewModel.bookMap.collectAsState()
     val selectedViews by viewModel.selectedViewIds.collectAsState()
     val selectedSearchIds by viewModel.selectedSearchIds.collectAsState()
+    val showOlderViews by viewModel.showOlderViews.collectAsState()
+    val showOlderSearches by viewModel.showOlderSearches.collectAsState()
 
     LaunchedEffect(Unit) { viewModel.load() }
 
@@ -105,17 +95,20 @@ fun HistoryScreen(
         }
     ) { padding ->
         Column(Modifier.padding(padding)) {
-            TabRow(selectedTabIndex = pagerState.currentPage) {
+            PrimaryTabRow(
+                selectedTabIndex = pagerState.currentPage,
+                containerColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+                contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimaryContainer,
+            ) {
                 tabs.forEachIndexed { i, title ->
                     Tab(
                         selected = pagerState.currentPage == i,
                         onClick = {
-                            // Clear selection when switching tabs
                             if (i == 0) viewModel.clearSearchSelection()
                             else viewModel.clearViewSelection()
                             scope.launch { pagerState.animateScrollToPage(i) }
                         },
-                        text = { Text(title, modifier = Modifier.padding(vertical = 12.dp)) }
+                        text = { Text(title) }
                     )
                 }
             }
@@ -123,124 +116,40 @@ fun HistoryScreen(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.Top,
             ) { page ->
                 when (page) {
                     0 -> ViewsTab(
                         views = views,
                         bookMap = bookMap,
                         selectedIds = selectedViews,
-                        onItemClick = { song ->
+                        showOlder = showOlderViews,
+                        onToggleOlder = { viewModel.toggleOlderViews() },
+                        onItemClick = { songView ->
                             if (selectedViews.isNotEmpty()) {
-                                viewModel.toggleViewSelection(song.songId)
+                                viewModel.toggleViewSelection(songView.song.id)
                             } else {
                                 navController.currentBackStackEntry
-                                    ?.savedStateHandle?.set("song", song)
+                                    ?.savedStateHandle?.set("song", songView.entity)
                                 navController.navigate(Routes.PRESENT)
                             }
                         },
-                        onItemLongClick = { song -> viewModel.toggleViewSelection(song.songId) }
+                        onItemLongClick = { songView -> viewModel.toggleViewSelection(songView.song.id) }
                     )
 
                     1 -> SearchesTab(
                         searches = searches,
                         selectedIds = selectedSearchIds,
+                        showOlder = showOlderSearches,
+                        onToggleOlder = { viewModel.toggleOlderSearches() },
                         onItemClick = { search ->
                             if (selectedSearchIds.isNotEmpty()) {
                                 viewModel.toggleSearchSelection(search.id)
                             }
-                            // Could optionally pre-fill the search bar here via a callback
                         },
                         onItemLongClick = { search -> viewModel.toggleSearchSelection(search.id) }
                     )
                 }
-            }
-        }
-    }
-}
-
-// ── Views tab ─────────────────────────────────────────────────────────────────
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun ViewsTab(
-    views: List<SongEntity>,
-    bookMap: Map<Int, BookEntity>,
-    selectedIds: Set<Int>,
-    onItemClick: (SongEntity) -> Unit,
-    onItemLongClick: (SongEntity) -> Unit,
-) {
-    if (views.isEmpty()) {
-        EmptyState(message = "No songs viewed yet")
-    } else {
-        LazyColumn {
-            items(views, key = { it.songId }) { song ->
-                val bookTitle = bookMap[song.book]?.title ?: ""
-                val isSelected = song.songId in selectedIds
-                Box(
-                    modifier = Modifier
-                        .combinedClickable(
-                            onClick = { onItemClick(song) },
-                            onLongClick = { onItemLongClick(song) }
-                        )
-                        .background(
-                            if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                            else Color.Transparent
-                        )
-                ) {
-                    SongItem(
-                        song = song,
-                        showLike = false,
-                        // title    → "1. Only Believe"
-                        customTitle = "${song.songNo}. ${song.title}",
-                        // subtitle → songbook name
-                        customSubtitle = bookTitle,
-                    )
-                }
-                HorizontalDivider()
-            }
-        }
-    }
-}
-
-// ── Searches tab ──────────────────────────────────────────────────────────────
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun SearchesTab(
-    searches: List<SearchEntity>,
-    selectedIds: Set<Int>,
-    onItemClick: (SearchEntity) -> Unit,
-    onItemLongClick: (SearchEntity) -> Unit,
-) {
-    if (searches.isEmpty()) {
-        EmptyState(message = "No searches yet")
-    } else {
-        LazyColumn {
-            items(searches, key = { it.id }) { search ->
-                val isSelected = search.id in selectedIds
-                Box(
-                    modifier = Modifier
-                        .combinedClickable(
-                            onClick = { onItemClick(search) },
-                            onLongClick = { onItemLongClick(search) }
-                        )
-                        .background(
-                            if (isSelected) MaterialTheme.colorScheme.primaryContainer
-                            else Color.Transparent
-                        )
-                ) {
-                    ListItem(
-                        headlineContent = { Text(search.title) },
-                        trailingContent = {
-                            Text(
-                                text = "${search.hits} hit${if (search.hits != 1) "s" else ""}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    )
-                }
-                HorizontalDivider()
             }
         }
     }

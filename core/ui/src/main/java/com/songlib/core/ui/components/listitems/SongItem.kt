@@ -38,6 +38,7 @@ fun SongItem(
     showSongNo: Boolean = true,
     customTitle: String? = null,
     customSubtitle: String? = null,
+    trailingLabel: String? = null,
 ) {
     val verses = remember(song.content) { song.content.split("##") }
     val hasChorus = "CHORUS" in song.content
@@ -107,6 +108,12 @@ fun SongItem(
                     if (hasChorus) SongChip(label = "C")
                 }
             }
+        } else if (trailingLabel != null) {  // 👈 add this branch
+            Text(
+                text = trailingLabel,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+            )
         }
     }
 }

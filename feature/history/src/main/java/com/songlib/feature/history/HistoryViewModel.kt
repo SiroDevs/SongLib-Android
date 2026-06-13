@@ -2,11 +2,11 @@ package com.songlib.feature.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.core.data.repos.SongBookRepo
-import com.songlib.core.data.repos.TrackingRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SearchEntity
-import com.songlib.core.database.model.SongEntity
+import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.TrackingRepo
+import com.songlib.feature.history.utils.SongView
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,33 +19,31 @@ class HistoryViewModel @Inject constructor(
     private val trackingRepo: TrackingRepo,
     private val songbkRepo: SongBookRepo,
 ) : ViewModel() {
-
-    private val _views = MutableStateFlow<List<SongEntity>>(emptyList())
-    val views: StateFlow<List<SongEntity>> = _views.asStateFlow()
+    private val _views = MutableStateFlow<List<SongView>>(emptyList())
+    val views: StateFlow<List<SongView>> = _views.asStateFlow()
 
     private val _searches = MutableStateFlow<List<SearchEntity>>(emptyList())
     val searches: StateFlow<List<SearchEntity>> = _searches.asStateFlow()
 
-    /** Map songId → BookEntity so history items can show the songbook title */
     private val _bookMap = MutableStateFlow<Map<Int, BookEntity>>(emptyMap())
     val bookMap: StateFlow<Map<Int, BookEntity>> = _bookMap.asStateFlow()
+    private val historyIdToSongId = mutableMapOf<Int, Int>()
 
-    /**
-     * Map songId → history-row id.
-     * Used to delete the correct history row when the user removes a viewed song.
-     */
-    private val songIdToHistoryId = mutableMapOf<Int, Int>()
-
-    // ── Selection ─────────────────────────────────────────────────────────
-    /** Set of *songId* values currently selected in the Views tab */
     private val _selectedViewIds = MutableStateFlow<Set<Int>>(emptySet())
     val selectedViewIds: StateFlow<Set<Int>> = _selectedViewIds.asStateFlow()
 
-    /** Set of *SearchEntity.id* values currently selected in the Searches tab */
     private val _selectedSearchIds = MutableStateFlow<Set<Int>>(emptySet())
     val selectedSearchIds: StateFlow<Set<Int>> = _selectedSearchIds.asStateFlow()
 
-    // ── Load ──────────────────────────────────────────────────────────────
+    private val _showOlderViews = MutableStateFlow(false)
+    val showOlderViews: StateFlow<Boolean> = _showOlderViews.asStateFlow()
+
+    private val _showOlderSearches = MutableStateFlow(false)
+    val showOlderSearches: StateFlow<Boolean> = _showOlderSearches.asStateFlow()
+
+    fun toggleOlderViews()   { _showOlderViews.value   = !_showOlderViews.value }
+    fun toggleOlderSearches() { _showOlderSearches.value = !_showOlderSearches.value }
+
     fun load() {
         viewModelScope.launch {
             val histories = trackingRepo.fetchHistories()
@@ -54,44 +52,37 @@ class HistoryViewModel @Inject constructor(
             val songMap   = allSongs.associateBy { it.songId }
             val bookById  = allBooks.associateBy { it.bookId }
 
-            // Build the songId → historyRowId map (most recent row wins for each song)
-            songIdToHistoryId.clear()
-            histories.forEach { h -> songIdToHistoryId[h.song] = h.id }
+            historyIdToSongId.clear()
+            histories.forEach { h -> historyIdToSongId[h.id] = h.song }
 
-            _views.value   = histories.mapNotNull { songMap[it.song] }.distinctBy { it.songId }
-            _bookMap.value = bookById
+            // Each HistoryEntity row becomes a SongView; keep all rows (don't dedupe)
+            // so that re-views show up with their individual timestamps.
+            _views.value    = histories.mapNotNull { h ->
+                songMap[h.song]?.let { SongView(song = h, entity = it) }
+            }
+            _bookMap.value  = bookById
             _searches.value = trackingRepo.fetchSearches()
         }
     }
 
-    // ── Views tab ─────────────────────────────────────────────────────────
-    fun toggleViewSelection(songId: Int) {
-        _selectedViewIds.value = if (songId in _selectedViewIds.value)
-            _selectedViewIds.value - songId
-        else
-            _selectedViewIds.value + songId
+    fun toggleViewSelection(historyId: Int) {
+        _selectedViewIds.value = if (historyId in _selectedViewIds.value)
+            _selectedViewIds.value - historyId else _selectedViewIds.value + historyId
     }
 
     fun clearViewSelection() { _selectedViewIds.value = emptySet() }
 
     fun deleteSelectedViews() {
         viewModelScope.launch {
-            _selectedViewIds.value.forEach { songId ->
-                // Delete by the history-row id, not the songId
-                val historyId = songIdToHistoryId[songId]
-                if (historyId != null) trackingRepo.deleteHistoryById(historyId)
-            }
+            _selectedViewIds.value.forEach { trackingRepo.deleteHistoryById(it) }
             clearViewSelection()
             load()
         }
     }
 
-    // ── Searches tab ──────────────────────────────────────────────────────
     fun toggleSearchSelection(searchId: Int) {
         _selectedSearchIds.value = if (searchId in _selectedSearchIds.value)
-            _selectedSearchIds.value - searchId
-        else
-            _selectedSearchIds.value + searchId
+            _selectedSearchIds.value - searchId else _selectedSearchIds.value + searchId
     }
 
     fun clearSearchSelection() { _selectedSearchIds.value = emptySet() }
@@ -104,7 +95,6 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
-    // ── Clear all ─────────────────────────────────────────────────────────
     fun clearViews() {
         viewModelScope.launch {
             clearViewSelection()

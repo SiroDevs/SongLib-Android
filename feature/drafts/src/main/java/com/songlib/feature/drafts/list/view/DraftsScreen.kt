@@ -93,7 +93,6 @@ fun DraftsScreen(
             )
         },
         floatingActionButton = {
-            // Hide FAB when in selection mode
             if (selectedIds.isEmpty()) {
                 FloatingActionButton(onClick = { showNewDraftDialog = true }) {
                     Icon(Icons.Default.Add, contentDescription = "New draft")
@@ -114,7 +113,6 @@ fun DraftsScreen(
                                     if (selectedIds.isNotEmpty()) {
                                         viewModel.toggleSelection(draft.id)
                                     } else {
-                                        // Navigate to draft presenter
                                         navController.currentBackStackEntry
                                             ?.savedStateHandle
                                             ?.set("draft", draft)
@@ -152,11 +150,6 @@ fun DraftsScreen(
     }
 }
 
-/**
- * Converts a [DraftEntity] to a [SongEntity] stub so we can reuse [SongItem]
- * without any changes to the shared component.
- * The fields that SongItem actually renders are overridden via customTitle/customSubtitle.
- */
 private fun DraftEntity.toFakeSongEntity() = SongEntity(
     songId = id,
     alias = "",

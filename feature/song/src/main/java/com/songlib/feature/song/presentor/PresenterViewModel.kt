@@ -104,7 +104,6 @@ class PresenterViewModel @Inject constructor(
         parseSong(song)
 
         viewModelScope.launch {
-            // Record song view in history
             trackingRepo.recordSongView(song.songId)
 
             _listings.value = listRepo.fetchListings(0)

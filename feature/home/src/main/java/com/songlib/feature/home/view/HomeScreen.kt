@@ -111,7 +111,6 @@ private fun HomeSkeletonScreen() {
                         .background(brush)
                 )
             }
-            // Book filter chips skeleton
             item {
                 LazyRow(
                     modifier = Modifier
@@ -131,7 +130,6 @@ private fun HomeSkeletonScreen() {
                     }
                 }
             }
-            // Song list skeletons
             items(12) { SongSkeletonItem() }
         }
     }
