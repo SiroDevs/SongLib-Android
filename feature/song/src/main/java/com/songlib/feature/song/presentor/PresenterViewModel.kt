@@ -14,7 +14,7 @@ import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.common.utils.Presentor
+import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,9 +32,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 sealed interface ReportUiState {
-    object Idle        : ReportUiState
-    object Submitting  : ReportUiState
-    object Success     : ReportUiState
+    object Idle : ReportUiState
+    object Submitting : ReportUiState
+    object Success : ReportUiState
     data class Error(val message: String) : ReportUiState
 }
 
@@ -90,11 +90,11 @@ class PresenterViewModel @Inject constructor(
     private val _reportState = MutableStateFlow<ReportUiState>(ReportUiState.Idle)
     val reportState: StateFlow<ReportUiState> = _reportState.asStateFlow()
 
-    private val _fontSize = MutableStateFlow(Presentor.DEFAULT_FONT_SP)
+    private val _fontSize = MutableStateFlow(AppFonts.DEFAULT_FONT_SP)
     val fontSize: StateFlow<Float> = _fontSize.asStateFlow()
 
     fun updateFontSize(newSp: Float) {
-        _fontSize.value = newSp.coerceIn(Presentor.MIN_FONT_SP, Presentor.MAX_FONT_SP)
+        _fontSize.value = newSp.coerceIn(AppFonts.MIN_FONT_SP, AppFonts.MAX_FONT_SP)
     }
 
     fun loadSong(song: SongEntity) {
@@ -203,11 +203,11 @@ class PresenterViewModel @Inject constructor(
             val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())
             draftRepo.saveDraft(
                 DraftEntity(
-                    title   = song.title,
+                    title = song.title,
                     content = song.content,
-                    songNo  = song.songNo,
-                    book    = song.book,
-                    userId  = prefsRepo.loggedInUserId,
+                    songNo = song.songNo,
+                    book = song.book,
+                    userId = prefsRepo.loggedInUserId,
                     created = now,
                 )
             )
@@ -226,13 +226,13 @@ class PresenterViewModel @Inject constructor(
             try {
                 reportRepo.submitReport(
                     SongReportRequest(
-                        songId      = song.songId,
-                        bookId      = bookId,
-                        songNo      = song.songNo,
-                        songTitle   = song.title,
-                        reportType  = reportType,
+                        songId = song.songId,
+                        bookId = bookId,
+                        songNo = song.songNo,
+                        songTitle = song.title,
+                        reportType = reportType,
                         description = description,
-                        reportedBy  = prefsRepo.loggedInEmail.takeIf { it.isNotEmpty() }
+                        reportedBy = prefsRepo.loggedInEmail.takeIf { it.isNotEmpty() }
                     )
                 )
                 _reportState.value = ReportUiState.Success
@@ -244,5 +244,7 @@ class PresenterViewModel @Inject constructor(
         }
     }
 
-    fun resetReportState() { _reportState.value = ReportUiState.Idle }
+    fun resetReportState() {
+        _reportState.value = ReportUiState.Idle
+    }
 }

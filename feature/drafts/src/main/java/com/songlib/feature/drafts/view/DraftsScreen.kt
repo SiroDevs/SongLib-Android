@@ -50,7 +50,7 @@ fun DraftsScreen(
     navController: NavHostController,
     viewModel: DraftsViewModel = hiltViewModel(),
 ) {
-    val drafts      by viewModel.drafts.collectAsState()
+    val drafts by viewModel.drafts.collectAsState()
     val selectedIds by viewModel.selectedIds.collectAsState()
     var showNewDraftDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -157,16 +157,16 @@ fun DraftsScreen(
  * The fields that SongItem actually renders are overridden via customTitle/customSubtitle.
  */
 private fun DraftEntity.toFakeSongEntity() = SongEntity(
-    songId  = id,
-    alias   = "",
-    book    = book ?: 0,
+    songId = id,
+    alias = "",
+    book = book ?: 0,
     content = content,
     created = created,
-    liked   = false,
-    likes   = 0,
-    songNo  = songNo ?: 0,
-    title   = title,
-    views   = 0,
+    liked = false,
+    likes = 0,
+    songNo = songNo ?: 0,
+    title = title,
+    views = 0,
 )
 
 @Composable
@@ -174,7 +174,7 @@ fun NewDraftDialog(
     onDismiss: () -> Unit,
     onConfirm: (title: String, content: String) -> Unit,
 ) {
-    var title   by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
 
     AlertDialog(

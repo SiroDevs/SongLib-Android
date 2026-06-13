@@ -18,6 +18,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.ui.components.pagecurl.CornerNavZone
 import com.songlib.core.ui.components.pagecurl.CurlCorner
 import com.songlib.feature.song.presentor.PresenterViewModel
@@ -55,8 +56,8 @@ fun PresenterContent(
                             }
                             zoom *= event.calculateZoom()
                             val newSize = (fontSizeAtGestureStart * zoom).coerceIn(
-                                PresenterViewModel.MIN_FONT_SP,
-                                PresenterViewModel.MAX_FONT_SP,
+                                AppFonts.MIN_FONT_SP,
+                                AppFonts.MAX_FONT_SP,
                             )
                             onFontSizeChange(newSize)
                             event.changes.forEach { if (it.positionChanged()) it.consume() }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.ui.sample.SampleIndicators
 import com.songlib.core.ui.sample.SampleVerses
 import com.songlib.feature.song.presentor.PresenterViewModel
@@ -19,7 +20,7 @@ fun PresenterLayers(
     verses: List<String>,
     indicators: List<String>,
     horizontalSlides: Boolean = false,
-    fontSize: Float = PresenterViewModel.DEFAULT_FONT_SP,
+    fontSize: Float = AppFonts.DEFAULT_FONT_SP,
     cornerOverlay: (@Composable () -> Unit)? = null,
 ) {
     val pagerState = rememberPagerState { verses.size }

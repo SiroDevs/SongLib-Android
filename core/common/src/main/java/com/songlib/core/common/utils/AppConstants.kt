@@ -65,7 +65,7 @@ object Routes {
     const val EDITOR = "editor"
 }
 
-object Presentor {
+object AppFonts {
     const val DEFAULT_FONT_SP = 28f
     const val MIN_FONT_SP = 14f
     const val MAX_FONT_SP = 60f

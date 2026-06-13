@@ -22,14 +22,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.common.utils.Presentor
+import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.drafts.DraftPresenterViewModel
-import com.songlib.feature.song.presentor.PresenterViewModel
 import com.songlib.feature.song.presentor.view.PresenterContent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +47,7 @@ fun DraftPresenterScreen(
     val hasNext      by viewModel.hasNext.collectAsState()
     val context = LocalContext.current
 
-    var fontSize by remember { mutableFloatStateOf(Presentor.DEFAULT_FONT_SP) }
+    var fontSize by remember { mutableFloatStateOf(AppFonts.DEFAULT_FONT_SP) }
 
     LaunchedEffect(draft) { viewModel.load(draft) }
 
@@ -95,8 +94,8 @@ fun DraftPresenterScreen(
                     hasNext = hasNext,
                     fontSize = fontSize,
                     onFontSizeChange = { fontSize = it.coerceIn(
-                        Presentor.MIN_FONT_SP,
-                        Presentor.MAX_FONT_SP
+                        AppFonts.MIN_FONT_SP,
+                        AppFonts.MAX_FONT_SP
                     ) },
                     onNavigatePrevious = { viewModel.navigatePrevious() },
                     onNavigateNext     = { viewModel.navigateNext() },

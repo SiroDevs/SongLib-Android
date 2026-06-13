@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.BookEntity
@@ -183,7 +184,7 @@ fun PresenterScreen(
             PresentorFab(
                 fontSize = fontSize,
                 currentSong = currentSong,
-                onResetFontSize = { viewModel.updateFontSize(Presenter.DEFAULT_FONT_SP) },
+                onResetFontSize = { viewModel.updateFontSize(AppFonts.DEFAULT_FONT_SP) },
                 onShare = { shareText ->
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"

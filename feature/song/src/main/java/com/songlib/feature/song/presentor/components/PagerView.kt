@@ -25,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.songlib.core.ui.sample.SampleVerses
-import com.songlib.feature.song.presentor.PresenterViewModel
+import com.songlib.core.common.utils.AppFonts
 
 @Composable
 fun PagerView(
@@ -33,7 +33,7 @@ fun PagerView(
     verses: List<String>,
     modifier: Modifier = Modifier,
     horizontalSlides: Boolean = false,
-    fontSize: Float = PresenterViewModel.DEFAULT_FONT_SP,
+    fontSize: Float = AppFonts.DEFAULT_FONT_SP,
     cornerOverlay: (@Composable () -> Unit)? = null,
 ) {
     val animatedFontSize by animateFloatAsState(
