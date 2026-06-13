@@ -39,12 +39,12 @@ fun DraftPresenterScreen(
     horizontalSlides: Boolean = false,
     viewModel: DraftPresenterViewModel = hiltViewModel(),
 ) {
-    val uiState      by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     val currentDraft by viewModel.currentDraft.collectAsState()
-    val verses       by viewModel.verses.collectAsState()
-    val indicators   by viewModel.indicators.collectAsState()
-    val hasPrevious  by viewModel.hasPrevious.collectAsState()
-    val hasNext      by viewModel.hasNext.collectAsState()
+    val verses by viewModel.verses.collectAsState()
+    val indicators by viewModel.indicators.collectAsState()
+    val hasPrevious by viewModel.hasPrevious.collectAsState()
+    val hasNext by viewModel.hasNext.collectAsState()
     val context = LocalContext.current
 
     var fontSize by remember { mutableFloatStateOf(AppFonts.DEFAULT_FONT_SP) }
@@ -93,17 +93,21 @@ fun DraftPresenterScreen(
                     hasPrevious = hasPrevious,
                     hasNext = hasNext,
                     fontSize = fontSize,
-                    onFontSizeChange = { fontSize = it.coerceIn(
-                        AppFonts.MIN_FONT_SP,
-                        AppFonts.MAX_FONT_SP
-                    ) },
+                    onFontSizeChange = {
+                        fontSize = it.coerceIn(
+                            AppFonts.MIN_FONT_SP,
+                            AppFonts.MAX_FONT_SP
+                        )
+                    },
                     onNavigatePrevious = { viewModel.navigatePrevious() },
-                    onNavigateNext     = { viewModel.navigateNext() },
+                    onNavigateNext = { viewModel.navigateNext() },
                 )
+
                 UiState.Loading -> LoadingState(
-                    title    = "Loading draft…",
+                    title = "Loading draft…",
                     fileName = "circle-loader"
                 )
+
                 else -> EmptyState()
             }
         }
