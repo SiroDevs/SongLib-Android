@@ -29,9 +29,9 @@ import com.songlib.feature.drafts.present.view.DraftPresenterScreen
 import com.songlib.feature.edits.user.EditsViewModel
 import com.songlib.feature.edits.user.view.EditsScreen
 import com.songlib.feature.help.view.HelpScreen
-import com.songlib.feature.home.HistoryViewModel
+import com.songlib.feature.history.HistoryViewModel
+import com.songlib.feature.history.view.HistoryScreen
 import com.songlib.feature.home.HomeViewModel
-import com.songlib.feature.home.view.HistoryScreen
 import com.songlib.feature.home.view.HomeScreen
 import com.songlib.feature.howitworks.view.HowItWorksScreen
 import com.songlib.feature.listing.ListingViewModel

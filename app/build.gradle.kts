@@ -100,6 +100,7 @@ dependencies {
     // Feature modules
     implementation(project(":feature:selection"))
     implementation(project(":feature:home"))
+    implementation(project(":feature:history"))
     implementation(project(":feature:drafts"))
     implementation(project(":feature:edits"))
     implementation(project(":feature:listing"))

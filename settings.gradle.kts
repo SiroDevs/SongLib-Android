@@ -39,6 +39,7 @@ include(":core:designsystem")
 // Feature modules
 include(":feature:selection")
 include(":feature:home")
+include(":feature:history")
 include(":feature:drafts")
 include(":feature:edits")
 include(":feature:listing")

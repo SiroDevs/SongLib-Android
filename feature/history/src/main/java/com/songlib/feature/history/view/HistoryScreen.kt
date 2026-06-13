@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view
+package com.songlib.feature.history.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -41,7 +41,7 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.listitems.SongItem
-import com.songlib.feature.home.HistoryViewModel
+import com.songlib.feature.history.HistoryViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -50,26 +50,26 @@ fun HistoryScreen(
     navController: NavHostController,
     viewModel: HistoryViewModel = hiltViewModel(),
 ) {
-    val tabs  = listOf("Views", "Searches")
+    val tabs = listOf("Views", "Searches")
     val pagerState = rememberPagerState(pageCount = { tabs.size })
     val scope = rememberCoroutineScope()
 
-    val views             by viewModel.views.collectAsState()
-    val searches          by viewModel.searches.collectAsState()
-    val bookMap           by viewModel.bookMap.collectAsState()
-    val selectedViews     by viewModel.selectedViewIds.collectAsState()
+    val views by viewModel.views.collectAsState()
+    val searches by viewModel.searches.collectAsState()
+    val bookMap by viewModel.bookMap.collectAsState()
+    val selectedViews by viewModel.selectedViewIds.collectAsState()
     val selectedSearchIds by viewModel.selectedSearchIds.collectAsState()
 
     LaunchedEffect(Unit) { viewModel.load() }
 
     val currentPage = pagerState.currentPage
-    val hasViewSelection   = currentPage == 0 && selectedViews.isNotEmpty()
+    val hasViewSelection = currentPage == 0 && selectedViews.isNotEmpty()
     val hasSearchSelection = currentPage == 1 && selectedSearchIds.isNotEmpty()
 
     val topBarTitle = when {
-        hasViewSelection   -> "${selectedViews.size} selected"
+        hasViewSelection -> "${selectedViews.size} selected"
         hasSearchSelection -> "${selectedSearchIds.size} selected"
-        else               -> "History"
+        else -> "History"
     }
 
     Scaffold(
@@ -79,13 +79,12 @@ fun HistoryScreen(
                 showGoBack = true,
                 onNavIconClick = {
                     when {
-                        hasViewSelection   -> viewModel.clearViewSelection()
+                        hasViewSelection -> viewModel.clearViewSelection()
                         hasSearchSelection -> viewModel.clearSearchSelection()
-                        else               -> navController.popBackStack()
+                        else -> navController.popBackStack()
                     }
                 },
                 actions = {
-                    // Delete selected items
                     if (hasViewSelection) {
                         IconButton(onClick = { viewModel.deleteSelectedViews() }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete selected")
@@ -95,7 +94,6 @@ fun HistoryScreen(
                             Icon(Icons.Default.Delete, contentDescription = "Delete selected")
                         }
                     }
-                    // Clear all in the active tab
                     IconButton(onClick = {
                         if (currentPage == 0) viewModel.clearViews()
                         else viewModel.clearSearches()
@@ -142,6 +140,7 @@ fun HistoryScreen(
                         },
                         onItemLongClick = { song -> viewModel.toggleViewSelection(song.songId) }
                     )
+
                     1 -> SearchesTab(
                         searches = searches,
                         selectedIds = selectedSearchIds,
@@ -175,12 +174,12 @@ private fun ViewsTab(
     } else {
         LazyColumn {
             items(views, key = { it.songId }) { song ->
-                val bookTitle  = bookMap[song.book]?.title ?: ""
+                val bookTitle = bookMap[song.book]?.title ?: ""
                 val isSelected = song.songId in selectedIds
                 Box(
                     modifier = Modifier
                         .combinedClickable(
-                            onClick    = { onItemClick(song) },
+                            onClick = { onItemClick(song) },
                             onLongClick = { onItemLongClick(song) }
                         )
                         .background(
@@ -222,7 +221,7 @@ private fun SearchesTab(
                 Box(
                     modifier = Modifier
                         .combinedClickable(
-                            onClick    = { onItemClick(search) },
+                            onClick = { onItemClick(search) },
                             onLongClick = { onItemLongClick(search) }
                         )
                         .background(
@@ -234,7 +233,7 @@ private fun SearchesTab(
                         headlineContent = { Text(search.title) },
                         trailingContent = {
                             Text(
-                                text  = "${search.hits} hit${if (search.hits != 1) "s" else ""}",
+                                text = "${search.hits} hit${if (search.hits != 1) "s" else ""}",
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary,
                             )
