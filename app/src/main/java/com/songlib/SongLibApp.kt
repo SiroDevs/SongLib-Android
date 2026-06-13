@@ -7,11 +7,6 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class SongLibApp : Application(), Configuration.Provider {
-
-    /**
-     * Injected by Hilt so WorkManager uses HiltWorkerFactory.
-     * This is required for @HiltWorker / @AssistedInject to work.
-     */
     @Inject
     lateinit var workerConfiguration: Configuration
 

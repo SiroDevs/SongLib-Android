@@ -5,7 +5,9 @@ import com.songlib.core.common.utils.ApiConstants
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.network.dtos.DraftDto
+import com.songlib.core.network.dtos.EditActionResponse
 import com.songlib.core.network.dtos.EditDto
+import com.songlib.core.network.dtos.EditRejectRequest
 import com.songlib.core.network.dtos.LikeToggleRequest
 import com.songlib.core.network.dtos.LikeToggleResponse
 import com.songlib.core.network.dtos.LikedSongsResponse
@@ -18,6 +20,7 @@ import com.songlib.core.network.dtos.UserDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -59,26 +62,39 @@ interface SongLibService {
     suspend fun deleteDraft(@Path("draftId") draftId: Int): Map<String, String>
 
     // ── Edits ─────────────────────────────────────────────────────────────
-    @GET(ApiConstants.EDITS)
+    @GET(ApiConstants.USER_EDITS)
     suspend fun getEdits(): List<EditDto>
 
-    @GET("${ApiConstants.EDITS}/{editId}")
+    @GET("${ApiConstants.USER_EDITS}/pending")
+    suspend fun getPendingEdits(): List<EditDto>
+
+    @GET("${ApiConstants.USER_EDITS}/user/{userId}")
+    suspend fun getEditsForUser(@Path("userId") userId: Int): List<EditDto>
+
+    @GET("${ApiConstants.USER_EDITS}/{editId}")
     suspend fun getEdit(@Path("editId") editId: Int): EditDto
 
-    @POST(ApiConstants.EDITS)
+    @POST(ApiConstants.USER_EDITS)
     suspend fun createEdit(@Body edit: EditDto): EditDto
 
-    @PUT("${ApiConstants.EDITS}/{editId}")
+    @PUT("${ApiConstants.USER_EDITS}/{editId}")
     suspend fun updateEdit(@Path("editId") editId: Int, @Body edit: EditDto): EditDto
 
-    @DELETE("${ApiConstants.EDITS}/{editId}")
+    @PATCH("${ApiConstants.USER_EDITS}/{editId}/approve")
+    suspend fun approveEdit(@Path("editId") editId: Int): EditActionResponse
+
+    @PATCH("${ApiConstants.USER_EDITS}/{editId}/reject")
+    suspend fun rejectEdit(
+        @Path("editId") editId: Int,
+        @Body body: EditRejectRequest = EditRejectRequest()
+    ): EditActionResponse
+
+    @DELETE("${ApiConstants.USER_EDITS}/{editId}")
     suspend fun deleteEdit(@Path("editId") editId: Int): Map<String, String>
 
-    // ── Reports ───────────────────────────────────────────────────────────
     @POST(ApiConstants.REPORTS)
     suspend fun submitReport(@Body report: SongReportRequest): SongReportResponse
 
-    // ── Users ─────────────────────────────────────────────────────────────
     @GET("${ApiConstants.USERS}/{userId}")
     suspend fun getUser(@Path("userId") userId: Int): UserDto
 
@@ -88,14 +104,12 @@ interface SongLibService {
     @PUT("${ApiConstants.USERS}/{userId}")
     suspend fun updateUser(@Path("userId") userId: Int, @Body user: UserDto): UserDto
 
-    // ── Organisations ─────────────────────────────────────────────────────
     @GET(ApiConstants.ORGANISATIONS)
     suspend fun getOrganisations(): List<OrganisationDto>
 
     @GET("${ApiConstants.ORGANISATIONS}/{orgId}")
     suspend fun getOrganisation(@Path("orgId") orgId: Int): OrganisationDto
 
-    // ── Listings ──────────────────────────────────────────────────────────
     @GET(ApiConstants.LISTINGS)
     suspend fun getRemoteListings(): List<ListingDto>
 
@@ -108,7 +122,6 @@ interface SongLibService {
         @Body listing: ListingDto
     ): ListingDto
 
-    // ── Likes ─────────────────────────────────────────────────────────────
     @POST(ApiConstants.LIKES_TOGGLE)
     suspend fun toggleLike(@Body body: LikeToggleRequest): LikeToggleResponse
 

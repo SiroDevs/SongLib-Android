@@ -10,13 +10,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DraftDao {
-    @Query("SELECT * FROM drafts ORDER BY created DESC")
+    @Query("SELECT * FROM feature ORDER BY created DESC")
     fun getAllFlow(): Flow<List<DraftEntity>>
 
-    @Query("SELECT * FROM drafts ORDER BY created DESC")
+    @Query("SELECT * FROM feature ORDER BY created DESC")
     suspend fun getAll(): List<DraftEntity>
 
-    @Query("SELECT * FROM drafts WHERE id = :id")
+    @Query("SELECT * FROM feature WHERE id = :id")
     suspend fun getById(id: Int): DraftEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -25,9 +25,9 @@ interface DraftDao {
     @Update
     suspend fun update(draft: DraftEntity)
 
-    @Query("DELETE FROM drafts WHERE id = :id")
+    @Query("DELETE FROM feature WHERE id = :id")
     suspend fun deleteById(id: Int)
 
-    @Query("DELETE FROM drafts")
+    @Query("DELETE FROM feature")
     suspend fun deleteAll()
 }

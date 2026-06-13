@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.google.services)
     kotlin("plugin.serialization") version "2.1.21"
     id("kotlin-parcelize")
+    alias(libs.plugins.io.sentry)
 }
 
 val keystoreProperties = Properties()
@@ -97,11 +98,13 @@ dependencies {
     implementation(project(":core:ui"))
 
     // Feature modules
-    implementation(project(":feature:splash"))
     implementation(project(":feature:selection"))
     implementation(project(":feature:home"))
+    implementation(project(":feature:history"))
+    implementation(project(":feature:drafts"))
+    implementation(project(":feature:edits"))
     implementation(project(":feature:listing"))
-    implementation(project(":feature:presenter"))
+    implementation(project(":feature:song"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:help"))
     implementation(project(":feature:howitworks"))
@@ -112,6 +115,7 @@ dependencies {
     implementation(libs.compose.hilt.navigation)
 
     // Activity
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
@@ -136,4 +140,12 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+sentry {
+    debug.set(true)
+    includeSourceContext.set(true)
+    org.set("futuristicken")
+    projectName.set("songlib-android")
+    authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
 }

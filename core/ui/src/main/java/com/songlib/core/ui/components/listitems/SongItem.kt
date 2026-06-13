@@ -32,11 +32,21 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.sample.SampleSongs
 
 @Composable
-fun SongItem(song: SongEntity) {
+fun SongItem(
+    song: SongEntity,
+    showLike: Boolean = true,
+    showSongNo: Boolean = true,
+    customTitle: String? = null,
+    customSubtitle: String? = null,
+    trailingLabel: String? = null,
+) {
     val verses = remember(song.content) { song.content.split("##") }
     val hasChorus = "CHORUS" in song.content
     val verseCount = verses.size - if (hasChorus) 1 else 0
     val firstLine = remember(song.content) { refineContent(verses.firstOrNull().orEmpty()) }
+
+    val displayTitle = customTitle ?: if (showSongNo) "${song.songNo}. ${song.title}" else song.title
+    val displaySubtitle = customSubtitle ?: firstLine
 
     Row(
         modifier = Modifier
@@ -51,7 +61,7 @@ fun SongItem(song: SongEntity) {
                 .height(36.dp)
                 .clip(RoundedCornerShape(2.dp))
                 .background(
-                    if (song.liked) MaterialTheme.colorScheme.primary
+                    if (song.liked && showLike) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.outlineVariant
                 )
         )
@@ -61,7 +71,7 @@ fun SongItem(song: SongEntity) {
             verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             Text(
-                text = "${song.songNo}. ${song.title}",
+                text = displayTitle,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -69,7 +79,7 @@ fun SongItem(song: SongEntity) {
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = firstLine,
+                text = displaySubtitle,
                 fontSize = 13.sp,
                 lineHeight = 18.sp,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f),
@@ -78,30 +88,38 @@ fun SongItem(song: SongEntity) {
             )
         }
 
-        Column(
-            horizontalAlignment = Alignment.End,
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            Icon(
-                imageVector = if (song.liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = null,
-                tint = if (song.liked)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                modifier = Modifier.size(16.dp)
-            )
+        if (showLike) {
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                Icon(
+                    imageVector = if (song.liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = null,
+                    tint = if (song.liked)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
+                    modifier = Modifier.size(16.dp)
+                )
 
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                SongChip(label = if (verseCount == 1) "1 v" else "$verseCount vs")
-                if (hasChorus) SongChip(label = "C")
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    SongChip(label = if (verseCount == 1) "1 v" else "$verseCount vs")
+                    if (hasChorus) SongChip(label = "C")
+                }
             }
+        } else if (trailingLabel != null) {  // 👈 add this branch
+            Text(
+                text = trailingLabel,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+            )
         }
     }
 }
 
 @Composable
-private fun SongChip(label: String) {
+fun SongChip(label: String) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
@@ -122,7 +140,5 @@ private fun SongChip(label: String) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSongItem() {
-    SongItem(
-        song = SampleSongs[3],
-    )
+    SongItem(song = SampleSongs[3])
 }

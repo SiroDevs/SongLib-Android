@@ -22,7 +22,7 @@ ktor = "3.5.0"
 kotlinx-serialization = "1.11.0"
 material3 = "1.4.0"
 lottie-compose = "6.6.9"
-sentry = "6.7.0"
+sentry = "6.10.0"
 billing = "9.0.0"
 compiler = "3.2.0-alpha11"
 foundation = "1.11.2"
@@ -32,6 +32,9 @@ coil = "2.7.0"
 google-services = "4.4.4"
 credentials = "1.6.0"
 googleid = "1.2.0"
+appcompat = "1.7.1"
+material = "1.14.0"
+splashscreen = "1.0.1"
 
 [libraries]
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
@@ -79,6 +82,9 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "credentials" }
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 google-identity-googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

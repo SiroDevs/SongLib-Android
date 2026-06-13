@@ -104,16 +104,23 @@ class PrefsRepo @Inject constructor(
         get() = prefs.getString(PrefConstants.LOGGED_IN_PHOTO_URL, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_PHOTO_URL, value) }
 
+    /** "user" or "admin". Populated from the UserDto returned at sign-in. */
+    var loggedInRole: String
+        get() = prefs.getString(PrefConstants.LOGGED_IN_ROLE, "user") ?: "user"
+        set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_ROLE, value) }
+
     val isLoggedIn: Boolean get() = loggedInUserId > 0
+
+    val isAdmin: Boolean get() = loggedInRole == "admin"
 
     fun clearUser() {
         loggedInUserId   = 0
         loggedInEmail    = ""
         loggedInName     = ""
         loggedInPhotoUrl = ""
+        loggedInRole     = "user"
     }
 
-    // ── Delta sync ────────────────────────────────────────────────────────
     var lastSinceDateIso: String
         get() = prefs.getString(PrefConstants.LAST_SINCE_DATE, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.LAST_SINCE_DATE, value) }

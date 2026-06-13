@@ -3,7 +3,9 @@ package com.songlib
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -56,20 +58,27 @@ class MainActivity : ComponentActivity() {
                     val googleIdTokenCredential =
                         GoogleIdTokenCredential.createFrom(credential.data)
                     callback(
-                        googleIdTokenCredential.id,                          // googleId
-                        googleIdTokenCredential.id,                          // email (same as id for Google)
-                        googleIdTokenCredential.displayName ?: "",           // name
-                        googleIdTokenCredential.profilePictureUri?.toString() ?: ""  // photo
+                        googleIdTokenCredential.id,
+                        googleIdTokenCredential.id,
+                        googleIdTokenCredential.displayName ?: "",
+                        googleIdTokenCredential.profilePictureUri?.toString() ?: ""
                     )
                 }
             } catch (e: GetCredentialException) {
-                // User cancelled or no accounts available — silently ignore
+
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        val mainViewModel: MainViewModel by viewModels()
+
+        splashScreen.setKeepOnScreenCondition {
+            !mainViewModel.isReady.value
+        }
 
         setContent {
             val themeRepo: ThemeRepo = hiltViewModel()
@@ -84,6 +93,7 @@ class MainActivity : ComponentActivity() {
                 AppNavHost(
                     themeRepo = themeRepo,
                     prefsRepo = prefsRepo,
+                    mainViewModel = mainViewModel,
                     onSignInRequest = ::launchSignIn
                 )
             }

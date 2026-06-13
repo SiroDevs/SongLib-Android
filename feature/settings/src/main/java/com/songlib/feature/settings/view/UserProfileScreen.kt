@@ -129,7 +129,7 @@ fun UserProfileScreen(
                 )
                 Spacer(Modifier.height(20.dp))
                 Text(
-                    text      = "Sign in to sync your likes,\nlistings, drafts, and edits\nacross devices.",
+                    text      = "Sign in to sync your likes,\nlistings, feature, and edits\nacross devices.",
                     textAlign = TextAlign.Center,
                     style     = MaterialTheme.typography.bodyMedium,
                     color     = MaterialTheme.colorScheme.onSurfaceVariant,
