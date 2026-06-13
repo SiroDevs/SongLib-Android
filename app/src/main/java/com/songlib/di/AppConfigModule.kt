@@ -21,4 +21,8 @@ object AppConfigModule {
     @Provides
     @Named("pesapal_ipn_id")
     fun providePesapalIpnId(): String = BuildConfig.PesapalIpnId
+
+    @Provides
+    @Named("songlib_api_key")
+    fun provideSonglibApiKey(): String = BuildConfig.SonglibApiKey
 }

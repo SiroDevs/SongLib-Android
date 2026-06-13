@@ -57,7 +57,6 @@ fun AppTopBar(
             }
         },
         actions = actions,
-        windowInsets = WindowInsets(0, 0, 0, 0),
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.onPrimary,
             titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,

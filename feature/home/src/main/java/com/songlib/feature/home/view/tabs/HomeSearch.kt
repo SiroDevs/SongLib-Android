@@ -161,7 +161,7 @@ fun HomeSearch(
 
             ExtendedFloatingActionButton(
                 onClick = { dialPadVisible = true },
-                expanded = isAtTop,                         // collapses to icon-only on scroll
+                expanded = isAtTop,
                 containerColor = MaterialTheme.colorScheme.onPrimary,
                 icon = {
                     Icon(

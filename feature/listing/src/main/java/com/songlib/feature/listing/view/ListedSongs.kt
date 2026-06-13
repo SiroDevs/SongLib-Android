@@ -36,7 +36,7 @@ fun ListedSongs(
                                 navController.currentBackStackEntry
                                     ?.savedStateHandle
                                     ?.set("song", song)
-                                navController.navigate(Routes.PRESENTER)
+                                navController.navigate(Routes.PRESENT)
                             }
                         },
                         onLongClick = {

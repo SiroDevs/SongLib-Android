@@ -33,14 +33,16 @@
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/donation" />
+            <option value="$PROJECT_DIR$/feature/drafts" />
+            <option value="$PROJECT_DIR$/feature/edits" />
             <option value="$PROJECT_DIR$/feature/help" />
+            <option value="$PROJECT_DIR$/feature/history" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/howitworks" />
             <option value="$PROJECT_DIR$/feature/listing" />
-            <option value="$PROJECT_DIR$/feature/presenter" />
             <option value="$PROJECT_DIR$/feature/selection" />
             <option value="$PROJECT_DIR$/feature/settings" />
-            <option value="$PROJECT_DIR$/feature/splash" />
+            <option value="$PROJECT_DIR$/feature/song" />
           </set>
         </option>
       </GradleProjectSettings>

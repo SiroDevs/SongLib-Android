@@ -6,34 +6,29 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.songlib.core.common.helpers.NetworkUtils
+import com.songlib.core.data.repos.DraftRepo
+import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.database.model.BookEntity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-/**
- * Background worker that fetches books and songs from the remote API and
- * persists them to the local Room database.
- *
- * Enqueued in two scenarios:
- *  1. After selection – user picks their books, songs are fetched immediately.
- *  2. Once per day   – re-syncs any changes without blocking the UI.
- *
- * Uses @HiltWorker so repo dependencies are injected by Hilt.
- * Requires [HiltWorkerFactory] wired via [Configuration.Provider] in [SongLibApp].
- */
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val songbkRepo: SongBookRepo,
     private val prefsRepo: PrefsRepo,
+    private val draftRepo: DraftRepo,
+    private val editorRepo: EditorRepo,
+    private val userRepo: UserRepo,
 ) : CoroutineWorker(context, workerParams) {
 
-    /** Parse the comma-separated selectedBooks pref into a Set<Int>. */
     private fun getSelectedIds(): Set<Int> =
         prefsRepo.selectedBooks
             .split(",")
@@ -49,27 +44,38 @@ class SyncWorker @AssistedInject constructor(
         return try {
             Log.d(TAG, "▶ SyncWorker starting…")
 
-            coroutineScope {
-                val selectedIds = getSelectedIds()
+            val selectedIds = getSelectedIds()
+            val books = mutableListOf<BookEntity>()
+            songbkRepo.fetchRemoteBooks(selectedIds).collect { fetched -> books.addAll(fetched) }
 
-                val books = mutableListOf<BookEntity>()
-                songbkRepo.fetchRemoteBooks(selectedIds).collect { fetched ->
-                    books.addAll(fetched)
-                }
+            if (books.isNotEmpty()) {
+                songbkRepo.saveBooks(books)
+                val bookIds = books.map { it.bookId }
+                Log.d(TAG, "Fetched ${books.size} books, syncing songs for $bookIds")
 
-                if (books.isNotEmpty()) {
-                    songbkRepo.saveBooks(books)
-                    val bookIds = books.map { it.bookId }
-                    Log.d(TAG, "Fetched ${books.size} books, fetching songs for $bookIds")
-
-                    songbkRepo.fetchAndSaveSongs(bookIds)
-                } else {
-                    Log.w(TAG, "⚠️ No books returned for selectedIds=$selectedIds – skipping song fetch")
-                }
+                // Delta sync: use since= if we have a previous sync timestamp
+                val since = prefsRepo.lastSinceDateIso.takeIf { it.isNotEmpty() }
+                songbkRepo.fetchAndSaveSongs(bookIds, since = since)
+            } else {
+                Log.w(TAG, "⚠️ No books returned – skipping song fetch")
             }
 
+            // Record new since timestamp
+            val isoNow = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(Date())
+            prefsRepo.lastSinceDateIso = isoNow
             prefsRepo.isDataLoaded = true
             prefsRepo.lastSyncedAt = System.currentTimeMillis()
+
+            // Post-login sync: push feature/edits to remote if logged in
+            val userId = prefsRepo.loggedInUserId
+            if (userId > 0) {
+                draftRepo.syncDraftsToRemote(userId)
+                editorRepo.syncEditsToRemote(userId)
+                editorRepo.syncEditStatuses(userId)
+                userRepo.syncBookSelection(userId)
+                Log.d(TAG, "✅ User data synced for userId=$userId")
+            }
+
             Log.d(TAG, "✅ SyncWorker completed successfully")
             Result.success()
 
@@ -81,9 +87,7 @@ class SyncWorker @AssistedInject constructor(
 
     companion object {
         const val TAG = "SyncWorker"
-        /** Unique name for the daily re-sync request (deduplicates if app opened twice). */
-        const val DAILY_SYNC_WORK_NAME = "songlib_daily_sync"
-        /** Unique name for the post-selection sync on first install. */
+        const val DAILY_SYNC_WORK_NAME   = "songlib_daily_sync"
         const val INSTALL_SYNC_WORK_NAME = "songlib_install_sync"
     }
 }

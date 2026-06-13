@@ -21,7 +21,6 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PrefsRepo
-import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.components.BottomNavBar
@@ -37,7 +36,6 @@ import com.songlib.feature.home.view.tabs.HomeSearch
 fun HomeContent(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    themeRepo: ThemeRepo,
     prefsRepo: PrefsRepo,
 ) {
     val tabs = listOf(HomeNavItem.Search, HomeNavItem.Likes, HomeNavItem.Listings)
@@ -72,9 +70,7 @@ fun HomeContent(
             label = "Listing title",
             onDismiss = { showAddListingDialog = false },
             onConfirm = { title ->
-                if (viewModel.checkAndHandleNewListing()) {
-                    viewModel.saveListing(title)
-                }
+                if (viewModel.checkAndHandleNewListing()) viewModel.saveListing(title)
                 showAddListingDialog = false
             }
         )
@@ -115,43 +111,23 @@ fun HomeContent(
                 selectedListings = selectedListings,
                 onClearSongSelection = viewModel::clearSongSelection,
                 onClearListingSelection = viewModel::clearListingSelection,
-                onLikeSongs = {
-                    viewModel.likeSongs(selectedSongs)
-                },
+                onLikeSongs = { viewModel.likeSongs(selectedSongs) },
                 onShareSong = {
                     val song = selectedSongs.first()
-
-                    val shareText = songShareString(
-                        song.title,
-                        lyricsString(song.content)
-                    )
-
+                    val shareText = songShareString(song.title, lyricsString(song.content))
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, shareText)
                     }
-
-                    context.startActivity(
-                        Intent.createChooser(intent, "Share song via")
-                    )
-
+                    context.startActivity(Intent.createChooser(intent, "Share song via"))
                     viewModel.clearSongSelection()
                 },
                 onShowListingSheet = { showListingSheet = true },
-                onDeleteListings = {
-                    viewModel.deleteListings(selectedListings)
-                },
+                onDeleteListings = { viewModel.deleteListings(selectedListings) },
                 onAddListing = { showAddListingDialog = true },
-                onNavigateSettings = {
-                    navController.navigate(Routes.SETTINGS)
-                },
-                onNavigateHowItWorks = {
-                    navController.navigate(Routes.HOW_IT_WORKS)
-                },
-                onNavigateHelp = {
-                    navController.navigate(Routes.HELP)
-                },
-                themeRepo = themeRepo
+                viewModel = viewModel,
+                navController = navController,
+                prefsRepo = prefsRepo,
             )
         },
         bottomBar = {

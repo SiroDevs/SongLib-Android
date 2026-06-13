@@ -1,18 +1,24 @@
 package com.songlib.core.data.di
 
 import android.content.Context
-import com.songlib.core.network.services.SongLibService
-import com.songlib.core.network.di.NetworkModule
+import com.songlib.core.data.repos.DraftRepo
+import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.TrackingRepo
+import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.database.daos.BookDao
+import com.songlib.core.database.daos.DraftDao
+import com.songlib.core.database.daos.EditDao
 import com.songlib.core.database.daos.HistoryDao
 import com.songlib.core.database.daos.ListingDao
 import com.songlib.core.database.daos.SearchDao
 import com.songlib.core.database.daos.SongDao
+import com.songlib.core.network.di.NetworkModule
+import com.songlib.core.network.services.SongLibService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,36 +29,45 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module(includes = [NetworkModule::class])
 object DataModule {
-    @Provides
-    @Singleton
-    fun provideListingRepo(
-        listingsDao: ListingDao
-    ): ListingRepo = ListingRepo(listingsDao)
 
-    @Provides
-    @Singleton
-    fun providePreferencesRepo(
-        @ApplicationContext context: Context,
-    ): PrefsRepo = PrefsRepo(context)
+    @Provides @Singleton
+    fun providePreferencesRepo(@ApplicationContext context: Context): PrefsRepo =
+        PrefsRepo(context)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
+    fun provideThemeRepo(prefsRepo: PrefsRepo): ThemeRepo =
+        ThemeRepo(prefsRepo)
+
+    @Provides @Singleton
     fun provideSongBookRepo(
         apiService: SongLibService,
         booksDao: BookDao,
         songsDao: SongDao,
     ): SongBookRepo = SongBookRepo(apiService, booksDao, songsDao)
 
-    @Provides
-    @Singleton
-    fun provideThemeRepo(
-        prefsRepo: PrefsRepo,
-    ): ThemeRepo = ThemeRepo(prefsRepo)
+    @Provides @Singleton
+    fun provideListingRepo(listingsDao: ListingDao): ListingRepo =
+        ListingRepo(listingsDao)
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideTrackingRepo(
         historiesDao: HistoryDao,
         searchesDao: SearchDao
     ): TrackingRepo = TrackingRepo(historiesDao, searchesDao)
+
+    @Provides @Singleton
+    fun provideReportRepo(service: SongLibService): ReportRepo =
+        ReportRepo(service)
+
+    @Provides @Singleton
+    fun provideDraftRepo(draftsDao: DraftDao, service: SongLibService): DraftRepo =
+        DraftRepo(draftsDao, service)
+
+    @Provides @Singleton
+    fun provideEditRepo(editDao: EditDao, service: SongLibService): EditorRepo =
+        EditorRepo(editDao, service)
+
+    @Provides @Singleton
+    fun provideUserRepo(service: SongLibService, prefsRepo: PrefsRepo): UserRepo =
+        UserRepo(service, prefsRepo)
 }
