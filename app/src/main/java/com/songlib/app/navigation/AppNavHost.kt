@@ -22,10 +22,10 @@ import com.songlib.feature.donation.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.view.AdminEditsScreen
-import com.songlib.feature.drafts.DraftsViewModel
-import com.songlib.feature.drafts.DraftPresenterViewModel
-import com.songlib.feature.drafts.view.DraftsScreen
-import com.songlib.feature.drafts.view.DraftPresenterScreen
+import com.songlib.feature.drafts.list.DraftsViewModel
+import com.songlib.feature.drafts.present.DraftPresenterViewModel
+import com.songlib.feature.drafts.list.view.DraftsScreen
+import com.songlib.feature.drafts.present.view.DraftPresenterScreen
 import com.songlib.feature.edits.user.EditsViewModel
 import com.songlib.feature.edits.user.view.EditsScreen
 import com.songlib.feature.help.view.HelpScreen

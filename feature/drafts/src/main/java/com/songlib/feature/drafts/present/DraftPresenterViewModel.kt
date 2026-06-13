@@ -1,11 +1,11 @@
-package com.songlib.feature.drafts
+package com.songlib.feature.drafts.present
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.database.model.DraftEntity
-import com.songlib.core.common.entity.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

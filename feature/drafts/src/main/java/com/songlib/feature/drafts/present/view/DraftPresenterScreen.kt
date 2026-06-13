@@ -1,4 +1,4 @@
-package com.songlib.feature.drafts.view
+package com.songlib.feature.drafts.present.view
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -28,7 +28,7 @@ import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.LoadingState
-import com.songlib.feature.drafts.DraftPresenterViewModel
+import com.songlib.feature.drafts.present.DraftPresenterViewModel
 import com.songlib.feature.song.presentor.view.PresenterContent
 
 @OptIn(ExperimentalMaterial3Api::class)

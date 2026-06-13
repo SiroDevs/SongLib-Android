@@ -1,9 +1,10 @@
-package com.songlib.feature.drafts.view
+package com.songlib.feature.drafts.list.view
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,7 +43,7 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.listitems.SongItem
-import com.songlib.feature.drafts.DraftsViewModel
+import com.songlib.feature.drafts.list.DraftsViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -181,7 +182,7 @@ fun NewDraftDialog(
         onDismissRequest = onDismiss,
         title = { Text("New Draft") },
         text = {
-            Column(verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },

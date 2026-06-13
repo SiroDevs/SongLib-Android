@@ -1,4 +1,4 @@
-package com.songlib.feature.drafts
+package com.songlib.feature.drafts.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,7 +27,7 @@ class DraftsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val drafts: StateFlow<List<DraftEntity>> = draftRepo.draftsFlow()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), emptyList())
 
     private val _toastEvent = MutableSharedFlow<String>()
     val toastEvent: SharedFlow<String> = _toastEvent.asSharedFlow()
@@ -57,11 +57,11 @@ class DraftsViewModel @Inject constructor(
             val now = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())
             draftRepo.saveDraft(
                 DraftEntity(
-                    title   = title,
+                    title = title,
                     content = content,
-                    songNo  = songNo,
-                    book    = book,
-                    userId  = prefsRepo.loggedInUserId,
+                    songNo = songNo,
+                    book = book,
+                    userId = prefsRepo.loggedInUserId,
                     created = now
                 )
             )
