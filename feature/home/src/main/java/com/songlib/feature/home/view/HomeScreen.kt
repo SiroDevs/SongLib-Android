@@ -100,7 +100,6 @@ private fun HomeSkeletonScreen() {
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            // Search bar skeleton
             item {
                 Box(
                     modifier = Modifier
