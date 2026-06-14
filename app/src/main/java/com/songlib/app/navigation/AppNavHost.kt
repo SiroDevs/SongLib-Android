@@ -81,28 +81,25 @@ fun AppNavHost(
             HomeScreen(
                 navController = navController,
                 viewModel = viewModel,
-                prefsRepo = prefsRepo
+                prefsRepo = prefsRepo,
             )
         }
 
         composable(Routes.PRESENT) {
-            val book = navController.previousBackStackEntry
-                ?.savedStateHandle?.get<BookEntity>("book")
-            val song = navController.previousBackStackEntry
-                ?.savedStateHandle?.get<SongEntity>("song")
+            val book = it.savedStateHandle.get<BookEntity>("book")
+            val song = it.savedStateHandle.get<SongEntity>("song")
             val viewModel: PresenterViewModel = hiltViewModel()
             PresenterScreen(
                 navController = navController,
                 viewModel = viewModel,
                 book = book,
                 song = song,
-                prefsRepo = prefsRepo
+                prefsRepo = prefsRepo,
             )
         }
 
         composable(Routes.EDITOR) {
-            val song  = navController.previousBackStackEntry
-                ?.savedStateHandle?.get<SongEntity>("song_to_edit")
+            val song = it.savedStateHandle.get<SongEntity>("song_to_edit")
             val viewModel: EditorViewModel = hiltViewModel()
             if (song != null) {
                 EditorScreen(
@@ -116,8 +113,7 @@ fun AppNavHost(
         }
 
         composable(Routes.DRAFT_PRESENT) {
-            val draft = navController.previousBackStackEntry
-                ?.savedStateHandle?.get<DraftEntity>("draft")
+            val draft = it.savedStateHandle.get<DraftEntity>("draft")
             val horizontalSlides = prefsRepo.horizontalSlides
             val viewModel: DraftPresenterViewModel = hiltViewModel()
             if (draft != null) {
@@ -133,8 +129,7 @@ fun AppNavHost(
         }
 
         composable(Routes.DRAFT_EDITOR) {
-            val draft = navController.previousBackStackEntry
-                ?.savedStateHandle?.get<DraftEntity>("draft_to_edit")
+            val draft = it.savedStateHandle.get<DraftEntity>("draft_to_edit")
             val viewModel: EditorViewModel = hiltViewModel()
             if (draft != null) {
                 EditorScreen(
@@ -148,14 +143,13 @@ fun AppNavHost(
         }
 
         composable(Routes.LISTING) {
-            val listing = navController.previousBackStackEntry
-                ?.savedStateHandle?.get<ListingUi>("listing")
+            val listing = it.savedStateHandle.get<ListingUi>("listing")
             val viewModel: ListingViewModel = hiltViewModel()
             ListingScreen(
                 navController = navController,
                 viewModel = viewModel,
                 listing = listing,
-                prefsRepo = prefsRepo
+                prefsRepo = prefsRepo,
             )
         }
 
@@ -199,7 +193,7 @@ fun AppNavHost(
             UserProfileScreen(
                 navController = navController,
                 viewModel = viewModel,
-                onSignInRequested = onSignInRequest
+                onSignInRequested = onSignInRequest,
             )
         }
 

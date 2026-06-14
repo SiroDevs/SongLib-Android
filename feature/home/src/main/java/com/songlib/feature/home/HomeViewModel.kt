@@ -1,20 +1,25 @@
 package com.songlib.feature.home
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.songlib.core.common.utils.SongUtils
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
+import com.songlib.core.data.worker.SyncWorker
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.feature.home.components.HomeNavItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -35,6 +40,7 @@ class HomeViewModel @Inject constructor(
     private val prefsRepo: PrefsRepo,
     private val trackingRepo: TrackingRepo,
     private val editorRepo: EditorRepo,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -84,55 +90,91 @@ class HomeViewModel @Inject constructor(
     private val _selectedListings = MutableStateFlow<Set<ListingUi>>(emptySet())
     val selectedListings: StateFlow<Set<ListingUi>> = _selectedListings.asStateFlow()
 
-    // ── New: History and Edits visibility ────────────────────────────────
     private val _hasHistory = MutableStateFlow(false)
     val hasHistory: StateFlow<Boolean> = _hasHistory.asStateFlow()
 
     private val _hasEdits = MutableStateFlow(false)
     val hasEdits: StateFlow<Boolean> = _hasEdits.asStateFlow()
 
+    // FIX 4: Guard so fetchData() is only ever executed once per ViewModel
+    // lifetime. Because the ViewModel survives back-stack pops, returning to
+    // HomeScreen will NOT re-trigger a full reload.
+    private var dataFetched = false
+
     fun toggleSongSelection(song: SongEntity) {
         _selectedSongs.value = if (_selectedSongs.value.contains(song))
             _selectedSongs.value - song else _selectedSongs.value + song
     }
 
-    fun clearSongSelection() {
-        _selectedSongs.value = emptySet()
-    }
+    fun clearSongSelection() { _selectedSongs.value = emptySet() }
 
     fun toggleListingSelection(listing: ListingUi) {
         _selectedListings.value = if (_selectedListings.value.contains(listing))
             _selectedListings.value - listing else _selectedListings.value + listing
     }
 
-    fun clearListingSelection() {
-        _selectedListings.value = emptySet()
-    }
+    fun clearListingSelection() { _selectedListings.value = emptySet() }
 
-    fun setSelectedTab(tab: HomeNavItem) {
-        _selectedTab.value = tab
-    }
+    fun setSelectedTab(tab: HomeNavItem) { _selectedTab.value = tab }
 
     fun fetchData() {
-        _uiState.tryEmit(UiState.Loading)
+        if (dataFetched) return
+        dataFetched = true
+
         viewModelScope.launch {
-            _books.value = songbkRepo.fetchLocalBooks()
-            _songs.value = songbkRepo.fetchLocalSongs()
-            _listings.value = listRepo.fetchListings(0)
-            _selectedBook.value = -1
-            _filtered.value = _songs.value
-            _likes.value = _songs.value.filter { it.liked }
-
-            // Check history and edits visibility
-            val histories = trackingRepo.fetchHistories()
-            _hasHistory.value = histories.isNotEmpty()
-
-            val userId = prefsRepo.loggedInUserId
-            if (userId > 0) {
-                _hasEdits.value = editorRepo.hasEdits(userId)
+            loadFromDb()
+            if (_songs.value.isEmpty() && !prefsRepo.isDataLoaded) {
+                observeInstallSyncWorker()
             }
+        }
+    }
 
-            _uiState.tryEmit(UiState.Filtered)
+    private suspend fun loadFromDb() {
+        _uiState.tryEmit(UiState.Loading)
+        _books.value = songbkRepo.fetchLocalBooks()
+        _songs.value = songbkRepo.fetchLocalSongs()
+        _listings.value = listRepo.fetchListings(0)
+        _selectedBook.value = -1
+        _filtered.value = _songs.value
+        _likes.value = _songs.value.filter { it.liked }
+
+        val histories = trackingRepo.fetchHistories()
+        _hasHistory.value = histories.isNotEmpty()
+
+        val userId = prefsRepo.loggedInUserId
+        if (userId > 0) {
+            _hasEdits.value = editorRepo.hasEdits(userId)
+        }
+
+        _uiState.tryEmit(UiState.Filtered)
+    }
+
+    private fun observeInstallSyncWorker() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _uiState.tryEmit(UiState.Loading)
+            try {
+                WorkManager.getInstance(context)
+                    .getWorkInfosByTagFlow(SyncWorker.TAG)
+                    .collect { workInfoList ->
+                        val info = workInfoList.firstOrNull() ?: return@collect
+                        when (info.state) {
+                            WorkInfo.State.SUCCEEDED -> {
+                                loadFromDb()
+                                return@collect
+                            }
+                            WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                                // Worker failed – surface whatever is in the DB
+                                // (may be empty, HomeScreen will show EmptyState).
+                                _uiState.tryEmit(UiState.Filtered)
+                                return@collect
+                            }
+                            else -> { /* RUNNING / ENQUEUED – keep waiting */ }
+                        }
+                    }
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Worker observation error", e)
+                _uiState.tryEmit(UiState.Filtered)
+            }
         }
     }
 
@@ -157,18 +199,12 @@ class HomeViewModel @Inject constructor(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             if (!byNo) delay(150)
-
             val pool = songsForCurrentBook()
-            _filtered.value = if (qry.isBlank()) pool
-            else SongUtils.searchSongs(pool, qry, byNo)
+            _filtered.value = if (qry.isBlank()) pool else SongUtils.searchSongs(pool, qry, byNo)
             _uiState.tryEmit(UiState.Filtered)
         }
     }
 
-    /**
-     * Explicitly commit the current search query to history.
-     * Called when the user presses the Search IME action or taps on a result.
-     */
     fun commitSearch(qry: String = _searchQuery.value) {
         if (qry.isBlank()) return
         viewModelScope.launch {
@@ -187,18 +223,17 @@ class HomeViewModel @Inject constructor(
                 val bookId = bookList[bookIndex].bookId
                 songList.filter { it.book == bookId }
             }
-
             else -> songList
         }
     }
+
+    // ── Likes ─────────────────────────────────────────────────────────────
 
     fun likeSongs(songs: Set<SongEntity>) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val allLiked = songs.all { it.liked }
-                songs.forEach { song ->
-                    songbkRepo.updateSong(song.copy(liked = !song.liked))
-                }
+                songs.forEach { song -> songbkRepo.updateSong(song.copy(liked = !song.liked)) }
                 val updatedIds = songs.map { it.songId }.toSet()
                 val newSongList = _songs.value.map { s ->
                     if (s.songId in updatedIds) s.copy(liked = !s.liked) else s
@@ -244,7 +279,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             listings.forEach { saveListItem(parent, it.songId) }
             withContext(Dispatchers.Main) {
-                _toastEvent.emit("Added ${listings.size} song${if (listings.size == 1) "" else "s"} to \"${parent.title}\"")
+                _toastEvent.emit(
+                    "Added ${listings.size} song${if (listings.size == 1) "" else "s"} to \"${parent.title}\""
+                )
             }
             _uiState.emit(UiState.Filtered)
         }
