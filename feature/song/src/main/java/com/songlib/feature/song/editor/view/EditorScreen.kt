@@ -49,7 +49,7 @@ fun EditorScreen(
 
     LaunchedEffect(song, draft) {
         when {
-            song  != null -> viewModel.initWithSong(song)
+            song != null -> viewModel.initWithSong(song)
             draft != null -> viewModel.initWithDraft(draft)
         }
     }
@@ -70,7 +70,7 @@ fun EditorScreen(
     val isSubmitting = submitState is EditSubmitState.Submitting
 
     val screenTitle = if (draft != null) "Edit Draft" else "Edit Song"
-    val tagline     = draft?.title ?: song?.title ?: ""
+    val tagline = draft?.title ?: song?.title ?: ""
 
     Scaffold(
         topBar = {

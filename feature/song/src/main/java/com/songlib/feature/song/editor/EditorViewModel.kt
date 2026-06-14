@@ -19,9 +19,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface EditSubmitState {
-    object Idle       : EditSubmitState
+    object Idle : EditSubmitState
     object Submitting : EditSubmitState
-    object Success    : EditSubmitState
+    object Success : EditSubmitState
     data class Error(val message: String) : EditSubmitState
 }
 
@@ -50,27 +50,35 @@ class EditorViewModel @Inject constructor(
     private val _content = MutableStateFlow("")
     val content: StateFlow<String> = _content.asStateFlow()
 
-    /** Tracks which mode we're in — set exactly once */
     private var editorMode: EditorMode? = null
 
-    // ── Initialisation ────────────────────────────────────────────────────
+    private fun String.storageToDisplay(): String = replace("#", "\n")
+
+    private fun String.displayToStorage(): String = replace("\n", "#")
 
     fun initWithSong(song: SongEntity) {
         if (editorMode != null) return
         editorMode = EditorMode.Song(song)
         _title.value = song.title
-        _content.value = song.content
+        // FIX 3: decode # → newline so the TextField shows readable verse breaks
+        _content.value = song.content.storageToDisplay()
     }
 
     fun initWithDraft(draft: DraftEntity) {
         if (editorMode != null) return
         editorMode = EditorMode.Draft(draft)
         _title.value = draft.title
-        _content.value = draft.content
+        // FIX 3: same decode for drafts
+        _content.value = draft.content.storageToDisplay()
     }
 
-    fun onTitleChange(value: String) { _title.value = value }
-    fun onContentChange(value: String) { _content.value = value }
+    fun onTitleChange(value: String) {
+        _title.value = value
+    }
+
+    fun onContentChange(value: String) {
+        _content.value = value
+    }
 
     // ── Submit ────────────────────────────────────────────────────────────
 
@@ -80,7 +88,7 @@ class EditorViewModel @Inject constructor(
             return
         }
         when (val mode = editorMode) {
-            is EditorMode.Song  -> submitSongEdit(mode.entity)
+            is EditorMode.Song -> submitSongEdit(mode.entity)
             is EditorMode.Draft -> submitDraftEdit(mode.entity)
             null -> return
         }
@@ -94,15 +102,18 @@ class EditorViewModel @Inject constructor(
         _submitState.value = EditSubmitState.Submitting
         viewModelScope.launch {
             try {
+                // FIX 3: re-encode newlines → # before saving/submitting
+                val storedContent = _content.value.displayToStorage()
+
                 editorRepo.submitSongEdit(
-                    song          = song,
-                    editedTitle   = _title.value.trim(),
-                    editedContent = _content.value.trim(),
-                    userId        = prefsRepo.loggedInUserId
+                    song = song,
+                    editedTitle = _title.value.trim(),
+                    editedContent = storedContent.trim(),
+                    userId = prefsRepo.loggedInUserId,
                 )
                 val updated = song.copy(
-                    title   = _title.value.trim(),
-                    content = _content.value.trim()
+                    title = _title.value.trim(),
+                    content = storedContent.trim(),
                 )
                 songbkRepo.updateSong(updated)
                 _submitState.value = EditSubmitState.Success
@@ -118,9 +129,12 @@ class EditorViewModel @Inject constructor(
         _submitState.value = EditSubmitState.Submitting
         viewModelScope.launch {
             try {
+                // FIX 3: re-encode newlines → # before saving
+                val storedContent = _content.value.displayToStorage()
+
                 val updated = draft.copy(
-                    title   = _title.value.trim(),
-                    content = _content.value.trim()
+                    title = _title.value.trim(),
+                    content = storedContent.trim(),
                 )
                 draftRepo.updateDraft(updated)
                 _submitState.value = EditSubmitState.Success
