@@ -87,7 +87,6 @@ class PrefsRepo @Inject constructor(
         return elapsed >= oneDayMs
     }
 
-    // ── User auth ─────────────────────────────────────────────────────────
     var loggedInUserId: Int
         get() = prefs.getInt(PrefConstants.LOGGED_IN_USER_ID, 0)
         set(value) = prefs.edit { putInt(PrefConstants.LOGGED_IN_USER_ID, value) }
@@ -104,7 +103,6 @@ class PrefsRepo @Inject constructor(
         get() = prefs.getString(PrefConstants.LOGGED_IN_PHOTO_URL, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_PHOTO_URL, value) }
 
-    /** "user" or "admin". Populated from the UserDto returned at sign-in. */
     var loggedInRole: String
         get() = prefs.getString(PrefConstants.LOGGED_IN_ROLE, "user") ?: "user"
         set(value) = prefs.edit { putString(PrefConstants.LOGGED_IN_ROLE, value) }
@@ -114,14 +112,23 @@ class PrefsRepo @Inject constructor(
     val isAdmin: Boolean get() = loggedInRole == "admin"
 
     fun clearUser() {
-        loggedInUserId   = 0
-        loggedInEmail    = ""
-        loggedInName     = ""
+        loggedInUserId = 0
+        loggedInEmail = ""
+        loggedInName = ""
         loggedInPhotoUrl = ""
-        loggedInRole     = "user"
+        loggedInRole = "user"
     }
 
     var lastSinceDateIso: String
         get() = prefs.getString(PrefConstants.LAST_SINCE_DATE, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.LAST_SINCE_DATE, value) }
+
+    fun resetAppData() {
+        isDataLoaded = false
+        isDataSelected = false
+        selectAfresh = false
+        initialBooks = ""
+        selectedBooks = ""
+        clearUser()
+    }
 }
