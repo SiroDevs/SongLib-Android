@@ -103,7 +103,6 @@ fun HomeAppBar(
                                 }
                             )
                         }
-                        // Admin-only: navigate to the pending edits review queue
                         if (prefsRepo.isAdmin) {
                             DropdownMenuItem(
                                 text = {
@@ -125,6 +124,14 @@ fun HomeAppBar(
                                 }
                             )
                         }
+                        DropdownMenuItem(
+                            text = { Text("Donate to SongLib") },
+                            leadingIcon = { Icon(Icons.Default.Info, null) },
+                            onClick = {
+                                showMoreMenu = false
+                                navController.navigate(Routes.DONATION)
+                            }
+                        )
                         DropdownMenuItem(
                             text = { Text("How It Works") },
                             leadingIcon = { Icon(Icons.Default.Info, null) },
