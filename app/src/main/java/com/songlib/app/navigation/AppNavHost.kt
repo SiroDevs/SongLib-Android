@@ -4,12 +4,16 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.songlib.MainViewModel
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
@@ -20,6 +24,7 @@ import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.donation.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
+import com.songlib.feature.donation.view.PaymentWebViewScreen
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.view.AdminEditsScreen
 import com.songlib.feature.drafts.list.DraftsViewModel
@@ -46,6 +51,7 @@ import com.songlib.feature.settings.view.SettingsScreen
 import com.songlib.feature.settings.view.UserProfileScreen
 import com.songlib.feature.song.editor.EditorViewModel
 import com.songlib.feature.song.editor.view.EditorScreen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -181,6 +187,39 @@ fun AppNavHost(
             DonationScreen(
                 navController = navController,
                 viewModel = viewModel,
+            )
+        }
+
+        composable(
+            route = Routes.PAYMENT_WEBVIEW,
+            arguments = listOf(
+                navArgument("redirectUrl") { type = NavType.StringType }
+            ),
+        ) { backStackEntry ->
+            val encoded = backStackEntry.arguments?.getString("redirectUrl") ?: ""
+            val redirectUrl = Routes.decodeRedirectUrl(encoded)
+
+            val donationEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(Routes.DONATION)
+            }
+            val viewModel: DonationViewModel = hiltViewModel(donationEntry)
+            val scope = rememberCoroutineScope()
+
+            PaymentWebViewScreen(
+                navController = navController,
+                viewModel = viewModel,
+                redirectUrl = redirectUrl,
+                onPaymentComplete = { isSuccess ->
+                    if (isSuccess) {
+                        scope.launch { prefsRepo.recordDonation() }
+                        navController.navigate(Routes.HOME) {
+                            popUpTo(Routes.HOME) { inclusive = false }
+                        }
+                    } else {
+                        viewModel.resetState()
+                        navController.popBackStack()
+                    }
+                },
             )
         }
 
