@@ -26,7 +26,7 @@ data class PesaPalBillingAddress(
     @SerializedName("email_address") val emailAddress: String,
     @SerializedName("phone_number") val phoneNumber: String = "",
     @SerializedName("country_code") val countryCode: String = "KE",
-    @SerializedName("first_name") val firstName: String = "SwahiLib",
+    @SerializedName("first_name") val firstName: String = "SongLib",
     @SerializedName("last_name") val lastName: String = "Donor",
     @SerializedName("line_1") val line1: String = "",
     @SerializedName("city") val city: String = "",
