@@ -170,7 +170,7 @@ fun DonationScreen(
                 )
 
                 Text(
-                    text = "Payment is handled securely using PesaPal",
+                    text = "Payment is processed securely via Paystack",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
