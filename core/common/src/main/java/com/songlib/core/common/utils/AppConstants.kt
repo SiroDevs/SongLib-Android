@@ -1,5 +1,9 @@
 package com.songlib.core.common.utils
 
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
 object ApiConstants {
     const val SONGLIB_BASE = "https://songlive.vercel.app/"
 
@@ -63,6 +67,16 @@ object Routes {
     const val USER_EDITS = "user_edits"
     const val ADMIN_EDITS = "admin_edits"
     const val EDITOR = "editor"
+
+    const val PAYMENT_WEBVIEW = "payment_webview/{redirectUrl}"
+
+    fun paymentWebView(redirectUrl: String): String {
+        val encoded = URLEncoder.encode(redirectUrl, StandardCharsets.UTF_8.toString())
+        return "payment_webview/$encoded"
+    }
+
+    fun decodeRedirectUrl(encoded: String): String =
+        URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString())
 }
 
 object AppFonts {

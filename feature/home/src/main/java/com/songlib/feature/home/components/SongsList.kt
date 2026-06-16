@@ -92,7 +92,6 @@ fun SongsList(
             end    = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
         ),
     ) {
-        // ── Search bar ────────────────────────────────────────────────────
         if (showSearch) {
             stickyHeader {
                 Box(
@@ -107,7 +106,6 @@ fun SongsList(
                         onClear = { onQueryChange("") },
                         onVoiceSearch = { startVoiceSearch() },
                         onSearch = { query ->
-                            // Save search when user presses the Search IME key
                             if (query.isNotBlank()) viewModel.commitSearch(query)
                         }
                     )
@@ -115,7 +113,6 @@ fun SongsList(
             }
         }
 
-        // ── Book filter chips ─────────────────────────────────────────────
         if (showBookFilter) {
             item {
                 LazyRow(
@@ -146,7 +143,6 @@ fun SongsList(
             }
         }
 
-        // ── Song items ────────────────────────────────────────────────────
         itemsIndexed(songs, key = { _, s -> s.songId }) { index, song ->
             if (index == 3 || index == 7) {
                 DonationBanner(show = showDonation, onTap = onShowDonation)

@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.donation.DonationState
 import com.songlib.feature.donation.DonationViewModel
@@ -63,12 +64,9 @@ fun DonationScreen(
 
     LaunchedEffect(state) {
         when (state) {
-            is DonationState.Success -> {
-                scope.launch {
-                    snackbarHostState.showSnackbar("Thank you for your donation 🎉")
-                }
-                viewModel.resetState()
-                navController.popBackStack()
+            is DonationState.ReadyToPay -> {
+                val redirectUrl = (state as DonationState.ReadyToPay).redirectUrl
+                navController.navigate(Routes.paymentWebView(redirectUrl))
             }
 
             is DonationState.Error -> {
@@ -126,7 +124,7 @@ fun DonationScreen(
                 DonationHeaderCard()
 
                 Text(
-                    text = "Choose amount (USD)",
+                    text = "Donation amount (USD)",
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 0.5.sp,
@@ -152,7 +150,7 @@ fun DonationScreen(
                             if (filtered.isNotBlank()) selectedPreset = null
                         }
                     },
-                    label = { Text("Or Input your amount (USD)") },
+                    label = { Text("Or input your amount (USD)") },
                     placeholder = { Text("Example: 15.00") },
                     prefix = { Text("$") },
                     modifier = Modifier.fillMaxWidth(),
@@ -172,7 +170,7 @@ fun DonationScreen(
                 )
 
                 Text(
-                    text = "Donations are made securely using PesaPal",
+                    text = "Payment is handled securely using PesaPal",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,

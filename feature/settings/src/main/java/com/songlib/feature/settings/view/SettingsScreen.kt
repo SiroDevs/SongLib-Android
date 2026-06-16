@@ -123,6 +123,15 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
+            SettingsSectionTitle("Donate to SongLib")
+            ListItem(
+                leadingContent = { Icon(Icons.Default.VolunteerActivism, contentDescription = null) },
+                headlineContent  = { Text("Donate Now") },
+                supportingContent = { Text("We need your support to continue serving you") },
+                modifier = Modifier.clickable { navController.navigate(Routes.DONATION) },
+            )
+            HorizontalDivider()
+
             // ── Selection ─────────────────────────────────────────────────
             SettingsSectionTitle("Selection")
             ListItem(
