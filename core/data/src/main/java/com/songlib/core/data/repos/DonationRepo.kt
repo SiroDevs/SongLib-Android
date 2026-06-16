@@ -19,16 +19,8 @@ class DonationRepo @Inject constructor(
     private val paystackService: PaystackService,
     @Named("paystack_secret_key") private val secretKey: String,
 ) {
-    /**
-     * Initializes a Paystack transaction and returns the authorization_url
-     * which is then loaded in a WebView for the user to complete payment.
-     *
-     * @param amountUsd Donation amount in USD
-     * @return Result containing the Paystack authorization URL on success
-     */
     suspend fun submitDonation(amountUsd: Double): Result<String> {
         return try {
-            // Paystack amounts are in the smallest currency unit (cents for USD)
             val amountInCents = (amountUsd * 100).roundToLong()
             val reference = "SONGLIB-${UUID.randomUUID().toString().take(8).uppercase()}"
 
@@ -37,7 +29,6 @@ class DonationRepo @Inject constructor(
                 body = PaystackInitializeRequest(
                     email = ApiConstants.DONOR_EMAIL,
                     amount = amountInCents,
-                    currency = "USD",
                     callbackUrl = ApiConstants.PAYSTACK_CALLBACK_URL,
                     metadata = PaystackMetadata(
                         customFields = listOf(

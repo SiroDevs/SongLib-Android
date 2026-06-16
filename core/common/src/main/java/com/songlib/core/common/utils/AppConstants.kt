@@ -20,11 +20,10 @@ object ApiConstants {
     const val LIKES_TOGGLE = "${API_VERSION}songs/likes/toggle"
     const val LIKES_USER = "${API_VERSION}songs/likes"
 
-    // Paystack WebView
     const val PAYSTACK_BASE_URL = "https://api.paystack.co/"
     const val PAYSTACK_INITIALIZE = "transaction/initialize"
     const val PAYSTACK_CALLBACK_URL = "https://songlive.vercel.app/donation/callback"
-    const val DONOR_EMAIL = "donor@swahilib.app"
+    const val DONOR_EMAIL = "donor@songlib.app"
 }
 
 object PrefConstants {

@@ -113,7 +113,6 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            // ── Display ───────────────────────────────────────────────────
             SettingsSectionTitle("Display")
             ListItem(
                 leadingContent   = { Icon(Icons.Default.Brightness6, "Theme") },

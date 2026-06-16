@@ -4,8 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class PaystackInitializeRequest(
     @SerializedName("email") val email: String,
-    @SerializedName("amount") val amount: Long,           // in kobo/pesewas/cents (smallest unit)
-    @SerializedName("currency") val currency: String = "USD",
+    @SerializedName("amount") val amount: Long,
     @SerializedName("callback_url") val callbackUrl: String,
     @SerializedName("metadata") val metadata: PaystackMetadata? = null,
 )

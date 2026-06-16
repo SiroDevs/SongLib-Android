@@ -107,9 +107,6 @@ fun PaymentWebViewScreen(
                             ): Boolean {
                                 val url = request?.url?.toString() ?: return false
 
-                                // Paystack redirects to the callback URL with
-                                // ?trxref=<ref>&reference=<ref> on success
-                                // or ?trxref=<ref>&reference=<ref>&cancelled=true on cancellation
                                 if (url.startsWith(ApiConstants.PAYSTACK_CALLBACK_URL)) {
                                     val isCancelled = url.contains("cancelled=true", ignoreCase = true)
                                     val hasReference = url.contains("reference=", ignoreCase = true)

@@ -124,7 +124,7 @@ fun DonationScreen(
                 DonationHeaderCard()
 
                 Text(
-                    text = "Donation amount (USD)",
+                    text = "Donation amount (KES)",
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 0.5.sp,
@@ -150,9 +150,9 @@ fun DonationScreen(
                             if (filtered.isNotBlank()) selectedPreset = null
                         }
                     },
-                    label = { Text("Or input your amount (USD)") },
-                    placeholder = { Text("Example: 15.00") },
-                    prefix = { Text("$") },
+                    label = { Text("Or input your amount (KES)") },
+                    placeholder = { Text("Example: 1000") },
+                    prefix = { Text("KES") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
@@ -170,7 +170,7 @@ fun DonationScreen(
                 )
 
                 Text(
-                    text = "Payment is processed securely via Paystack",
+                    text = "Donations are processed securely via Paystack",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
