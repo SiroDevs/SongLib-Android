@@ -71,7 +71,6 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            // ── Account ───────────────────────────────────────────────────
             SettingsSectionTitle("Account")
             ListItem(
                 leadingContent   = { Icon(Icons.Default.AccountCircle, "Profile") },
@@ -83,7 +82,6 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            // ── Slides ────────────────────────────────────────────────────
             SettingsSectionTitle("Slides")
             ListItem(
                 leadingContent   = { Icon(Icons.Default.Swipe, "slides") },
@@ -98,7 +96,6 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            // ── Demo ──────────────────────────────────────────────────────
             SettingsSectionTitle("Demo")
             ListItem(
                 leadingContent   = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
@@ -131,7 +128,6 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            // ── Selection ─────────────────────────────────────────────────
             SettingsSectionTitle("Selection")
             ListItem(
                 leadingContent   = { Icon(Icons.Default.EditNote, "Reset") },
