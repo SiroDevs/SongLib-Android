@@ -40,7 +40,7 @@ import com.songlib.feature.donation.DonationState
 import com.songlib.feature.donation.DonationViewModel
 import kotlinx.coroutines.launch
 
-private const val DEFAULT_PRESET = 10
+private const val DEFAULT_PRESET = 1000
 
 @Composable
 fun DonationScreen(
