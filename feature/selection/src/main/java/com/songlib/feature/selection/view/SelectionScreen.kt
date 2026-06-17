@@ -33,7 +33,6 @@ import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
-import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.components.Step1Fab
 
@@ -127,15 +126,9 @@ fun SelectionScreen(
                     retryAction = { viewModel.fetchBooks() }
                 )
 
-                is UiState.Loading -> LoadingState(
-                    title = "Loading books ...",
-                    fileName = "loading-hand"
-                )
+                is UiState.Loading -> { }
 
-                is UiState.Saving -> LoadingState(
-                    title = "Saving books ...",
-                    fileName = "cloud-download"
-                )
+                is UiState.Saving -> { }
 
                 is UiState.Loaded -> {
                     SelectionContent(
