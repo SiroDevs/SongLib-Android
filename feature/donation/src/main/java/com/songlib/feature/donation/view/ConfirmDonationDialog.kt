@@ -56,7 +56,7 @@ fun ConfirmDonationDialog(
         },
         title = {
             Text(
-                text = "${greeting}Are you ready with your donation of \$$displayAmount to support SongLib?",
+                text = "${greeting} for the effort",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),
@@ -65,8 +65,7 @@ fun ConfirmDonationDialog(
         },
         text = {
             Text(
-                text = "Are you ready with your donation of \$$displayAmount " +
-                    "so as to support SongLib?",
+                text = "Are you ready to proceed with your donation of KES $displayAmount to support SongLib?",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
