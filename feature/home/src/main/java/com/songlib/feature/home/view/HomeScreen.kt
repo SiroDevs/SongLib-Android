@@ -70,7 +70,9 @@ fun HomeScreen(
             }
         }
 
-        else -> EmptyState()
+        else -> {
+//            EmptyState()
+        }
     }
 }
 

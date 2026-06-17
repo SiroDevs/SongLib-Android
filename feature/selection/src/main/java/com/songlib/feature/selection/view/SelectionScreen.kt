@@ -31,6 +31,7 @@ import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
+import com.songlib.core.ui.components.general.SplashContent
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.selection.SelectionViewModel
@@ -129,7 +130,7 @@ fun SelectionScreen(
 
                 is UiState.Loading -> SelectionSkeleton()
 
-                is UiState.Saving -> { }
+                is UiState.Saving -> SplashContent()
 
                 is UiState.Loaded -> {
                     SelectionContent(
