@@ -46,21 +46,25 @@ fun HomeScreen(
 
         UiState.Filtered -> {
             if (songs.isEmpty()) {
-                EmptyState(
-                    message = "It appears you didn't finish your songbook selection, " +
-                            "that's why it's empty here at the moment.\n\nLet's fix that asap!",
-                    messageIcon = Icons.Default.EditNote,
-                    onAction = {
-                        viewModel.clearData { success ->
-                            if (success) {
-                                navController.navigate(Routes.APP_START) {
-                                    popUpTo(0) { inclusive = true }
-                                    launchSingleTop = true
+                if (!prefsRepo.isDataLoaded) {
+                    HomeSkeleton()
+                } else {
+                    EmptyState(
+                        message = "It appears you didn't finish your songbook selection, " +
+                                "that's why it's empty here at the moment.\n\nLet's fix that asap!",
+                        messageIcon = Icons.Default.EditNote,
+                        onAction = {
+                            viewModel.clearData { success ->
+                                if (success) {
+                                    navController.navigate(Routes.APP_START) {
+                                        popUpTo(0) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
                                 }
                             }
                         }
-                    }
-                )
+                    )
+                }
             } else {
                 HomeContent(
                     viewModel = viewModel,
@@ -70,9 +74,7 @@ fun HomeScreen(
             }
         }
 
-        else -> {
-//            EmptyState()
-        }
+        else -> HomeSkeleton()
     }
 }
 

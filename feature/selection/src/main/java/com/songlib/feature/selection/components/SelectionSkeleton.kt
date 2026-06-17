@@ -34,6 +34,7 @@ fun SelectionSkeleton() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(top = 70.dp)
                 .background(color = MaterialTheme.colorScheme.surface)
         ) {
             LazyVerticalGrid(
@@ -41,7 +42,7 @@ fun SelectionSkeleton() {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 2.dp)
             ) {
-                items(12) { SongBookSkeleton() }
+                items(20) { SongBookSkeleton() }
             }
         }
     }
@@ -71,18 +72,19 @@ private fun SongBookSkeleton() {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
-                        .height(15.dp)
+                        .height(22.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .background(brush)
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(5.dp))
                 Box(
                     modifier = Modifier
-                        .width(25.dp)
-                        .height(16.dp)
+                        .width(40.dp)
+                        .height(18.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .background(brush)
                 )
+                Spacer(Modifier.height(25.dp))
             }
         }
     }

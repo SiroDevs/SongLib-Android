@@ -32,7 +32,6 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.general.SplashContent
-import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.components.SelectionSkeleton
@@ -60,7 +59,6 @@ fun SelectionScreen(
     val uiState by viewModel.uiState.collectAsState()
     val theme = themeRepo.selectedTheme
 
-    // Navigate to HOME once books are saved and worker is enqueued
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
             navController.navigate(Routes.HOME) {
@@ -140,7 +138,7 @@ fun SelectionScreen(
                     )
                 }
 
-                else -> EmptyState()
+                else -> SplashContent()
             }
         },
         floatingActionButton = {
