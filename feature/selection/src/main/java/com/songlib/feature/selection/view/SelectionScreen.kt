@@ -129,7 +129,7 @@ fun SelectionScreen(
 
                 is UiState.Loading -> SelectionSkeleton()
 
-                is UiState.Saving -> SelectionSkeleton()
+                is UiState.Saving -> { }
 
                 is UiState.Loaded -> {
                     SelectionContent(

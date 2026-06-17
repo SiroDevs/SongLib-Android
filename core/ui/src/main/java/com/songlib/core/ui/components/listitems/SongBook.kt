@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.songlib.core.common.entity.Selectable
 import com.songlib.core.common.utils.refineTitle
 import com.songlib.core.database.model.BookEntity
+import com.songlib.core.ui.components.indicators.ShimmerBrush
 import com.songlib.core.ui.sample.SampleSelectableBooks
 
 @Composable
