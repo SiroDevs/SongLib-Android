@@ -23,7 +23,7 @@ object ApiConstants {
     const val PAYSTACK_BASE_URL = "https://api.paystack.co/"
     const val PAYSTACK_INITIALIZE = "transaction/initialize"
     const val PAYSTACK_CALLBACK_URL = "https://songlive.vercel.app/donation/callback"
-    const val DONOR_EMAIL = "donor@songlib.app"
+    const val DONOR_EMAIL = "anonymous_donor@songlib.app"
 }
 
 object PrefConstants {
