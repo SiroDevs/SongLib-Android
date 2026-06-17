@@ -34,6 +34,7 @@ import com.songlib.core.designsystem.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.selection.SelectionViewModel
+import com.songlib.feature.selection.components.SelectionSkeleton
 import com.songlib.feature.selection.components.Step1Fab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -126,9 +127,9 @@ fun SelectionScreen(
                     retryAction = { viewModel.fetchBooks() }
                 )
 
-                is UiState.Loading -> { }
+                is UiState.Loading -> SelectionSkeleton()
 
-                is UiState.Saving -> { }
+                is UiState.Saving -> SelectionSkeleton()
 
                 is UiState.Loaded -> {
                     SelectionContent(
@@ -145,7 +146,6 @@ fun SelectionScreen(
             if (uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
-                    // Pass context so WorkManager can be enqueued from the ViewModel
                     onSaveConfirmed = { viewModel.saveSelectedBooks(context) }
                 )
             }
