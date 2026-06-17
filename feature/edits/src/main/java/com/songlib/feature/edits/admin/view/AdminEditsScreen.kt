@@ -31,7 +31,6 @@ import com.songlib.core.network.dtos.EditDto
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
-import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.edits.admin.AdminEditsUiState
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.components.PendingEditCard
@@ -100,8 +99,7 @@ fun AdminEditsScreen(
         }
     ) { padding ->
         when (val state = uiState) {
-            AdminEditsUiState.Loading ->
-                LoadingState(title = "Loading pending edits…", fileName = "circle-loader")
+            AdminEditsUiState.Loading -> {}
 
             AdminEditsUiState.Empty ->
                 EmptyState(message = "No pending edits — you're all caught up 🎉")

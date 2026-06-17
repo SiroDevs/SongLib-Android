@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.songlib.core.common.utils.refineContent
 import com.songlib.core.database.model.SongEntity
+import com.songlib.core.ui.components.indicators.ShimmerBrush
 import com.songlib.core.ui.sample.SampleSongs
 
 @Composable
@@ -133,6 +134,52 @@ fun SongChip(label: String) {
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             letterSpacing = 0.3.sp,
+        )
+    }
+}
+
+@Composable
+fun SongSkeletonItem() {
+    val brush = ShimmerBrush()
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .width(3.dp)
+                .height(36.dp)
+                .clip(RoundedCornerShape(2.dp))
+                .background(brush)
+        )
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(14.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(brush)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.4f)
+                    .height(11.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(brush)
+            )
+        }
+        Box(
+            modifier = Modifier
+                .width(16.dp)
+                .height(16.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(brush)
         )
     }
 }

@@ -119,8 +119,9 @@ class HomeViewModel @Inject constructor(
         if (dataFetched) return
         dataFetched = true
         viewModelScope.launch {
+            _uiState.tryEmit(UiState.Loading)
             loadFromDb()
-            if (_songs.value.isEmpty() && !prefsRepo.isDataLoaded) {
+            if (!prefsRepo.isDataLoaded && _songs.value.isEmpty()) {
                 observeInstallSyncWorker()
             }
         }
@@ -138,8 +139,13 @@ class HomeViewModel @Inject constructor(
 
         val userId = prefsRepo.loggedInUserId
         if (userId > 0) _hasEdits.value = editorRepo.hasEdits(userId)
-
-        _uiState.tryEmit(UiState.Filtered)
+        if (prefsRepo.isDataLoaded && _songs.value.isNotEmpty()) {
+            _uiState.tryEmit(UiState.Filtered)
+        } else if (!prefsRepo.isDataLoaded) {
+            _uiState.tryEmit(UiState.Loading)
+        } else {
+            _uiState.tryEmit(UiState.Filtered)
+        }
     }
 
     private fun observeInstallSyncWorker() {
@@ -157,15 +163,27 @@ class HomeViewModel @Inject constructor(
                             }
                             WorkInfo.State.FAILED,
                             WorkInfo.State.CANCELLED -> {
-                                _uiState.tryEmit(UiState.Filtered)
+                                if (_songs.value.isNotEmpty()) {
+                                    _uiState.tryEmit(UiState.Filtered)
+                                } else {
+                                    _uiState.tryEmit(UiState.Error("Failed to load data"))
+                                }
                                 return@collect
                             }
-                            else -> { /* RUNNING / ENQUEUED – keep waiting */ }
+                            WorkInfo.State.RUNNING,
+                            WorkInfo.State.ENQUEUED -> {
+                                _uiState.tryEmit(UiState.Loading)
+                            }
+                            else -> { /* other states */ }
                         }
                     }
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Worker observation error", e)
-                _uiState.tryEmit(UiState.Filtered)
+                if (_songs.value.isNotEmpty()) {
+                    _uiState.tryEmit(UiState.Filtered)
+                } else {
+                    _uiState.tryEmit(UiState.Error("Error loading data"))
+                }
             }
         }
     }

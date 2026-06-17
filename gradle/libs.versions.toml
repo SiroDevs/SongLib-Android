@@ -21,7 +21,6 @@ supabase = "3.6.0"
 ktor = "3.5.0"
 kotlinx-serialization = "1.11.0"
 material3 = "1.4.0"
-lottie-compose = "6.6.9"
 sentry = "6.10.0"
 billing = "9.0.0"
 compiler = "3.2.0-alpha11"
@@ -71,7 +70,6 @@ jan-tennert-supabase-bom = { module = "io.github.jan-tennert.supabase:bom", vers
 jan-tennert-supabase-postgrest = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "supabase" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-compose" }
 android-billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 androidx-compiler = { group = "androidx.databinding", name = "compiler", version.ref = "compiler" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }

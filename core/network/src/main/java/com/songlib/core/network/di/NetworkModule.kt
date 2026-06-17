@@ -1,6 +1,6 @@
 package com.songlib.core.network.di
 
-import com.songlib.core.network.services.PesaPalService
+import com.songlib.core.network.services.PaystackService
 import com.songlib.core.network.services.SongLibService
 import com.songlib.core.common.utils.ApiConstants
 import dagger.Module
@@ -61,16 +61,16 @@ object NetworkModule {
 
     @Provides
     @Reusable
-    fun providePesapalApiService(@Named("pesapalApi") retrofit: Retrofit): PesaPalService {
-        return retrofit.create(PesaPalService::class.java)
+    fun providePaystackApiService(@Named("paystackApi") retrofit: Retrofit): PaystackService {
+        return retrofit.create(PaystackService::class.java)
     }
 
     @Provides
-    @Named("pesapalApi")
+    @Named("paystackApi")
     @Reusable
-    fun providePesapalApi(okHttpClient: OkHttpClient): Retrofit {
+    fun providePaystackApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.PESAPAL_BASE_URL)
+            .baseUrl(ApiConstants.PAYSTACK_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(okHttpClient)
             .build()

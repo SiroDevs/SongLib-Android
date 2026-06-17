@@ -29,7 +29,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module(includes = [NetworkModule::class])
 object DataModule {
-
     @Provides @Singleton
     fun providePreferencesRepo(@ApplicationContext context: Context): PrefsRepo =
         PrefsRepo(context)

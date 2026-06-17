@@ -18,7 +18,6 @@ class MainViewModel @Inject constructor(
     private val prefsRepo: PrefsRepo,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-
     private val _isReady = MutableStateFlow(false)
     val isReady: StateFlow<Boolean> = _isReady.asStateFlow()
 

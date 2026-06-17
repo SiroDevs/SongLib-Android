@@ -32,7 +32,6 @@ import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
-import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.song.presentor.PresenterViewModel
 import com.songlib.feature.song.presentor.ReportUiState
@@ -218,10 +217,7 @@ fun PresenterScreen(
                     onNavigateNext = { viewModel.navigateToNext() },
                 )
 
-                UiState.Loading -> LoadingState(
-                    title = "Loading song ...",
-                    fileName = "circle-loader"
-                )
+                UiState.Loading -> { }
 
                 else -> EmptyState()
             }

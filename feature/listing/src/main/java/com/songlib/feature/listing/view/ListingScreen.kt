@@ -104,10 +104,7 @@ fun ListingScreen(
                     }
                 }
 
-                UiState.Loading -> LoadingState(
-                    title = "Loading listing ...",
-                    fileName = "circle-loader"
-                )
+                UiState.Loading -> {}
 
                 else -> EmptyState()
             }
