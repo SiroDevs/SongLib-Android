@@ -11,16 +11,8 @@ import javax.inject.Named
 @InstallIn(SingletonComponent::class)
 object AppConfigModule {
     @Provides
-    @Named("pesapal_consumer_key")
-    fun providePesapalConsumerKey(): String = BuildConfig.PesapalConsumerKey
-
-    @Provides
-    @Named("pesapal_consumer_secret")
-    fun providePesapalConsumerSectret(): String = BuildConfig.PesapalConsumerSecret
-
-    @Provides
-    @Named("pesapal_ipn_id")
-    fun providePesapalIpnId(): String = BuildConfig.PesapalIpnId
+    @Named("paystack_secret_key")
+    fun providePaystackSecretKey(): String = BuildConfig.PaystackSecretKey
 
     @Provides
     @Named("songlib_api_key")

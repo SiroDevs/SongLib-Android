@@ -27,7 +27,6 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
-import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.drafts.present.DraftPresenterViewModel
 import com.songlib.feature.song.presentor.view.PresenterContent
 
@@ -103,10 +102,7 @@ fun DraftPresenterScreen(
                     onNavigateNext = { viewModel.navigateNext() },
                 )
 
-                UiState.Loading -> LoadingState(
-                    title = "Loading draft…",
-                    fileName = "circle-loader"
-                )
+                UiState.Loading -> { }
 
                 else -> EmptyState()
             }

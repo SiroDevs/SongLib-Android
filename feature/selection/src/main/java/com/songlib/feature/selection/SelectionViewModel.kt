@@ -93,7 +93,6 @@ class SelectionViewModel @Inject constructor(
 
                 prefsRepo.isDataLoaded = false
 
-                // Sync book selection to remote if user is logged in
                 val userId = prefsRepo.loggedInUserId
                 if (userId > 0) {
                     userRepo.syncBookSelection(userId)

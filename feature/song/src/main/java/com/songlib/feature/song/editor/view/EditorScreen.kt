@@ -30,7 +30,6 @@ import androidx.navigation.NavHostController
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.song.editor.EditSubmitState
 import com.songlib.feature.song.editor.EditorViewModel
 
@@ -93,10 +92,7 @@ fun EditorScreen(
     ) { paddingValues ->
 
         if (isSubmitting) {
-            LoadingState(
-                title = if (draft != null) "Saving draft…" else "Submitting your edit…",
-                fileName = "circle-loader"
-            )
+            //loading implementation
             return@Scaffold
         }
 

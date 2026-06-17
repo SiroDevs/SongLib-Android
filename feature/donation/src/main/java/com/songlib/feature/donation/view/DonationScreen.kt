@@ -3,6 +3,7 @@ package com.songlib.feature.donation.view
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -27,8 +29,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -40,7 +44,8 @@ import com.songlib.feature.donation.DonationState
 import com.songlib.feature.donation.DonationViewModel
 import kotlinx.coroutines.launch
 
-private const val DEFAULT_PRESET = 10
+private const val DEFAULT_PRESET = 1000
+private const val MINIMUM_DONATION = 100
 
 @Composable
 fun DonationScreen(
@@ -52,15 +57,28 @@ fun DonationScreen(
     var selectedPreset by remember { mutableStateOf<Int?>(DEFAULT_PRESET) }
     var customAmount by remember { mutableStateOf("") }
     var showConfirmDialog by remember { mutableStateOf(false) }
+    var showMinimumAmountError by remember { mutableStateOf(false) }
+
+    // Donor identity fields
+    var donorName by remember { mutableStateOf("") }
+    var donorEmail by remember { mutableStateOf("") }
+    var isDonatingAnonymously by remember { mutableStateOf(false) }
+    var isDonorEmailError by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     val activeAmount: Double? = when {
-        customAmount.isNotBlank() -> customAmount.toDoubleOrNull()
+        customAmount.isNotBlank() -> {
+            val amount = customAmount.toDoubleOrNull()
+            if (amount != null && amount >= MINIMUM_DONATION) amount else null
+        }
         selectedPreset != null -> selectedPreset!!.toDouble()
         else -> null
     }
+
+    val isCustomAmountBelowMinimum = customAmount.isNotBlank() &&
+            (customAmount.toDoubleOrNull() ?: 0.0) < MINIMUM_DONATION
 
     LaunchedEffect(state) {
         when (state) {
@@ -68,13 +86,11 @@ fun DonationScreen(
                 val redirectUrl = (state as DonationState.ReadyToPay).redirectUrl
                 navController.navigate(Routes.paymentWebView(redirectUrl))
             }
-
             is DonationState.Error -> {
                 val msg = (state as DonationState.Error).message
                 scope.launch { snackbarHostState.showSnackbar(msg) }
                 viewModel.resetState()
             }
-
             else -> {}
         }
     }
@@ -82,12 +98,29 @@ fun DonationScreen(
     if (showConfirmDialog && activeAmount != null) {
         ConfirmDonationDialog(
             amount = activeAmount,
+            donorName = donorName.trim().takeIf { !isDonatingAnonymously && it.isNotBlank() },
             onConfirm = {
                 showConfirmDialog = false
-                viewModel.submitDonation(amountUsd = activeAmount)
+                viewModel.submitDonation(
+                    amountUsd = activeAmount,
+                    donorName = if (isDonatingAnonymously) null else donorName.trim().takeIf { it.isNotBlank() },
+                    donorEmail = if (isDonatingAnonymously) null else donorEmail.trim().takeIf { it.isNotBlank() },
+                )
             },
-            onDismiss = { showConfirmDialog = false },
+            onDismiss = {
+                showConfirmDialog = false
+                showMinimumAmountError = false
+            },
         )
+    }
+
+    LaunchedEffect(showMinimumAmountError) {
+        if (showMinimumAmountError) {
+            scope.launch {
+                snackbarHostState.showSnackbar("Minimum donation amount is KES $MINIMUM_DONATION")
+            }
+            showMinimumAmountError = false
+        }
     }
 
     Scaffold(
@@ -124,7 +157,7 @@ fun DonationScreen(
                 DonationHeaderCard()
 
                 Text(
-                    text = "Donation amount (USD)",
+                    text = "Donation amount (KES)",
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                         letterSpacing = 0.5.sp,
@@ -137,6 +170,7 @@ fun DonationScreen(
                     onPresetSelected = { amount ->
                         selectedPreset = amount
                         customAmount = ""
+                        showMinimumAmountError = false
                     },
                 )
 
@@ -147,30 +181,73 @@ fun DonationScreen(
                         val dotCount = filtered.count { it == '.' }
                         if (dotCount <= 1) {
                             customAmount = filtered
-                            if (filtered.isNotBlank()) selectedPreset = null
+                            if (filtered.isNotBlank()) {
+                                selectedPreset = null
+                                showMinimumAmountError = false
+                            }
                         }
                     },
-                    label = { Text("Or input your amount (USD)") },
-                    placeholder = { Text("Example: 15.00") },
-                    prefix = { Text("$") },
+                    label = { Text("Or input your amount (KES)") },
+                    placeholder = { Text("Minimum is 100") },
+                    prefix = { Text("KES") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     shape = RoundedCornerShape(12.dp),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    isError = isCustomAmountBelowMinimum,
+                    supportingText = {
+                        if (isCustomAmountBelowMinimum) {
+                            Text(
+                                text = "Minimum amount is KES $MINIMUM_DONATION",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                )
+
+                DonorIdentitySection(
+                    name = donorName,
+                    onNameChange = { donorName = it },
+                    email = donorEmail,
+                    onEmailChange = {
+                        donorEmail = it
+                        isDonorEmailError = false
+                    },
+                    isAnonymous = isDonatingAnonymously,
+                    onAnonymousToggle = { isDonatingAnonymously = it },
+                    isEmailError = isDonorEmailError,
                 )
 
                 Spacer(Modifier.height(4.dp))
 
                 DonateNowButton(
                     isLoading = state is DonationState.Loading,
-                    enabled = state !is DonationState.Loading && activeAmount != null && activeAmount > 0,
+                    enabled = state !is DonationState.Loading && activeAmount != null && activeAmount >= MINIMUM_DONATION,
                     onClick = {
-                        if (activeAmount != null && activeAmount > 0) showConfirmDialog = true
+                        when {
+                            activeAmount == null -> {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Please enter a donation amount")
+                                }
+                            }
+                            activeAmount < MINIMUM_DONATION -> {
+                                showMinimumAmountError = true
+                            }
+                            !isDonatingAnonymously && donorEmail.isNotBlank() && !isValidEmail(donorEmail) -> {
+                                isDonorEmailError = true
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Please enter a valid email address")
+                                }
+                            }
+                            else -> {
+                                showConfirmDialog = true
+                            }
+                        }
                     },
                 )
 
                 Text(
-                    text = "Payment is handled securely using PesaPal",
+                    text = "Donations are processed securely via Paystack",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -182,3 +259,6 @@ fun DonationScreen(
         }
     }
 }
+
+private fun isValidEmail(email: String): Boolean =
+    android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()

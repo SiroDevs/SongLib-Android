@@ -25,17 +25,15 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 845
-        versionName = "1.0.845"
+        versionCode = 848
+        versionName = "1.0.848"
         minSdk = 26
         targetSdk = 37
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "PesapalConsumerKey", "\"${localProperties.getProperty("PESAPAL_CONSUMER_KEY") ?: ""}\"")
-        buildConfigField("String", "PesapalConsumerSecret", "\"${localProperties.getProperty("PESAPAL_CONSUMER_SECRET") ?: ""}\"")
-        buildConfigField("String", "PesapalIpnId", "\"${localProperties.getProperty("PESAPAL_IPN_ID") ?: ""}\"")
+        buildConfigField("String", "PaystackSecretKey", "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\"")
         buildConfigField("String", "GoogleWebClientId", "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\"")
         buildConfigField("String", "SonglibApiKey", "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\"")
     }

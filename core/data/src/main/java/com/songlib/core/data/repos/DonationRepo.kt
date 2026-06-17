@@ -2,62 +2,60 @@ package com.songlib.core.data.repos
 
 import android.util.Log
 import com.songlib.core.common.utils.ApiConstants
-import com.songlib.core.network.dtos.PesaPalAuthRequest
-import com.songlib.core.network.dtos.PesaPalBillingAddress
-import com.songlib.core.network.dtos.PesaPalOrderRequest
-import com.songlib.core.network.services.PesaPalService
+import com.songlib.core.network.dtos.PaystackCustomField
+import com.songlib.core.network.dtos.PaystackInitializeRequest
+import com.songlib.core.network.dtos.PaystackMetadata
+import com.songlib.core.network.services.PaystackService
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlin.math.roundToLong
 
 private const val TAG = "DonationRepo"
 
 @Singleton
 class DonationRepo @Inject constructor(
-    private val pesapalService: PesaPalService,
-    @Named("pesapal_consumer_key") private val consumerKey: String,
-    @Named("pesapal_consumer_secret") private val consumerSecret: String,
-    @Named("pesapal_ipn_id") private val ipnId: String,
+    private val paystackService: PaystackService,
+    @Named("paystack_secret_key") private val secretKey: String,
 ) {
     suspend fun submitDonation(
-        amountUsd: Double
+        amountUsd: Double,
+        donorName: String? = null,
+        donorEmail: String? = null,
     ): Result<String> {
         return try {
-            val authResponse = pesapalService.requestPesapalAuthToken(
-                PesaPalAuthRequest(
-                    consumerKey = consumerKey,
-                    consumerSecret = consumerSecret,
-                )
-            )
-            val token = authResponse.token
-            if (token.isNullOrBlank()) {
-                Log.e(TAG, "❌ Auth failed: ${authResponse.message}")
-                return Result.failure(Exception("Unable to get permission for payment"))
-            }
-            Log.d(TAG, "✅ Auth token obtained")
+            val amountInCents = (amountUsd * 100).roundToLong()
+            val reference = "SONGLIB-${UUID.randomUUID().toString().take(8).uppercase()}"
 
-            val merchantRef = "SONGLIB-${UUID.randomUUID().toString().take(8).uppercase()}"
-            val orderResponse = pesapalService.submitOrderToPesapal(
-                bearer = "Bearer $token",
-                body = PesaPalOrderRequest(
-                    id = merchantRef,
-                    currency = "USD",
-                    amount = amountUsd,
-                    description = "Donation for SongLib — Thank you!",
-                    callbackUrl = ApiConstants.CALLBACK_URL,
-                    notificationId = ipnId,
-                    billingAddress = PesaPalBillingAddress(emailAddress = ApiConstants.DONOR_EMAIL),
+            val email = donorEmail?.takeIf { it.isNotBlank() } ?: ApiConstants.DONOR_EMAIL
+
+            val customFields = buildList {
+                add(PaystackCustomField(displayName = "App", variableName = "app", value = "SongLib"))
+                add(PaystackCustomField(displayName = "Reference", variableName = "reference", value = reference))
+                if (!donorName.isNullOrBlank()) {
+                    add(PaystackCustomField(displayName = "Donor Name", variableName = "donor_name", value = donorName))
+                }
+            }
+
+            val response = paystackService.initializeTransaction(
+                bearer = "Bearer $secretKey",
+                body = PaystackInitializeRequest(
+                    email = email,
+                    amount = amountInCents,
+                    callbackUrl = ApiConstants.PAYSTACK_CALLBACK_URL,
+                    metadata = PaystackMetadata(customFields = customFields),
                 ),
             )
-            val redirectUrl = orderResponse.redirectUrl
-            if (redirectUrl.isNullOrBlank()) {
-                Log.e(TAG, "❌ Order submission failed: ${orderResponse.message}")
-                return Result.failure(Exception("Unable to request payment"))
+
+            val authUrl = response.data?.authorizationUrl
+            if (!response.status || authUrl.isNullOrBlank()) {
+                Log.e(TAG, "❌ Paystack init failed: ${response.message}")
+                return Result.failure(Exception(response.message ?: "Unable to initialize payment"))
             }
 
-            Log.d(TAG, "✅ Order accepted — redirect URL: $redirectUrl")
-            Result.success(redirectUrl)
+            Log.d(TAG, "✅ Paystack transaction initialized — URL: $authUrl")
+            Result.success(authUrl)
         } catch (e: Exception) {
             Log.e(TAG, "❌ Donation error: ${e.message}", e)
             Result.failure(e)

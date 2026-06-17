@@ -31,10 +31,10 @@ import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
-import com.songlib.core.ui.components.indicators.EmptyState
+import com.songlib.core.ui.components.general.SplashContent
 import com.songlib.core.ui.components.indicators.ErrorState
-import com.songlib.core.ui.components.indicators.LoadingState
 import com.songlib.feature.selection.SelectionViewModel
+import com.songlib.feature.selection.components.SelectionSkeleton
 import com.songlib.feature.selection.components.Step1Fab
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,7 +59,6 @@ fun SelectionScreen(
     val uiState by viewModel.uiState.collectAsState()
     val theme = themeRepo.selectedTheme
 
-    // Navigate to HOME once books are saved and worker is enqueued
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
             navController.navigate(Routes.HOME) {
@@ -127,15 +126,9 @@ fun SelectionScreen(
                     retryAction = { viewModel.fetchBooks() }
                 )
 
-                is UiState.Loading -> LoadingState(
-                    title = "Loading books ...",
-                    fileName = "loading-hand"
-                )
+                is UiState.Loading -> SelectionSkeleton()
 
-                is UiState.Saving -> LoadingState(
-                    title = "Saving books ...",
-                    fileName = "cloud-download"
-                )
+                is UiState.Saving -> SplashContent()
 
                 is UiState.Loaded -> {
                     SelectionContent(
@@ -145,14 +138,13 @@ fun SelectionScreen(
                     )
                 }
 
-                else -> EmptyState()
+                else -> SplashContent()
             }
         },
         floatingActionButton = {
             if (uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
-                    // Pass context so WorkManager can be enqueued from the ViewModel
                     onSaveConfirmed = { viewModel.saveSelectedBooks(context) }
                 )
             }
