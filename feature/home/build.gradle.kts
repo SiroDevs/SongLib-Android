@@ -8,8 +8,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":app"))
-    implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(libs.androidx.foundation)
 

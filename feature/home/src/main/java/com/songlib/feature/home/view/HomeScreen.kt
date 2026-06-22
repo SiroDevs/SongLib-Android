@@ -14,15 +14,15 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.HomeViewModel
-import com.songlib.MainViewModel
+import com.songlib.core.ui.MainViewModel
 import com.songlib.feature.home.components.HomeSkeleton
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    homeViewModel: HomeViewModel,
     mainViewModel: MainViewModel,
+    homeViewModel: HomeViewModel,
     prefsRepo: PrefsRepo,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()

@@ -13,4 +13,6 @@ dependencies {
 
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.foundation)
+    implementation(libs.hilt.android)
 }

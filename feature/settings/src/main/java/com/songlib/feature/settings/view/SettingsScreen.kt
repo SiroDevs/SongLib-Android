@@ -9,11 +9,11 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.songlib.MainViewModel
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.appThemeName
 import com.songlib.core.designsystem.theme.ThemeSelectorDialog
+import com.songlib.core.ui.MainViewModel
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.settings.SettingsViewModel
 import com.songlib.feature.settings.components.ConfirmResetDialog
@@ -22,8 +22,8 @@ import com.songlib.feature.settings.components.SettingsSectionTitle
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    settViewModel: SettingsViewModel,
     mainViewModel: MainViewModel,
+    settViewModel: SettingsViewModel,
     themeRepo: ThemeRepo,
 ) {
     val theme = themeRepo.selectedTheme
