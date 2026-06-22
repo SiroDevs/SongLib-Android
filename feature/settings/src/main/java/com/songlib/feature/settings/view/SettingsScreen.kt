@@ -9,6 +9,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import com.songlib.MainViewModel
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.appThemeName
@@ -21,27 +22,24 @@ import com.songlib.feature.settings.components.SettingsSectionTitle
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    viewModel: SettingsViewModel,
+    settViewModel: SettingsViewModel,
+    mainViewModel: MainViewModel,
     themeRepo: ThemeRepo,
 ) {
     val theme = themeRepo.selectedTheme
     var showThemeDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
-    fun navigateToSplash() {
-        navController.navigate(Routes.APP_START) {
-            popUpTo(0) { inclusive = true }
-            launchSingleTop = true
-        }
-    }
-
     if (showResetDialog) {
         ConfirmResetDialog(
             onDismiss = { showResetDialog = false },
             onConfirm = {
                 showResetDialog = false
-                viewModel.clearData()
-                navigateToSplash()
+                settViewModel.clearData { success ->
+                    if (success) {
+                        mainViewModel.reset()
+                    }
+                }
             }
         )
     }
@@ -60,7 +58,7 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title      = "App Settings",
+                title = "App Settings",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() }
             )
@@ -73,10 +71,10 @@ fun SettingsScreen(
         ) {
             SettingsSectionTitle("Account")
             ListItem(
-                leadingContent   = { Icon(Icons.Default.AccountCircle, "Profile") },
-                headlineContent  = { Text("Your Profile") },
+                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
+                headlineContent = { Text("Your Profile") },
                 supportingContent = { Text("Manage your Profile") },
-                modifier         = Modifier.clickable {
+                modifier = Modifier.clickable {
                     navController.navigate(Routes.USER_PROFILE)
                 }
             )
@@ -84,13 +82,13 @@ fun SettingsScreen(
 
             SettingsSectionTitle("Slides")
             ListItem(
-                leadingContent   = { Icon(Icons.Default.Swipe, "slides") },
-                headlineContent  = { Text("Song Slides") },
+                leadingContent = { Icon(Icons.Default.Swipe, "slides") },
+                headlineContent = { Text("Song Slides") },
                 supportingContent = { Text("Swipe verses horizontally") },
-                trailingContent  = {
+                trailingContent = {
                     Switch(
-                        checked         = viewModel.horizontalSlides,
-                        onCheckedChange = { viewModel.updateHorizontalSlides(it) }
+                        checked = settViewModel.horizontalSlides,
+                        onCheckedChange = { settViewModel.updateHorizontalSlides(it) }
                     )
                 }
             )
@@ -98,13 +96,13 @@ fun SettingsScreen(
 
             SettingsSectionTitle("Demo")
             ListItem(
-                leadingContent   = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
-                headlineContent  = { Text("Demo Mode") },
+                leadingContent = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
+                headlineContent = { Text("Demo Mode") },
                 supportingContent = { Text("Show guided tour on home screen") },
-                trailingContent  = {
+                trailingContent = {
                     Switch(
-                        checked         = viewModel.demoMode,
-                        onCheckedChange = { viewModel.updateDemoMode(it) }
+                        checked = settViewModel.demoMode,
+                        onCheckedChange = { settViewModel.updateDemoMode(it) }
                     )
                 }
             )
@@ -112,17 +110,22 @@ fun SettingsScreen(
 
             SettingsSectionTitle("Display")
             ListItem(
-                leadingContent   = { Icon(Icons.Default.Brightness6, "Theme") },
-                headlineContent  = { Text("App Theme") },
+                leadingContent = { Icon(Icons.Default.Brightness6, "Theme") },
+                headlineContent = { Text("App Theme") },
                 supportingContent = { Text(appThemeName(theme)) },
-                modifier         = Modifier.clickable { showThemeDialog = true }
+                modifier = Modifier.clickable { showThemeDialog = true }
             )
             HorizontalDivider()
 
             SettingsSectionTitle("Donate to SongLib")
             ListItem(
-                leadingContent = { Icon(Icons.Default.VolunteerActivism, contentDescription = null) },
-                headlineContent  = { Text("Donate Now") },
+                leadingContent = {
+                    Icon(
+                        Icons.Default.VolunteerActivism,
+                        contentDescription = null
+                    )
+                },
+                headlineContent = { Text("Donate Now") },
                 supportingContent = { Text("We need your support to continue serving you") },
                 modifier = Modifier.clickable { navController.navigate(Routes.DONATION) },
             )
@@ -130,19 +133,22 @@ fun SettingsScreen(
 
             SettingsSectionTitle("Selection")
             ListItem(
-                leadingContent   = { Icon(Icons.Default.EditNote, "Reset") },
-                headlineContent  = { Text("Modify Collection") },
+                leadingContent = { Icon(Icons.Default.EditNote, "Reset") },
+                headlineContent = { Text("Modify Collection") },
                 supportingContent = { Text("Add or Remove Songbooks") },
-                modifier         = Modifier.clickable {
-                    viewModel.updateSelection(true)
-                    navigateToSplash()
+                modifier = Modifier.clickable {
+                    settViewModel.updateSelection(true)
+                    navController.navigate(Routes.SELECTION) {
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 }
             )
             ListItem(
-                leadingContent   = { Icon(Icons.Default.Refresh, "Reset") },
-                headlineContent  = { Text("Select Afresh") },
+                leadingContent = { Icon(Icons.Default.Refresh, "Reset") },
+                headlineContent = { Text("Select Afresh") },
                 supportingContent = { Text("Reset everything and start over") },
-                modifier         = Modifier.clickable { showResetDialog = true }
+                modifier = Modifier.clickable { showResetDialog = true }
             )
             HorizontalDivider()
         }

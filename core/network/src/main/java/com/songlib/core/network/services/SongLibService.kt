@@ -45,7 +45,6 @@ interface SongLibService {
     @GET("${ApiConstants.SONGS}/{songId}")
     suspend fun getSongById(@Path("songId") songId: Int): SongEntity
 
-    // ── Drafts ────────────────────────────────────────────────────────────
     @GET(ApiConstants.DRAFTS)
     suspend fun getDrafts(): List<DraftDto>
 
@@ -61,7 +60,6 @@ interface SongLibService {
     @DELETE("${ApiConstants.DRAFTS}/{draftId}")
     suspend fun deleteDraft(@Path("draftId") draftId: Int): Map<String, String>
 
-    // ── Edits ─────────────────────────────────────────────────────────────
     @GET(ApiConstants.USER_EDITS)
     suspend fun getEdits(): List<EditDto>
 

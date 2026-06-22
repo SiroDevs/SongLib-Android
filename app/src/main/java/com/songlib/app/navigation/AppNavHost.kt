@@ -64,6 +64,9 @@ fun AppNavHost(
 ) {
     val isReady by mainViewModel.isReady.collectAsState()
     val destination by mainViewModel.destination.collectAsState()
+
+    if (!isReady) return
+
     val startDestination = when (destination) {
         is MainViewModel.Destination.Selection -> Routes.SELECTION
         is MainViewModel.Destination.Home -> Routes.HOME

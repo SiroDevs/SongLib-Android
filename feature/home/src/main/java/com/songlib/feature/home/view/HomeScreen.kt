@@ -10,36 +10,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.HomeViewModel
+import com.songlib.MainViewModel
 import com.songlib.feature.home.components.HomeSkeleton
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    viewModel: HomeViewModel,
+    homeViewModel: HomeViewModel,
+    mainViewModel: MainViewModel,
     prefsRepo: PrefsRepo,
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val songs   by viewModel.songs.collectAsState(initial = emptyList())
+    val uiState by homeViewModel.uiState.collectAsState()
+    val songs   by homeViewModel.songs.collectAsState(initial = emptyList())
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.toastEvent.collectLatest { msg ->
+        homeViewModel.toastEvent.collectLatest { msg ->
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         }
     }
 
-    LaunchedEffect(Unit) { viewModel.fetchData() }
+    LaunchedEffect(Unit) { homeViewModel.fetchData() }
 
     when (uiState) {
         is UiState.Error -> ErrorState(
             message = (uiState as UiState.Error).message,
-            retryAction = { viewModel.fetchData() }
+            retryAction = { homeViewModel.fetchData() }
         )
 
         UiState.Loading -> HomeSkeleton()
@@ -54,12 +55,9 @@ fun HomeScreen(
                                 "that's why it's empty here at the moment.\n\nLet's fix that asap!",
                         messageIcon = Icons.Default.EditNote,
                         onAction = {
-                            viewModel.clearData { success ->
+                            homeViewModel.clearData { success ->
                                 if (success) {
-                                    navController.navigate(Routes.APP_START) {
-                                        popUpTo(0) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
+                                    mainViewModel.reset()
                                 }
                             }
                         }
@@ -67,7 +65,7 @@ fun HomeScreen(
                 }
             } else {
                 HomeContent(
-                    viewModel = viewModel,
+                    viewModel = homeViewModel,
                     navController = navController,
                     prefsRepo = prefsRepo
                 )
