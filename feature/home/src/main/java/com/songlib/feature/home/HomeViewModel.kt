@@ -17,7 +17,7 @@ import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
-import com.songlib.feature.home.components.HomeNavItem
+import com.songlib.feature.home.components.HomeTab
 import com.songlib.feature.home.utils.HomeUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -53,8 +53,8 @@ class HomeViewModel @Inject constructor(
     private val _selectedBook = MutableStateFlow(-1)
     val selectedBook: StateFlow<Int> = _selectedBook.asStateFlow()
 
-    private val _selectedTab = MutableStateFlow<HomeNavItem>(HomeNavItem.Search)
-    val selectedTab: StateFlow<HomeNavItem> = _selectedTab.asStateFlow()
+    private val _selectedTab = MutableStateFlow<HomeTab>(HomeTab.Search)
+    val selectedTab: StateFlow<HomeTab> = _selectedTab.asStateFlow()
 
     private val _books = MutableStateFlow<List<BookEntity>>(emptyList())
     val books: StateFlow<List<BookEntity>> = _books.asStateFlow()
@@ -113,7 +113,7 @@ class HomeViewModel @Inject constructor(
 
     fun clearListingSelection() { _selectedListings.value = emptySet() }
 
-    fun setSelectedTab(tab: HomeNavItem) { _selectedTab.value = tab }
+    fun setSelectedTab(homeTab: HomeTab) { _selectedTab.value = homeTab }
 
     fun fetchData() {
         if (dataFetched) return
