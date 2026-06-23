@@ -14,7 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.songlib.MainViewModel
+import com.songlib.core.ui.MainViewModel
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
@@ -64,6 +64,9 @@ fun AppNavHost(
 ) {
     val isReady by mainViewModel.isReady.collectAsState()
     val destination by mainViewModel.destination.collectAsState()
+
+    if (!isReady) return
+
     val startDestination = when (destination) {
         is MainViewModel.Destination.Selection -> Routes.SELECTION
         is MainViewModel.Destination.Home -> Routes.HOME
@@ -83,10 +86,12 @@ fun AppNavHost(
         }
 
         composable(Routes.HOME) {
-            val viewModel: HomeViewModel = hiltViewModel()
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            val mainViewModel: MainViewModel = hiltViewModel()
             HomeScreen(
                 navController = navController,
-                viewModel = viewModel,
+                mainViewModel = mainViewModel,
+                homeViewModel = homeViewModel,
                 prefsRepo = prefsRepo
             )
         }
@@ -166,10 +171,12 @@ fun AppNavHost(
         }
 
         composable(Routes.SETTINGS) {
-            val viewModel: SettingsViewModel = hiltViewModel()
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val settViewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
                 navController = navController,
-                viewModel = viewModel,
+                mainViewModel = mainViewModel,
+                settViewModel = settViewModel,
                 themeRepo = themeRepo,
             )
         }

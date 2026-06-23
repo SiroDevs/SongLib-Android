@@ -59,7 +59,6 @@ fun DonationScreen(
     var showConfirmDialog by remember { mutableStateOf(false) }
     var showMinimumAmountError by remember { mutableStateOf(false) }
 
-    // Donor identity fields
     var donorName by remember { mutableStateOf("") }
     var donorEmail by remember { mutableStateOf("") }
     var isDonatingAnonymously by remember { mutableStateOf(false) }

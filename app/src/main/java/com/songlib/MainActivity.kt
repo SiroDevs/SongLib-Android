@@ -18,6 +18,7 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeMode
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.AppTheme
+import com.songlib.core.ui.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

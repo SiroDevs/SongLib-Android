@@ -38,7 +38,7 @@ import com.songlib.feature.home.HomeViewModel
 @Composable
 fun HomeAppBar(
     title: String,
-    selectedTab: HomeNavItem,
+    selectedTab: HomeTab,
     selectedSongs: Set<SongEntity>,
     selectedListings: Set<ListingUi>,
     onClearSongSelection: () -> Unit,
@@ -67,7 +67,7 @@ fun HomeAppBar(
         actions = {
             when {
                 !hasSelection -> {
-                    if (selectedTab == HomeNavItem.Listings) {
+                    if (selectedTab == HomeTab.Listings) {
                         IconButton(onClick = onAddListing) {
                             Icon(Icons.Default.Add, contentDescription = "New listing")
                         }
@@ -79,7 +79,7 @@ fun HomeAppBar(
                         }
                     }
 
-                    if (selectedTab == HomeNavItem.Search) {
+                    if (selectedTab == HomeTab.Search) {
                         IconButton(onClick = { navController.navigate(Routes.DRAFTS) }) {
                             Icon(Icons.Default.EditNote, contentDescription = "Drafts")
                         }
