@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.songlib.android.library.compose)
+    alias(libs.plugins.songlib.hilt)
 }
 
 android {

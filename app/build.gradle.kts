@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.songlib.hilt)
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.google.services)
-    kotlin("plugin.serialization") version "2.1.21"
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
     alias(libs.plugins.io.sentry)
 }
@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 850
-        versionName = "1.0.85"
+        versionCode = 852
+        versionName = "1.0.852"
         minSdk = 26
         targetSdk = 37
 
