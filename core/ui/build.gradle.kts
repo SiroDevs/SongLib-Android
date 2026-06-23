@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.songlib.android.library.compose)
+    alias(libs.plugins.songlib.hilt)
 }
 
 android {
@@ -13,4 +14,6 @@ dependencies {
 
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.foundation)
+    implementation(libs.hilt.android)
 }

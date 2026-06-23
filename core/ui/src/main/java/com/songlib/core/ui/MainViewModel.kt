@@ -1,4 +1,4 @@
-package com.songlib
+package com.songlib.core.ui
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
@@ -53,6 +53,13 @@ class MainViewModel @Inject constructor(
 
             _isReady.value = true
         }
+
+    }
+
+    fun reset() {
+        _isReady.value = false
+        _destination.value = Destination.Home
+        initializeApp()
     }
 
     sealed interface Destination {

@@ -49,7 +49,6 @@ object PrefConstants {
 }
 
 object Routes {
-    const val APP_START = "app_start"
     const val SELECTION = "selection"
     const val HOME = "home"
     const val PRESENT = "present"

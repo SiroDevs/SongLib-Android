@@ -1,13 +1,17 @@
 package com.songlib.feature.settings
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,13 +42,19 @@ class SettingsViewModel @Inject constructor(
         prefsRepo.selectAfresh = enabled
     }
 
-    fun clearData() {
-        viewModelScope.launch {
-            songbkRepo.deleteAllData()
-            listRepo.deleteAllListings()
-            prefsRepo.isDataLoaded = false
-            prefsRepo.isDataSelected = false
-            prefsRepo.selectedBooks = ""
+    fun clearData(onComplete: (Boolean) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                songbkRepo.deleteAllData()
+                listRepo.deleteAllListings()
+                withContext(Dispatchers.Main) {
+                    prefsRepo.resetAppData()
+                }
+                onComplete(true)
+            } catch (e: Exception) {
+                Log.e("SettingsViewModel", "Error clearing data", e)
+                onComplete(false)
+            }
         }
     }
 }
