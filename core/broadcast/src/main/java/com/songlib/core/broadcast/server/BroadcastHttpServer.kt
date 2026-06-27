@@ -46,7 +46,6 @@ class BroadcastHttpServer(
                     try {
                         send(Frame.Text(json.encodeToString(repo.slideState.value)))
                         repo.slideState
-                            .distinctUntilChanged()
                             .collect { state: BroadcastState ->
                                 send(Frame.Text(json.encodeToString(state)))
                             }

@@ -2,25 +2,18 @@ package com.songlib.feature.home.components
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AdminPanelSettings
-import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.Cast
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,6 +66,10 @@ fun HomeAppBar(
                         }
                     }
 
+                    IconButton(onClick = { navController.navigate(Routes.BROADCAST) }) {
+                        Icon(Icons.Default.Cast, contentDescription = "Broadcast to PC")
+                    }
+
                     if (hasHistory) {
                         IconButton(onClick = { navController.navigate(Routes.HISTORY) }) {
                             Icon(Icons.Default.History, contentDescription = "History")
@@ -89,71 +86,13 @@ fun HomeAppBar(
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
 
-                    DropdownMenu(
+                    HomeOverflowMenu(
                         expanded = showMoreMenu,
-                        onDismissRequest = { showMoreMenu = false }
-                    ) {
-                        if (hasEdits) {
-                            DropdownMenuItem(
-                                text = { Text("My Edits") },
-                                leadingIcon = { Icon(Icons.Default.Checklist, null) },
-                                onClick = {
-                                    showMoreMenu = false
-                                    navController.navigate(Routes.USER_EDITS)
-                                }
-                            )
-                        }
-                        if (prefsRepo.isAdmin) {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        "Admin: Pending Edits",
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
-                                },
-                                leadingIcon = {
-                                    Icon(
-                                        Icons.Default.AdminPanelSettings,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                    )
-                                },
-                                onClick = {
-                                    showMoreMenu = false
-                                    navController.navigate(Routes.ADMIN_EDITS)
-                                }
-                            )
-                        }
-                        DropdownMenuItem(
-                            text = { Text("Donate to SongLib") },
-                            leadingIcon = { Icon(Icons.Default.Info, null) },
-                            onClick = {
-                                showMoreMenu = false
-                                navController.navigate(Routes.DONATION)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("How It Works") },
-                            leadingIcon = { Icon(Icons.Default.Info, null) },
-                            onClick = {
-                                showMoreMenu = false
-                                navController.navigate(Routes.HOW_IT_WORKS)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Help & Feedback") },
-                            leadingIcon = { Icon(Icons.Default.HelpOutline, null) },
-                            onClick = { showMoreMenu = false; navController.navigate(Routes.HELP) }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Settings") },
-                            leadingIcon = { Icon(Icons.Default.Settings, null) },
-                            onClick = {
-                                showMoreMenu = false
-                                navController.navigate(Routes.SETTINGS)
-                            }
-                        )
-                    }
+                        onDismiss = { showMoreMenu = false },
+                        hasEdits = hasEdits,
+                        isAdmin = prefsRepo.isAdmin,
+                        navController = navController,
+                    )
                 }
 
                 selectedSongs.isNotEmpty() -> {

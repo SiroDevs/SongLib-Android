@@ -1,12 +1,29 @@
 package com.songlib.feature.settings.view
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.Cast
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.PlayCircleOutline
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Swipe
+import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
@@ -69,31 +86,6 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            SettingsSectionTitle("Account")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
-                headlineContent = { Text("Your Profile") },
-                supportingContent = { Text("Manage your Profile") },
-                modifier = Modifier.clickable {
-                    navController.navigate(Routes.USER_PROFILE)
-                }
-            )
-            HorizontalDivider()
-
-            SettingsSectionTitle("Slides")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.Swipe, "slides") },
-                headlineContent = { Text("Song Slides") },
-                supportingContent = { Text("Swipe verses horizontally") },
-                trailingContent = {
-                    Switch(
-                        checked = settViewModel.horizontalSlides,
-                        onCheckedChange = { settViewModel.updateHorizontalSlides(it) }
-                    )
-                }
-            )
-            HorizontalDivider()
-
             SettingsSectionTitle("Demo")
             ListItem(
                 leadingContent = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
@@ -117,6 +109,26 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
+            SettingsSectionTitle("Song Presentation")
+            ListItem(
+                leadingContent = { Icon(Icons.Default.Swipe, "slides") },
+                headlineContent = { Text("Song Slides") },
+                supportingContent = { Text("Swipe verses horizontally") },
+                trailingContent = {
+                    Switch(
+                        checked = settViewModel.horizontalSlides,
+                        onCheckedChange = { settViewModel.updateHorizontalSlides(it) }
+                    )
+                }
+            )
+            ListItem(
+                leadingContent = { Icon(Icons.Default.Cast, "Broadcast to PC") },
+                headlineContent = { Text("Broadcast to PC") },
+                supportingContent = { Text("Mirror your presenter screen over hotspot or Wi-Fi") },
+                modifier = Modifier.clickable { navController.navigate(Routes.BROADCAST) }
+            )
+            HorizontalDivider()
+
             SettingsSectionTitle("Donate to SongLib")
             ListItem(
                 leadingContent = {
@@ -128,6 +140,17 @@ fun SettingsScreen(
                 headlineContent = { Text("Donate Now") },
                 supportingContent = { Text("We need your support to continue serving you") },
                 modifier = Modifier.clickable { navController.navigate(Routes.DONATION) },
+            )
+            HorizontalDivider()
+
+            SettingsSectionTitle("Account")
+            ListItem(
+                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
+                headlineContent = { Text("Your Profile") },
+                supportingContent = { Text("Manage your Profile") },
+                modifier = Modifier.clickable {
+                    navController.navigate(Routes.USER_PROFILE)
+                }
             )
             HorizontalDivider()
 
