@@ -15,6 +15,7 @@ import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
+import com.songlib.core.broadcast.PresentationBroadcastRepo
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -46,6 +47,7 @@ class PresenterViewModel @Inject constructor(
     private val reportRepo: ReportRepo,
     private val trackingRepo: TrackingRepo,
     private val draftRepo: DraftRepo,
+    private val broadcastRepo: PresentationBroadcastRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -168,6 +170,23 @@ class PresenterViewModel @Inject constructor(
         _indicators.value = tempIndicators
         _verses.value = tempVerses
         _uiState.value = UiState.Loaded
+
+        broadcastRepo.publishSlide(
+            source = "song",
+            title = _title.value,
+            verses = tempVerses,
+            indicators = tempIndicators,
+        )
+    }
+
+    /** Called on every verse/page navigation while this presenter screen is on top. */
+    fun onVerseIndexChanged(index: Int) {
+        broadcastRepo.updateIndex(index)
+    }
+
+    override fun onCleared() {
+        broadcastRepo.publishIdle()
+        super.onCleared()
     }
 
     fun likeSong(song: SongEntity) {

@@ -1,0 +1,19 @@
+plugins {
+    alias(libs.plugins.songlib.android.library)
+    alias(libs.plugins.songlib.hilt)
+    alias(libs.plugins.kotlin.serialization)
+}
+
+android {
+    namespace = "com.songlib.core.broadcast"
+}
+
+dependencies {
+    implementation(project(":core:common"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.cio)
+    implementation(libs.ktor.server.websockets)
+}

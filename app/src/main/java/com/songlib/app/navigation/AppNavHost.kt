@@ -25,6 +25,8 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.donation.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.donation.view.PaymentWebViewScreen
+import com.songlib.feature.broadcast.BroadcastViewModel
+import com.songlib.feature.broadcast.view.BroadcastScreen
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.view.AdminEditsScreen
 import com.songlib.feature.drafts.list.DraftsViewModel
@@ -261,6 +263,11 @@ fun AppNavHost(
         composable(Routes.ADMIN_EDITS) {
             val viewModel: AdminEditsViewModel = hiltViewModel()
             AdminEditsScreen(navController = navController, viewModel = viewModel)
+        }
+
+        composable(Routes.BROADCAST) {
+            val viewModel: BroadcastViewModel = hiltViewModel()
+            BroadcastScreen(navController = navController, viewModel = viewModel)
         }
     }
 }

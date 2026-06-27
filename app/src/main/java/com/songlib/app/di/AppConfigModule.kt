@@ -1,4 +1,4 @@
-package com.songlib.di
+package com.songlib.app.di
 
 import com.songlib.BuildConfig
 import dagger.Module
@@ -11,10 +11,10 @@ import javax.inject.Named
 @InstallIn(SingletonComponent::class)
 object AppConfigModule {
     @Provides
-    @Named("paystack_secret_key")
-    fun providePaystackSecretKey(): String = BuildConfig.PaystackSecretKey
-
-    @Provides
     @Named("songlib_api_key")
     fun provideSonglibApiKey(): String = BuildConfig.SonglibApiKey
+
+    @Provides
+    @Named("paystack_secret_key")
+    fun providePaystackSecretKey(): String = BuildConfig.PaystackSecretKey
 }

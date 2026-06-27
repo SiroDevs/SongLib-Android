@@ -4,12 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.song"
+    namespace = "com.songlib.feature.broadcast"
 }
 
 dependencies {
     implementation(project(":core:common"))
-    implementation(project(":core:data"))
     implementation(project(":core:broadcast"))
-    implementation(project(":feature:home"))
 }

@@ -44,7 +44,9 @@ object NetworkModule {
 
     @Provides
     @Reusable
-    fun provideSonglibApiService(@Named("songlibApi") retrofit: Retrofit): SongLibService {
+    fun provideSonglibApiService(
+        @Named("songlibApi") retrofit: Retrofit
+    ): SongLibService {
         return retrofit.create(SongLibService::class.java)
     }
 
@@ -61,7 +63,9 @@ object NetworkModule {
 
     @Provides
     @Reusable
-    fun providePaystackApiService(@Named("paystackApi") retrofit: Retrofit): PaystackService {
+    fun providePaystackApiService(
+        @Named("paystackApi") retrofit: Retrofit
+    ): PaystackService {
         return retrofit.create(PaystackService::class.java)
     }
 
