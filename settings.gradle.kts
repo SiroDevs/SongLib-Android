@@ -29,7 +29,7 @@ rootProject.name = "SongLib"
 include(":app")
 
 // Core modules
-include(":core:broadcast")
+include(":core:casting")
 include(":core:common")
 include(":core:data")
 include(":core:database")
@@ -38,7 +38,7 @@ include(":core:network")
 include(":core:ui")
 
 // Feature modules
-include(":feature:broadcast")
+include(":feature:casting")
 include(":feature:selection")
 include(":feature:home")
 include(":feature:history")

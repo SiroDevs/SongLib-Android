@@ -4,12 +4,10 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.drafts"
+    namespace = "com.songlib.feature.casting"
 }
 
 dependencies {
-    implementation(project(":core:data"))
+    implementation(project(":core:common"))
     implementation(project(":core:casting"))
-    implementation(project(":feature:song"))
-    implementation(libs.androidx.foundation)
 }

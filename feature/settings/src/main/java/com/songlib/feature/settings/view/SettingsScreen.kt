@@ -108,10 +108,10 @@ fun SettingsScreen(
                 }
             )
             ListItem(
-                leadingContent = { Icon(Icons.Default.Cast, "Broadcast to PC") },
-                headlineContent = { Text("Broadcast to PC") },
+                leadingContent = { Icon(Icons.Default.Cast, "Casting to PC") },
+                headlineContent = { Text("Casting to PC") },
                 supportingContent = { Text("Mirror your presenter screen over hotspot or Wi-Fi") },
-                modifier = Modifier.clickable { navController.navigate(Routes.BROADCAST) }
+                modifier = Modifier.clickable { navController.navigate(Routes.CASTING) }
             )
             HorizontalDivider()
 

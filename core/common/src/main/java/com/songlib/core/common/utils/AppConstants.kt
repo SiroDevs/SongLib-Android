@@ -65,7 +65,7 @@ object Routes {
     const val USER_EDITS = "user_edits"
     const val ADMIN_EDITS = "admin_edits"
     const val EDITOR = "editor"
-    const val BROADCAST = "broadcast"
+    const val CASTING = "casting"
 
     const val PAYMENT_WEBVIEW = "payment_webview/{redirectUrl}"
 
