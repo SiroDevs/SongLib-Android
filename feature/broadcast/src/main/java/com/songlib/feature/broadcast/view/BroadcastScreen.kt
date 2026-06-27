@@ -84,7 +84,7 @@ fun BroadcastScreen(
         topBar = {
             AppTopBar(
                 title = "Broadcast to PC",
-                tagline = "Beta",
+                tagline = "Disclaimer: This is a Beta Feature",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
             )
@@ -126,7 +126,7 @@ fun BroadcastScreen(
 private fun ExplainerCard() {
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Mirror your presenter screen", style = MaterialTheme.typography.titleMedium)
+            Text("Mirror your song presenter screen", style = MaterialTheme.typography.titleMedium)
             Text(
                 "Turn on this phone's Personal Hotspot (or join the same Wi-Fi as your " +
                     "PC), tap Start below, then open the link on the PC's browser. Whatever " +

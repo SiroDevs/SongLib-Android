@@ -86,20 +86,6 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            SettingsSectionTitle("Demo")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
-                headlineContent = { Text("Demo Mode") },
-                supportingContent = { Text("Show guided tour on home screen") },
-                trailingContent = {
-                    Switch(
-                        checked = settViewModel.demoMode,
-                        onCheckedChange = { settViewModel.updateDemoMode(it) }
-                    )
-                }
-            )
-            HorizontalDivider()
-
             SettingsSectionTitle("Display")
             ListItem(
                 leadingContent = { Icon(Icons.Default.Brightness6, "Theme") },
@@ -143,7 +129,7 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            SettingsSectionTitle("Account")
+            SettingsSectionTitle("Manage Account")
             ListItem(
                 leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
                 headlineContent = { Text("Your Profile") },
@@ -154,7 +140,7 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            SettingsSectionTitle("Selection")
+            SettingsSectionTitle("SongBook Selection")
             ListItem(
                 leadingContent = { Icon(Icons.Default.EditNote, "Reset") },
                 headlineContent = { Text("Modify Collection") },
@@ -172,6 +158,20 @@ fun SettingsScreen(
                 headlineContent = { Text("Select Afresh") },
                 supportingContent = { Text("Reset everything and start over") },
                 modifier = Modifier.clickable { showResetDialog = true }
+            )
+            HorizontalDivider()
+
+            SettingsSectionTitle("Demo Activation")
+            ListItem(
+                leadingContent = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
+                headlineContent = { Text("Demo Mode") },
+                supportingContent = { Text("Show guided tour on home screen") },
+                trailingContent = {
+                    Switch(
+                        checked = settViewModel.demoMode,
+                        onCheckedChange = { settViewModel.updateDemoMode(it) }
+                    )
+                }
             )
             HorizontalDivider()
         }

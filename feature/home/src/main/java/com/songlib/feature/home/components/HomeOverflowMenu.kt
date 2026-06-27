@@ -67,6 +67,14 @@ fun HomeOverflowMenu(
             }
         )
         DropdownMenuItem(
+            text = { Text("App Settings") },
+            leadingIcon = { Icon(Icons.Default.Settings, null) },
+            onClick = {
+                onDismiss()
+                navController.navigate(Routes.SETTINGS)
+            }
+        )
+        DropdownMenuItem(
             text = { Text("How It Works") },
             leadingIcon = { Icon(Icons.Default.Info, null) },
             onClick = {
@@ -78,14 +86,6 @@ fun HomeOverflowMenu(
             text = { Text("Help & Feedback") },
             leadingIcon = { Icon(Icons.Default.HelpOutline, null) },
             onClick = { onDismiss(); navController.navigate(Routes.HELP) }
-        )
-        DropdownMenuItem(
-            text = { Text("Settings") },
-            leadingIcon = { Icon(Icons.Default.Settings, null) },
-            onClick = {
-                onDismiss()
-                navController.navigate(Routes.SETTINGS)
-            }
         )
     }
 }
