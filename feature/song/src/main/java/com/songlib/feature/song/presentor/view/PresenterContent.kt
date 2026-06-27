@@ -36,6 +36,7 @@ fun PresenterContent(
     onFontSizeChange: (Float) -> Unit,
     onNavigatePrevious: () -> Unit,
     onNavigateNext: () -> Unit,
+    onVerseIndexChanged: (Int) -> Unit = {},
 ) {
     var fontSizeAtGestureStart by remember { mutableFloatStateOf(fontSize) }
     Box(
@@ -71,6 +72,7 @@ fun PresenterContent(
             indicators = indicators,
             horizontalSlides = horizontalSlides,
             fontSize = fontSize,
+            onVerseIndexChanged = onVerseIndexChanged,
             cornerOverlay = {
                 if (hasPrevious) {
                     CornerNavZone(

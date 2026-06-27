@@ -2,6 +2,7 @@ package com.songlib.feature.drafts.present
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.songlib.core.broadcast.PresentationBroadcastRepo
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.data.repos.DraftRepo
@@ -19,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DraftPresenterViewModel @Inject constructor(
     private val draftRepo: DraftRepo,
+    private val broadcastRepo: PresentationBroadcastRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -60,11 +62,29 @@ class DraftPresenterViewModel @Inject constructor(
         _currentDraft.value = draft
         val verses = getSongVerses(draft.content)
         _verses.value = verses
-        _indicators.value = verses.mapIndexed { i, _ -> (i + 1).toString() }
+        val indicators = verses.mapIndexed { i, _ -> (i + 1).toString() }
+        _indicators.value = indicators
         val idx = _currentIndex.value
         _hasPrevious.value = idx > 0
         _hasNext.value = idx < _allDrafts.value.size - 1
         _uiState.value = UiState.Loaded
+
+        broadcastRepo.publishSlide(
+            source = "draft",
+            title = draft.title,
+            verses = verses,
+            indicators = indicators,
+        )
+    }
+
+    /** Called on every verse/page navigation while this presenter screen is on top. */
+    fun onVerseIndexChanged(index: Int) {
+        broadcastRepo.updateIndex(index)
+    }
+
+    override fun onCleared() {
+        broadcastRepo.publishIdle()
+        super.onCleared()
     }
 
     fun navigateNext() {

@@ -215,6 +215,7 @@ fun PresenterScreen(
                     onFontSizeChange = { viewModel.updateFontSize(it) },
                     onNavigatePrevious = { viewModel.navigateToPrevious() },
                     onNavigateNext = { viewModel.navigateToNext() },
+                    onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
                 )
 
                 UiState.Loading -> { }

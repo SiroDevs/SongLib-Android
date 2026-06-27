@@ -100,6 +100,7 @@ fun DraftPresenterScreen(
                     },
                     onNavigatePrevious = { viewModel.navigatePrevious() },
                     onNavigateNext = { viewModel.navigateNext() },
+                    onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
                 )
 
                 UiState.Loading -> { }
