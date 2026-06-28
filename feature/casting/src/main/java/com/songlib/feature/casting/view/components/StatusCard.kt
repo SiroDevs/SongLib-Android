@@ -33,7 +33,7 @@ fun StatusCard(
                     text = when (serverStatus) {
                         ServerStatus.Stopped -> "Not broadcasting"
                         ServerStatus.Starting -> "Starting…"
-                        is ServerStatus.Running -> "Castinging" +
+                        is ServerStatus.Running -> "Casting" +
                                 if (connectedClients > 0) " • $connectedClients connected" else ""
                         is ServerStatus.Error -> "Couldn't start: ${serverStatus.message}"
                     },
@@ -43,11 +43,11 @@ fun StatusCard(
 
             if (serverStatus is ServerStatus.Running || serverStatus is ServerStatus.Starting) {
                 Button(onClick = onStop, modifier = Modifier.fillMaxWidth()) {
-                    Text("Stop Castinging")
+                    Text("Stop Casting")
                 }
             } else {
                 Button(onClick = onStart, modifier = Modifier.fillMaxWidth()) {
-                    Text("Start Castinging")
+                    Text("Start Casting")
                 }
             }
         }
