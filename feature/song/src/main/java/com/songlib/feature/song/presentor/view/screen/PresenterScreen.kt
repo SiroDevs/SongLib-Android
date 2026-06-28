@@ -33,13 +33,13 @@ import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.components.ChoosingListingSheet
-import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
-import com.songlib.feature.song.presentor.viewmodel.ReportUiState
 import com.songlib.feature.song.presentor.view.components.DemoOverlay
 import com.songlib.feature.song.presentor.view.components.LikeSongBtn
-import com.songlib.feature.song.presentor.view.components.PresentorMoreMenu
 import com.songlib.feature.song.presentor.view.components.PresentorFab
+import com.songlib.feature.song.presentor.view.components.PresentorMoreMenu
 import com.songlib.feature.song.presentor.view.components.ReportSongDialog
+import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
+import com.songlib.feature.song.presentor.viewmodel.ReportUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +77,7 @@ fun PresenterScreen(
     }
 
     LaunchedEffect(song) {
-        song?.let { viewModel.loadSong(it) }
+        song?.let { viewModel.loadSong(it, book?.title) }
     }
 
     LaunchedEffect(reportState) {

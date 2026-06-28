@@ -2,9 +2,9 @@ package com.songlib.feature.drafts.present.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.core.casting.CastingRepo
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.getSongVerses
+import com.songlib.core.data.repos.CastingRepo
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.database.model.DraftEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DraftPresenterViewModel @Inject constructor(
     private val draftRepo: DraftRepo,
-    private val broadcastRepo: CastingRepo,
+    private val castingRepo: CastingRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -69,9 +69,10 @@ class DraftPresenterViewModel @Inject constructor(
         _hasNext.value = idx < _allDrafts.value.size - 1
         _uiState.value = UiState.Loaded
 
-        broadcastRepo.publishSlide(
+        castingRepo.publishSlide(
             source = "draft",
             title = draft.title,
+            book = "Draft",
             verses = verses,
             indicators = indicators,
         )
@@ -79,11 +80,11 @@ class DraftPresenterViewModel @Inject constructor(
 
     /** Called on every verse/page navigation while this presenter screen is on top. */
     fun onVerseIndexChanged(index: Int) {
-        broadcastRepo.updateIndex(index)
+        castingRepo.updateIndex(index)
     }
 
     override fun onCleared() {
-        broadcastRepo.publishIdle()
+        castingRepo.publishIdle()
         super.onCleared()
     }
 

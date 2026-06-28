@@ -25,12 +25,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.common.entity.ServerStatus
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.casting.viewmodel.CastingViewModel
 import com.songlib.feature.casting.view.components.ConnectCard
 import com.songlib.feature.casting.view.components.ExplainerCard
-import com.songlib.feature.casting.view.components.NowShowingCard
 import com.songlib.feature.casting.view.components.StatusCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -64,7 +63,7 @@ fun CastingScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Casting to PC",
+                title = "SongLib Casting",
                 tagline = "Disclaimer: This is a Beta Feature",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
@@ -83,6 +82,7 @@ fun CastingScreen(
             StatusCard(
                 serverStatus = serverStatus,
                 connectedClients = connectedClients,
+                slideState = slideState,
                 onStart = ::requestStart,
                 onStop = viewModel::stopCasting,
             )
@@ -96,8 +96,6 @@ fun CastingScreen(
                     },
                     onOpenHotspotSettings = { openTetherSettings(context) },
                 )
-
-                NowShowingCard(slideState = slideState)
             }
         }
     }

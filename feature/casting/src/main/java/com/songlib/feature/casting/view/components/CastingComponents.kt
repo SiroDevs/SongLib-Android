@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.songlib.core.casting.model.CastingState
+import com.songlib.core.common.entity.CastingState
 
 @Composable
 fun StatusDot(running: Boolean) {
@@ -47,25 +47,3 @@ fun ExplainerCard() {
     }
 }
 
-@Composable
-fun NowShowingCard(slideState: CastingState) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-    ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Text("Now showing", style = MaterialTheme.typography.labelMedium)
-            when (slideState) {
-                CastingState.Idle -> Text(
-                    "Waiting page (no presenter open)",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-
-                is CastingState.Slide -> Text(
-                    "${slideState.title} — slide ${slideState.currentIndex + 1} of ${slideState.verses.size}",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
-        }
-    }
-}

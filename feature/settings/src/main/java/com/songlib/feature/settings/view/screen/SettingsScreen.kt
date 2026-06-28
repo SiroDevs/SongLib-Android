@@ -108,8 +108,8 @@ fun SettingsScreen(
                 }
             )
             ListItem(
-                leadingContent = { Icon(Icons.Default.Cast, "Casting to PC") },
-                headlineContent = { Text("Casting to PC") },
+                leadingContent = { Icon(Icons.Default.Cast, "Songlib Casting") },
+                headlineContent = { Text("Casting Your Song Slides") },
                 supportingContent = { Text("Mirror your presenter screen over hotspot or Wi-Fi") },
                 modifier = Modifier.clickable { navController.navigate(Routes.CASTING) }
             )

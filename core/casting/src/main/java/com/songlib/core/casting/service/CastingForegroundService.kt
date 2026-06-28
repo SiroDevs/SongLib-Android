@@ -12,10 +12,10 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import com.songlib.core.casting.CastingRepo
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.common.entity.ServerStatus
 import com.songlib.core.casting.server.CastingHttpServer
 import com.songlib.core.casting.util.NetworkUtils
+import com.songlib.core.data.repos.CastingRepo
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -106,7 +106,7 @@ class CastingForegroundService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SongLib is casting to PC")
+            .setContentTitle("SongLib is casting")
             .setContentText("Your presenter screen is being mirrored on your local network")
             .setSmallIcon(android.R.drawable.ic_menu_share)
             .setOngoing(true)

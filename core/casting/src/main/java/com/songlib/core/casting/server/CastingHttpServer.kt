@@ -1,7 +1,7 @@
 package com.songlib.core.casting.server
 
-import com.songlib.core.casting.CastingRepo
-import com.songlib.core.casting.model.CastingState
+import com.songlib.core.common.entity.CastingState
+import com.songlib.core.data.repos.CastingRepo
 import io.ktor.http.ContentType
 import io.ktor.server.application.install
 import io.ktor.server.cio.CIO

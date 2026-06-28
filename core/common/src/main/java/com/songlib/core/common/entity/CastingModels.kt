@@ -1,4 +1,4 @@
-package com.songlib.core.casting.model
+package com.songlib.core.common.entity
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -22,6 +22,7 @@ sealed interface CastingState {
     data class Slide(
         val source: String, // "song" or "draft" — purely informational for the web client
         val title: String,
+        val book: String? = null, // songbook name (songs) or a label like "Draft" (drafts)
         val verses: List<String>,
         val indicators: List<String>,
         val currentIndex: Int,

@@ -9,18 +9,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.common.entity.CastingState
+import com.songlib.core.common.entity.ServerStatus
 
 @Composable
 fun StatusCard(
     serverStatus: ServerStatus,
     connectedClients: Int,
+    slideState: CastingState,
     onStart: () -> Unit,
     onStop: () -> Unit,
 ) {
@@ -32,12 +35,24 @@ fun StatusCard(
                 Text(
                     text = when (serverStatus) {
                         ServerStatus.Stopped -> "Not broadcasting"
-                        ServerStatus.Starting -> "Starting…"
+                        ServerStatus.Starting -> "Starting ..."
                         is ServerStatus.Running -> "Casting" +
                                 if (connectedClients > 0) " • $connectedClients connected" else ""
                         is ServerStatus.Error -> "Couldn't start: ${serverStatus.message}"
                     },
                     style = MaterialTheme.typography.titleSmall,
+                )
+            }
+
+            when (slideState) {
+                CastingState.Idle -> Text(
+                    "Waiting page (no presenter open)",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+
+                is CastingState.Slide -> Text(
+                    "${slideState.title} — slide ${slideState.currentIndex + 1} of ${slideState.verses.size}",
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
 
@@ -50,6 +65,7 @@ fun StatusCard(
                     Text("Start Casting")
                 }
             }
+
         }
     }
 }

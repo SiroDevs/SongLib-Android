@@ -1,7 +1,7 @@
-package com.songlib.core.casting
+package com.songlib.core.data.repos
 
-import com.songlib.core.casting.model.CastingState
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.common.entity.CastingState
+import com.songlib.core.common.entity.ServerStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -9,6 +9,19 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Single source of truth for the "Xender-like" local broadcast feature.
+ *
+ * The Presenter and Draft-presenter view models call [publishSlide] / [updateIndex] /
+ * [publishIdle] as the user opens songs and flips through verses. The embedded
+ * web server (see [com.songlib.core.broadcast.server.CastingHttpServer]) simply
+ * observes [slideState] and forwards every emission to connected browsers — it
+ * never needs to know *why* the state changed, only *what* it currently is.
+ *
+ * Kept as a plain singleton (like the other *Repo classes in this codebase) so
+ * it works whether or not the broadcast server is currently running: presenting
+ * always updates this state, the server just decides whether anyone's listening.
+ */
 @Singleton
 class CastingRepo @Inject constructor() {
 
@@ -25,6 +38,7 @@ class CastingRepo @Inject constructor() {
     fun publishSlide(
         source: String,
         title: String,
+        book: String? = null,
         verses: List<String>,
         indicators: List<String>,
         currentIndex: Int = 0,
@@ -36,6 +50,7 @@ class CastingRepo @Inject constructor() {
         _slideState.value = CastingState.Slide(
             source = source,
             title = title,
+            book = book,
             verses = verses,
             indicators = indicators,
             currentIndex = currentIndex.coerceIn(0, verses.size - 1),
