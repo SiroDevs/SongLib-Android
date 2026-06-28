@@ -66,8 +66,8 @@ fun HomeAppBar(
                         }
                     }
 
-                    IconButton(onClick = { navController.navigate(Routes.BROADCAST) }) {
-                        Icon(Icons.Default.Cast, contentDescription = "Broadcast to PC")
+                    IconButton(onClick = { navController.navigate(Routes.CASTING) }) {
+                        Icon(Icons.Default.Cast, contentDescription = "SongLib Casting")
                     }
 
                     if (hasHistory) {

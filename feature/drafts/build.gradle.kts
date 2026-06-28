@@ -9,7 +9,7 @@ android {
 
 dependencies {
     implementation(project(":core:data"))
-    implementation(project(":core:broadcast"))
+    implementation(project(":core:casting"))
     implementation(project(":feature:song"))
     implementation(libs.androidx.foundation)
 }

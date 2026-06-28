@@ -22,36 +22,36 @@ import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
-import com.songlib.feature.donation.DonationViewModel
+import com.songlib.feature.donation.viewmodel.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.donation.view.PaymentWebViewScreen
-import com.songlib.feature.broadcast.BroadcastViewModel
-import com.songlib.feature.broadcast.view.BroadcastScreen
-import com.songlib.feature.edits.admin.AdminEditsViewModel
-import com.songlib.feature.edits.admin.view.AdminEditsScreen
-import com.songlib.feature.drafts.list.DraftsViewModel
-import com.songlib.feature.drafts.present.DraftPresenterViewModel
+import com.songlib.feature.casting.viewmodel.CastingViewModel
+import com.songlib.feature.casting.view.screen.CastingScreen
+import com.songlib.feature.edits.admin.viewmodel.AdminEditsViewModel
+import com.songlib.feature.edits.admin.view.screen.AdminEditsScreen
+import com.songlib.feature.drafts.list.viewmodel.DraftsViewModel
+import com.songlib.feature.drafts.present.viewmodel.DraftPresenterViewModel
 import com.songlib.feature.drafts.list.view.DraftsScreen
 import com.songlib.feature.drafts.present.view.DraftPresenterScreen
-import com.songlib.feature.edits.user.EditsViewModel
+import com.songlib.feature.edits.user.viewmodel.EditsViewModel
 import com.songlib.feature.edits.user.view.EditsScreen
 import com.songlib.feature.help.view.HelpScreen
-import com.songlib.feature.history.HistoryViewModel
-import com.songlib.feature.history.view.HistoryScreen
+import com.songlib.feature.history.viewmodel.HistoryViewModel
+import com.songlib.feature.history.view.screen.HistoryScreen
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.view.HomeScreen
 import com.songlib.feature.howitworks.view.HowItWorksScreen
-import com.songlib.feature.listing.ListingViewModel
+import com.songlib.feature.listing.viewmodel.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
-import com.songlib.feature.song.presentor.PresenterViewModel
-import com.songlib.feature.song.presentor.view.PresenterScreen
-import com.songlib.feature.selection.SelectionViewModel
-import com.songlib.feature.selection.view.SelectionScreen
-import com.songlib.feature.settings.SettingsViewModel
-import com.songlib.feature.settings.UserProfileViewModel
-import com.songlib.feature.settings.view.SettingsScreen
-import com.songlib.feature.settings.view.UserProfileScreen
-import com.songlib.feature.song.editor.EditorViewModel
+import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
+import com.songlib.feature.song.presentor.view.screen.PresenterScreen
+import com.songlib.feature.selection.viewmodel.SelectionViewModel
+import com.songlib.feature.selection.view.screen.SelectionScreen
+import com.songlib.feature.settings.viewmodel.SettingsViewModel
+import com.songlib.feature.settings.viewmodel.UserProfileViewModel
+import com.songlib.feature.settings.view.screen.SettingsScreen
+import com.songlib.feature.settings.view.screen.UserProfileScreen
+import com.songlib.feature.song.editor.viewmodel.EditorViewModel
 import com.songlib.feature.song.editor.view.EditorScreen
 import kotlinx.coroutines.launch
 
@@ -265,9 +265,9 @@ fun AppNavHost(
             AdminEditsScreen(navController = navController, viewModel = viewModel)
         }
 
-        composable(Routes.BROADCAST) {
-            val viewModel: BroadcastViewModel = hiltViewModel()
-            BroadcastScreen(navController = navController, viewModel = viewModel)
+        composable(Routes.CASTING) {
+            val viewModel: CastingViewModel = hiltViewModel()
+            CastingScreen(navController = navController, viewModel = viewModel)
         }
     }
 }

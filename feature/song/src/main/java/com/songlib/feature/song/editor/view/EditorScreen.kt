@@ -30,8 +30,8 @@ import androidx.navigation.NavHostController
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.feature.song.editor.EditSubmitState
-import com.songlib.feature.song.editor.EditorViewModel
+import com.songlib.feature.song.editor.viewmodel.EditSubmitState
+import com.songlib.feature.song.editor.viewmodel.EditorViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 853
-        versionName = "1.0.853"
+        versionCode = 854
+        versionName = "1.0.854"
         minSdk = 26
         targetSdk = 37
 
@@ -88,7 +88,7 @@ kotlin {
 
 dependencies {
     // Core modules
-    implementation(project(":core:broadcast"))
+    implementation(project(":core:casting"))
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:database"))
@@ -97,7 +97,7 @@ dependencies {
     implementation(project(":core:ui"))
 
     // Feature modules
-    implementation(project(":feature:broadcast"))
+    implementation(project(":feature:casting"))
     implementation(project(":feature:selection"))
     implementation(project(":feature:home"))
     implementation(project(":feature:history"))
