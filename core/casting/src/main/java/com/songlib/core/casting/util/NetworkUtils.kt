@@ -34,6 +34,14 @@ object NetworkUtils {
         return addresses.distinct().sortedByDescending(::looksLikeHotspotAddress)
     }
 
+    /**
+     * A single best-guess local IPv4 address to show as "the" casting link —
+     * hotspot-looking addresses win, otherwise whatever was found first.
+     * Returning one address instead of a list keeps the UI from showing several
+     * links that are confusing to a non-technical user.
+     */
+    fun getPrimaryLocalIpAddress(): String? = getLocalIpAddresses().firstOrNull()
+
     private fun looksLikeHotspotAddress(address: String): Boolean =
         address.startsWith("192.168.43.") || address.startsWith("192.168.49.")
 }

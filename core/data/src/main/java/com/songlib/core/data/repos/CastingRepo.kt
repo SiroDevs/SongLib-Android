@@ -1,6 +1,7 @@
 package com.songlib.core.data.repos
 
 import com.songlib.core.common.entity.CastingState
+import com.songlib.core.common.entity.HotspotStatus
 import com.songlib.core.common.entity.ServerStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -33,6 +34,9 @@ class CastingRepo @Inject constructor() {
 
     private val _connectedClients = MutableStateFlow(0)
     val connectedClients: StateFlow<Int> = _connectedClients.asStateFlow()
+
+    private val _hotspotStatus = MutableStateFlow<HotspotStatus>(HotspotStatus.Stopped)
+    val hotspotStatus: StateFlow<HotspotStatus> = _hotspotStatus.asStateFlow()
 
     /** Called when a song/draft is opened (or replaced) on a presenter screen. */
     fun publishSlide(
@@ -75,6 +79,10 @@ class CastingRepo @Inject constructor() {
 
     fun setServerStatus(status: ServerStatus) {
         _serverStatus.value = status
+    }
+
+    fun setHotspotStatus(status: HotspotStatus) {
+        _hotspotStatus.value = status
     }
 
     fun onClientConnected() {

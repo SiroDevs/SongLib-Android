@@ -33,6 +33,18 @@ sealed interface CastingState {
 sealed interface ServerStatus {
     data object Stopped : ServerStatus
     data object Starting : ServerStatus
-    data class Running(val urls: List<String>, val port: Int) : ServerStatus
+    data class Running(val url: String?, val port: Int) : ServerStatus
     data class Error(val message: String) : ServerStatus
+}
+
+/**
+ * Status of the app-managed Wi-Fi hotspot (Android's LocalOnlyHotspot) used for
+ * casting — distinct from, and unrelated to, the device's system Personal
+ * Hotspot. Never sent over the wire; purely local UI/service state.
+ */
+sealed interface HotspotStatus {
+    data object Stopped : HotspotStatus
+    data object Starting : HotspotStatus
+    data class Running(val ssid: String, val password: String?, val isOpen: Boolean) : HotspotStatus
+    data class Error(val message: String) : HotspotStatus
 }
