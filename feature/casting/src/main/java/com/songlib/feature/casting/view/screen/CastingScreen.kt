@@ -121,6 +121,8 @@ fun CastingScreen(
         )
     }
 
+    val isCasting = serverStatus is ServerStatus.Running || serverStatus is ServerStatus.Starting
+
     Scaffold(
         topBar = {
             AppTopBar(
@@ -138,7 +140,9 @@ fun CastingScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            ExplainerCard()
+            if (!isCasting) {
+                ExplainerCard()
+            }
 
             StatusCard(
                 serverStatus = serverStatus,
@@ -148,16 +152,19 @@ fun CastingScreen(
                 onStop = viewModel::stopCasting,
             )
 
-            ConnectCard(
-                castingUrl = (serverStatus as? ServerStatus.Running)?.url,
-                hotspotStatus = hotspotStatus,
-                onStartHotspot = ::requestStartHotspot,
-                onStopHotspot = viewModel::stopHotspot,
-                onCopyUrl = { url ->
-                    clipboard.setText(AnnotatedString(url))
-                    Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
-                },
-            )
+            if (isCasting) {
+                ConnectCard(
+                    castingUrl = (serverStatus as? ServerStatus.Running)?.url,
+                    hotspotStatus = hotspotStatus,
+                    wifiConnected = wifiConnected,
+                    onStartHotspot = ::requestStartHotspot,
+                    onStopHotspot = viewModel::stopHotspot,
+                    onCopyUrl = { url ->
+                        clipboard.setText(AnnotatedString(url))
+                        Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
+                    },
+                )
+            }
         }
     }
 }

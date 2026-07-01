@@ -21,6 +21,7 @@ object NetworkUtils {
             val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
             for (iface in interfaces) {
                 if (!iface.isUp || iface.isLoopback) continue
+                if (isCellularInterface(iface.name)) continue
                 val ifaceAddresses = Collections.list(iface.inetAddresses)
                 for (addr in ifaceAddresses) {
                     if (addr is Inet4Address && !addr.isLoopbackAddress) {
@@ -44,4 +45,19 @@ object NetworkUtils {
 
     private fun looksLikeHotspotAddress(address: String): Boolean =
         address.startsWith("192.168.43.") || address.startsWith("192.168.49.")
+
+    /**
+     * Cellular interfaces (rmnet_*, ccmni*, pdp_ip*, etc.) carry mobile-data
+     * traffic and are never reachable from a Wi-Fi/hotspot peer, so we skip
+     * them — otherwise the URL would advertise a carrier-NATed address that
+     * no PC on the local network can reach.
+     */
+    private fun isCellularInterface(name: String?): Boolean {
+        if (name == null) return false
+        return name.startsWith("rmnet") ||
+                name.startsWith("ccmni") ||
+                name.startsWith("pdp_ip") ||
+                name.startsWith("rev_rmnet") ||
+                name.startsWith("ecm")
+    }
 }

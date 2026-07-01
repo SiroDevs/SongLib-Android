@@ -28,51 +28,87 @@ import androidx.compose.ui.unit.dp
 import com.songlib.core.common.entity.HotspotStatus
 import kotlinx.coroutines.launch
 
-private val tabTitles = listOf("Hotspot", "Casting")
-
 @Composable
 fun ConnectCard(
+    castingUrl: String?,
+    hotspotStatus: HotspotStatus,
+    wifiConnected: Boolean,
+    onStartHotspot: () -> Unit,
+    onStopHotspot: () -> Unit,
+    onCopyUrl: (String) -> Unit,
+) {
+    val hotspotRunning = hotspotStatus is HotspotStatus.Running
+    val showCastingTab = wifiConnected || hotspotRunning
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        if (showCastingTab) {
+            TwoTabConnectCard(
+                castingUrl = castingUrl,
+                hotspotStatus = hotspotStatus,
+                onStartHotspot = onStartHotspot,
+                onStopHotspot = onStopHotspot,
+                onCopyUrl = onCopyUrl,
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                HotspotTab(
+                    hotspotStatus = hotspotStatus,
+                    onStart = onStartHotspot,
+                    onStop = onStopHotspot,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TwoTabConnectCard(
     castingUrl: String?,
     hotspotStatus: HotspotStatus,
     onStartHotspot: () -> Unit,
     onStopHotspot: () -> Unit,
     onCopyUrl: (String) -> Unit,
 ) {
-    val pagerState = rememberPagerState { tabTitles.size }
+    val tabTitles = listOf("Hotspot", "Casting")
+    val pagerState = rememberPagerState(pageCount = { tabTitles.size })
     val scope = rememberCoroutineScope()
 
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column {
-            TabRow(selectedTabIndex = pagerState.currentPage) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                        text = { Text(title) },
-                    )
-                }
+    Column {
+        TabRow(selectedTabIndex = pagerState.currentPage) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                    text = { Text(title) },
+                )
             }
+        }
 
-            HorizontalPager(state = pagerState) { page ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    when (page) {
-                        0 -> HotspotTab(
-                            hotspotStatus = hotspotStatus,
-                            onStart = onStartHotspot,
-                            onStop = onStopHotspot,
-                        )
+        HorizontalPager(state = pagerState) { page ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                when (page) {
+                    0 -> HotspotTab(
+                        hotspotStatus = hotspotStatus,
+                        onStart = onStartHotspot,
+                        onStop = onStopHotspot,
+                    )
 
-                        else -> CastingTab(
-                            url = castingUrl,
-                            onCopy = onCopyUrl,
-                        )
-                    }
+                    else -> CastingTab(
+                        url = castingUrl,
+                        onCopy = onCopyUrl,
+                    )
                 }
             }
         }
