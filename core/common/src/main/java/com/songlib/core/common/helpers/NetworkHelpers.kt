@@ -17,15 +17,15 @@ sealed interface NetworkResult<out T> {
 
 object NetworkUtils {
     fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork
-        val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
+        val connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connManager.activeNetwork
+        val networkCapabilities = connManager.getNetworkCapabilities(network)
 
         return networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true
     }
 
     fun observeNetworkConnectivity(context: Context): Flow<Boolean> = callbackFlow {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val networkCallback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -41,13 +41,13 @@ object NetworkUtils {
             .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
 
-        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+        connManager.registerNetworkCallback(networkRequest, networkCallback)
 
         // Send initial state
         trySend(isNetworkAvailable(context))
 
         awaitClose {
-            connectivityManager.unregisterNetworkCallback(networkCallback)
+            connManager.unregisterNetworkCallback(networkCallback)
         }
     }
 }

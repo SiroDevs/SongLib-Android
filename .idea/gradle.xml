@@ -25,7 +25,7 @@
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/build-logic/convention" />
             <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/core/broadcast" />
+            <option value="$PROJECT_DIR$/core/casting" />
             <option value="$PROJECT_DIR$/core/common" />
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/database" />
@@ -33,7 +33,7 @@
             <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/broadcast" />
+            <option value="$PROJECT_DIR$/feature/casting" />
             <option value="$PROJECT_DIR$/feature/donation" />
             <option value="$PROJECT_DIR$/feature/drafts" />
             <option value="$PROJECT_DIR$/feature/edits" />

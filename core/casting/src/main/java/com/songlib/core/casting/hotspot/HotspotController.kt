@@ -6,7 +6,6 @@ import android.net.wifi.WifiManager
 import android.os.Build
 import kotlin.random.Random
 
-/** What the platform actually gave us once the hotspot came up. */
 data class HotspotInfo(
     val ssid: String,
     val password: String?,
@@ -18,21 +17,6 @@ sealed interface HotspotOutcome {
     data class Failure(val message: String) : HotspotOutcome
 }
 
-/**
- * Wraps Android's LocalOnlyHotspot API to create a self-contained Wi-Fi access
- * point for casting. This is deliberately *not* the device's system Personal
- * Hotspot (Tethering) — a 3rd-party app has no public API to read or toggle
- * that. LocalOnlyHotspot is a separate, app-scoped AP mode that:
- *
- * - Never bridges connected devices to the phone's mobile data or any other
- *   uplink (that's the whole point of "local only" — it's not tethering).
- * - Is fully owned by this app: starting a new one always tears down whatever
- *   reservation we were already holding, so every "Start Hotspot" tap gives a
- *   genuinely fresh AP rather than silently reusing a stale one.
- * - Can only have its SSID/security fully customized on Android 13+. On older
- *   versions the platform assigns a random SSID/passphrase that we read back
- *   and surface as-is — there's no public API to rename or open it pre-13.
- */
 class HotspotController(context: Context) {
 
     private val appContext = context.applicationContext
@@ -46,12 +30,16 @@ class HotspotController(context: Context) {
         // Requirement: every start should hand back a fresh hotspot.
         stop()
 
-        val requestedSsid = generateSsid()
+        // Note: there's no public API for a non-system app to request a custom SSID.
+        // WifiManager.startLocalOnlyHotspot(SoftApConfiguration, Executor, LocalOnlyHotspotCallback)
+        // is a @SystemApi gated by NETWORK_SETTINGS/NETWORK_SETUP_WIZARD permissions, so we always
+        // go through the public overload and read back whatever SSID/password the OS assigned.
+        val fallbackSsid = generateSsid()
 
         val callback = object : WifiManager.LocalOnlyHotspotCallback() {
             override fun onStarted(res: WifiManager.LocalOnlyHotspotReservation) {
                 reservation = res
-                onResult(HotspotOutcome.Success(resolveInfo(res, requestedSsid)))
+                onResult(HotspotOutcome.Success(resolveInfo(res, fallbackSsid)))
             }
 
             override fun onStopped() {
@@ -65,17 +53,8 @@ class HotspotController(context: Context) {
         }
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Custom SSID + open security only available from Android 13 on.
-                val config = SoftApConfiguration.Builder()
-                    .setSsid(requestedSsid)
-                    .setPassphrase(null, SoftApConfiguration.SECURITY_TYPE_OPEN)
-                    .build()
-                wifiManager.startLocalOnlyHotspot(config, appContext.mainExecutor, callback)
-            } else {
-                @Suppress("DEPRECATION")
-                wifiManager.startLocalOnlyHotspot(callback, null)
-            }
+            @Suppress("DEPRECATION")
+            wifiManager.startLocalOnlyHotspot(callback, null)
         } catch (e: Exception) {
             onResult(HotspotOutcome.Failure(e.message ?: "Couldn't start the hotspot"))
         }
@@ -90,19 +69,14 @@ class HotspotController(context: Context) {
 
     private fun resolveInfo(
         res: WifiManager.LocalOnlyHotspotReservation,
-        requestedSsid: String,
+        fallbackSsid: String,
     ): HotspotInfo {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // We asked for this exact open, named network ourselves.
-            return HotspotInfo(ssid = requestedSsid, password = null, isOpen = true)
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val config = res.softApConfiguration
             if (config != null) {
                 val isOpen = config.securityType == SoftApConfiguration.SECURITY_TYPE_OPEN
                 return HotspotInfo(
-                    ssid = config.ssid ?: requestedSsid,
+                    ssid = config.ssid ?: fallbackSsid,
                     password = if (isOpen) null else config.passphrase,
                     isOpen = isOpen,
                 )
@@ -116,7 +90,7 @@ class HotspotController(context: Context) {
         @Suppress("DEPRECATION")
         val legacyPassword = legacy?.preSharedKey?.trim('"')
         return HotspotInfo(
-            ssid = legacySsid ?: requestedSsid,
+            ssid = legacySsid ?: fallbackSsid,
             password = legacyPassword,
             isOpen = legacyPassword.isNullOrEmpty(),
         )

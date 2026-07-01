@@ -29,7 +29,7 @@ class CastingViewModel @Inject constructor(
     val connectedClients: StateFlow<Int> = repo.connectedClients
     val hotspotStatus: StateFlow<HotspotStatus> = repo.hotspotStatus
 
-    private val connectivityManager =
+    private val connManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private val _wifiConnected = MutableStateFlow(isOnWifiNow())
@@ -44,24 +44,25 @@ class CastingViewModel @Inject constructor(
             _wifiConnected.value = isOnWifiNow()
         }
 
-        override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+        override fun onCapabilitiesChanged(
+            network: Network,
+            networkCapabilities: NetworkCapabilities
+        ) {
             _wifiConnected.value = isOnWifiNow()
         }
     }
 
     init {
-        // Don't require validated internet — a LAN-only Wi-Fi connection still
-        // counts as "on Wi-Fi" for casting purposes.
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
             .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
-        runCatching { connectivityManager.registerNetworkCallback(request, networkCallback) }
+        runCatching { connManager.registerNetworkCallback(request, networkCallback) }
     }
 
     private fun isOnWifiNow(): Boolean {
-        val network = connectivityManager.activeNetwork ?: return false
-        val caps = connectivityManager.getNetworkCapabilities(network) ?: return false
+        val network = connManager.activeNetwork ?: return false
+        val caps = connManager.getNetworkCapabilities(network) ?: return false
         return caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
     }
 
@@ -82,7 +83,7 @@ class CastingViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        runCatching { connectivityManager.unregisterNetworkCallback(networkCallback) }
+        runCatching { connManager.unregisterNetworkCallback(networkCallback) }
         super.onCleared()
     }
 }

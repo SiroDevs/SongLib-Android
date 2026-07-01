@@ -14,11 +14,6 @@ import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 
-/**
- * Renders [content] as a black-on-white QR code, sized to [size]. Generated
- * fully on-device (no network call, no external image service) so it works
- * the instant a hotspot or casting link is available, even with no internet.
- */
 @Composable
 fun QrCode(content: String, size: Dp, modifier: Modifier = Modifier) {
     val density = LocalDensity.current

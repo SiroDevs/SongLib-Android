@@ -30,11 +30,6 @@ import kotlinx.coroutines.launch
 
 private val tabTitles = listOf("Hotspot", "Casting")
 
-/**
- * Swipeable Hotspot / Casting tabs. Both tabs show a QR code:
- * - Hotspot: a Wi-Fi-join QR (scan to connect, no password to type).
- * - Casting: the single casting URL, for a quick camera scan on a laptop/tablet.
- */
 @Composable
 fun ConnectCard(
     castingUrl: String?,
@@ -167,7 +162,7 @@ private fun HotspotStatus.Running.toWifiQrPayload(): String =
     if (isOpen || password.isNullOrBlank()) {
         "WIFI:T:nopass;S:${escapeWifiQr(ssid)};;"
     } else {
-        "WIFI:T:WPA;S:${escapeWifiQr(ssid)};P:${escapeWifiQr(password)};;"
+        "WIFI:T:WPA;S:${escapeWifiQr(ssid)};P:${escapeWifiQr(password!!)};;"
     }
 
 private fun escapeWifiQr(value: String): String = buildString {
