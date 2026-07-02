@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.songlib.core.common.helpers.NetworkUtils
+import com.songlib.core.common.utils.NetworkUtils
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PrefsRepo

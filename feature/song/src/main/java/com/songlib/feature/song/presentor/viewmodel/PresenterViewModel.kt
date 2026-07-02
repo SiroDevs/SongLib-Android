@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor
+package com.songlib.feature.song.presentor.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,7 +15,7 @@ import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
-import com.songlib.core.casting.CastingRepo
+import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

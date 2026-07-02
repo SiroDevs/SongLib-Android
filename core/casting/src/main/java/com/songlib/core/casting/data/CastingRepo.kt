@@ -1,7 +1,5 @@
-package com.songlib.core.casting
+package com.songlib.core.casting.data
 
-import com.songlib.core.casting.model.CastingState
-import com.songlib.core.casting.model.ServerStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

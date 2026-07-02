@@ -1,11 +1,11 @@
-package com.songlib.feature.casting
+package com.songlib.feature.casting.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.songlib.core.casting.CastingRepo
-import com.songlib.core.casting.model.CastingState
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.casting.service.CastingForegroundService
+import com.songlib.core.casting.data.CastingState
+import com.songlib.core.casting.data.ServerStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.StateFlow
@@ -22,10 +22,10 @@ class CastingViewModel @Inject constructor(
     val connectedClients: StateFlow<Int> = repo.connectedClients
 
     fun startCasting() {
-        context.startForegroundService(CastingForegroundService.startIntent(context))
+        context.startForegroundService(CastingForegroundService.Companion.startIntent(context))
     }
 
     fun stopCasting() {
-        context.startService(CastingForegroundService.stopIntent(context))
+        context.startService(CastingForegroundService.Companion.stopIntent(context))
     }
 }

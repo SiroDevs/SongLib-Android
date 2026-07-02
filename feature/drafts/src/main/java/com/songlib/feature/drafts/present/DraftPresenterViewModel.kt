@@ -2,7 +2,7 @@ package com.songlib.feature.drafts.present
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.core.casting.CastingRepo
+import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.data.repos.DraftRepo

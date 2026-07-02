@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.songlib.core.casting.model.CastingState
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.casting.data.CastingState
+import com.songlib.core.casting.data.ServerStatus
 
 @Composable
 fun StatusCard(

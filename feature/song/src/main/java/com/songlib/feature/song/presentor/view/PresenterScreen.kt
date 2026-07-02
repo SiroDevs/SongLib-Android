@@ -33,8 +33,8 @@ import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.components.ChoosingListingSheet
-import com.songlib.feature.song.presentor.PresenterViewModel
-import com.songlib.feature.song.presentor.ReportUiState
+import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
+import com.songlib.feature.song.presentor.viewmodel.ReportUiState
 import com.songlib.feature.song.presentor.components.DemoOverlay
 import com.songlib.feature.song.presentor.components.LikeSongBtn
 import com.songlib.feature.song.presentor.components.PresentorMoreMenu

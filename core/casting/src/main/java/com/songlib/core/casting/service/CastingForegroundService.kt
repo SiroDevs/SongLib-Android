@@ -12,19 +12,13 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import com.songlib.core.casting.CastingRepo
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.casting.data.CastingRepo
+import com.songlib.core.casting.data.ServerStatus
 import com.songlib.core.casting.server.CastingHttpServer
-import com.songlib.core.casting.util.NetworkUtils
+import com.songlib.core.common.utils.NetworkUtils
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-/**
- * Keeps [CastingHttpServer] alive independently of whatever screen is on
- * top, and surfaces a persistent notification (with a Stop action) while
- * casting — this is what lets the phone keep mirroring even if the
- * presenter dims the screen or briefly switches apps.
- */
 @AndroidEntryPoint
 class CastingForegroundService : Service() {
 
@@ -106,11 +100,11 @@ class CastingForegroundService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SongLib is casting to PC")
-            .setContentText("Your presenter screen is being mirrored on your local network")
+            .setContentTitle("SongLib is casting")
+            .setContentText("Your presentation is being mirrored on your local network")
             .setSmallIcon(android.R.drawable.ic_menu_share)
             .setOngoing(true)
-            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", stopPendingIntent)
+            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP CASTING", stopPendingIntent)
             .build()
     }
 

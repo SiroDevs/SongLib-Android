@@ -25,7 +25,7 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.donation.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.donation.view.PaymentWebViewScreen
-import com.songlib.feature.casting.CastingViewModel
+import com.songlib.feature.casting.viewmodel.CastingViewModel
 import com.songlib.feature.casting.view.CastingScreen
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.view.AdminEditsScreen
@@ -43,7 +43,7 @@ import com.songlib.feature.home.view.HomeScreen
 import com.songlib.feature.howitworks.view.HowItWorksScreen
 import com.songlib.feature.listing.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
-import com.songlib.feature.song.presentor.PresenterViewModel
+import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
 import com.songlib.feature.song.presentor.view.PresenterScreen
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.view.SelectionScreen

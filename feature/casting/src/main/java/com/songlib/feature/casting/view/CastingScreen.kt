@@ -24,9 +24,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavHostController
-import com.songlib.core.casting.model.ServerStatus
+import com.songlib.core.casting.data.ServerStatus
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.feature.casting.CastingViewModel
+import com.songlib.feature.casting.viewmodel.CastingViewModel
 import com.songlib.feature.casting.view.components.ConnectCard
 import com.songlib.feature.casting.view.components.ExplainerCard
 import com.songlib.feature.casting.view.components.StatusCard

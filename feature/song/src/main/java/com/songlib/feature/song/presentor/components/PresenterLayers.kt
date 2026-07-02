@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.ui.sample.SampleIndicators
 import com.songlib.core.ui.sample.SampleVerses
-import com.songlib.feature.song.presentor.PresenterViewModel
 
 @Composable
 fun PresenterLayers(
