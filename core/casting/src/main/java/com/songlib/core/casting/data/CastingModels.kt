@@ -13,9 +13,9 @@ sealed interface CastingState {
     @Serializable
     @SerialName("slide")
     data class Slide(
-        val source: String,
+        val source: String, // "song" or "draft" — purely informational for the web client
         val title: String,
-        val book: String? = null,
+        val book: String? = null, // songbook name (songs) or a label like "Draft" (drafts)
         val verses: List<String>,
         val indicators: List<String>,
         val currentIndex: Int,
@@ -25,6 +25,14 @@ sealed interface CastingState {
 sealed interface ServerStatus {
     data object Stopped : ServerStatus
     data object Starting : ServerStatus
-    data class Running(val urls: List<String>, val port: Int) : ServerStatus
+    data class Running(val url: String?, val port: Int) : ServerStatus
     data class Error(val message: String) : ServerStatus
 }
+
+sealed interface HotspotStatus {
+    data object Stopped : HotspotStatus
+    data object Starting : HotspotStatus
+    data class Running(val ssid: String, val password: String?, val isOpen: Boolean) : HotspotStatus
+    data class Error(val message: String) : HotspotStatus
+}
+

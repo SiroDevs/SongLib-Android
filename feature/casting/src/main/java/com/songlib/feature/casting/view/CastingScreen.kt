@@ -90,16 +90,16 @@ fun CastingScreen(
                 onStop = viewModel::stopCasting,
             )
 
-            if (isCasting) {
-                ConnectCard(
-                    urls = (serverStatus as ServerStatus.Running).urls,
-                    onCopy = { url ->
-                        clipboard.setText(AnnotatedString(url))
-                        Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
-                    },
-                    onOpenHotspotSettings = { openTetherSettings(context) },
-                )
-            }
+//            if (isCasting) {
+//                ConnectCard(
+//                    urls = (serverStatus as ServerStatus.Running).urls,
+//                    onCopy = { url ->
+//                        clipboard.setText(AnnotatedString(url))
+//                        Toast.makeText(context, "Link copied", Toast.LENGTH_SHORT).show()
+//                    },
+//                    onOpenHotspotSettings = { openTetherSettings(context) },
+//                )
+//            }
         }
     }
 }

@@ -183,7 +183,6 @@ class PresenterViewModel @Inject constructor(
         )
     }
 
-    /** Called on every verse/page navigation while this presenter screen is on top. */
     fun onVerseIndexChanged(index: Int) {
         castingRepo.updateIndex(index)
     }

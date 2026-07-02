@@ -9,6 +9,17 @@
          throws at runtime. This is the one that fits our use case. -->
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
+    <!-- WifiManager.startLocalOnlyHotspot() requires ACCESS_FINE_LOCATION on
+         Android 12L and below, and NEARBY_WIFI_DEVICES on 13+. Without these
+         declarations, the runtime request silently denies and the hotspot
+         callback never fires. -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation" />
+
     <!-- Needed to keep the embedded server alive in a foreground service -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
