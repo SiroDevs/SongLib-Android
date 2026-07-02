@@ -2,10 +2,10 @@ package com.songlib.feature.casting.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.songlib.core.data.repos.CastingRepo
-import com.songlib.core.common.entity.CastingState
-import com.songlib.core.common.entity.ServerStatus
+import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.casting.service.CastingForegroundService
+import com.songlib.core.casting.data.CastingState
+import com.songlib.core.casting.data.ServerStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.StateFlow

@@ -43,7 +43,7 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.listitems.SongItem
-import com.songlib.feature.drafts.list.viewmodel.DraftsViewModel
+import com.songlib.feature.drafts.list.DraftsViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

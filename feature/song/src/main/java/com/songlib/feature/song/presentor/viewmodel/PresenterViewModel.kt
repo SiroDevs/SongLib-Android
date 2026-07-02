@@ -15,7 +15,7 @@ import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
-import com.songlib.core.data.repos.CastingRepo
+import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +47,7 @@ class PresenterViewModel @Inject constructor(
     private val reportRepo: ReportRepo,
     private val trackingRepo: TrackingRepo,
     private val draftRepo: DraftRepo,
-    private val castingRepo: CastingRepo,
+    private val broadcastRepo: CastingRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -99,14 +99,10 @@ class PresenterViewModel @Inject constructor(
         _fontSize.value = newSp.coerceIn(AppFonts.MIN_FONT_SP, AppFonts.MAX_FONT_SP)
     }
 
-    /** Songbook name for the song currently loaded — only used to enrich the broadcast payload. */
-    private var currentBookTitle: String? = null
-
-    fun loadSong(song: SongEntity, bookTitle: String? = null) {
+    fun loadSong(song: SongEntity) {
         _uiState.value = UiState.Loading
         _currentSong.value = song
         _isLiked.value = song.liked
-        currentBookTitle = bookTitle
         parseSong(song)
 
         viewModelScope.launch {
@@ -175,10 +171,9 @@ class PresenterViewModel @Inject constructor(
         _verses.value = tempVerses
         _uiState.value = UiState.Loaded
 
-        castingRepo.publishSlide(
+        broadcastRepo.publishSlide(
             source = "song",
             title = _title.value,
-            book = currentBookTitle,
             verses = tempVerses,
             indicators = tempIndicators,
         )
@@ -186,11 +181,11 @@ class PresenterViewModel @Inject constructor(
 
     /** Called on every verse/page navigation while this presenter screen is on top. */
     fun onVerseIndexChanged(index: Int) {
-        castingRepo.updateIndex(index)
+        broadcastRepo.updateIndex(index)
     }
 
     override fun onCleared() {
-        castingRepo.publishIdle()
+        broadcastRepo.publishIdle()
         super.onCleared()
     }
 

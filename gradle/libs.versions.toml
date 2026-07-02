@@ -33,6 +33,7 @@ googleid = "1.2.0"
 appcompat = "1.7.1"
 material = "1.14.0"
 splashscreen = "1.0.1"
+zxing = "3.5.3"
 
 [libraries]
 androidx-concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrentFutures" }
@@ -83,6 +84,7 @@ google-identity-googleid = { module = "com.google.android.libraries.identity.goo
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

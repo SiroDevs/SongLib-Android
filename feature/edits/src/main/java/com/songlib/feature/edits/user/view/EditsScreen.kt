@@ -26,7 +26,7 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.EditEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
-import com.songlib.feature.edits.user.viewmodel.EditsViewModel
+import com.songlib.feature.edits.user.EditsViewModel
 
 @Composable
 fun EditsScreen(
