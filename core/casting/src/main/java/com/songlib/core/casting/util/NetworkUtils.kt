@@ -21,7 +21,6 @@ object NetworkUtils {
             val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
             for (iface in interfaces) {
                 if (!iface.isUp || iface.isLoopback) continue
-                if (isCellularInterface(iface.name)) continue
                 val ifaceAddresses = Collections.list(iface.inetAddresses)
                 for (addr in ifaceAddresses) {
                     if (addr is Inet4Address && !addr.isLoopbackAddress) {
@@ -35,38 +34,6 @@ object NetworkUtils {
         return addresses.distinct().sortedByDescending(::looksLikeHotspotAddress)
     }
 
-    /**
-     * A single best-guess local IPv4 address to show as "the" casting link —
-     * hotspot-looking addresses win, otherwise whatever was found first.
-     * Returning one address instead of a list keeps the UI from showing several
-     * links that are confusing to a non-technical user.
-     */
-    fun getPrimaryLocalIpAddress(): String? = getLocalIpAddresses().firstOrNull()
-
-    /**
-     * True when the device currently has a local IPv4 in a typical Android
-     * hotspot range — i.e. the phone is *hosting* a hotspot, either via the
-     * OS's Personal Hotspot (192.168.43.*) or a LocalOnlyHotspot (192.168.49.*).
-     * Used to skip creating a competing hotspot when the OS one is already up.
-     */
-    fun hasHotspotIpAddress(): Boolean =
-        getLocalIpAddresses().any(::looksLikeHotspotAddress)
-
     private fun looksLikeHotspotAddress(address: String): Boolean =
         address.startsWith("192.168.43.") || address.startsWith("192.168.49.")
-
-    /**
-     * Cellular interfaces (rmnet_*, ccmni*, pdp_ip*, etc.) carry mobile-data
-     * traffic and are never reachable from a Wi-Fi/hotspot peer, so we skip
-     * them — otherwise the URL would advertise a carrier-NATed address that
-     * no PC on the local network can reach.
-     */
-    private fun isCellularInterface(name: String?): Boolean {
-        if (name == null) return false
-        return name.startsWith("rmnet") ||
-                name.startsWith("ccmni") ||
-                name.startsWith("pdp_ip") ||
-                name.startsWith("rev_rmnet") ||
-                name.startsWith("ecm")
-    }
 }

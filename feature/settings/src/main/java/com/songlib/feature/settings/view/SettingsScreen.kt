@@ -1,12 +1,29 @@
 package com.songlib.feature.settings.view
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.Cast
+import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.PlayCircleOutline
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Swipe
+import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
@@ -69,18 +86,16 @@ fun SettingsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            SettingsSectionTitle("Account")
+            SettingsSectionTitle("Display")
             ListItem(
-                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
-                headlineContent = { Text("Your Profile") },
-                supportingContent = { Text("Manage your Profile") },
-                modifier = Modifier.clickable {
-                    navController.navigate(Routes.USER_PROFILE)
-                }
+                leadingContent = { Icon(Icons.Default.Brightness6, "Theme") },
+                headlineContent = { Text("App Theme") },
+                supportingContent = { Text(appThemeName(theme)) },
+                modifier = Modifier.clickable { showThemeDialog = true }
             )
             HorizontalDivider()
 
-            SettingsSectionTitle("Slides")
+            SettingsSectionTitle("Song Presentation")
             ListItem(
                 leadingContent = { Icon(Icons.Default.Swipe, "slides") },
                 headlineContent = { Text("Song Slides") },
@@ -91,38 +106,6 @@ fun SettingsScreen(
                         onCheckedChange = { settViewModel.updateHorizontalSlides(it) }
                     )
                 }
-            )
-            HorizontalDivider()
-
-            SettingsSectionTitle("Demo")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
-                headlineContent = { Text("Demo Mode") },
-                supportingContent = { Text("Show guided tour on home screen") },
-                trailingContent = {
-                    Switch(
-                        checked = settViewModel.demoMode,
-                        onCheckedChange = { settViewModel.updateDemoMode(it) }
-                    )
-                }
-            )
-            HorizontalDivider()
-
-            SettingsSectionTitle("Display")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.Brightness6, "Theme") },
-                headlineContent = { Text("App Theme") },
-                supportingContent = { Text(appThemeName(theme)) },
-                modifier = Modifier.clickable { showThemeDialog = true }
-            )
-            HorizontalDivider()
-
-            SettingsSectionTitle("Broadcast")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.Wifi, "Broadcast to PC") },
-                headlineContent = { Text("Broadcast to PC") },
-                supportingContent = { Text("Mirror your presenter screen over hotspot or Wi-Fi") },
-                modifier = Modifier.clickable { navController.navigate(Routes.BROADCAST) }
             )
             HorizontalDivider()
 
@@ -140,7 +123,18 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            SettingsSectionTitle("Selection")
+            SettingsSectionTitle("Manage Account")
+            ListItem(
+                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
+                headlineContent = { Text("Your Profile") },
+                supportingContent = { Text("Manage your Profile") },
+                modifier = Modifier.clickable {
+                    navController.navigate(Routes.USER_PROFILE)
+                }
+            )
+            HorizontalDivider()
+
+            SettingsSectionTitle("SongBook Selection")
             ListItem(
                 leadingContent = { Icon(Icons.Default.EditNote, "Reset") },
                 headlineContent = { Text("Modify Collection") },
@@ -158,6 +152,20 @@ fun SettingsScreen(
                 headlineContent = { Text("Select Afresh") },
                 supportingContent = { Text("Reset everything and start over") },
                 modifier = Modifier.clickable { showResetDialog = true }
+            )
+            HorizontalDivider()
+
+            SettingsSectionTitle("Demo Activation")
+            ListItem(
+                leadingContent = { Icon(Icons.Default.PlayCircleOutline, "Demo Mode") },
+                headlineContent = { Text("Demo Mode") },
+                supportingContent = { Text("Show guided tour on home screen") },
+                trailingContent = {
+                    Switch(
+                        checked = settViewModel.demoMode,
+                        onCheckedChange = { settViewModel.updateDemoMode(it) }
+                    )
+                }
             )
             HorizontalDivider()
         }

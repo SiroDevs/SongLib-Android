@@ -15,7 +15,7 @@ import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
-import com.songlib.core.broadcast.PresentationBroadcastRepo
+import com.songlib.core.casting.CastingRepo
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +47,7 @@ class PresenterViewModel @Inject constructor(
     private val reportRepo: ReportRepo,
     private val trackingRepo: TrackingRepo,
     private val draftRepo: DraftRepo,
-    private val broadcastRepo: PresentationBroadcastRepo,
+    private val broadcastRepo: CastingRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)

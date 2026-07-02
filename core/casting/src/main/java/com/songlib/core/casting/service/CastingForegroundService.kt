@@ -9,27 +9,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
-import com.songlib.core.casting.hotspot.HotspotController
-import com.songlib.core.casting.hotspot.HotspotOutcome
+import com.songlib.core.casting.CastingRepo
+import com.songlib.core.casting.model.ServerStatus
 import com.songlib.core.casting.server.CastingHttpServer
 import com.songlib.core.casting.util.NetworkUtils
-import com.songlib.core.common.entity.HotspotStatus
-import com.songlib.core.common.entity.ServerStatus
-import com.songlib.core.data.repos.CastingRepo
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 /**
- * Keeps [CastingHttpServer] — and, optionally, a [HotspotController]-managed
- * Wi-Fi AP — alive independently of whatever screen is on top, and surfaces a
- * persistent notification (with a Stop action) while casting. This is what
- * lets the phone keep mirroring even if the presenter dims the screen or
- * briefly switches apps.
+ * Keeps [CastingHttpServer] alive independently of whatever screen is on
+ * top, and surfaces a persistent notification (with a Stop action) while
+ * casting — this is what lets the phone keep mirroring even if the
+ * presenter dims the screen or briefly switches apps.
  */
 @AndroidEntryPoint
 class CastingForegroundService : Service() {
@@ -38,180 +32,57 @@ class CastingForegroundService : Service() {
     lateinit var repo: CastingRepo
 
     private var httpServer: CastingHttpServer? = null
-    private var hotspotController: HotspotController? = null
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val urlRefreshRunnables = mutableListOf<Runnable>()
 
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_STOP -> {
-                stopEverything()
+                stopCasting()
                 stopSelf()
                 return START_NOT_STICKY
             }
 
-            ACTION_STOP_HOTSPOT -> {
-                stopHotspotOnly()
-            }
-
-            ACTION_START_HOTSPOT -> {
-                startCastingAndHotspot()
-            }
-
-            else -> {
-                startCastingOnly()
-            }
+            else -> startCasting()
         }
         return START_STICKY
     }
 
-    private fun startCastingOnly() {
+    private fun startCasting() {
         if (httpServer != null) return
-        runCatching {
-            promoteToForeground()
-            launchServer()
-        }.onFailure { e ->
-            repo.setServerStatus(ServerStatus.Error(e.message ?: "Couldn't start casting"))
-            stopSelf()
-        }
-    }
 
-    private fun startCastingAndHotspot() {
-        runCatching {
-            promoteToForeground()
-            if (httpServer == null) launchServer()
-            launchHotspot()
-        }.onFailure { e ->
-            repo.setServerStatus(ServerStatus.Error(e.message ?: "Couldn't start casting"))
-            repo.setHotspotStatus(HotspotStatus.Error(e.message ?: "Couldn't start the hotspot"))
-            stopSelf()
-        }
-    }
-
-    private fun promoteToForeground() {
         repo.setServerStatus(ServerStatus.Starting)
-        ServiceCompat.startForeground(
-            this,
-            NOTIFICATION_ID,
-            buildNotification(),
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE,
-        )
-    }
 
-    private fun launchServer() {
-        val newServer = CastingHttpServer(applicationContext, repo, port = CastingHttpServer.DEFAULT_PORT)
-        newServer.start()
-        httpServer = newServer
-        repo.setServerStatus(ServerStatus.Running(currentUrl(), CastingHttpServer.DEFAULT_PORT))
-    }
+        try {
+            ServiceCompat.startForeground(
+                this,
+                NOTIFICATION_ID,
+                buildNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE,
+            )
 
-    private fun launchHotspot() {
-        // Our own hotspot is already up — nothing more to do; just make sure
-        // the URL reflects the current AP IP.
-        if (hotspotController?.isActive == true) {
-            scheduleUrlRefreshWithRetries()
-            return
-        }
+            val newServer = CastingHttpServer(repo, port = CastingHttpServer.DEFAULT_PORT)
+            newServer.start()
+            httpServer = newServer
 
-        // If the device is already hosting a hotspot we did NOT create
-        // (typically the OS Personal Hotspot on 192.168.43.*), don't try to
-        // spin up a competing LocalOnlyHotspot — the framework returns
-        // ERROR_INCOMPATIBLE_MODE ("Wi-Fi is busy with another connection,
-        // like tethering") and the UI gets stuck. Reuse the existing one
-        // instead: the server binds to 0.0.0.0 and is reachable on the OS
-        // hotspot's IP.
-        if (NetworkUtils.hasHotspotIpAddress()) {
-            repo.setHotspotStatus(HotspotStatus.Stopped)
-            scheduleUrlRefreshWithRetries()
-            return
-        }
-
-        repo.setHotspotStatus(HotspotStatus.Starting)
-        val controller = hotspotController ?: HotspotController(applicationContext).also { hotspotController = it }
-        controller.start { outcome ->
-            when (outcome) {
-                is HotspotOutcome.Success -> {
-                    repo.setHotspotStatus(
-                        HotspotStatus.Running(
-                            ssid = outcome.info.ssid,
-                            password = outcome.info.password,
-                            isOpen = outcome.info.isOpen,
-                        )
-                    )
-                    // The AP interface can take up to ~2s after onStarted to
-                    // finish assigning its IPv4 — retry a few times so the URL
-                    // isn't advertised as null.
-                    scheduleUrlRefreshWithRetries()
-                }
-
-                is HotspotOutcome.Failure -> {
-                    repo.setHotspotStatus(HotspotStatus.Error(outcome.message))
-                    // If the server is still Starting or has no reachable URL,
-                    // the user has no way to actually cast — bubble the failure
-                    // up so StatusCard doesn't sit on "Starting" forever.
-                    val server = repo.serverStatus.value
-                    val stranded = server is ServerStatus.Starting ||
-                            (server is ServerStatus.Running && server.url == null)
-                    if (stranded) {
-                        repo.setServerStatus(ServerStatus.Error(outcome.message))
-                    }
-                    refreshCastingUrl()
-                }
-            }
+            val urls = NetworkUtils.getLocalIpAddresses()
+                .map { ip -> "http://$ip:${CastingHttpServer.DEFAULT_PORT}" }
+            repo.setServerStatus(ServerStatus.Running(urls, CastingHttpServer.DEFAULT_PORT))
+        } catch (e: Exception) {
+            repo.setServerStatus(ServerStatus.Error(e.message ?: "Couldn't start the casting server"))
+            stopSelf()
         }
     }
 
-    private fun stopHotspotOnly() {
-        hotspotController?.stop()
-        repo.setHotspotStatus(HotspotStatus.Stopped)
-        cancelPendingUrlRefreshes()
-        refreshCastingUrl()
-    }
-
-    private fun refreshCastingUrl() {
-        if (repo.serverStatus.value is ServerStatus.Running) {
-            repo.setServerStatus(ServerStatus.Running(currentUrl(), CastingHttpServer.DEFAULT_PORT))
-        }
-    }
-
-    /**
-     * Polls for a usable local IP a handful of times after a hotspot comes up
-     * — the AP interface's IPv4 typically appears 100–2000 ms after the
-     * onStarted callback fires, so a single synchronous check often misses it.
-     */
-    private fun scheduleUrlRefreshWithRetries() {
-        cancelPendingUrlRefreshes()
-        val delays = longArrayOf(300L, 700L, 1200L, 2000L)
-        for (delay in delays) {
-            val runnable = Runnable { refreshCastingUrl() }
-            urlRefreshRunnables += runnable
-            mainHandler.postDelayed(runnable, delay)
-        }
-    }
-
-    private fun cancelPendingUrlRefreshes() {
-        urlRefreshRunnables.forEach { mainHandler.removeCallbacks(it) }
-        urlRefreshRunnables.clear()
-    }
-
-    private fun currentUrl(): String? =
-        NetworkUtils.getPrimaryLocalIpAddress()?.let { ip -> "http://$ip:${CastingHttpServer.DEFAULT_PORT}" }
-
-    private fun stopEverything() {
-        cancelPendingUrlRefreshes()
+    private fun stopCasting() {
         httpServer?.stop()
         httpServer = null
-        hotspotController?.stop()
-        hotspotController = null
         repo.publishIdle()
         repo.setServerStatus(ServerStatus.Stopped)
-        repo.setHotspotStatus(HotspotStatus.Stopped)
     }
 
     override fun onDestroy() {
-        stopEverything()
+        stopCasting()
         super.onDestroy()
     }
 
@@ -235,7 +106,7 @@ class CastingForegroundService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("SongLib is casting")
+            .setContentTitle("SongLib is casting to PC")
             .setContentText("Your presenter screen is being mirrored on your local network")
             .setSmallIcon(android.R.drawable.ic_menu_share)
             .setOngoing(true)
@@ -245,8 +116,6 @@ class CastingForegroundService : Service() {
 
     companion object {
         const val ACTION_STOP = "com.songlib.casting.action.STOP"
-        const val ACTION_START_HOTSPOT = "com.songlib.casting.action.START_HOTSPOT"
-        const val ACTION_STOP_HOTSPOT = "com.songlib.casting.action.STOP_HOTSPOT"
         private const val CHANNEL_ID = "songlib_casting_channel"
         private const val NOTIFICATION_ID = 4242
 
@@ -255,11 +124,5 @@ class CastingForegroundService : Service() {
 
         fun stopIntent(context: Context): Intent =
             Intent(context, CastingForegroundService::class.java).setAction(ACTION_STOP)
-
-        fun startHotspotIntent(context: Context): Intent =
-            Intent(context, CastingForegroundService::class.java).setAction(ACTION_START_HOTSPOT)
-
-        fun stopHotspotIntent(context: Context): Intent =
-            Intent(context, CastingForegroundService::class.java).setAction(ACTION_STOP_HOTSPOT)
     }
 }

@@ -14,7 +14,7 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.general.*
 import com.songlib.core.ui.components.indicators.*
-import com.songlib.feature.listing.viewmodel.ListingViewModel
+import com.songlib.feature.listing.ListingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

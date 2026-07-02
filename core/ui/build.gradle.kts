@@ -16,4 +16,5 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.foundation)
     implementation(libs.hilt.android)
+    implementation(libs.zxing.core)
 }

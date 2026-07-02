@@ -1,10 +1,5 @@
 package com.songlib.core.casting.server
 
-/**
- * A single self-contained page (inline CSS + JS, no external requests) served
- * at "/". Keeping it as one file means the embedded server only needs one
- * route for content, plus the "/ws" WebSocket route that drives it.
- */
 object WebClientPage {
 
     val html: String = """
@@ -13,7 +8,7 @@ object WebClientPage {
         <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>SongLib — Presenter Mirror</title>
+        <title>SongLib — Your Songbook on the Go</title>
         <style>
           :root {
             color-scheme: dark;
@@ -47,30 +42,21 @@ object WebClientPage {
           #status-dot.connected {
             background: #22c55e;
           }
-          #header {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 4px;
-            padding: 28px 56px 0;
-          }
-          #title-text {
-            font-size: clamp(20px, 3.4vw, 30px);
-            font-weight: 700;
-            color: #f9fafb;
-            line-height: 1.25;
-            max-width: 100%;
-          }
-          #book-text {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: .06em;
-            text-transform: uppercase;
+          #title-pill {
+            position: absolute;
+            top: 14px;
+            left: 16px;
+            max-width: 70%;
             color: #9ca3af;
-          }
-          #book-text:empty {
-            display: none;
+            font-size: 30px;
+            letter-spacing: .02em;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            z-index: 10;
           }
           #idle-screen {
             flex: 1;
@@ -78,40 +64,40 @@ object WebClientPage {
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 24px;
+            gap: 18px;
+            color: #6b7280;
             text-align: center;
             padding: 24px;
           }
-          #idle-logo {
-            width: clamp(140px, 22vw, 220px);
-            height: auto;
-            border-radius: 18px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
-            animation: idle-breathe 2.6s ease-in-out infinite;
+          #idle-screen .dot-pulse {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #374151;
+            animation: pulse 1.6s ease-in-out infinite;
           }
-          @keyframes idle-breathe {
-            0%, 100% { transform: scale(1); opacity: .92; }
-            50% { transform: scale(1.04); opacity: 1; }
-          }
-          #idle-brand {
-            font-size: 22px;
-            font-weight: 700;
-            color: #f9fafb;
-            letter-spacing: .02em;
-            margin: 0;
+          @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: .5; }
+            50% { transform: scale(1.6); opacity: 1; }
           }
           #idle-screen h1 {
-            font-size: 15px;
-            font-weight: 500;
-            color: #9ca3af;
+            font-size: 20px;
+            font-weight: 600;
+            color: #d1d5db;
             margin: 0;
+          }
+          #idle-screen p {
+            font-size: 14px;
+            margin: 0;
+            max-width: 360px;
+            line-height: 1.5;
           }
           #slide-stage {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 32px 32px 96px;
+            padding: 64px 32px 96px;
             position: relative;
           }
           .verse {
@@ -160,21 +146,19 @@ object WebClientPage {
             background: #f9fafb;
             color: #111827;
           }
+          #app.hidden-stage #slide-stage { display: none; }
+          #app.hidden-idle #idle-screen { display: none; }
         </style>
         </head>
         <body>
-          <div id="app">
+          <div id="app" class="hidden-stage">
             <div id="status-dot"></div>
-
-            <div id="header">
-              <div id="title-text"></div>
-              <div id="book-text"></div>
-            </div>
+            <div id="title-pill"></div>
 
             <div id="idle-screen">
-              <img id="idle-logo" src="/logo.png" alt="SongLib" />
-              <div id="idle-brand">SongLib</div>
-              <h1>Waiting for a presentation&hellip;</h1>
+              <div class="dot-pulse"></div>
+              <h1>Waiting for a presentation &hellip;</h1>
+              <p>A song will appear here automatically it is shared on the phone.</p>
             </div>
 
             <div id="slide-stage" style="display:none">
@@ -185,10 +169,9 @@ object WebClientPage {
 
           <script>
             (function () {
+              var app = document.getElementById('app');
               var statusDot = document.getElementById('status-dot');
-              var header = document.getElementById('header');
-              var titleText = document.getElementById('title-text');
-              var bookText = document.getElementById('book-text');
+              var titlePill = document.getElementById('title-pill');
               var idleScreen = document.getElementById('idle-screen');
               var slideStage = document.getElementById('slide-stage');
               var versesEl = document.getElementById('verses');
@@ -206,19 +189,16 @@ object WebClientPage {
               }
 
               function showIdle() {
-                header.style.display = 'none';
                 idleScreen.style.display = 'flex';
                 slideStage.style.display = 'none';
+                titlePill.textContent = '';
                 lastSignature = null;
               }
 
               function showSlide(state) {
-                header.style.display = 'flex';
                 idleScreen.style.display = 'none';
                 slideStage.style.display = 'flex';
-
-                titleText.textContent = state.title || '';
-                bookText.textContent = state.book || '';
+                titlePill.textContent = state.title || '';
 
                 var signature = state.title + '|' + state.verses.join('\u0001');
                 if (signature !== lastSignature) {

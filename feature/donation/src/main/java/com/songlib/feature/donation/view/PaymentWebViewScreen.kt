@@ -28,7 +28,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.ApiConstants
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.feature.donation.viewmodel.DonationViewModel
+import com.songlib.feature.donation.DonationViewModel
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable

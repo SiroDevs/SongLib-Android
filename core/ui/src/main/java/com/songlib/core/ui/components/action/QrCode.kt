@@ -1,4 +1,4 @@
-package com.songlib.feature.casting.view.components
+package com.songlib.core.ui.components.action
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image

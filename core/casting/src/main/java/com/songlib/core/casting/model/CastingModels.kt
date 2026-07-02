@@ -1,4 +1,4 @@
-package com.songlib.core.broadcast.model
+package com.songlib.core.casting.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -9,12 +9,12 @@ import kotlinx.serialization.Serializable
  * small and self-contained so the web page never has to ask twice.
  */
 @Serializable
-sealed interface BroadcastState {
+sealed interface CastingState {
 
     /** Nothing is being presented right now — show the "waiting" page. */
     @Serializable
     @SerialName("idle")
-    data object Idle : BroadcastState
+    data object Idle : CastingState
 
     /** A song or draft is open on the presenter screen. */
     @Serializable
@@ -25,7 +25,7 @@ sealed interface BroadcastState {
         val verses: List<String>,
         val indicators: List<String>,
         val currentIndex: Int,
-    ) : BroadcastState
+    ) : CastingState
 }
 
 /** Local-only status of the embedded server — never sent over the wire. */
