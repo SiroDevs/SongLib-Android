@@ -27,9 +27,10 @@ fun HotspotTab(
 ) {
     when (hotspotStatus) {
         is HotspotStatus.Running -> {
-            Text("Scan to join", style = MaterialTheme.typography.bodyMedium)
+            Text("Scan to join", style = MaterialTheme.typography.bodyLarge)
             QrCode(content = hotspotStatus.toWifiQrPayload(), size = 180.dp)
-            Text(hotspotStatus.ssid, style = MaterialTheme.typography.titleSmall)
+            Text("Name: ${hotspotStatus.ssid}", style = MaterialTheme.typography.titleMedium)
+            Text("Password: ${hotspotStatus.password}", style = MaterialTheme.typography.titleMedium)
             OutlinedButton(onClick = onStop, modifier = Modifier.fillMaxWidth()) {
                 Text("Stop Hotspot")
             }
@@ -77,7 +78,7 @@ fun CastingTab(
         return
     }
 
-    Text("Scan with your Device's camera", style = MaterialTheme.typography.bodyMedium)
+    Text("Scan with your Device's camera", style = MaterialTheme.typography.bodyLarge)
     QrCode(content = url, size = 180.dp)
 
     Row(
@@ -87,7 +88,7 @@ fun CastingTab(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = url,
+            text = "Address: $url",
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.weight(1f),
         )

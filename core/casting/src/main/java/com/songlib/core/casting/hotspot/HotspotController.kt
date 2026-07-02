@@ -27,13 +27,8 @@ class HotspotController(context: Context) {
     val isActive: Boolean get() = reservation != null
 
     fun start(onResult: (HotspotOutcome) -> Unit) {
-        // Requirement: every start should hand back a fresh hotspot.
         stop()
 
-        // Note: there's no public API for a non-system app to request a custom SSID.
-        // WifiManager.startLocalOnlyHotspot(SoftApConfiguration, Executor, LocalOnlyHotspotCallback)
-        // is a @SystemApi gated by NETWORK_SETTINGS/NETWORK_SETUP_WIZARD permissions, so we always
-        // go through the public overload and read back whatever SSID/password the OS assigned.
         val fallbackSsid = generateSsid()
 
         val callback = object : WifiManager.LocalOnlyHotspotCallback() {
