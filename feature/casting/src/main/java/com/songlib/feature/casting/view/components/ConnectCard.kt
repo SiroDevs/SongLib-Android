@@ -33,24 +33,40 @@ fun ConnectCard(
     castingUrl: String?,
     hotspotStatus: HotspotStatus,
     wifiConnected: Boolean,
+    hasExternalHotspot: Boolean,
     onStartHotspot: () -> Unit,
     onStopHotspot: () -> Unit,
     onCopyUrl: (String) -> Unit,
 ) {
     val hotspotRunning = hotspotStatus is HotspotStatus.Running
-    val showCastingTab = wifiConnected || hotspotRunning
+    val showHotspotTab = !hasExternalHotspot
+    val showCastingTab = wifiConnected || hotspotRunning || hasExternalHotspot
 
-    Card(modifier = Modifier.fillMaxWidth()) {
-        if (showCastingTab) {
-            TwoTabConnectCard(
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp)),
+    ) {
+        when {
+            showHotspotTab && showCastingTab -> TwoTabConnectCard(
                 castingUrl = castingUrl,
                 hotspotStatus = hotspotStatus,
                 onStartHotspot = onStartHotspot,
                 onStopHotspot = onStopHotspot,
                 onCopyUrl = onCopyUrl,
             )
-        } else {
-            Column(
+
+            showCastingTab -> Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                CastingTab(url = castingUrl, onCopy = onCopyUrl)
+            }
+
+            else -> Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -80,7 +96,12 @@ private fun TwoTabConnectCard(
     val scope = rememberCoroutineScope()
 
     Column {
-        TabRow(selectedTabIndex = pagerState.currentPage) {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
+        ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,
@@ -123,7 +144,7 @@ private fun HotspotTab(
 ) {
     when (hotspotStatus) {
         is HotspotStatus.Running -> {
-            Text("Scan to join — no password needed", style = MaterialTheme.typography.bodyMedium)
+            Text("Scan to join", style = MaterialTheme.typography.bodyMedium)
             QrCode(content = hotspotStatus.toWifiQrPayload(), size = 180.dp)
             Text(hotspotStatus.ssid, style = MaterialTheme.typography.titleSmall)
             OutlinedButton(onClick = onStop, modifier = Modifier.fillMaxWidth()) {
@@ -132,7 +153,7 @@ private fun HotspotTab(
         }
 
         HotspotStatus.Starting -> {
-            Text("Starting hotspot…", style = MaterialTheme.typography.bodyMedium)
+            Text("Starting hotspot ...", style = MaterialTheme.typography.bodyMedium)
         }
 
         is HotspotStatus.Error -> {
@@ -166,14 +187,14 @@ private fun CastingTab(
 ) {
     if (url == null) {
         Text(
-            "Join a Wi-Fi network or start a hotspot to get a casting link.",
+            "Join a Wi-Fi network or start a hotspot to produce a casting link.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         return
     }
 
-    Text("Scan with your PC or any device's camera", style = MaterialTheme.typography.bodyMedium)
+    Text("Scan with your Device's camera", style = MaterialTheme.typography.bodyMedium)
     QrCode(content = url, size = 180.dp)
 
     Row(
@@ -193,7 +214,6 @@ private fun CastingTab(
     }
 }
 
-/** A scannable Wi-Fi QR payload per the standard "WIFI:" QR format. */
 private fun HotspotStatus.Running.toWifiQrPayload(): String =
     if (isOpen || password.isNullOrBlank()) {
         "WIFI:T:nopass;S:${escapeWifiQr(ssid)};;"

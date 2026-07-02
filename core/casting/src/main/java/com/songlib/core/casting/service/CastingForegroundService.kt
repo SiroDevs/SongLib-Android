@@ -9,7 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.songlib.core.casting.hotspot.HotspotController
@@ -37,6 +39,8 @@ class CastingForegroundService : Service() {
 
     private var httpServer: CastingHttpServer? = null
     private var hotspotController: HotspotController? = null
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val urlRefreshRunnables = mutableListOf<Runnable>()
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -104,28 +108,65 @@ class CastingForegroundService : Service() {
     }
 
     private fun launchHotspot() {
+        // Our own hotspot is already up — nothing more to do; just make sure
+        // the URL reflects the current AP IP.
+        if (hotspotController?.isActive == true) {
+            scheduleUrlRefreshWithRetries()
+            return
+        }
+
+        // If the device is already hosting a hotspot we did NOT create
+        // (typically the OS Personal Hotspot on 192.168.43.*), don't try to
+        // spin up a competing LocalOnlyHotspot — the framework returns
+        // ERROR_INCOMPATIBLE_MODE ("Wi-Fi is busy with another connection,
+        // like tethering") and the UI gets stuck. Reuse the existing one
+        // instead: the server binds to 0.0.0.0 and is reachable on the OS
+        // hotspot's IP.
+        if (NetworkUtils.hasHotspotIpAddress()) {
+            repo.setHotspotStatus(HotspotStatus.Stopped)
+            scheduleUrlRefreshWithRetries()
+            return
+        }
+
         repo.setHotspotStatus(HotspotStatus.Starting)
         val controller = hotspotController ?: HotspotController(applicationContext).also { hotspotController = it }
         controller.start { outcome ->
             when (outcome) {
-                is HotspotOutcome.Success -> repo.setHotspotStatus(
-                    HotspotStatus.Running(
-                        ssid = outcome.info.ssid,
-                        password = outcome.info.password,
-                        isOpen = outcome.info.isOpen,
+                is HotspotOutcome.Success -> {
+                    repo.setHotspotStatus(
+                        HotspotStatus.Running(
+                            ssid = outcome.info.ssid,
+                            password = outcome.info.password,
+                            isOpen = outcome.info.isOpen,
+                        )
                     )
-                )
+                    // The AP interface can take up to ~2s after onStarted to
+                    // finish assigning its IPv4 — retry a few times so the URL
+                    // isn't advertised as null.
+                    scheduleUrlRefreshWithRetries()
+                }
 
-                is HotspotOutcome.Failure -> repo.setHotspotStatus(HotspotStatus.Error(outcome.message))
+                is HotspotOutcome.Failure -> {
+                    repo.setHotspotStatus(HotspotStatus.Error(outcome.message))
+                    // If the server is still Starting or has no reachable URL,
+                    // the user has no way to actually cast — bubble the failure
+                    // up so StatusCard doesn't sit on "Starting" forever.
+                    val server = repo.serverStatus.value
+                    val stranded = server is ServerStatus.Starting ||
+                            (server is ServerStatus.Running && server.url == null)
+                    if (stranded) {
+                        repo.setServerStatus(ServerStatus.Error(outcome.message))
+                    }
+                    refreshCastingUrl()
+                }
             }
-            // A fresh AP interface can change which local IP is "the" one to share.
-            refreshCastingUrl()
         }
     }
 
     private fun stopHotspotOnly() {
         hotspotController?.stop()
         repo.setHotspotStatus(HotspotStatus.Stopped)
+        cancelPendingUrlRefreshes()
         refreshCastingUrl()
     }
 
@@ -135,10 +176,31 @@ class CastingForegroundService : Service() {
         }
     }
 
+    /**
+     * Polls for a usable local IP a handful of times after a hotspot comes up
+     * — the AP interface's IPv4 typically appears 100–2000 ms after the
+     * onStarted callback fires, so a single synchronous check often misses it.
+     */
+    private fun scheduleUrlRefreshWithRetries() {
+        cancelPendingUrlRefreshes()
+        val delays = longArrayOf(300L, 700L, 1200L, 2000L)
+        for (delay in delays) {
+            val runnable = Runnable { refreshCastingUrl() }
+            urlRefreshRunnables += runnable
+            mainHandler.postDelayed(runnable, delay)
+        }
+    }
+
+    private fun cancelPendingUrlRefreshes() {
+        urlRefreshRunnables.forEach { mainHandler.removeCallbacks(it) }
+        urlRefreshRunnables.clear()
+    }
+
     private fun currentUrl(): String? =
         NetworkUtils.getPrimaryLocalIpAddress()?.let { ip -> "http://$ip:${CastingHttpServer.DEFAULT_PORT}" }
 
     private fun stopEverything() {
+        cancelPendingUrlRefreshes()
         httpServer?.stop()
         httpServer = null
         hotspotController?.stop()

@@ -112,7 +112,7 @@ SongLib/
 │   ├── database/               # Room database, all DAOs and entity models
 │   ├── designsystem/           # Material 3 theme, colours, typography
 │   ├── network/                # Retrofit services, DTOs, NetworkModule
-│   └── ui/                     # Shared Compose components (SongItem, TopBar, shimmer…)
+│   └── ui/                     # Shared Compose components (SongItem, TopBar, shimmer ...)
 │
 └── feature/
     ├── selection/              # First-launch songbook selection

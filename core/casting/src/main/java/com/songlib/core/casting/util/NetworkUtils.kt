@@ -43,6 +43,15 @@ object NetworkUtils {
      */
     fun getPrimaryLocalIpAddress(): String? = getLocalIpAddresses().firstOrNull()
 
+    /**
+     * True when the device currently has a local IPv4 in a typical Android
+     * hotspot range — i.e. the phone is *hosting* a hotspot, either via the
+     * OS's Personal Hotspot (192.168.43.*) or a LocalOnlyHotspot (192.168.49.*).
+     * Used to skip creating a competing hotspot when the OS one is already up.
+     */
+    fun hasHotspotIpAddress(): Boolean =
+        getLocalIpAddresses().any(::looksLikeHotspotAddress)
+
     private fun looksLikeHotspotAddress(address: String): Boolean =
         address.startsWith("192.168.43.") || address.startsWith("192.168.49.")
 

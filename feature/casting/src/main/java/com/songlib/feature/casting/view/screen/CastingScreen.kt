@@ -50,6 +50,7 @@ fun CastingScreen(
     val connectedClients by viewModel.connectedClients.collectAsState()
     val hotspotStatus by viewModel.hotspotStatus.collectAsState()
     val wifiConnected by viewModel.wifiConnected.collectAsState()
+    val hasExternalHotspot by viewModel.hasExternalHotspot.collectAsState()
     val context = LocalContext.current
     val clipboard = LocalClipboardManager.current
 
@@ -89,7 +90,7 @@ fun CastingScreen(
 
     fun requestStart() {
         val hotspotRunning = hotspotStatus is HotspotStatus.Running
-        if (!wifiConnected && !hotspotRunning) {
+        if (!wifiConnected && !hotspotRunning && !hasExternalHotspot) {
             showNetworkPrompt = true
             return
         }
@@ -99,11 +100,12 @@ fun CastingScreen(
     if (showNetworkPrompt) {
         AlertDialog(
             onDismissRequest = { showNetworkPrompt = false },
-            title = { Text("Not connected to Wi-Fi") },
+            title = { Text("Before you Start Casting ...") },
             text = {
                 Text(
-                    "Your PC needs to reach this phone over Wi-Fi. Join a Wi-Fi network, " +
-                        "or let SongLib create its own hotspot just for casting."
+                    "The devices you are casting to - PC or phones need to reach this phone over Wi-Fi. " +
+                            "\n\nJoin a Wi-Fi network, or let SongLib create its own hotspot just for casting. " +
+                            "\n\nNo mobile data will be shared in the casting."
                 )
             },
             confirmButton = {
@@ -116,7 +118,7 @@ fun CastingScreen(
                 TextButton(onClick = {
                     showNetworkPrompt = false
                     openWifiSettings(context)
-                }) { Text("Open Wi-Fi Settings") }
+                }) { Text("Join a Wi-Fi") }
             }
         )
     }
@@ -127,7 +129,7 @@ fun CastingScreen(
         topBar = {
             AppTopBar(
                 title = "SongLib Casting",
-                tagline = "Disclaimer: This is a Beta Feature",
+                tagline = "Disclaimer: This is a WIP Feature",
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
             )
@@ -157,6 +159,7 @@ fun CastingScreen(
                     castingUrl = (serverStatus as? ServerStatus.Running)?.url,
                     hotspotStatus = hotspotStatus,
                     wifiConnected = wifiConnected,
+                    hasExternalHotspot = hasExternalHotspot,
                     onStartHotspot = ::requestStartHotspot,
                     onStopHotspot = viewModel::stopHotspot,
                     onCopyUrl = { url ->

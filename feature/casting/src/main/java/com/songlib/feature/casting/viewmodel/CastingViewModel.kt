@@ -6,7 +6,9 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.songlib.core.casting.service.CastingForegroundService
+import com.songlib.core.casting.util.NetworkUtils
 import com.songlib.core.common.entity.CastingState
 import com.songlib.core.common.entity.HotspotStatus
 import com.songlib.core.common.entity.ServerStatus
@@ -16,12 +18,13 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CastingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    repo: CastingRepo,
+    private val repo: CastingRepo,
 ) : ViewModel() {
 
     val serverStatus: StateFlow<ServerStatus> = repo.serverStatus
@@ -35,20 +38,23 @@ class CastingViewModel @Inject constructor(
     private val _wifiConnected = MutableStateFlow(isOnWifiNow())
     val wifiConnected: StateFlow<Boolean> = _wifiConnected.asStateFlow()
 
+    private val _hasExternalHotspot = MutableStateFlow(computeExternalHotspot())
+    val hasExternalHotspot: StateFlow<Boolean> = _hasExternalHotspot.asStateFlow()
+
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            _wifiConnected.value = isOnWifiNow()
+            refreshNetworkState()
         }
 
         override fun onLost(network: Network) {
-            _wifiConnected.value = isOnWifiNow()
+            refreshNetworkState()
         }
 
         override fun onCapabilitiesChanged(
             network: Network,
             networkCapabilities: NetworkCapabilities
         ) {
-            _wifiConnected.value = isOnWifiNow()
+            refreshNetworkState()
         }
     }
 
@@ -58,12 +64,32 @@ class CastingViewModel @Inject constructor(
             .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             .build()
         runCatching { connManager.registerNetworkCallback(request, networkCallback) }
+
+        // Our own hotspot toggles the external-hotspot signal too — recompute
+        // whenever the app-managed hotspot state changes so the "OS hotspot is
+        // already up" heuristic stays correct.
+        viewModelScope.launch {
+            repo.hotspotStatus.collect { refreshNetworkState() }
+        }
+    }
+
+    private fun refreshNetworkState() {
+        _wifiConnected.value = isOnWifiNow()
+        _hasExternalHotspot.value = computeExternalHotspot()
     }
 
     private fun isOnWifiNow(): Boolean {
         val network = connManager.activeNetwork ?: return false
         val caps = connManager.getNetworkCapabilities(network) ?: return false
         return caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+    }
+
+    private fun computeExternalHotspot(): Boolean {
+        // Only "external" if we didn't create it ourselves — otherwise our own
+        // 192.168.49.* interface would masquerade as an OS hotspot and hide
+        // the Start/Stop controls of the app-managed one.
+        val ourHotspotRunning = repo.hotspotStatus.value is HotspotStatus.Running
+        return !ourHotspotRunning && NetworkUtils.hasHotspotIpAddress()
     }
 
     fun startCasting() {
