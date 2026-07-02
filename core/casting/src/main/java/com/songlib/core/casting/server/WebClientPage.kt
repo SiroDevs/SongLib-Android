@@ -78,23 +78,31 @@ object WebClientPage {
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            gap: 20px;
+            gap: 24px;
             text-align: center;
             padding: 24px;
           }
-          #idle-icon {
-            animation: idle-breathe 2.4s ease-in-out infinite;
-          }
-          #idle-icon svg {
-            display: block;
+          #idle-logo {
+            width: clamp(140px, 22vw, 220px);
+            height: auto;
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .45);
+            animation: idle-breathe 2.6s ease-in-out infinite;
           }
           @keyframes idle-breathe {
-            0%, 100% { transform: scale(1); opacity: .85; }
-            50% { transform: scale(1.06); opacity: 1; }
+            0%, 100% { transform: scale(1); opacity: .92; }
+            50% { transform: scale(1.04); opacity: 1; }
+          }
+          #idle-brand {
+            font-size: 22px;
+            font-weight: 700;
+            color: #f9fafb;
+            letter-spacing: .02em;
+            margin: 0;
           }
           #idle-screen h1 {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 500;
             color: #9ca3af;
             margin: 0;
           }
@@ -164,16 +172,8 @@ object WebClientPage {
             </div>
 
             <div id="idle-screen">
-              <div id="idle-icon">
-                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="64" height="64" rx="18" fill="#FFB951"/>
-                  <rect x="28" y="10" width="22" height="6" rx="3" fill="#291800"/>
-                  <rect x="28" y="16" width="4" height="28" fill="#291800"/>
-                  <rect x="46" y="16" width="4" height="24" fill="#291800"/>
-                  <ellipse cx="30" cy="44" rx="7" ry="5" fill="#291800"/>
-                  <ellipse cx="48" cy="40" rx="7" ry="5" fill="#291800"/>
-                </svg>
-              </div>
+              <img id="idle-logo" src="/logo.png" alt="SongLib" />
+              <div id="idle-brand">SongLib</div>
               <h1>Waiting for a presentation&hellip;</h1>
             </div>
 

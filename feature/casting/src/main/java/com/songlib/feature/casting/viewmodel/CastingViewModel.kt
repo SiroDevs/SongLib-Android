@@ -76,6 +76,24 @@ class CastingViewModel @Inject constructor(
     private fun refreshNetworkState() {
         _wifiConnected.value = isOnWifiNow()
         _hasExternalHotspot.value = computeExternalHotspot()
+        maybeStopIfStranded()
+    }
+
+    /**
+     * If the server is running but every path a peer could reach us on has
+     * dropped (no Wi-Fi, no external hotspot, and our own hotspot isn't up
+     * either), stop the service — there's nothing left to broadcast on and
+     * leaving the notification up is misleading.
+     */
+    private fun maybeStopIfStranded() {
+        val server = repo.serverStatus.value
+        val casting = server is ServerStatus.Running || server is ServerStatus.Starting
+        if (!casting) return
+        val ourHotspotUp = repo.hotspotStatus.value is HotspotStatus.Running
+        val anyNetwork = _wifiConnected.value || _hasExternalHotspot.value || ourHotspotUp
+        if (!anyNetwork) {
+            stopCasting()
+        }
     }
 
     private fun isOnWifiNow(): Boolean {

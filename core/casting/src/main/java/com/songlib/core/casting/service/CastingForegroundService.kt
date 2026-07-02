@@ -101,7 +101,7 @@ class CastingForegroundService : Service() {
     }
 
     private fun launchServer() {
-        val newServer = CastingHttpServer(repo, port = CastingHttpServer.DEFAULT_PORT)
+        val newServer = CastingHttpServer(applicationContext, repo, port = CastingHttpServer.DEFAULT_PORT)
         newServer.start()
         httpServer = newServer
         repo.setServerStatus(ServerStatus.Running(currentUrl(), CastingHttpServer.DEFAULT_PORT))

@@ -39,7 +39,11 @@ fun ConnectCard(
     onCopyUrl: (String) -> Unit,
 ) {
     val hotspotRunning = hotspotStatus is HotspotStatus.Running
-    val showHotspotTab = !hasExternalHotspot
+    // Hide the Hotspot tab when a Wi-Fi network or an external (OS) hotspot is
+    // already providing reachability — creating another one would either fail
+    // (LocalOnlyHotspot can't coexist with the OS hotspot) or add confusion.
+    // Keep it visible while our own hotspot is running so the user can stop it.
+    val showHotspotTab = hotspotRunning || (!wifiConnected && !hasExternalHotspot)
     val showCastingTab = wifiConnected || hotspotRunning || hasExternalHotspot
 
     Card(
