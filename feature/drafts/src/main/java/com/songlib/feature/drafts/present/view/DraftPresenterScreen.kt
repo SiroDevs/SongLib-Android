@@ -27,7 +27,7 @@ import com.songlib.core.common.utils.Routes
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
-import com.songlib.feature.drafts.present.DraftPresenterViewModel
+import com.songlib.feature.drafts.present.viewmodel.DraftPresenterViewModel
 import com.songlib.feature.song.presentor.view.PresenterContent
 
 @OptIn(ExperimentalMaterial3Api::class)

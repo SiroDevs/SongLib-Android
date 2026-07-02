@@ -77,7 +77,7 @@ fun PresenterScreen(
     }
 
     LaunchedEffect(song) {
-        song?.let { viewModel.loadSong(it) }
+        song?.let { viewModel.loadSong(it, book?.title) }
     }
 
     LaunchedEffect(reportState) {

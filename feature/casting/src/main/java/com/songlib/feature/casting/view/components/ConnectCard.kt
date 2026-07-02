@@ -1,73 +1,129 @@
 package com.songlib.feature.casting.view.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.songlib.core.casting.data.HotspotStatus
+import kotlinx.coroutines.launch
 
 @Composable
 fun ConnectCard(
-    urls: List<String>,
-    onCopy: (String) -> Unit,
-    onOpenHotspotSettings: () -> Unit,
+    castingUrl: String?,
+    hotspotStatus: HotspotStatus,
+    wifiConnected: Boolean,
+    hasExternalHotspot: Boolean,
+    onStartHotspot: () -> Unit,
+    onStopHotspot: () -> Unit,
+    onCopyUrl: (String) -> Unit,
 ) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            Text("Open on your PC", style = MaterialTheme.typography.titleSmall)
+    val hotspotRunning = hotspotStatus is HotspotStatus.Running
+    val showHotspotTab = hotspotRunning || (!wifiConnected && !hasExternalHotspot)
+    val showCastingTab = wifiConnected || hotspotRunning || hasExternalHotspot
 
-            if (urls.isEmpty()) {
-                Text(
-                    "No network link detected yet. Turn on Personal Hotspot, or join the " +
-                            "same Wi-Fi network as your PC, then reopen this screen.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            } else {
-                urls.forEach { url ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(8.dp))
-                            .clickable { onCopy(url) },
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            text = url,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 8.dp),
-                        )
-                        IconButton(onClick = { onCopy(url) }) {
-                            Icon(Icons.Default.ContentCopy, contentDescription = "Copy link")
-                        }
-                    }
-                }
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp)),
+    ) {
+        when {
+            showHotspotTab && showCastingTab -> TwoTabConnectCard(
+                castingUrl = castingUrl,
+                hotspotStatus = hotspotStatus,
+                onStartHotspot = onStartHotspot,
+                onStopHotspot = onStopHotspot,
+                onCopyUrl = onCopyUrl,
+            )
+
+            showCastingTab -> Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                CastingTab(url = castingUrl, onCopy = onCopyUrl)
             }
 
-            OutlinedButton(onClick = onOpenHotspotSettings, modifier = Modifier.fillMaxWidth()) {
-                Icon(Icons.Default.Wifi, contentDescription = null)
-                Spacer(Modifier.size(8.dp))
-                Text("Open Hotspot Settings")
+            else -> Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                HotspotTab(
+                    hotspotStatus = hotspotStatus,
+                    onStart = onStartHotspot,
+                    onStop = onStopHotspot,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun TwoTabConnectCard(
+    castingUrl: String?,
+    hotspotStatus: HotspotStatus,
+    onStartHotspot: () -> Unit,
+    onStopHotspot: () -> Unit,
+    onCopyUrl: (String) -> Unit,
+) {
+    val tabTitles = listOf("Hotspot", "Casting")
+    val pagerState = rememberPagerState(pageCount = { tabTitles.size })
+    val scope = rememberCoroutineScope()
+
+    Column {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
+        ) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    selected = pagerState.currentPage == index,
+                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                    text = { Text(title) },
+                )
+            }
+        }
+
+        HorizontalPager(state = pagerState) { page ->
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                when (page) {
+                    0 -> HotspotTab(
+                        hotspotStatus = hotspotStatus,
+                        onStart = onStartHotspot,
+                        onStop = onStopHotspot,
+                    )
+
+                    else -> CastingTab(
+                        url = castingUrl,
+                        onCopy = onCopyUrl,
+                    )
+                }
             }
         }
     }

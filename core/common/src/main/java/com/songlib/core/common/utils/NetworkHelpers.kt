@@ -53,12 +53,14 @@ object NetworkUtils {
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
+
     fun getLocalIpAddresses(): List<String> {
         val addresses = mutableListOf<String>()
         try {
             val interfaces = Collections.list(NetworkInterface.getNetworkInterfaces())
             for (iface in interfaces) {
                 if (!iface.isUp || iface.isLoopback) continue
+                if (isCellularInterface(iface.name)) continue
                 val ifaceAddresses = Collections.list(iface.inetAddresses)
                 for (addr in ifaceAddresses) {
                     if (addr is Inet4Address && !addr.isLoopbackAddress) {
@@ -72,6 +74,20 @@ object NetworkUtils {
         return addresses.distinct().sortedByDescending(::looksLikeHotspotAddress)
     }
 
+    fun getPrimaryLocalIpAddress(): String? = getLocalIpAddresses().firstOrNull()
+
+    fun hasHotspotIpAddress(): Boolean =
+        getLocalIpAddresses().any(::looksLikeHotspotAddress)
+
     private fun looksLikeHotspotAddress(address: String): Boolean =
         address.startsWith("192.168.43.") || address.startsWith("192.168.49.")
+
+    private fun isCellularInterface(name: String?): Boolean {
+        if (name == null) return false
+        return name.startsWith("rmnet") ||
+                name.startsWith("ccmni") ||
+                name.startsWith("pdp_ip") ||
+                name.startsWith("rev_rmnet") ||
+                name.startsWith("ecm")
+    }
 }

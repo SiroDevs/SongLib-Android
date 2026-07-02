@@ -19,10 +19,14 @@ class CastingRepo @Inject constructor() {
     private val _connectedClients = MutableStateFlow(0)
     val connectedClients: StateFlow<Int> = _connectedClients.asStateFlow()
 
+    private val _hotspotStatus = MutableStateFlow<HotspotStatus>(HotspotStatus.Stopped)
+    val hotspotStatus: StateFlow<HotspotStatus> = _hotspotStatus.asStateFlow()
+
     /** Called when a song/draft is opened (or replaced) on a presenter screen. */
     fun publishSlide(
         source: String,
         title: String,
+        book: String? = null,
         verses: List<String>,
         indicators: List<String>,
         currentIndex: Int = 0,
@@ -34,6 +38,7 @@ class CastingRepo @Inject constructor() {
         _slideState.value = CastingState.Slide(
             source = source,
             title = title,
+            book = book,
             verses = verses,
             indicators = indicators,
             currentIndex = currentIndex.coerceIn(0, verses.size - 1),
@@ -58,6 +63,10 @@ class CastingRepo @Inject constructor() {
 
     fun setServerStatus(status: ServerStatus) {
         _serverStatus.value = status
+    }
+
+    fun setHotspotStatus(status: HotspotStatus) {
+        _hotspotStatus.value = status
     }
 
     fun onClientConnected() {
