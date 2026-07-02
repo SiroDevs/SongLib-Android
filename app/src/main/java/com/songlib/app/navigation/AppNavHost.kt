@@ -26,7 +26,7 @@ import com.songlib.feature.donation.DonationViewModel
 import com.songlib.feature.donation.view.DonationScreen
 import com.songlib.feature.donation.view.PaymentWebViewScreen
 import com.songlib.feature.casting.viewmodel.CastingViewModel
-import com.songlib.feature.casting.view.CastingScreen
+import com.songlib.feature.casting.view.screen.CastingScreen
 import com.songlib.feature.edits.admin.AdminEditsViewModel
 import com.songlib.feature.edits.admin.view.AdminEditsScreen
 import com.songlib.feature.drafts.list.DraftsViewModel
