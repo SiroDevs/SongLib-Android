@@ -55,7 +55,7 @@ class CastingForegroundService : Service() {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE,
             )
 
-            val newServer = CastingHttpServer(repo, port = CastingHttpServer.DEFAULT_PORT)
+            val newServer = CastingHttpServer(applicationContext, repo, port = CastingHttpServer.DEFAULT_PORT)
             newServer.start()
             httpServer = newServer
 
@@ -85,7 +85,7 @@ class CastingForegroundService : Service() {
             val manager = getSystemService(NotificationManager::class.java)
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Presentation casting",
+                "SongLib Casting",
                 NotificationManager.IMPORTANCE_LOW,
             )
             manager.createNotificationChannel(channel)

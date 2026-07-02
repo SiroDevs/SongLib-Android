@@ -47,7 +47,7 @@ class PresenterViewModel @Inject constructor(
     private val reportRepo: ReportRepo,
     private val trackingRepo: TrackingRepo,
     private val draftRepo: DraftRepo,
-    private val broadcastRepo: CastingRepo,
+    private val castingRepo: CastingRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -99,10 +99,13 @@ class PresenterViewModel @Inject constructor(
         _fontSize.value = newSp.coerceIn(AppFonts.MIN_FONT_SP, AppFonts.MAX_FONT_SP)
     }
 
-    fun loadSong(song: SongEntity) {
+    private var currentBookTitle: String? = null
+
+    fun loadSong(song: SongEntity, bookTitle: String? = null) {
         _uiState.value = UiState.Loading
         _currentSong.value = song
         _isLiked.value = song.liked
+        currentBookTitle = bookTitle
         parseSong(song)
 
         viewModelScope.launch {
@@ -171,9 +174,10 @@ class PresenterViewModel @Inject constructor(
         _verses.value = tempVerses
         _uiState.value = UiState.Loaded
 
-        broadcastRepo.publishSlide(
+        castingRepo.publishSlide(
             source = "song",
             title = _title.value,
+            book = currentBookTitle,
             verses = tempVerses,
             indicators = tempIndicators,
         )
@@ -181,11 +185,11 @@ class PresenterViewModel @Inject constructor(
 
     /** Called on every verse/page navigation while this presenter screen is on top. */
     fun onVerseIndexChanged(index: Int) {
-        broadcastRepo.updateIndex(index)
+        castingRepo.updateIndex(index)
     }
 
     override fun onCleared() {
-        broadcastRepo.publishIdle()
+        castingRepo.publishIdle()
         super.onCleared()
     }
 

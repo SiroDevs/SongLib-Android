@@ -15,6 +15,7 @@ sealed interface CastingState {
     data class Slide(
         val source: String,
         val title: String,
+        val book: String? = null,
         val verses: List<String>,
         val indicators: List<String>,
         val currentIndex: Int,

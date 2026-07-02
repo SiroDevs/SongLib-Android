@@ -45,7 +45,7 @@ fun CastingScreen(
 
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { /* notification just won't show if denied — broadcasting still works */ }
+    ) { /* notification just won't show if denied — castinging still works */ }
 
     fun requestStart() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
