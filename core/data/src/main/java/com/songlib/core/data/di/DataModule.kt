@@ -4,7 +4,7 @@ import android.content.Context
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.ThemeRepo
@@ -30,11 +30,11 @@ import javax.inject.Singleton
 @Module(includes = [NetworkModule::class])
 object DataModule {
     @Provides @Singleton
-    fun providePreferencesRepo(@ApplicationContext context: Context): PrefsRepo =
-        PrefsRepo(context)
+    fun providePreferencesRepo(@ApplicationContext context: Context): PreferencesRepo =
+        PreferencesRepo(context)
 
     @Provides @Singleton
-    fun provideThemeRepo(prefsRepo: PrefsRepo): ThemeRepo =
+    fun provideThemeRepo(prefsRepo: PreferencesRepo): ThemeRepo =
         ThemeRepo(prefsRepo)
 
     @Provides @Singleton
@@ -67,6 +67,6 @@ object DataModule {
         EditorRepo(editDao, service)
 
     @Provides @Singleton
-    fun provideUserRepo(service: SongLibService, prefsRepo: PrefsRepo): UserRepo =
+    fun provideUserRepo(service: SongLibService, prefsRepo: PreferencesRepo): UserRepo =
         UserRepo(service, prefsRepo)
 }

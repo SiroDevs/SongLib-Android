@@ -3,7 +3,7 @@ package com.songlib.core.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.worker.SyncScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val prefsRepo: PrefsRepo,
+    private val prefsRepo: PreferencesRepo,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
     private val _isReady = MutableStateFlow(false)

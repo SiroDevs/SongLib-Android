@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.HomeViewModel
@@ -23,7 +23,7 @@ fun HomeScreen(
     navController: NavHostController,
     mainViewModel: MainViewModel,
     homeViewModel: HomeViewModel,
-    prefsRepo: PrefsRepo,
+    prefsRepo: PreferencesRepo,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val songs   by homeViewModel.songs.collectAsState(initial = emptyList())

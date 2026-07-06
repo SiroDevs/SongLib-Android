@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.songlib.app.navigation.AppNavHost
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.ThemeMode
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.designsystem.theme.AppTheme
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var prefsRepo: PrefsRepo
+    lateinit var prefsRepo: PreferencesRepo
 
     private val credentialManager by lazy { CredentialManager.create(this) }
 

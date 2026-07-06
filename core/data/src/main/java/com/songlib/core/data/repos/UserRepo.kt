@@ -9,7 +9,7 @@ import javax.inject.Singleton
 @Singleton
 class UserRepo @Inject constructor(
     private val service: SongLibService,
-    private val prefsRepo: PrefsRepo,
+    private val prefsRepo: PreferencesRepo,
 ) {
     suspend fun loginOrRegister(
         googleId: String,

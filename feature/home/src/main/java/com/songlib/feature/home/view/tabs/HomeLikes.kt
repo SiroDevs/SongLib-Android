@@ -5,13 +5,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.HomeViewModel
 import com.songlib.feature.home.components.SongsList
@@ -20,7 +19,7 @@ import com.songlib.feature.home.components.SongsList
 fun HomeLikes(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    prefsRepo: PrefsRepo,
+    prefsRepo: PreferencesRepo,
     onShowDonation: () -> Unit,
 ) {
     val listState = rememberLazyListState()

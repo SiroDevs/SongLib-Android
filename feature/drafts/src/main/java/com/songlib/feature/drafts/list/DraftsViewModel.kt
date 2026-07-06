@@ -3,7 +3,7 @@ package com.songlib.feature.drafts.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.data.repos.DraftRepo
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.database.model.DraftEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DraftsViewModel @Inject constructor(
     private val draftRepo: DraftRepo,
-    private val prefsRepo: PrefsRepo,
+    private val prefsRepo: PreferencesRepo,
 ) : ViewModel() {
 
     val drafts: StateFlow<List<DraftEntity>> = draftRepo.draftsFlow()

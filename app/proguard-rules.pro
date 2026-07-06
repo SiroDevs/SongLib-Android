@@ -31,3 +31,10 @@
 
  # With R8 full mode generic signatures are stripped for classes that are not kept.
  -keep,allowobfuscation,allowshrinking class retrofit2.Response
+
+ # java.lang.management.* is a desktop-JVM-only API (not present on Android).
+ # Some dependency (likely pulled in via Ktor server artifacts / a logging
+ # library) references it in an optional/reflective code path that never
+ # executes on Android, so it's safe to suppress these warnings.
+ -dontwarn java.lang.management.ManagementFactory
+ -dontwarn java.lang.management.RuntimeMXBean
