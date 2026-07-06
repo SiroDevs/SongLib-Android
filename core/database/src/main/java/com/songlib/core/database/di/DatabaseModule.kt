@@ -19,6 +19,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+val MIGRATION_1_2 = object : Migration(1, 2) {
+    override fun migrate(db: SupportSQLiteDatabase) { }
+}
+
 val MIGRATION_2_3 = object : Migration(2, 3) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("""
@@ -56,14 +60,8 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
     }
 }
 
-/**
- * Version 4 only bumped the schema version; no structural changes were made.
- * This no-op migration lets devices upgrading from 3 reach 4 without a crash.
- */
 val MIGRATION_3_4 = object : Migration(3, 4) {
-    override fun migrate(db: SupportSQLiteDatabase) {
-        // No DDL changes between v3 and v4 — version bump only.
-    }
+    override fun migrate(db: SupportSQLiteDatabase) { }
 }
 
 @InstallIn(SingletonComponent::class)
@@ -74,7 +72,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase =
         Room.databaseBuilder(appContext, AppDatabase::class.java, "SongLib")
-            .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .build()
 
     @Provides fun provideBookDao(db: AppDatabase): BookDao = db.booksDao()
