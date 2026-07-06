@@ -25,7 +25,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
@@ -48,7 +48,7 @@ fun PresenterScreen(
     viewModel: PresenterViewModel,
     song: SongEntity?,
     book: BookEntity?,
-    prefsRepo: PrefsRepo,
+    prefsRepo: PreferencesRepo,
 ) {
     val horizontalSlides = viewModel.horizontalSlides
     val uiState by viewModel.uiState.collectAsState()

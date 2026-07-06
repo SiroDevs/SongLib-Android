@@ -6,19 +6,15 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.PrefsRepo
-import com.songlib.core.database.model.ListingUi
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.general.ConfirmDialog
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
@@ -30,7 +26,7 @@ import com.songlib.feature.home.components.ListingsList
 fun HomeListings(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    prefsRepo: PrefsRepo,
+    prefsRepo: PreferencesRepo,
     onShowDonation: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()

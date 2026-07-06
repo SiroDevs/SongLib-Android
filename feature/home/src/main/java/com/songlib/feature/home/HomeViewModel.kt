@@ -9,7 +9,7 @@ import androidx.work.WorkManager
 import com.songlib.core.common.utils.SongUtils
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
 import com.songlib.core.data.worker.SyncWorker
@@ -38,7 +38,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val songbkRepo: SongBookRepo,
     private val listRepo: ListingRepo,
-    private val prefsRepo: PrefsRepo,
+    private val prefsRepo: PreferencesRepo,
     private val trackingRepo: TrackingRepo,
     private val editorRepo: EditorRepo,
     @ApplicationContext private val context: Context,

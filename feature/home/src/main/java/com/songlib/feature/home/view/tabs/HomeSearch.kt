@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Dialpad
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SmallFloatingActionButton
@@ -36,7 +35,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.HomeViewModel
@@ -52,7 +51,7 @@ import kotlinx.coroutines.launch
 fun HomeSearch(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    prefsRepo: PrefsRepo,
+    prefsRepo: PreferencesRepo,
     onShowDonation: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()

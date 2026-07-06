@@ -8,7 +8,7 @@ import androidx.work.WorkerParameters
 import com.songlib.core.common.utils.NetworkUtils
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.database.model.BookEntity
@@ -23,7 +23,7 @@ class SyncWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val songbkRepo: SongBookRepo,
-    private val prefsRepo: PrefsRepo,
+    private val prefsRepo: PreferencesRepo,
     private val draftRepo: DraftRepo,
     private val editorRepo: EditorRepo,
     private val userRepo: UserRepo,

@@ -22,7 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.data.repos.PrefsRepo
+import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
@@ -43,7 +43,7 @@ fun HomeAppBar(
     onAddListing: () -> Unit,
     viewModel: HomeViewModel,
     navController: NavHostController,
-    prefsRepo: PrefsRepo,
+    prefsRepo: PreferencesRepo,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
