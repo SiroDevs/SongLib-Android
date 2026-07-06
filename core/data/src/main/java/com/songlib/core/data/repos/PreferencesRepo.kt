@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class hlPreferencesRepo @Inject constructor(
+class PreferencesRepo @Inject constructor(
     @ApplicationContext context: Context
 ) {
     private val prefs =

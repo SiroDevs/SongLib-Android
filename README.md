@@ -108,7 +108,7 @@ SongLib/
 │
 ├── core/
 │   ├── common/                 # Routes, ApiConstants, SongUtils, UiState — no Android deps
-│   ├── data/                   # Repositories, PrefsRepo, SyncWorker, SyncScheduler
+│   ├── data/                   # Repositories, PreferencesRepo, SyncWorker, SyncScheduler
 │   ├── database/               # Room database, all DAOs and entity models
 │   ├── designsystem/           # Material 3 theme, colours, typography
 │   ├── network/                # Retrofit services, DTOs, NetworkModule
@@ -151,7 +151,7 @@ app
 
 **`core:data`** — all data-access logic sitting above the DB and network layers:
 
-- `PrefsRepo` — a strongly typed `SharedPreferences` wrapper covering the user session, theme, sync timestamps, demo mode, donation state, book selection, and `resetAppData()` for clearing all app state atomically.
+- `PreferencesRepo` — a strongly typed `SharedPreferences` wrapper covering the user session, theme, sync timestamps, demo mode, donation state, book selection, and `resetAppData()` for clearing all app state atomically.
 - `SongBookRepo` — fetches books and songs from the remote API, persists them to Room, and handles paginated delta sync via the `?since=` query parameter so subsequent syncs only transfer new or updated songs.
 - `TrackingRepo` — records song view history and search query history to Room.
 - `EditorRepo` — manages user-submitted song edits locally and syncs them to the backend.
@@ -192,7 +192,7 @@ Navigation is handled by a single `NavHostController` in `AppNavHost.kt` at the 
 
 Arguments between screens are passed via `savedStateHandle` — the **caller** sets the value on `navController.currentBackStackEntry?.savedStateHandle` before calling `navigate()`, and the **destination** reads it from its own `currentBackStackEntry?.savedStateHandle`.
 
-`MainViewModel` determines the start destination at launch by reading `PrefsRepo`: if the user hasn't completed book selection it routes to `SELECTION`, otherwise to `HOME`.
+`MainViewModel` determines the start destination at launch by reading `PreferencesRepo`: if the user hasn't completed book selection it routes to `SELECTION`, otherwise to `HOME`.
 
 ```
 SELECTION ──► HOME ──► PRESENT
@@ -213,15 +213,15 @@ SELECTION ──► HOME ──► PRESENT
 
 On the very first launch (or after re-selecting books), `MainViewModel` calls `SyncScheduler.scheduleInstallSync()`, which enqueues a one-time `SyncWorker` via WorkManager. The worker:
 
-1. Reads selected book IDs from `PrefsRepo.selectedBooks`.
+1. Reads selected book IDs from `PreferencesRepo.selectedBooks`.
 2. Fetches all books from `/api/v2/books` and saves them to Room.
 3. Fetches songs page by page (`limit=500`) from `/api/v2/songs/books/{bookIds}`. On subsequent syncs the `?since=` parameter carries the ISO timestamp of the last successful run, so only new or updated songs are transferred — this is the delta sync mechanism.
-4. Writes the new `since` timestamp back to `PrefsRepo.lastSinceDateIso` and marks `isDataLoaded = true`.
+4. Writes the new `since` timestamp back to `PreferencesRepo.lastSinceDateIso` and marks `isDataLoaded = true`.
 5. If a user is signed in, pushes local drafts, edits, and book-selection data to the backend.
 
 `HomeViewModel.fetchData()` is guarded by a `dataFetched` boolean so it only runs once per ViewModel lifetime. It reads from Room immediately to show cached data, while observing `WorkInfo` state via `getWorkInfosByTagFlow` — when the worker reports `SUCCEEDED` it calls `loadFromDb()` again to pick up the freshly synced songs.
 
-Daily re-sync fires on subsequent opens when `PrefsRepo.needsDailySync()` returns true (more than 24 hours since `lastSyncedAt`).
+Daily re-sync fires on subsequent opens when `PreferencesRepo.needsDailySync()` returns true (more than 24 hours since `lastSyncedAt`).
 
 ---
 
