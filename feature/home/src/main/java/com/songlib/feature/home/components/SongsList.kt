@@ -101,7 +101,7 @@ fun SongsList(
                 ) {
                     SearchFieldRow(
                         query = searchQuery,
-                        placeholder = "Search songs by title or lyrics …",
+                        placeholder = "Search songs …",
                         onQueryChange = onQueryChange,
                         onClear = { onQueryChange("") },
                         onVoiceSearch = { startVoiceSearch() },

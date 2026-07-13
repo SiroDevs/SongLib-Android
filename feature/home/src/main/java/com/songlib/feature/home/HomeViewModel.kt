@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 @HiltViewModel
@@ -94,6 +95,10 @@ class HomeViewModel @Inject constructor(
 
     private var dataFetched = false
 
+    private companion object {
+        const val SYNC_OBSERVE_TIMEOUT_MS = 20_000L
+    }
+
     fun dismissDemo() {
         prefsRepo.demoMode = false
         _demoMode.value = false
@@ -121,14 +126,19 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.tryEmit(UiState.Loading)
             loadFromDb()
-            if (!prefsRepo.isDataLoaded && _songs.value.isEmpty()) {
+            // IMPORTANT: react to isDataLoaded alone. Previously this also required
+            // _songs.value.isEmpty(), so on devices that already had cached songs but
+            // isDataLoaded == false (e.g. flag reset, fresh-DB-but-old-prefs edge cases,
+            // or a sync that was scheduled by MainViewModel before this screen existed)
+            // the worker was never observed and the UI stayed on UiState.Loading forever,
+            // even though loadFromDb() below already forces Loading for that same case.
+            if (!prefsRepo.isDataLoaded) {
                 observeInstallSyncWorker()
             }
         }
     }
 
     private suspend fun loadFromDb() {
-        _uiState.tryEmit(UiState.Loading)
         _books.value = songbkRepo.fetchLocalBooks()
         _songs.value = songbkRepo.fetchLocalSongs()
         _listings.value = listRepo.fetchListings(0)
@@ -139,44 +149,58 @@ class HomeViewModel @Inject constructor(
 
         val userId = prefsRepo.loggedInUserId
         if (userId > 0) _hasEdits.value = editorRepo.hasEdits(userId)
-        if (prefsRepo.isDataLoaded && _songs.value.isNotEmpty()) {
-            _uiState.tryEmit(UiState.Filtered)
-        } else if (!prefsRepo.isDataLoaded) {
-            _uiState.tryEmit(UiState.Loading)
-        } else {
-            _uiState.tryEmit(UiState.Filtered)
-        }
+
+        // Show cached content the moment we have any, regardless of the isDataLoaded
+        // flag. isDataLoaded only gates whether we ALSO kick off/observe a background
+        // sync (see fetchData()) — it should never be the sole reason we show a
+        // skeleton over songs we already have on disk.
+        _uiState.tryEmit(if (_songs.value.isNotEmpty()) UiState.Filtered else UiState.Loading)
     }
 
     private fun observeInstallSyncWorker() {
         viewModelScope.launch(Dispatchers.Main) {
-            _uiState.tryEmit(UiState.Loading)
+            if (_songs.value.isEmpty()) _uiState.tryEmit(UiState.Loading)
             try {
-                WorkManager.getInstance(context)
-                    .getWorkInfosByTagFlow(SyncWorker.TAG)
-                    .collect { workInfoList ->
-                        val info = workInfoList.firstOrNull() ?: return@collect
-                        when (info.state) {
-                            WorkInfo.State.SUCCEEDED -> {
-                                loadFromDb()
-                                return@collect
-                            }
-                            WorkInfo.State.FAILED,
-                            WorkInfo.State.CANCELLED -> {
-                                if (_songs.value.isNotEmpty()) {
-                                    _uiState.tryEmit(UiState.Filtered)
-                                } else {
-                                    _uiState.tryEmit(UiState.Error("Failed to load data"))
+                val result = withTimeoutOrNull(SYNC_OBSERVE_TIMEOUT_MS) {
+                    WorkManager.getInstance(context)
+                        .getWorkInfosByTagFlow(SyncWorker.TAG)
+                        .collect { workInfoList ->
+                            val info = workInfoList.firstOrNull() ?: return@collect
+                            when (info.state) {
+                                WorkInfo.State.SUCCEEDED -> {
+                                    loadFromDb()
+                                    return@collect
                                 }
-                                return@collect
+                                WorkInfo.State.FAILED,
+                                WorkInfo.State.CANCELLED -> {
+                                    if (_songs.value.isNotEmpty()) {
+                                        _uiState.tryEmit(UiState.Filtered)
+                                    } else {
+                                        _uiState.tryEmit(UiState.Error("Failed to load data"))
+                                    }
+                                    return@collect
+                                }
+                                WorkInfo.State.RUNNING,
+                                WorkInfo.State.ENQUEUED -> {
+                                    if (_songs.value.isEmpty()) _uiState.tryEmit(UiState.Loading)
+                                }
+                                else -> { /* other states */ }
                             }
-                            WorkInfo.State.RUNNING,
-                            WorkInfo.State.ENQUEUED -> {
-                                _uiState.tryEmit(UiState.Loading)
-                            }
-                            else -> { /* other states */ }
                         }
+                }
+                // Safety net: on some OEMs (aggressive battery/doze restrictions, or a
+                // WorkManager tag that never got enqueued for whatever reason) the flow
+                // above can sit with an empty/absent WorkInfo list indefinitely and NEVER
+                // emit a terminal state. Without this we'd be stuck on the skeleton forever
+                // with no crash and no log to point at. Fall back gracefully instead.
+                if (result == null) {
+                    Log.w("HomeViewModel", "Timed out waiting for SyncWorker state")
+                    if (_songs.value.isNotEmpty()) {
+                        _uiState.tryEmit(UiState.Filtered)
+                    } else {
+                        _uiState.tryEmit(UiState.Error("Failed to load data"))
                     }
+                }
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Worker observation error", e)
                 if (_songs.value.isNotEmpty()) {

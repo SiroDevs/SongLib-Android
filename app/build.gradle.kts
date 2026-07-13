@@ -25,37 +25,49 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 860
-        versionName = "1.0.860"
+        versionCode = 861
+        versionName = "1.0.861"
         minSdk = 26
         targetSdk = 37
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "PaystackSecretKey", "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\"")
-        buildConfigField("String", "GoogleWebClientId", "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\"")
-        buildConfigField("String", "SonglibApiKey", "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\"")
+        buildConfigField(
+            "String",
+            "PaystackSecretKey",
+            "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "GoogleWebClientId",
+            "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\""
+        )
+        buildConfigField(
+            "String",
+            "SonglibApiKey",
+            "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\""
+        )
     }
 
     signingConfigs {
         create("release") {
-            keyAlias     = keystoreProperties["keyAlias"] as String
-            keyPassword  = keystoreProperties["keyPassword"] as String
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
             storePassword = keystoreProperties["storePassword"] as String
-            storeFile    = keystoreProperties["storeFile"]?.let { file(it as String) }
+            storeFile = keystoreProperties["storeFile"]?.let { file(it as String) }
         }
     }
 
     buildTypes {
         getByName("debug") {
-            applicationIdSuffix  = ".dev"
-            versionNameSuffix    = "-dev"
-            isDebuggable         = true
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            isDebuggable = true
         }
         getByName("release") {
             isMinifyEnabled = true
-            signingConfig   = signingConfigs.getByName("release")
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -69,7 +81,7 @@ android {
     }
 
     buildFeatures {
-        compose     = true
+        compose = true
         buildConfig = true
     }
 
