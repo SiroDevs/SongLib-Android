@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 @HiltViewModel
@@ -94,6 +95,10 @@ class HomeViewModel @Inject constructor(
 
     private var dataFetched = false
 
+    private companion object {
+        const val SYNC_OBSERVE_TIMEOUT_MS = 20_000L
+    }
+
     fun dismissDemo() {
         prefsRepo.demoMode = false
         _demoMode.value = false
@@ -121,14 +126,17 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.tryEmit(UiState.Loading)
             loadFromDb()
-            if (!prefsRepo.isDataLoaded && _songs.value.isEmpty()) {
+            if (prefsRepo.isDataLoaded && _songs.value.isNotEmpty()) {
+                _uiState.tryEmit(UiState.Filtered)
+            } else if (!prefsRepo.isDataLoaded) {
                 observeInstallSyncWorker()
+            } else {
+                _uiState.tryEmit(UiState.Filtered)
             }
         }
     }
 
     private suspend fun loadFromDb() {
-        _uiState.tryEmit(UiState.Loading)
         _books.value = songbkRepo.fetchLocalBooks()
         _songs.value = songbkRepo.fetchLocalSongs()
         _listings.value = listRepo.fetchListings(0)
@@ -139,44 +147,52 @@ class HomeViewModel @Inject constructor(
 
         val userId = prefsRepo.loggedInUserId
         if (userId > 0) _hasEdits.value = editorRepo.hasEdits(userId)
-        if (prefsRepo.isDataLoaded && _songs.value.isNotEmpty()) {
-            _uiState.tryEmit(UiState.Filtered)
-        } else if (!prefsRepo.isDataLoaded) {
-            _uiState.tryEmit(UiState.Loading)
-        } else {
-            _uiState.tryEmit(UiState.Filtered)
-        }
     }
 
     private fun observeInstallSyncWorker() {
         viewModelScope.launch(Dispatchers.Main) {
-            _uiState.tryEmit(UiState.Loading)
+            if (_songs.value.isEmpty()) _uiState.tryEmit(UiState.Loading)
             try {
-                WorkManager.getInstance(context)
-                    .getWorkInfosByTagFlow(SyncWorker.TAG)
-                    .collect { workInfoList ->
-                        val info = workInfoList.firstOrNull() ?: return@collect
-                        when (info.state) {
-                            WorkInfo.State.SUCCEEDED -> {
-                                loadFromDb()
-                                return@collect
-                            }
-                            WorkInfo.State.FAILED,
-                            WorkInfo.State.CANCELLED -> {
-                                if (_songs.value.isNotEmpty()) {
-                                    _uiState.tryEmit(UiState.Filtered)
-                                } else {
-                                    _uiState.tryEmit(UiState.Error("Failed to load data"))
+                val result = withTimeoutOrNull(SYNC_OBSERVE_TIMEOUT_MS) {
+                    WorkManager.getInstance(context)
+                        // Track by the install sync's own unique work name rather than the
+                        // shared SyncWorker.TAG — the daily sync uses the same tag, so
+                        // firstOrNull() on the tag flow could observe the wrong WorkInfo
+                        // (e.g. a leftover daily-sync entry) instead of the install sync
+                        // we just enqueued.
+                        .getWorkInfosForUniqueWorkFlow(SyncWorker.INSTALL_SYNC_WORK_NAME)
+                        .collect { workInfoList ->
+                            val info = workInfoList.firstOrNull() ?: return@collect
+                            when (info.state) {
+                                WorkInfo.State.SUCCEEDED -> {
+                                    loadFromDb()
+                                    return@collect
                                 }
-                                return@collect
+                                WorkInfo.State.FAILED,
+                                WorkInfo.State.CANCELLED -> {
+                                    if (_songs.value.isNotEmpty()) {
+                                        _uiState.tryEmit(UiState.Filtered)
+                                    } else {
+                                        _uiState.tryEmit(UiState.Error("Failed to load data: WorkInfo is Cancelled"))
+                                    }
+                                    return@collect
+                                }
+                                WorkInfo.State.RUNNING,
+                                WorkInfo.State.ENQUEUED -> {
+                                    if (_songs.value.isEmpty()) _uiState.tryEmit(UiState.Loading)
+                                }
+                                else -> { /* other states */ }
                             }
-                            WorkInfo.State.RUNNING,
-                            WorkInfo.State.ENQUEUED -> {
-                                _uiState.tryEmit(UiState.Loading)
-                            }
-                            else -> { /* other states */ }
                         }
+                }
+                if (result == null) {
+                    Log.w("HomeViewModel", "Timed out waiting for SyncWorker state")
+                    if (_songs.value.isNotEmpty()) {
+                        _uiState.tryEmit(UiState.Filtered)
+                    } else {
+                        _uiState.tryEmit(UiState.Error("SyncWorker issues. Failed to load data"))
                     }
+                }
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Worker observation error", e)
                 if (_songs.value.isNotEmpty()) {

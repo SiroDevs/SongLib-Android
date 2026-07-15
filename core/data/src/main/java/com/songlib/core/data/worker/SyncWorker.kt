@@ -42,7 +42,7 @@ class SyncWorker @AssistedInject constructor(
         }
 
         return try {
-            Log.d(TAG, "▶ SyncWorker starting…")
+            Log.d(TAG, "▶ SyncWorker starting ...")
 
             val selectedIds = getSelectedIds()
             val books = mutableListOf<BookEntity>()
@@ -53,20 +53,17 @@ class SyncWorker @AssistedInject constructor(
                 val bookIds = books.map { it.bookId }
                 Log.d(TAG, "Fetched ${books.size} books, syncing songs for $bookIds")
 
-                // Delta sync: use since= if we have a previous sync timestamp
                 val since = prefsRepo.lastSinceDateIso.takeIf { it.isNotEmpty() }
                 songbkRepo.fetchAndSaveSongs(bookIds, since = since)
             } else {
                 Log.w(TAG, "⚠️ No books returned – skipping song fetch")
             }
 
-            // Record new since timestamp
             val isoNow = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(Date())
             prefsRepo.lastSinceDateIso = isoNow
             prefsRepo.isDataLoaded = true
             prefsRepo.lastSyncedAt = System.currentTimeMillis()
 
-            // Post-login sync: push feature/edits to remote if logged in
             val userId = prefsRepo.loggedInUserId
             if (userId > 0) {
                 draftRepo.syncDraftsToRemote(userId)
@@ -80,8 +77,8 @@ class SyncWorker @AssistedInject constructor(
             Result.success()
 
         } catch (e: Exception) {
-            Log.e(TAG, "❌ SyncWorker failed: ${e.message}", e)
-            Result.retry()
+            Log.e(TAG, "❌ SyncWorker failed (attempt ${runAttemptCount + 1}/$MAX_ATTEMPTS): ${e.message}", e)
+            if (runAttemptCount + 1 >= MAX_ATTEMPTS) Result.failure() else Result.retry()
         }
     }
 
@@ -89,5 +86,6 @@ class SyncWorker @AssistedInject constructor(
         const val TAG = "SyncWorker"
         const val DAILY_SYNC_WORK_NAME   = "songlib_daily_sync"
         const val INSTALL_SYNC_WORK_NAME = "songlib_install_sync"
+        const val MAX_ATTEMPTS = 3
     }
 }

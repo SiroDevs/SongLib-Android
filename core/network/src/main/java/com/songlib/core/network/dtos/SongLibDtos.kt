@@ -1,5 +1,8 @@
 package com.songlib.core.network.dtos
 
+import androidx.annotation.Keep
+
+@Keep
 data class PaginationMeta(
     val page: Int,
     val limit: Int,
@@ -8,11 +11,13 @@ data class PaginationMeta(
     val hasMore: Boolean
 )
 
+@Keep
 data class PagedSongsResponse(
     val data: List<com.songlib.core.database.model.SongEntity>,
     val pagination: PaginationMeta
 )
 
+@Keep
 data class UserDto(
     val userId: Int = 0,
     val username: String,
@@ -26,6 +31,7 @@ data class UserDto(
     val updated: String? = null
 )
 
+@Keep
 data class DraftDto(
     val draftId: Int = 0,
     val title: String,
@@ -37,6 +43,7 @@ data class DraftDto(
     val updated: String? = null
 )
 
+@Keep
 data class EditDto(
     val editId: Int = 0,
     val songId: Int,
@@ -52,14 +59,17 @@ data class EditDto(
 )
 
 /** Body for admin approve/reject — reject carries an optional reason. */
+@Keep
 data class EditRejectRequest(val reason: String? = null)
 
 /** Thin wrapper the approve/reject endpoints return. */
+@Keep
 data class EditActionResponse(
     val message: String,
     val edit: EditDto
 )
 
+@Keep
 data class SongReportRequest(
     val songId: Int,
     val bookId: Int,
@@ -70,15 +80,20 @@ data class SongReportRequest(
     val reportedBy: String? = null
 )
 
+@Keep
 data class SongReportResponse(
     val message: String,
     val reportId: Int
 )
 
+@Keep
 data class LikeToggleRequest(val userId: Int, val songId: Int)
+@Keep
 data class LikeToggleResponse(val userId: Int, val songId: Int, val liked: Boolean)
+@Keep
 data class LikedSongsResponse(val userId: Int, val likedSongIds: List<Int>)
 
+@Keep
 data class OrganisationDto(
     val orgId: Int = 0,
     val title: String,
@@ -87,6 +102,7 @@ data class OrganisationDto(
     val created: String? = null
 )
 
+@Keep
 data class ListingDto(
     val listingId: Int = 0,
     val title: String,
