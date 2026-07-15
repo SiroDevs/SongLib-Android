@@ -126,14 +126,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.tryEmit(UiState.Loading)
             loadFromDb()
-            // IMPORTANT: react to isDataLoaded alone. Previously this also required
-            // _songs.value.isEmpty(), so on devices that already had cached songs but
-            // isDataLoaded == false (e.g. flag reset, fresh-DB-but-old-prefs edge cases,
-            // or a sync that was scheduled by MainViewModel before this screen existed)
-            // the worker was never observed and the UI stayed on UiState.Loading forever,
-            // even though loadFromDb() below already forces Loading for that same case.
-            if (!prefsRepo.isDataLoaded) {
+            if (prefsRepo.isDataLoaded && _songs.value.isNotEmpty()) {
+                _uiState.tryEmit(UiState.Filtered)
+            } else if (!prefsRepo.isDataLoaded) {
                 observeInstallSyncWorker()
+            } else {
+                _uiState.tryEmit(UiState.Filtered)
             }
         }
     }
@@ -149,12 +147,6 @@ class HomeViewModel @Inject constructor(
 
         val userId = prefsRepo.loggedInUserId
         if (userId > 0) _hasEdits.value = editorRepo.hasEdits(userId)
-
-        // Show cached content the moment we have any, regardless of the isDataLoaded
-        // flag. isDataLoaded only gates whether we ALSO kick off/observe a background
-        // sync (see fetchData()) — it should never be the sole reason we show a
-        // skeleton over songs we already have on disk.
-        _uiState.tryEmit(if (_songs.value.isNotEmpty()) UiState.Filtered else UiState.Loading)
     }
 
     private fun observeInstallSyncWorker() {
@@ -163,7 +155,12 @@ class HomeViewModel @Inject constructor(
             try {
                 val result = withTimeoutOrNull(SYNC_OBSERVE_TIMEOUT_MS) {
                     WorkManager.getInstance(context)
-                        .getWorkInfosByTagFlow(SyncWorker.TAG)
+                        // Track by the install sync's own unique work name rather than the
+                        // shared SyncWorker.TAG — the daily sync uses the same tag, so
+                        // firstOrNull() on the tag flow could observe the wrong WorkInfo
+                        // (e.g. a leftover daily-sync entry) instead of the install sync
+                        // we just enqueued.
+                        .getWorkInfosForUniqueWorkFlow(SyncWorker.INSTALL_SYNC_WORK_NAME)
                         .collect { workInfoList ->
                             val info = workInfoList.firstOrNull() ?: return@collect
                             when (info.state) {
@@ -176,7 +173,7 @@ class HomeViewModel @Inject constructor(
                                     if (_songs.value.isNotEmpty()) {
                                         _uiState.tryEmit(UiState.Filtered)
                                     } else {
-                                        _uiState.tryEmit(UiState.Error("Failed to load data"))
+                                        _uiState.tryEmit(UiState.Error("Failed to load data: WorkInfo is Cancelled"))
                                     }
                                     return@collect
                                 }
@@ -188,17 +185,12 @@ class HomeViewModel @Inject constructor(
                             }
                         }
                 }
-                // Safety net: on some OEMs (aggressive battery/doze restrictions, or a
-                // WorkManager tag that never got enqueued for whatever reason) the flow
-                // above can sit with an empty/absent WorkInfo list indefinitely and NEVER
-                // emit a terminal state. Without this we'd be stuck on the skeleton forever
-                // with no crash and no log to point at. Fall back gracefully instead.
                 if (result == null) {
                     Log.w("HomeViewModel", "Timed out waiting for SyncWorker state")
                     if (_songs.value.isNotEmpty()) {
                         _uiState.tryEmit(UiState.Filtered)
                     } else {
-                        _uiState.tryEmit(UiState.Error("Failed to load data"))
+                        _uiState.tryEmit(UiState.Error("SyncWorker issues. Failed to load data"))
                     }
                 }
             } catch (e: Exception) {

@@ -58,7 +58,7 @@ fun HomeSkeleton() {
                     }
                 }
             }
-            items(12) { SongSkeletonItem() }
+            items(20) { SongSkeletonItem() }
         }
     }
 }

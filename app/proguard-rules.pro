@@ -38,3 +38,39 @@
  # executes on Android, so it's safe to suppress these warnings.
  -dontwarn java.lang.management.ManagementFactory
  -dontwarn java.lang.management.RuntimeMXBean
+
+ # ---------------------------------------------------------------------------
+ # Gson / Retrofit network models
+ #
+ # Root cause of "SyncWorker issues. Failed to load data" appearing only in
+ # release builds: R8 was renaming the fields of our Gson-deserialized DTOs
+ # (PaginationMeta, UserDto, DraftDto, EditDto, OrganisationDto, ListingDto,
+ # PagedSongsResponse, Paystack*). Gson matches JSON keys to fields by name
+ # via reflection, so once field names were obfuscated, deserialization
+ # silently produced nulls in non-null Kotlin fields, which threw further
+ # downstream, sent SyncWorker into an infinite retry loop, and eventually
+ # timed out the UI. SongEntity/BookEntity were already safe via @Keep; the
+ # DTOs in core/network are now @Keep-annotated too. These rules are the
+ # belt-and-suspenders backstop:
+ # ---------------------------------------------------------------------------
+
+ # Keep annotations at runtime so @SerializedName (Paystack*) still works,
+ # and keep generic signatures so Gson's TypeToken machinery still works.
+ -keepattributes Signature
+ -keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations, AnnotationDefault
+ -keepattributes InnerClasses, EnclosingMethod
+
+ # Never obfuscate/shrink field names on any of our network DTOs, regardless
+ # of whether we remember to annotate a future one with @Keep.
+ -keepclassmembers class com.songlib.core.network.dtos.** {
+     <fields>;
+ }
+ -keep class com.songlib.core.network.dtos.** { *; }
+
+ # Standard Gson rules (from Gson's own R8 recommendations).
+ -dontwarn sun.misc.**
+ -keep class com.google.gson.stream.** { *; }
+ -keep class * extends com.google.gson.TypeAdapter
+ -keep class * implements com.google.gson.TypeAdapterFactory
+ -keep class * implements com.google.gson.JsonSerializer
+ -keep class * implements com.google.gson.JsonDeserializer
