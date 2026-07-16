@@ -71,7 +71,6 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
                 created TEXT NOT NULL
             )
         """.trimIndent())
-        db.execSQL("ALTER TABLE searches ADD COLUMN hits INTEGER NOT NULL DEFAULT 1")
         db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_searches_title ON searches(title)")
     }
 }

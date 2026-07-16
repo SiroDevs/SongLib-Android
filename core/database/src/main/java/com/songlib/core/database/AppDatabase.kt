@@ -27,7 +27,7 @@ import com.songlib.core.database.model.SongEntity
         DraftEntity::class,
         EditEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
