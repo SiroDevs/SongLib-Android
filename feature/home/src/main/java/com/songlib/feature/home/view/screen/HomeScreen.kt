@@ -30,7 +30,7 @@ fun HomeScreen(
     prefsRepo: PreferencesRepo,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
-    val songs by homeViewModel.songs.collectAsState(initial = emptyList())
+    val songs by homeViewModel.songs.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -40,6 +40,20 @@ fun HomeScreen(
     }
 
     LaunchedEffect(Unit) { homeViewModel.fetchData() }
+
+    val isIncompleteLibrary = uiState == UiState.Filtered &&
+            songs.isEmpty() &&
+            prefsRepo.selectedBooks.isNotEmpty()
+
+    LaunchedEffect(isIncompleteLibrary) {
+        if (isIncompleteLibrary) {
+            homeViewModel.recoverIncompleteLibrary()
+            navController.navigate(Routes.SELECTION_AUTO_RECOVER) {
+                popUpTo(navController.graph.id) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+    }
 
     when (uiState) {
         is UiState.Error -> Scaffold(
@@ -58,11 +72,7 @@ fun HomeScreen(
         UiState.Filtered -> {
             if (songs.isEmpty()) {
                 if (prefsRepo.selectedBooks.isNotEmpty()) {
-                    homeViewModel.recoverIncompleteLibrary()
-                    navController.navigate(Routes.SELECTION_AUTO_RECOVER) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                        launchSingleTop = true
-                    }
+                    HomeSkeleton()
                 } else {
                     Scaffold(
                         topBar = { AppTopBar(title = "SongLib") }
@@ -95,4 +105,3 @@ fun HomeScreen(
         else -> HomeSkeleton()
     }
 }
-

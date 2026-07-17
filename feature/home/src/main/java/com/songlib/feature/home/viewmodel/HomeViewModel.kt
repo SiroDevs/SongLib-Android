@@ -109,29 +109,33 @@ class HomeViewModel @Inject constructor(
             _selectedSongs.value - song else _selectedSongs.value + song
     }
 
-    fun clearSongSelection() { _selectedSongs.value = emptySet() }
+    fun clearSongSelection() {
+        _selectedSongs.value = emptySet()
+    }
 
     fun toggleListingSelection(listing: ListingUi) {
         _selectedListings.value = if (_selectedListings.value.contains(listing))
             _selectedListings.value - listing else _selectedListings.value + listing
     }
 
-    fun clearListingSelection() { _selectedListings.value = emptySet() }
+    fun clearListingSelection() {
+        _selectedListings.value = emptySet()
+    }
 
-    fun setSelectedTab(homeTab: HomeTab) { _selectedTab.value = homeTab }
+    fun setSelectedTab(homeTab: HomeTab) {
+        _selectedTab.value = homeTab
+    }
 
     fun fetchData() {
         if (dataFetched) return
         dataFetched = true
         viewModelScope.launch {
             _uiState.tryEmit(UiState.Loading)
-            loadFromDb()
-            if (prefsRepo.isDataLoaded && _songs.value.isNotEmpty()) {
+            if (prefsRepo.isDataLoaded) {
+                loadFromDb()
                 _uiState.tryEmit(UiState.Filtered)
-            } else if (!prefsRepo.isDataLoaded) {
-                observeInstallSyncWorker()
             } else {
-                _uiState.tryEmit(UiState.Filtered)
+                observeInstallSyncWorker()
             }
         }
     }
