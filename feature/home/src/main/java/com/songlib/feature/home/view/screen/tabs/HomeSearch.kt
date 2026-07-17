@@ -1,0 +1,197 @@
+package com.songlib.feature.home.view.screen.tabs
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dialpad
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import com.songlib.core.common.entity.UiState
+import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.ui.components.general.QuickFormDialog
+import com.songlib.core.ui.components.indicators.EmptyState
+import com.songlib.feature.home.viewmodel.HomeViewModel
+import com.songlib.feature.home.view.components.ChoosingListingSheet
+import com.songlib.feature.home.view.components.DemoOverlay
+import com.songlib.feature.home.view.components.DemoTargetBounds
+import com.songlib.feature.home.view.components.DialPad
+import com.songlib.feature.home.view.components.SongsList
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeSearch(
+    viewModel: HomeViewModel,
+    navController: NavHostController,
+    prefsRepo: PreferencesRepo,
+    onShowDonation: () -> Unit,
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    val searchQry by viewModel.searchQuery.collectAsState()
+    val songs by viewModel.filtered.collectAsState(initial = emptyList())
+    val listings by viewModel.listings.collectAsState(initial = emptyList())
+    val selectedSongs by viewModel.selectedSongs.collectAsState()
+    val demoMode by viewModel.demoMode.collectAsState()
+
+    val showDonation = remember { prefsRepo.shouldShowDonation() }
+    var dialPadVisible by rememberSaveable { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
+    var showListingSheet by remember { mutableStateOf(false) }
+    var demoBounds by remember { mutableStateOf(DemoTargetBounds()) }
+
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    val isAtTop by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+    val showScrollToTop by remember { derivedStateOf { !isAtTop } }
+
+    if (showAddDialog) {
+        QuickFormDialog(
+            title = "New Listing",
+            label = "Listing title",
+            onDismiss = { showAddDialog = false },
+            onConfirm = { title ->
+                if (viewModel.checkAndHandleNewListing()) {
+                    viewModel.saveListing(title)
+                    showAddDialog = false
+                }
+            }
+        )
+    }
+
+    if (showListingSheet) {
+        ChoosingListingSheet(
+            listings = listings,
+            onDismiss = { showListingSheet = false },
+            onNewListClick = {
+                showListingSheet = false
+                if (viewModel.checkAndHandleNewListing()) showAddDialog = true
+            },
+            onListingClick = { listing ->
+                viewModel.saveListItems(listing, selectedSongs)
+                showListingSheet = false
+                viewModel.clearSongSelection()
+            },
+            onDone = { showListingSheet = false }
+        )
+    }
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (uiState) {
+            is UiState.Filtered, UiState.Saving ->
+                SongsList(
+                    songs = songs,
+                    viewModel = viewModel,
+                    navController = navController,
+                    selectedSongs = selectedSongs,
+                    searchQuery = searchQry,
+                    listState = listState,
+                    onQueryChange = { query -> viewModel.searchSongs(query, byNo = false) },
+                    onSongSelected = { song -> viewModel.toggleSongSelection(song) },
+                    onSearchBoxPositioned = { rect ->
+                        demoBounds = demoBounds.copy(searchBox = rect)
+                    },
+                    onSongbooksPositioned = { rect ->
+                        demoBounds = demoBounds.copy(songbooks = rect)
+                    },
+                    onThirdSongPositioned = { rect ->
+                        demoBounds = demoBounds.copy(songItem = rect)
+                    },
+                    showDonation = showDonation,
+                    onShowDonation = onShowDonation
+                )
+
+            else -> Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                EmptyState()
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding()
+                .padding(end = 15.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.End,
+        ) {
+            AnimatedVisibility(
+                visible = showScrollToTop,
+                enter = fadeIn(),
+                exit = fadeOut(),
+            ) {
+                SmallFloatingActionButton(
+                    onClick = { scope.launch { listState.animateScrollToItem(0) } },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                ) {
+                    Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Go to Top")
+                }
+            }
+
+            ExtendedFloatingActionButton(
+                onClick = { dialPadVisible = true },
+                expanded = isAtTop,
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+                icon = {
+                    Icon(
+                        Icons.Filled.Dialpad,
+                        contentDescription = "Search by Number",
+                        modifier = Modifier.onGloballyPositioned { coords ->
+                            demoBounds = demoBounds.copy(fabButton = coords.boundsInRoot())
+                        }
+                    )
+                },
+                text = { Text("Search by Number") },
+            )
+        }
+
+        if (dialPadVisible) {
+            DialPad(
+                currentQuery = searchQry,
+                onNumberClick = { num -> viewModel.searchSongs(searchQry + num, byNo = true) },
+                onBackspaceClick = {
+                    if (searchQry.isNotEmpty()) {
+                        viewModel.searchSongs(searchQry.dropLast(1), byNo = true)
+                    }
+                },
+                onDismiss = { dialPadVisible = false }
+            )
+        }
+
+        DemoOverlay(
+            isVisible = demoMode,
+            targetBounds = demoBounds,
+            onDismiss = { viewModel.dismissDemo() }
+        )
+    }
+}
