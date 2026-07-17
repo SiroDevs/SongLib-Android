@@ -101,7 +101,6 @@ fun AppNavHost(
             val homeViewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
                 navController = navController,
-                mainViewModel = mainViewModel,
                 homeViewModel = homeViewModel,
                 prefsRepo = prefsRepo
             )

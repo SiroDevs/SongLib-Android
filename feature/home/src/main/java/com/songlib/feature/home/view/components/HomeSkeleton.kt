@@ -17,13 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.ShimmerBrush
 import com.songlib.core.ui.components.listitems.SongSkeletonItem
 
 @Composable
 fun HomeSkeleton() {
     val brush = ShimmerBrush()
-    Scaffold { paddingValues ->
+    Scaffold(
+        topBar = { AppTopBar(title = "SongLib") }
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

@@ -51,9 +51,6 @@ fun SelectionScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
     var showMoreMenu by remember { mutableStateOf(false) }
     var autoSaveTriggered by rememberSaveable { mutableStateOf(false) }
-    // If autoRecover is set but there's nothing pre-selected to resume (shouldn't
-    // normally happen), fall back to the regular interactive screen rather than
-    // leaving the user staring at a skeleton forever.
     var autoRecoverFellBack by rememberSaveable { mutableStateOf(false) }
 
     if (fetchData == 0) {
@@ -74,10 +71,6 @@ fun SelectionScreen(
         }
     }
 
-    // Headless recovery: the moment the book list comes back, silently save
-    // exactly what was already selected — no grid, no confirm tap. Saving
-    // enqueues the install sync, so songs land via SyncWorker same as usual;
-    // this effect only needs to get the user from "empty" back to Home.
     LaunchedEffect(uiState, headless) {
         if (headless && !autoSaveTriggered && uiState == UiState.Loaded) {
             val preSelected = viewModel.getSelectedBookList()
@@ -104,10 +97,8 @@ fun SelectionScreen(
     Scaffold(
         topBar = {
             AppTopBar(
-                title = "Select Songbooks",
+                title = if (!headless) "SongLib" else "Select Songbooks",
                 actions = {
-                    // Headless mode isn't an interactive screen, so there's
-                    // nothing useful for the user to tap here.
                     if (!headless) {
                         if (uiState != UiState.Loading && uiState != UiState.Saving) {
                             IconButton(onClick = { viewModel.fetchBooks() }) {
@@ -148,9 +139,6 @@ fun SelectionScreen(
         },
         content = { paddingValues ->
             if (headless) {
-                // Loading, Loaded-about-to-autosave, and Saving all render as
-                // the same shimmering skeleton — the user never sees the book
-                // grid or a save prompt during recovery.
                 when (uiState) {
                     is UiState.Error -> ErrorState(
                         message = (uiState as UiState.Error).message,

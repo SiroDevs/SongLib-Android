@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.HelpOutline
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
@@ -19,6 +20,7 @@ import com.songlib.core.common.utils.Routes
 fun HomeOverflowMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
+    hasHistory: Boolean,
     hasEdits: Boolean,
     isAdmin: Boolean,
     navController: NavHostController,
@@ -58,20 +60,31 @@ fun HomeOverflowMenu(
                 }
             )
         }
-        DropdownMenuItem(
-            text = { Text("Donate to SongLib") },
-            leadingIcon = { Icon(Icons.Default.Info, null) },
-            onClick = {
-                onDismiss()
-                navController.navigate(Routes.DONATION)
-            }
-        )
+
+        if (hasHistory) {
+            DropdownMenuItem(
+                text = { Text("Your History") },
+                leadingIcon = { Icon(Icons.Default.History, null) },
+                onClick = {
+                    onDismiss()
+                    navController.navigate(Routes.HISTORY)
+                }
+            )
+        }
         DropdownMenuItem(
             text = { Text("App Settings") },
             leadingIcon = { Icon(Icons.Default.Settings, null) },
             onClick = {
                 onDismiss()
                 navController.navigate(Routes.SETTINGS)
+            }
+        )
+        DropdownMenuItem(
+            text = { Text("Donate to SongLib") },
+            leadingIcon = { Icon(Icons.Default.Info, null) },
+            onClick = {
+                onDismiss()
+                navController.navigate(Routes.DONATION)
             }
         )
         DropdownMenuItem(

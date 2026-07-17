@@ -70,12 +70,6 @@ fun HomeAppBar(
                         Icon(Icons.Default.Cast, contentDescription = "Casting to PC")
                     }
 
-                    if (hasHistory) {
-                        IconButton(onClick = { navController.navigate(Routes.HISTORY) }) {
-                            Icon(Icons.Default.History, contentDescription = "History")
-                        }
-                    }
-
                     if (selectedTab == HomeTab.Search) {
                         IconButton(onClick = { navController.navigate(Routes.DRAFTS) }) {
                             Icon(Icons.Default.EditNote, contentDescription = "Drafts")
@@ -89,6 +83,7 @@ fun HomeAppBar(
                     HomeOverflowMenu(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
+                        hasHistory = hasHistory,
                         hasEdits = hasEdits,
                         isAdmin = prefsRepo.isAdmin,
                         navController = navController,

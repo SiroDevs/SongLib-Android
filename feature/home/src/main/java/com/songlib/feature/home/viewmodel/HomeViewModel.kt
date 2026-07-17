@@ -155,11 +155,6 @@ class HomeViewModel @Inject constructor(
             try {
                 val result = withTimeoutOrNull(SYNC_OBSERVE_TIMEOUT_MS) {
                     WorkManager.Companion.getInstance(context)
-                        // Track by the install sync's own unique work name rather than the
-                        // shared SyncWorker.TAG — the daily sync uses the same tag, so
-                        // firstOrNull() on the tag flow could observe the wrong WorkInfo
-                        // (e.g. a leftover daily-sync entry) instead of the install sync
-                        // we just enqueued.
                         .getWorkInfosForUniqueWorkFlow(SyncWorker.Companion.INSTALL_SYNC_WORK_NAME)
                         .collect { workInfoList ->
                             val info = workInfoList.firstOrNull() ?: return@collect
@@ -331,16 +326,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Recovery path for a specific corruption case: prefsRepo.isDataLoaded says the
-     * library finished loading, but the local database is empty (e.g. a legacy DB
-     * import silently failed on app update). Unlike clearData(), this does NOT touch
-     * selectedBooks / isDataSelected — the user's prior songbook choices are kept, so
-     * SelectionScreen comes up with those books already checked and a single save
-     * re-downloads exactly what they had before, instead of forcing them to start over.
-     */
     fun recoverIncompleteLibrary() {
         prefsRepo.isDataLoaded = false
     }
-
 }
