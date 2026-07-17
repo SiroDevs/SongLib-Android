@@ -39,21 +39,15 @@ class SongBookRepo @Inject constructor(
         }
     }
 
-    /**
-     * Paginated fetch — loops all pages until hasMore=false.
-     * Pass [since] for delta sync (only changes after that ISO timestamp).
-     */
-    suspend fun fetchAndSaveSongs(bookIds: List<Int>, since: String? = null) {
+    suspend fun fetchAndSaveSongs(bookIds: List<Int>) {
         val booksParam = bookIds.joinToString(",")
         var page = 1
         var totalFetched = 0
-
         while (true) {
             val response = songlibService.getSongsPage(
                 bookIds = booksParam,
-                page    = page,
-                limit   = 500,
-                since   = since
+                page = page,
+                limit = 500
             )
             val songs = response.data
             if (songs.isNotEmpty()) {
@@ -74,7 +68,8 @@ class SongBookRepo @Inject constructor(
         val allSongs = mutableListOf<SongEntity>()
 
         while (true) {
-            val response = songlibService.getSongsPage(bookIds = booksParam, page = page, limit = 500)
+            val response =
+                songlibService.getSongsPage(bookIds = booksParam, page = page, limit = 500)
             allSongs.addAll(response.data)
             if (!response.pagination.hasMore) break
             page++
@@ -87,7 +82,9 @@ class SongBookRepo @Inject constructor(
     }
 
     suspend fun saveBooks(books: List<BookEntity>) {
-        if (books.isEmpty()) { Log.d("TAG", "⚠️ No books to save"); return }
+        if (books.isEmpty()) {
+            Log.d("TAG", "⚠️ No books to save"); return
+        }
         try {
             booksDao.insertAll(books)
             Log.d("TAG", "✅ ${books.size} books saved successfully")
@@ -98,7 +95,9 @@ class SongBookRepo @Inject constructor(
     }
 
     suspend fun saveSongs(songs: List<SongEntity>) {
-        if (songs.isEmpty()) { Log.d("TAG", "⚠️ No songs to save"); return }
+        if (songs.isEmpty()) {
+            Log.d("TAG", "⚠️ No songs to save"); return
+        }
         try {
             songsDao.insertAll(songs)
             Log.d("TAG", "✅ ${songs.size} songs saved successfully")
