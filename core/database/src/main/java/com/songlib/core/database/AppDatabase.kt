@@ -27,8 +27,8 @@ import com.songlib.core.database.model.SongEntity
         DraftEntity::class,
         EditEntity::class,
     ],
-    version = 5,
-    exportSchema = false
+    version = 1,
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun booksDao(): BookDao
