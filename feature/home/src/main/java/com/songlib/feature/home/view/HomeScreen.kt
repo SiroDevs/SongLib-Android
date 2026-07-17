@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
@@ -67,10 +68,19 @@ fun HomeScreen(
                                     "that's why it's empty here at the moment.\n\nLet's fix that asap!",
                             messageIcon = Icons.Default.EditNote,
                             onAction = {
-                                homeViewModel.clearData { success ->
-                                    if (success) {
-                                        mainViewModel.reset()
-                                    }
+                                // Don't wipe the user's existing songbook choices (that's what
+                                // clearData() + resetAppData() did before, forcing a full
+                                // reselect). This case — isDataLoaded is true but there are no
+                                // songs — means the local database came up empty (e.g. a
+                                // legacy DB import silently failed) while their prior
+                                // selection is still intact in prefs. So: just clear the
+                                // isDataLoaded flag and send them to Selection, which will
+                                // show their previous books already checked and re-download
+                                // them on save.
+                                homeViewModel.recoverIncompleteLibrary()
+                                navController.navigate(Routes.SELECTION_AUTO_RECOVER) {
+                                    popUpTo(navController.graph.id) { inclusive = true }
+                                    launchSingleTop = true
                                 }
                             }
                         )

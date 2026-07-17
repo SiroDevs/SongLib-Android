@@ -142,7 +142,13 @@ fun SettingsScreen(
                 modifier = Modifier.clickable {
                     settViewModel.updateSelection(true)
                     navController.navigate(Routes.SELECTION) {
-                        popUpTo(0) { inclusive = true }
+                        // NOTE: popUpTo(0) resolves to the Int overload, and this graph
+                        // uses string routes exclusively — there is no destination with
+                        // integer id 0, so that call crashed with
+                        // "Navigation destination with ID 0 is unknown to this NavController".
+                        // popUpTo(navController.graph.id) is the correct way to clear the
+                        // entire back stack down to the graph root.
+                        popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true
                     }
                 }

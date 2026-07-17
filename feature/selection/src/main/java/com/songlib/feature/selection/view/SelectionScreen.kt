@@ -42,13 +42,19 @@ import com.songlib.feature.selection.components.Step1Fab
 fun SelectionScreen(
     navController: NavHostController,
     viewModel: SelectionViewModel,
-    themeRepo: ThemeRepo
+    themeRepo: ThemeRepo,
+    autoRecover: Boolean = false,
 ) {
     val context = LocalContext.current
 
     var fetchData by rememberSaveable { mutableIntStateOf(0) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showMoreMenu by remember { mutableStateOf(false) }
+    var autoSaveTriggered by rememberSaveable { mutableStateOf(false) }
+    // If autoRecover is set but there's nothing pre-selected to resume (shouldn't
+    // normally happen), fall back to the regular interactive screen rather than
+    // leaving the user staring at a skeleton forever.
+    var autoRecoverFellBack by rememberSaveable { mutableStateOf(false) }
 
     if (fetchData == 0) {
         viewModel.fetchBooks()
@@ -58,11 +64,28 @@ fun SelectionScreen(
     val books by viewModel.books.collectAsState(initial = emptyList())
     val uiState by viewModel.uiState.collectAsState()
     val theme = themeRepo.selectedTheme
+    val headless = autoRecover && !autoRecoverFellBack
 
     LaunchedEffect(uiState) {
         if (uiState == UiState.Saved) {
             navController.navigate(Routes.HOME) {
-                popUpTo(Routes.SELECTION) { inclusive = true }
+                popUpTo(navController.graph.id) { inclusive = true }
+            }
+        }
+    }
+
+    // Headless recovery: the moment the book list comes back, silently save
+    // exactly what was already selected — no grid, no confirm tap. Saving
+    // enqueues the install sync, so songs land via SyncWorker same as usual;
+    // this effect only needs to get the user from "empty" back to Home.
+    LaunchedEffect(uiState, headless) {
+        if (headless && !autoSaveTriggered && uiState == UiState.Loaded) {
+            val preSelected = viewModel.getSelectedBookList()
+            if (preSelected.isNotEmpty()) {
+                autoSaveTriggered = true
+                viewModel.saveSelectedBooks(context)
+            } else {
+                autoRecoverFellBack = true
             }
         }
     }
@@ -83,66 +106,83 @@ fun SelectionScreen(
             AppTopBar(
                 title = "Select Songbooks",
                 actions = {
-                    if (uiState != UiState.Loading && uiState != UiState.Saving) {
-                        IconButton(onClick = { viewModel.fetchBooks() }) {
-                            Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Refresh")
+                    // Headless mode isn't an interactive screen, so there's
+                    // nothing useful for the user to tap here.
+                    if (!headless) {
+                        if (uiState != UiState.Loading && uiState != UiState.Saving) {
+                            IconButton(onClick = { viewModel.fetchBooks() }) {
+                                Icon(imageVector = Icons.Filled.Refresh, contentDescription = "Refresh")
+                            }
                         }
-                    }
 
-                    IconButton(onClick = { showThemeDialog = true }) {
-                        Icon(imageVector = Icons.Filled.Brightness6, contentDescription = "Theme")
-                    }
-                    IconButton(onClick = { showMoreMenu = true }) {
-                        Icon(Icons.Filled.MoreVert, contentDescription = "More")
-                    }
-                    DropdownMenu(
-                        expanded = showMoreMenu,
-                        onDismissRequest = { showMoreMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("How It Works") },
-                            leadingIcon = { Icon(Icons.Filled.Info, contentDescription = null) },
-                            onClick = {
-                                showMoreMenu = false
-                                navController.navigate(Routes.HOW_IT_WORKS)
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Help & Feedback") },
-                            leadingIcon = { Icon(Icons.Filled.HelpOutline, contentDescription = null) },
-                            onClick = {
-                                showMoreMenu = false
-                                navController.navigate(Routes.HELP)
-                            }
-                        )
+                        IconButton(onClick = { showThemeDialog = true }) {
+                            Icon(imageVector = Icons.Filled.Brightness6, contentDescription = "Theme")
+                        }
+                        IconButton(onClick = { showMoreMenu = true }) {
+                            Icon(Icons.Filled.MoreVert, contentDescription = "More")
+                        }
+                        DropdownMenu(
+                            expanded = showMoreMenu,
+                            onDismissRequest = { showMoreMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("How It Works") },
+                                leadingIcon = { Icon(Icons.Filled.Info, contentDescription = null) },
+                                onClick = {
+                                    showMoreMenu = false
+                                    navController.navigate(Routes.HOW_IT_WORKS)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Help & Feedback") },
+                                leadingIcon = { Icon(Icons.Filled.HelpOutline, contentDescription = null) },
+                                onClick = {
+                                    showMoreMenu = false
+                                    navController.navigate(Routes.HELP)
+                                }
+                            )
+                        }
                     }
                 }
             )
         },
         content = { paddingValues ->
-            when (uiState) {
-                is UiState.Error -> ErrorState(
-                    message = (uiState as UiState.Error).message,
-                    retryAction = { viewModel.fetchBooks() }
-                )
-
-                is UiState.Loading -> SelectionSkeleton()
-
-                is UiState.Saving -> SplashContent()
-
-                is UiState.Loaded -> {
-                    SelectionContent(
-                        books = books,
-                        onBookClick = { viewModel.toggleBookSelection(it) },
-                        modifier = Modifier.padding(paddingValues)
+            if (headless) {
+                // Loading, Loaded-about-to-autosave, and Saving all render as
+                // the same shimmering skeleton — the user never sees the book
+                // grid or a save prompt during recovery.
+                when (uiState) {
+                    is UiState.Error -> ErrorState(
+                        message = (uiState as UiState.Error).message,
+                        retryAction = { viewModel.fetchBooks() }
                     )
+                    else -> SelectionSkeleton()
                 }
+            } else {
+                when (uiState) {
+                    is UiState.Error -> ErrorState(
+                        message = (uiState as UiState.Error).message,
+                        retryAction = { viewModel.fetchBooks() }
+                    )
 
-                else -> SplashContent()
+                    is UiState.Loading -> SelectionSkeleton()
+
+                    is UiState.Saving -> SplashContent()
+
+                    is UiState.Loaded -> {
+                        SelectionContent(
+                            books = books,
+                            onBookClick = { viewModel.toggleBookSelection(it) },
+                            modifier = Modifier.padding(paddingValues)
+                        )
+                    }
+
+                    else -> SplashContent()
+                }
             }
         },
         floatingActionButton = {
-            if (uiState == UiState.Loaded) {
+            if (!headless && uiState == UiState.Loaded) {
                 Step1Fab(
                     viewModel = viewModel,
                     onSaveConfirmed = { viewModel.saveSelectedBooks(context) }

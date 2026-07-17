@@ -78,18 +78,27 @@ fun AppNavHost(
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(Routes.SELECTION) {
+        composable(
+            route = Routes.SELECTION_ROUTE_PATTERN,
+            arguments = listOf(
+                navArgument(Routes.SELECTION_AUTO_ARG) {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            )
+        ) { backStackEntry ->
+            val autoRecover = backStackEntry.arguments?.getBoolean(Routes.SELECTION_AUTO_ARG) == true
             val viewModel: SelectionViewModel = hiltViewModel()
             SelectionScreen(
                 navController = navController,
                 viewModel = viewModel,
                 themeRepo = themeRepo,
+                autoRecover = autoRecover,
             )
         }
 
         composable(Routes.HOME) {
             val homeViewModel: HomeViewModel = hiltViewModel()
-            val mainViewModel: MainViewModel = hiltViewModel()
             HomeScreen(
                 navController = navController,
                 mainViewModel = mainViewModel,
@@ -173,7 +182,6 @@ fun AppNavHost(
         }
 
         composable(Routes.SETTINGS) {
-            val mainViewModel: MainViewModel = hiltViewModel()
             val settViewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
                 navController = navController,

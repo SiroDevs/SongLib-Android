@@ -75,12 +75,21 @@ class SelectionViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 if (prefsRepo.selectAfresh) {
-                    val existingIds = getSelectedIds()
+                    // Diff against what's ACTUALLY in the local database rather than the
+                    // `selectedBooks` prefs string. The two can drift apart (that drift is
+                    // exactly what caused the empty-library bug), so trusting the DB here
+                    // makes this self-healing instead of compounding a stale prefs value.
+                    val existingIds = songbkRepo.fetchLocalBooks().map { it.bookId }.toSet()
                     val newIds = books.map { it.bookId }.toSet()
                     val booksToInsert = books.filter { it.bookId !in existingIds }
                     val idsToDelete = existingIds - newIds
 
-                    idsToDelete.forEach { songbkRepo.deleteById(it) }
+                    idsToDelete.forEach {
+                        songbkRepo.deleteById(it)
+                        // deleteById only removed the book row; without this, a
+                        // de-selected book's songs were silently left behind forever.
+                        songbkRepo.deleteByBookId(it)
+                    }
                     booksToInsert.forEach { songbkRepo.saveBook(it) }
 
                     prefsRepo.selectedBooks = newIds.joinToString(",")

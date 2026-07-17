@@ -327,4 +327,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Recovery path for a specific corruption case: prefsRepo.isDataLoaded says the
+     * library finished loading, but the local database is empty (e.g. a legacy DB
+     * import silently failed on app update). Unlike clearData(), this does NOT touch
+     * selectedBooks / isDataSelected — the user's prior songbook choices are kept, so
+     * SelectionScreen comes up with those books already checked and a single save
+     * re-downloads exactly what they had before, instead of forcing them to start over.
+     */
+    fun recoverIncompleteLibrary() {
+        prefsRepo.isDataLoaded = false
+    }
+
 }
