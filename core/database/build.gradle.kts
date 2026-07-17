@@ -13,3 +13,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.androidx.room.compiler)
 }
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}

@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.view
+package com.songlib.feature.song.presentor.view.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -22,7 +22,7 @@ import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.ui.components.pagecurl.CornerNavZone
 import com.songlib.core.ui.components.pagecurl.CurlCorner
 import com.songlib.feature.song.R
-import com.songlib.feature.song.presentor.components.PresenterLayers
+import com.songlib.feature.song.presentor.view.components.PresenterLayers
 
 @Composable
 fun PresenterContent(

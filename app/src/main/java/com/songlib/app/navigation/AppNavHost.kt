@@ -44,7 +44,7 @@ import com.songlib.feature.howitworks.view.HowItWorksScreen
 import com.songlib.feature.listing.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
-import com.songlib.feature.song.presentor.view.PresenterScreen
+import com.songlib.feature.song.presentor.view.screen.PresenterScreen
 import com.songlib.feature.selection.SelectionViewModel
 import com.songlib.feature.selection.view.SelectionScreen
 import com.songlib.feature.settings.SettingsViewModel

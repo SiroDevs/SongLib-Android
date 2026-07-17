@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.view
+package com.songlib.feature.song.presentor.view.screen
 
 import android.content.Intent
 import android.widget.Toast
@@ -35,11 +35,11 @@ import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.components.ChoosingListingSheet
 import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
 import com.songlib.feature.song.presentor.viewmodel.ReportUiState
-import com.songlib.feature.song.presentor.components.DemoOverlay
-import com.songlib.feature.song.presentor.components.LikeSongBtn
-import com.songlib.feature.song.presentor.components.PresentorMoreMenu
-import com.songlib.feature.song.presentor.components.PresentorFab
-import com.songlib.feature.song.presentor.components.ReportSongDialog
+import com.songlib.feature.song.presentor.view.components.DemoOverlay
+import com.songlib.feature.song.presentor.view.components.LikeSongBtn
+import com.songlib.feature.song.presentor.view.components.PresentorMoreMenu
+import com.songlib.feature.song.presentor.view.components.PresentorFab
+import com.songlib.feature.song.presentor.view.components.ReportSongDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

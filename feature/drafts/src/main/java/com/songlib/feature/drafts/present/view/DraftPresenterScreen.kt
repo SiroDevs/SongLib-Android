@@ -28,7 +28,7 @@ import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.drafts.present.viewmodel.DraftPresenterViewModel
-import com.songlib.feature.song.presentor.view.PresenterContent
+import com.songlib.feature.song.presentor.view.screen.PresenterContent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

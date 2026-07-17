@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.components
+package com.songlib.feature.song.presentor.view.components
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility

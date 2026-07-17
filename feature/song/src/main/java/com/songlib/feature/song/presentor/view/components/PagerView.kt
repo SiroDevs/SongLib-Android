@@ -1,4 +1,4 @@
-package com.songlib.feature.song.presentor.components
+package com.songlib.feature.song.presentor.view.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
