@@ -54,7 +54,7 @@ class SyncWorker @AssistedInject constructor(
                 Log.d(TAG, "Fetched ${books.size} books, syncing songs for $bookIds")
 
                 val since = prefsRepo.lastSinceDateIso.takeIf { it.isNotEmpty() }
-                songbkRepo.fetchAndSaveSongs(bookIds, since = since)
+                songbkRepo.fetchAndSaveSongs(bookIds)
             } else {
                 Log.w(TAG, "⚠️ No books returned – skipping song fetch")
             }

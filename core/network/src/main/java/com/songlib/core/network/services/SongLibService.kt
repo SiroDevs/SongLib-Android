@@ -38,8 +38,7 @@ interface SongLibService {
     suspend fun getSongsPage(
         @Path("bookIds") bookIds: String,
         @Query("page")   page: Int = 1,
-        @Query("limit")  limit: Int = 500,
-        @Query("since")  since: String? = null
+        @Query("limit")  limit: Int = 500
     ): PagedSongsResponse
 
     @GET("${ApiConstants.SONGS}/{songId}")
