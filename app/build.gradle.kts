@@ -32,22 +32,6 @@ android {
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField(
-            "String",
-            "PaystackSecretKey",
-            "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\""
-        )
-        buildConfigField(
-            "String",
-            "GoogleWebClientId",
-            "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\""
-        )
-        buildConfigField(
-            "String",
-            "SonglibApiKey",
-            "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\""
-        )
     }
 
     signingConfigs {

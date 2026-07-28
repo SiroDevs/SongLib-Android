@@ -15,7 +15,7 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.songlib.app.navigation.AppNavHost
+import com.songlib.navigation.AppNavHost
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.ThemeMode
 import com.songlib.core.data.repos.ThemeRepo

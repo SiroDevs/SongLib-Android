@@ -3,6 +3,7 @@ package com.songlib.core.network.di
 import com.songlib.core.network.services.PaystackService
 import com.songlib.core.network.services.SongLibService
 import com.songlib.core.common.utils.ApiConstants
+import com.songlib.core.network.BuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -22,12 +23,10 @@ object NetworkModule {
 
     @Provides
     @Reusable
-    fun provideOkHttpClient(
-        @Named("songlib_api_key") apiKey: String
-    ): OkHttpClient {
+    fun provideOkHttpClient(): OkHttpClient {
         val apiKeyInterceptor = Interceptor { chain ->
             val request = chain.request().newBuilder()
-                .addHeader("x-api-key", apiKey)
+                .addHeader("x-api-key", BuildConfig.SonglibApiKey)
                 .build()
             chain.proceed(request)
         }

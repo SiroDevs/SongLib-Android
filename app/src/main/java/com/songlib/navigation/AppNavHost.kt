@@ -1,4 +1,4 @@
-package com.songlib.app.navigation
+package com.songlib.navigation
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable

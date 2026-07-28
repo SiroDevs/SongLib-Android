@@ -13,6 +13,10 @@ if (localFile.exists()) {
 
 android {
     namespace = "com.songlib.core.network"
+
+    defaultConfig {
+        buildConfigField("String", "SonglibApiKey", "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\"")
+    }
 }
 
 dependencies {
