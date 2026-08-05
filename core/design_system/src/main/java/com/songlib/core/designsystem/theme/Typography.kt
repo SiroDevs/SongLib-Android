@@ -1,4 +1,4 @@
-package com.songlib.core.designsystem.theme
+package com.songlib.core.design_system.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

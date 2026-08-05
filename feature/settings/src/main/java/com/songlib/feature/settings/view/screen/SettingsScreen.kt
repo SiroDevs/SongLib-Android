@@ -28,8 +28,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.appThemeName
-import com.songlib.core.designsystem.theme.ThemeSelectorDialog
-import com.songlib.core.ui.MainViewModel
+import com.songlib.core.design_system.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.settings.viewmodel.SettingsViewModel
 import com.songlib.feature.settings.view.components.ConfirmResetDialog
@@ -38,9 +37,9 @@ import com.songlib.feature.settings.view.components.SettingsSectionTitle
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    mainViewModel: MainViewModel,
     settViewModel: SettingsViewModel,
     themeRepo: ThemeRepo,
+    onReset: () -> Unit,
 ) {
     val theme = themeRepo.selectedTheme
     var showThemeDialog by remember { mutableStateOf(false) }
@@ -53,7 +52,7 @@ fun SettingsScreen(
                 showResetDialog = false
                 settViewModel.clearData { success ->
                     if (success) {
-                        mainViewModel.reset()
+                        onReset()
                     }
                 }
             }

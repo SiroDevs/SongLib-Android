@@ -1,4 +1,4 @@
-package com.songlib.core.ui
+package com.songlib.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

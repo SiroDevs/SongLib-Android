@@ -14,7 +14,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.songlib.core.ui.MainViewModel
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.ThemeRepo
@@ -40,7 +39,7 @@ import com.songlib.feature.history.viewmodel.HistoryViewModel
 import com.songlib.feature.history.view.screen.HistoryScreen
 import com.songlib.feature.home.viewmodel.HomeViewModel
 import com.songlib.feature.home.view.screen.HomeScreen
-import com.songlib.feature.howitworks.view.HowItWorksScreen
+import com.songlib.feature.how_it_works.view.HowItWorksScreen
 import com.songlib.feature.listing.viewmodel.ListingViewModel
 import com.songlib.feature.listing.view.ListingScreen
 import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
@@ -53,6 +52,7 @@ import com.songlib.feature.settings.view.screen.SettingsScreen
 import com.songlib.feature.settings.view.screen.UserProfileScreen
 import com.songlib.feature.song.editor.viewmodel.EditorViewModel
 import com.songlib.feature.song.editor.view.EditorScreen
+import com.songlib.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -62,7 +62,10 @@ fun AppNavHost(
     themeRepo: ThemeRepo,
     prefsRepo: PreferencesRepo,
     mainViewModel: MainViewModel,
-    onSignInRequest: (callback: (googleId: String, email: String, name: String, photo: String) -> Unit) -> Unit,
+    onSignInRequest: (
+        callback: (googleId: String, email: String, name: String, photo: String) -> Unit,
+        onError: (message: String) -> Unit
+    ) -> Unit,
 ) {
     val isReady by mainViewModel.isReady.collectAsState()
     val destination by mainViewModel.destination.collectAsState()
@@ -184,9 +187,9 @@ fun AppNavHost(
             val settViewModel: SettingsViewModel = hiltViewModel()
             SettingsScreen(
                 navController = navController,
-                mainViewModel = mainViewModel,
                 settViewModel = settViewModel,
                 themeRepo = themeRepo,
+                onReset = { mainViewModel.reset() },
             )
         }
 

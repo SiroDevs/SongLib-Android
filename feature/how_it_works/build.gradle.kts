@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.howitworks"
+    namespace = "com.songlib.feature.how_it_works"
 }
 
 dependencies {

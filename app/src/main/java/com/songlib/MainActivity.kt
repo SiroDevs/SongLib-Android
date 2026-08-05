@@ -17,8 +17,8 @@ import com.songlib.app.navigation.AppNavHost
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.ThemeMode
 import com.songlib.core.data.repos.ThemeRepo
-import com.songlib.core.designsystem.theme.AppTheme
-import com.songlib.core.ui.MainViewModel
+import com.songlib.core.design_system.theme.AppTheme
+import com.songlib.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,8 +34,15 @@ class MainActivity : ComponentActivity() {
     private val credentialManager by lazy { CredentialManager.create(this) }
 
     fun launchSignIn(
-        callback: (googleId: String, email: String, name: String, photo: String) -> Unit
+        callback: (googleId: String, email: String, name: String, photo: String) -> Unit,
+        onError: (message: String) -> Unit = {}
     ) {
+        if (BuildConfig.GoogleWebClientId.isBlank()) {
+            android.util.Log.e("SignIn", "GoogleWebClientId is blank — check local.properties (GOOGLE_WEB_CLIENT_ID)")
+            onError("Google sign-in isn't configured correctly. Please contact support.")
+            return
+        }
+
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
             .setServerClientId(BuildConfig.GoogleWebClientId)
@@ -64,9 +71,16 @@ class MainActivity : ComponentActivity() {
                         googleIdTokenCredential.displayName ?: "",
                         googleIdTokenCredential.profilePictureUri?.toString() ?: ""
                     )
+                } else {
+                    android.util.Log.w("SignIn", "Unexpected credential type: ${credential.type}")
+                    onError("Sign-in returned an unexpected credential type.")
                 }
             } catch (e: GetCredentialException) {
-
+                android.util.Log.e("SignIn", "Google sign-in failed: ${e.javaClass.simpleName} ${e.message}", e)
+                onError(e.message ?: "Google sign-in was cancelled or failed.")
+            } catch (e: Exception) {
+                android.util.Log.e("SignIn", "Unexpected error during sign-in", e)
+                onError("Something went wrong signing in. Please try again.")
             }
         }
     }
@@ -95,7 +109,7 @@ class MainActivity : ComponentActivity() {
                     themeRepo = themeRepo,
                     prefsRepo = prefsRepo,
                     mainViewModel = mainViewModel,
-                    onSignInRequest = ::launchSignIn
+                    onSignInRequest = { onResult, onError -> launchSignIn(onResult, onError) }
                 )
             }
         }

@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 868
-        versionName = "1.0.868"
+        versionCode = 870
+        versionName = "1.0.870"
         minSdk = 26
         targetSdk = 37
 
@@ -104,7 +104,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:database"))
-    implementation(project(":core:designsystem"))
+    implementation(project(":core:design_system"))
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
 
@@ -119,7 +119,7 @@ dependencies {
     implementation(project(":feature:song"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:help"))
-    implementation(project(":feature:howitworks"))
+    implementation(project(":feature:how_it_works"))
     implementation(project(":feature:donation"))
 
     // Navigation
@@ -130,9 +130,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-
-    // Monitoring
-    implementation(libs.android.billing)
     implementation(libs.androidx.concurrent.futures)
 
     // WorkManager

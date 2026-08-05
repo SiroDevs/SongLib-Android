@@ -22,7 +22,7 @@ class UserProfileViewModel @Inject constructor(
 ) : ViewModel() {
 
     sealed interface AuthState {
-        object Idle    : AuthState
+        object Idle : AuthState
         object Loading : AuthState
         data class Success(val userId: Int) : AuthState
         data class Error(val message: String) : AuthState
@@ -31,17 +31,16 @@ class UserProfileViewModel @Inject constructor(
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    val isLoggedIn:   Boolean get() = prefsRepo.isLoggedIn
-    val userName:     String  get() = prefsRepo.loggedInName
-    val userEmail:    String  get() = prefsRepo.loggedInEmail
-    val userPhotoUrl: String  get() = prefsRepo.loggedInPhotoUrl
+    val isLoggedIn: Boolean get() = prefsRepo.isLoggedIn
+    val userName: String get() = prefsRepo.loggedInName
+    val userEmail: String get() = prefsRepo.loggedInEmail
+    val userPhotoUrl: String get() = prefsRepo.loggedInPhotoUrl
 
     fun loginOrRegister(googleId: String, email: String, name: String, photoUrl: String) {
         viewModelScope.launch {
             _authState.value = AuthState.Loading
             try {
                 val userId = userRepo.loginOrRegister(googleId, email, name, photoUrl)
-                // Post-login sync
                 draftRepo.syncDraftsToRemote(userId)
                 editorRepo.syncEditsToRemote(userId)
                 editorRepo.syncEditStatuses(userId)
@@ -51,6 +50,10 @@ class UserProfileViewModel @Inject constructor(
                 _authState.value = AuthState.Error(e.message ?: "Login failed")
             }
         }
+    }
+
+    fun signInFailed(message: String) {
+        _authState.value = AuthState.Error(message)
     }
 
     fun signOut() {

@@ -43,7 +43,10 @@ import com.songlib.feature.settings.viewmodel.UserProfileViewModel
 fun UserProfileScreen(
     navController: NavHostController,
     viewModel: UserProfileViewModel = hiltViewModel(),
-    onSignInRequested: (onResult: (googleId: String, email: String, name: String, photo: String) -> Unit) -> Unit,
+    onSignInRequested: (
+        onResult: (googleId: String, email: String, name: String, photo: String) -> Unit,
+        onError: (message: String) -> Unit
+    ) -> Unit,
 ) {
     val authState by viewModel.authState.collectAsState()
     val context = LocalContext.current
@@ -142,9 +145,12 @@ fun UserProfileScreen(
 
                 Button(
                     onClick = {
-                        onSignInRequested { googleId, email, name, photo ->
-                            viewModel.loginOrRegister(googleId, email, name, photo)
-                        }
+                        onSignInRequested(
+                            { googleId, email, name, photo ->
+                                viewModel.loginOrRegister(googleId, email, name, photo)
+                            },
+                            { message -> viewModel.signInFailed(message) }
+                        )
                     },
                     enabled = !isLoading
                 ) {

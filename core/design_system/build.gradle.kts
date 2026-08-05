@@ -3,13 +3,12 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.core.designsystem"
+    namespace = "com.songlib.core.design_system"
 }
 
 dependencies {
     api(project(":core:data"))
-
-
+    
     api(libs.material3)
     api(libs.androidx.material3)
     api(libs.androidx.ui)

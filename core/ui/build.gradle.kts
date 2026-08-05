@@ -10,7 +10,7 @@ android {
 dependencies {
     api(project(":core:common"))
     api(project(":core:database"))
-    api(project(":core:designsystem"))
+    api(project(":core:design_system"))
 
     implementation(libs.androidx.compose.livedata)
     implementation(libs.androidx.ui.tooling.preview)

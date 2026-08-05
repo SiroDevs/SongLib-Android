@@ -19,7 +19,6 @@ ktor = "3.5.0"
 kotlinx-serialization = "1.11.0"
 material3 = "1.4.0"
 sentry = "6.12.0"
-billing = "9.0.0"
 compiler = "3.2.0-alpha11"
 foundation = "1.11.2"
 hilt = "2.59.2"
@@ -71,7 +70,6 @@ ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-android-billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 androidx-compiler = { group = "androidx.databinding", name = "compiler", version.ref = "compiler" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }

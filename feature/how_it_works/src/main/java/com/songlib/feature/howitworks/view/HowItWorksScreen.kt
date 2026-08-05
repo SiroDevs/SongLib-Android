@@ -1,4 +1,4 @@
-package com.songlib.feature.howitworks.view
+package com.songlib.feature.how_it_works.view
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
