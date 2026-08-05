@@ -73,7 +73,6 @@ This guide covers everything you need to get the Android app built and running.
 | Background sync | WorkManager |
 | Authentication | Google Sign-In via Credential Manager API |
 | Error monitoring | Sentry |
-| Payments | PesaPal (donation flow) |
 | Min SDK | 26 (Android 8.0) |
 | Target / Compile SDK | 37 |
 
@@ -88,8 +87,6 @@ Before you start, make sure you have the following:
 - **Android SDK** with API 26–37 installed (the SDK Manager inside Android Studio handles this)
 - **A SongLib API key** — contact the maintainer to get one. The key authenticates write operations against the live API.
 - **A Google Cloud project** with an OAuth 2.0 web client ID configured for Google Sign-In, and the corresponding Firebase project with `google-services.json` downloaded
-
-The Sentry and PesaPal keys are optional for most contributors — the app builds and runs without them.
 
 ---
 

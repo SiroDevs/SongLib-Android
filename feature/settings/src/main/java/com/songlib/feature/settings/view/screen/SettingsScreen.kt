@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Swipe
 import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -75,7 +76,12 @@ fun SettingsScreen(
             AppTopBar(
                 title = "App Settings",
                 showGoBack = true,
-                onNavIconClick = { navController.popBackStack() }
+                onNavIconClick = { navController.popBackStack() },
+                actions = {
+                    IconButton(onClick = { navController.navigate(Routes.USER_PROFILE) }) {
+                        Icon(Icons.Default.AccountCircle, "Profile")
+                    }
+                }
             )
         }
     ) { padding ->
@@ -121,17 +127,6 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            SettingsSectionTitle("Manage Account")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
-                headlineContent = { Text("Your Profile") },
-                supportingContent = { Text("Manage your Profile") },
-                modifier = Modifier.clickable {
-                    navController.navigate(Routes.USER_PROFILE)
-                }
-            )
-            HorizontalDivider()
-
             SettingsSectionTitle("SongBook Selection")
             ListItem(
                 leadingContent = { Icon(Icons.Default.EditNote, "Reset") },
@@ -140,12 +135,6 @@ fun SettingsScreen(
                 modifier = Modifier.clickable {
                     settViewModel.updateSelection(true)
                     navController.navigate(Routes.SELECTION) {
-                        // NOTE: popUpTo(0) resolves to the Int overload, and this graph
-                        // uses string routes exclusively — there is no destination with
-                        // integer id 0, so that call crashed with
-                        // "Navigation destination with ID 0 is unknown to this NavController".
-                        // popUpTo(navController.graph.id) is the correct way to clear the
-                        // entire back stack down to the graph root.
                         popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true
                     }
