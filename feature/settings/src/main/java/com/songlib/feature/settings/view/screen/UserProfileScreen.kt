@@ -16,13 +16,11 @@ import androidx.compose.material.icons.filled.Login
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.songlib.core.common.utils.Routes
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.settings.viewmodel.UserProfileViewModel
 
@@ -56,41 +55,59 @@ fun UserProfileScreen(
             Toast.makeText(context, "Welcome, ${viewModel.userName}! 👋", Toast.LENGTH_SHORT).show()
         }
     }
+    LaunchedEffect(viewModel.isLoggedIn) {
+        if (!viewModel.isLoggedIn) {
+            onSignInRequested(
+                { googleId, email, name, photo ->
+                    viewModel.loginOrRegister(googleId, email, name, photo)
+                },
+                { message -> viewModel.signInFailed(message) }
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
             AppTopBar(
-                title      = "Your Profile",
-                tagline    = "Manage your Profile",
+                title = "Your Profile",
+                tagline = "Manage your Profile",
                 showGoBack = true,
-                onNavIconClick = { navController.popBackStack() }
+                onNavIconClick = { navController.popBackStack() },
+                actions = {
+                    if (viewModel.isLoggedIn) {
+                        IconButton(onClick = { viewModel.signOut() }) {
+                            Icon(Icons.Default.Logout, "Logout")
+                        }
+                    }
+                }
             )
         }
     ) { padding ->
         Column(
-            modifier            = Modifier.padding(padding).fillMaxSize(),
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             if (viewModel.isLoggedIn) {
-                // ── Logged-in state ─────────────────────────────────────────
                 Spacer(Modifier.height(32.dp))
 
                 if (viewModel.userPhotoUrl.isNotEmpty()) {
                     AsyncImage(
-                        model             = viewModel.userPhotoUrl,
+                        model = viewModel.userPhotoUrl,
                         contentDescription = "Profile photo",
-                        modifier          = Modifier
+                        modifier = Modifier
                             .size(88.dp)
                             .clip(CircleShape)
                     )
                     Spacer(Modifier.height(16.dp))
                 } else {
                     Icon(
-                        imageVector       = Icons.Default.AccountCircle,
+                        imageVector = Icons.Default.AccountCircle,
                         contentDescription = null,
-                        modifier          = Modifier.size(88.dp),
-                        tint              = MaterialTheme.colorScheme.onSurfaceVariant
+                        modifier = Modifier.size(88.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.height(16.dp))
                 }
@@ -98,46 +115,28 @@ fun UserProfileScreen(
                 Text(viewModel.userName, style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    text  = viewModel.userEmail,
+                    text = viewModel.userEmail,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Spacer(Modifier.height(32.dp))
-                HorizontalDivider()
-
-                ListItem(
-                    headlineContent  = { Text("Sign Out") },
-                    leadingContent   = { Icon(Icons.Default.Logout, null) },
-                    modifier         = Modifier.then(
-                        Modifier.padding(0.dp)
-                    ).let {
-                        it // clickable added inline below
-                    }
-                )
-                TextButton(onClick = { viewModel.signOut() }) {
-                    Icon(Icons.Default.Logout, null)
-                    Spacer(Modifier.width(8.dp))
-                    Text("Sign Out")
-                }
-
             } else {
-                // ── Guest state ─────────────────────────────────────────────
                 Spacer(Modifier.height(48.dp))
 
                 Icon(
-                    imageVector       = Icons.Default.AccountCircle,
+                    imageVector = Icons.Default.AccountCircle,
                     contentDescription = null,
-                    modifier          = Modifier.size(88.dp),
-                    tint              = MaterialTheme.colorScheme.onSurfaceVariant
+                    modifier = Modifier.size(88.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(Modifier.height(20.dp))
                 Text(
-                    text      = "Sign in to sync your likes,\nlistings, feature, and edits\nacross devices.",
+                    text = "Sign in to sync your likes,\nlistings, feature, and edits\nacross devices.",
                     textAlign = TextAlign.Center,
-                    style     = MaterialTheme.typography.bodyMedium,
-                    color     = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier  = Modifier.padding(horizontal = 32.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(horizontal = 32.dp)
                 )
                 Spacer(Modifier.height(28.dp))
 
@@ -166,7 +165,7 @@ fun UserProfileScreen(
                 if (authState is UserProfileViewModel.AuthState.Error) {
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        text  = (authState as UserProfileViewModel.AuthState.Error).message,
+                        text = (authState as UserProfileViewModel.AuthState.Error).message,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall
                     )
