@@ -13,6 +13,8 @@ import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.songlib.app.navigation.AppNavHost
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.ThemeMode
@@ -32,20 +34,22 @@ class MainActivity : ComponentActivity() {
     lateinit var prefsRepo: PreferencesRepo
 
     private val credentialManager by lazy { CredentialManager.create(this) }
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     fun launchSignIn(
         callback: (googleId: String, email: String, name: String, photo: String) -> Unit,
         onError: (message: String) -> Unit = {}
     ) {
-        if (BuildConfig.GoogleWebClientId.isBlank()) {
-            android.util.Log.e("SignIn", "GoogleWebClientId is blank — check local.properties (GOOGLE_WEB_CLIENT_ID)")
+        val webClientId = getString(R.string.default_web_client_id)
+        if (webClientId.isBlank()) {
+            android.util.Log.e("SignIn", "default_web_client_id is blank — check app/google-services.json")
             onError("Google sign-in isn't configured correctly. Please contact support.")
             return
         }
 
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(BuildConfig.GoogleWebClientId)
+            .setServerClientId(webClientId)
             .setAutoSelectEnabled(false)
             .build()
 
@@ -65,12 +69,31 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val googleIdTokenCredential =
                         GoogleIdTokenCredential.createFrom(credential.data)
-                    callback(
-                        googleIdTokenCredential.id,
-                        googleIdTokenCredential.id,
-                        googleIdTokenCredential.displayName ?: "",
-                        googleIdTokenCredential.profilePictureUri?.toString() ?: ""
+
+                    val firebaseCredential = GoogleAuthProvider.getCredential(
+                        googleIdTokenCredential.idToken,
+                        null
                     )
+                    firebaseAuth.signInWithCredential(firebaseCredential)
+                        .addOnSuccessListener { authResult ->
+                            val firebaseUser = authResult.user
+                            if (firebaseUser == null) {
+                                onError("Sign-in succeeded but no user was returned.")
+                                return@addOnSuccessListener
+                            }
+                            callback(
+                                firebaseUser.email ?: googleIdTokenCredential.id,
+                                firebaseUser.email ?: googleIdTokenCredential.id,
+                                firebaseUser.displayName ?: googleIdTokenCredential.displayName ?: "",
+                                firebaseUser.photoUrl?.toString()
+                                    ?: googleIdTokenCredential.profilePictureUri?.toString()
+                                    ?: ""
+                            )
+                        }
+                        .addOnFailureListener { e ->
+                            android.util.Log.e("SignIn", "Firebase signInWithCredential failed", e)
+                            onError(e.message ?: "Google sign-in failed. Please try again.")
+                        }
                 } else {
                     android.util.Log.w("SignIn", "Unexpected credential type: ${credential.type}")
                     onError("Sign-in returned an unexpected credential type.")

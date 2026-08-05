@@ -1,6 +1,7 @@
 package com.songlib.core.data.repos
 
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.songlib.core.network.dtos.UserDto
 import com.songlib.core.network.services.SongLibService
@@ -90,5 +91,8 @@ class UserRepo @Inject constructor(
         }
     }
 
-    fun signOut() = prefsRepo.clearUser()
+    fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        prefsRepo.clearUser()
+    }
 }

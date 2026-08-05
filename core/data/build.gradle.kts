@@ -22,4 +22,7 @@ dependencies {
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
     implementation(libs.squareup.okhttp3.logging)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 }
