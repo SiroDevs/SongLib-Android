@@ -5,13 +5,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Swipe
 import androidx.compose.material.icons.filled.VolunteerActivism
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +46,7 @@ fun SettingsScreen(
     onReset: () -> Unit,
 ) {
     val theme = themeRepo.selectedTheme
+    var showMoreMenu by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
@@ -78,8 +82,22 @@ fun SettingsScreen(
                 showGoBack = true,
                 onNavIconClick = { navController.popBackStack() },
                 actions = {
-                    IconButton(onClick = { navController.navigate(Routes.USER_PROFILE) }) {
-                        Icon(Icons.Default.AccountCircle, "Profile")
+                    IconButton(onClick = { showMoreMenu = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "More")
+                    }
+
+                    DropdownMenu(
+                        expanded = showMoreMenu,
+                        onDismissRequest = { showMoreMenu = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Select Afresh") },
+                            leadingIcon = { Icon(Icons.Default.DeleteForever, null) },
+                            onClick = {
+                                showMoreMenu = false
+                                showResetDialog = true
+                            }
+                        )
                     }
                 }
             )

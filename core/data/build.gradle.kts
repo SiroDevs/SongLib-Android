@@ -14,6 +14,8 @@ if (localFile.exists()) {
 android {
     namespace = "com.songlib.core.data"
 
+    buildFeatures { buildConfig = true }
+
     defaultConfig {
         buildConfigField("String", "PaystackSecretKey", "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\"")
     }

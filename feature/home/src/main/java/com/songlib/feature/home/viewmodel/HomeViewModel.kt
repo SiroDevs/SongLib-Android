@@ -6,13 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.songlib.core.common.entity.AuthState
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.SongUtils
+import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
+import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.data.worker.SyncWorker
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
@@ -42,8 +45,13 @@ class HomeViewModel @Inject constructor(
     private val prefsRepo: PreferencesRepo,
     private val trackingRepo: TrackingRepo,
     private val editorRepo: EditorRepo,
+    private val draftRepo: DraftRepo,
+    private val userRepo: UserRepo,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
+
+    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
+    val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -332,5 +340,30 @@ class HomeViewModel @Inject constructor(
 
     fun recoverIncompleteLibrary() {
         prefsRepo.isDataLoaded = false
+    }
+
+    fun loginOrRegister(googleId: String, email: String, name: String, photoUrl: String) {
+        viewModelScope.launch {
+            _authState.value = AuthState.Loading
+            try {
+                val userId = userRepo.loginOrRegister(googleId, email, name, photoUrl)
+                draftRepo.syncDraftsToRemote(userId)
+                editorRepo.syncEditsToRemote(userId)
+                editorRepo.syncEditStatuses(userId)
+                userRepo.syncBookSelection(userId)
+                _authState.value = AuthState.Success(userId)
+            } catch (e: Exception) {
+                _authState.value = AuthState.Error(e.message ?: "Login failed")
+            }
+        }
+    }
+
+    fun signInFailed(message: String) {
+        _authState.value = AuthState.Error(message)
+    }
+
+    fun signOut() {
+        userRepo.signOut()
+        _authState.value = AuthState.Idle
     }
 }

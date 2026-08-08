@@ -105,7 +105,8 @@ fun AppNavHost(
             HomeScreen(
                 navController = navController,
                 homeViewModel = homeViewModel,
-                prefsRepo = prefsRepo
+                prefsRepo = prefsRepo,
+                onSignInRequested = onSignInRequest
             )
         }
 

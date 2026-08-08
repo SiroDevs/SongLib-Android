@@ -121,7 +121,7 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 
-    // Google Sign-In (Credential Manager still does the account picker / ID token fetch;
+    // Google Sign-In (Credential Manager)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.google.identity.googleid)
