@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.songlib.feature.user"
+    namespace = "com.songlib.feature.account"
 }
 
 dependencies {

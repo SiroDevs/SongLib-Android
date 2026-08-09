@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.database.model.ListingUi
@@ -47,13 +49,11 @@ fun HomeAppBar(
     onShowListingSheet: () -> Unit,
     onDeleteListings: () -> Unit,
     onAddListing: () -> Unit,
-    viewModel: HomeViewModel,
     navController: NavHostController,
     prefsRepo: PreferencesRepo,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
-    val hasHistory by viewModel.hasHistory.collectAsState()
 
     AppTopBar(
         title = title,
@@ -75,12 +75,6 @@ fun HomeAppBar(
                         Icon(Icons.Default.Cast, contentDescription = "Casting to PC")
                     }
 
-                    if (selectedTab == HomeTab.Search) {
-                        IconButton(onClick = { navController.navigate(Routes.DRAFTS) }) {
-                            Icon(Icons.Default.EditNote, contentDescription = "Drafts")
-                        }
-                    }
-
                     HomeUserProfile(
                         prefsRepo = prefsRepo,
                         navController = navController,
@@ -93,7 +87,6 @@ fun HomeAppBar(
                     HomeOverflowMenu(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
-                        hasHistory = hasHistory,
                         navController = navController,
                     )
                 }
@@ -136,10 +129,19 @@ fun HomeUserProfile(
     prefsRepo: PreferencesRepo,
     navController: NavHostController,
 ) {
-    IconButton(onClick = { navController.navigate(Routes.USER) }) {
-        if (prefsRepo.isLoggedIn && prefsRepo.loggedInPhotoUrl.isNotEmpty()) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    var isLoggedIn by remember { mutableStateOf(prefsRepo.isLoggedIn) }
+    var photoUrl by remember { mutableStateOf(prefsRepo.loggedInPhotoUrl) }
+
+    LaunchedEffect(backStackEntry) {
+        isLoggedIn = prefsRepo.isLoggedIn
+        photoUrl = prefsRepo.loggedInPhotoUrl
+    }
+
+    IconButton(onClick = { navController.navigate(Routes.ACCOUNT) }) {
+        if (isLoggedIn && photoUrl.isNotEmpty()) {
             AsyncImage(
-                model = prefsRepo.loggedInPhotoUrl,
+                model = photoUrl,
                 contentDescription = "Profile photo",
                 modifier = Modifier
                     .size(25.dp)

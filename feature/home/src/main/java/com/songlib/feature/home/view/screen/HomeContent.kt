@@ -29,7 +29,7 @@ import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.viewmodel.HomeViewModel
-import com.songlib.feature.home.view.components.ChoosingListingSheet
+import com.songlib.core.ui.components.action.ChoosingListingSheet
 import com.songlib.feature.home.view.components.HomeAppBar
 import com.songlib.feature.home.view.components.HomeTab
 import com.songlib.feature.home.view.components.homeTabs
@@ -130,7 +130,6 @@ fun HomeContent(
                 onShowListingSheet = { showListingSheet = true },
                 onDeleteListings = { viewModel.deleteListings(selectedListings) },
                 onAddListing = { showAddListingDialog = true },
-                viewModel = viewModel,
                 navController = navController,
                 prefsRepo = prefsRepo,
             )

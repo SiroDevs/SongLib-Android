@@ -48,8 +48,8 @@ import com.songlib.feature.selection.viewmodel.SelectionViewModel
 import com.songlib.feature.selection.view.screen.SelectionScreen
 import com.songlib.feature.settings.viewmodel.SettingsViewModel
 import com.songlib.feature.settings.view.screen.SettingsScreen
-import com.songlib.feature.user.viewmodel.UserViewModel
-import com.songlib.feature.user.view.screen.UserScreen
+import com.songlib.feature.account.viewmodel.AccountViewModel
+import com.songlib.feature.account.view.screen.AccountScreen
 import com.songlib.feature.song.editor.viewmodel.EditorViewModel
 import com.songlib.feature.song.editor.view.EditorScreen
 import com.songlib.viewmodel.MainViewModel
@@ -252,9 +252,9 @@ fun AppNavHost(
             HistoryScreen(navController = navController, viewModel = viewModel)
         }
 
-        composable(Routes.USER) {
-            val viewModel: UserViewModel = hiltViewModel()
-            UserScreen(
+        composable(Routes.ACCOUNT) {
+            val viewModel: AccountViewModel = hiltViewModel()
+            AccountScreen(
                 navController = navController,
                 viewModel = viewModel,
                 onSignInRequested = onSignInRequest

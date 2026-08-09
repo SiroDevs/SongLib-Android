@@ -1,4 +1,4 @@
-package com.songlib.feature.user.viewmodel
+package com.songlib.feature.account.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,22 +14,38 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class UserProfileState(
+    val isLoggedIn: Boolean = false,
+    val isAdmin: Boolean = false,
+    val name: String = "",
+    val email: String = "",
+    val photoUrl: String = "",
+)
+
 @HiltViewModel
-class UserViewModel @Inject constructor(
+class AccountViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val prefsRepo: PreferencesRepo,
     private val draftRepo: DraftRepo,
     private val editorRepo: EditorRepo,
 ) : ViewModel() {
-
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
-    val isLoggedIn: Boolean get() = prefsRepo.isLoggedIn
-    val isAdmin: Boolean get() = prefsRepo.isAdmin
-    val userName: String get() = prefsRepo.loggedInName
-    val userEmail: String get() = prefsRepo.loggedInEmail
-    val userPhotoUrl: String get() = prefsRepo.loggedInPhotoUrl
+    private val _profile = MutableStateFlow(readProfileFromPrefs())
+    val profile: StateFlow<UserProfileState> = _profile.asStateFlow()
+
+    private fun readProfileFromPrefs() = UserProfileState(
+        isLoggedIn = prefsRepo.isLoggedIn,
+        isAdmin = prefsRepo.isAdmin,
+        name = prefsRepo.loggedInName,
+        email = prefsRepo.loggedInEmail,
+        photoUrl = prefsRepo.loggedInPhotoUrl,
+    )
+
+    private fun refreshProfile() {
+        _profile.value = readProfileFromPrefs()
+    }
 
     fun loginOrRegister(googleId: String, email: String, name: String, photoUrl: String) {
         viewModelScope.launch {
@@ -40,6 +56,7 @@ class UserViewModel @Inject constructor(
                 editorRepo.syncEditsToRemote(userId)
                 editorRepo.syncEditStatuses(userId)
                 userRepo.syncBookSelection(userId)
+                refreshProfile()
                 _authState.value = AuthState.Success(userId)
             } catch (e: Exception) {
                 _authState.value = AuthState.Error(e.message ?: "Login failed")
@@ -53,6 +70,7 @@ class UserViewModel @Inject constructor(
 
     fun signOut() {
         userRepo.signOut()
+        refreshProfile()
         _authState.value = AuthState.Idle
     }
 }

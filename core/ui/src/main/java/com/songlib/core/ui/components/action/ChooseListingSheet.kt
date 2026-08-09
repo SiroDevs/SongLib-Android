@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.core.ui.components.action
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

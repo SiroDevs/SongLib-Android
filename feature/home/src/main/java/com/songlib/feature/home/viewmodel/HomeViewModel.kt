@@ -85,9 +85,6 @@ class HomeViewModel @Inject constructor(
     private val _selectedListings = MutableStateFlow<Set<ListingUi>>(emptySet())
     val selectedListings: StateFlow<Set<ListingUi>> = _selectedListings.asStateFlow()
 
-    private val _hasHistory = MutableStateFlow(false)
-    val hasHistory: StateFlow<Boolean> = _hasHistory.asStateFlow()
-
     private var dataFetched = false
 
     private companion object {
@@ -142,7 +139,6 @@ class HomeViewModel @Inject constructor(
         _selectedBook.value = -1
         _filtered.value = _songs.value
         _likes.value = _songs.value.filter { it.liked }
-        _hasHistory.value = trackingRepo.fetchHistories().isNotEmpty()
     }
 
     private fun observeInstallSyncWorker() {
@@ -228,7 +224,6 @@ class HomeViewModel @Inject constructor(
         if (qry.isBlank()) return
         viewModelScope.launch {
             trackingRepo.recordSearch(qry)
-            _hasHistory.value = true
         }
     }
 

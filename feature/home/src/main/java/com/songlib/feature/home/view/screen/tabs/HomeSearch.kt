@@ -39,7 +39,7 @@ import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.viewmodel.HomeViewModel
-import com.songlib.feature.home.view.components.ChoosingListingSheet
+import com.songlib.core.ui.components.action.ChoosingListingSheet
 import com.songlib.feature.home.view.components.DemoOverlay
 import com.songlib.feature.home.view.components.DemoTargetBounds
 import com.songlib.feature.home.view.components.DialPad

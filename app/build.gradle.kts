@@ -93,6 +93,7 @@ dependencies {
     implementation(project(":core:ui"))
 
     // Feature modules
+    implementation(project(":feature:account"))
     implementation(project(":feature:casting"))
     implementation(project(":feature:selection"))
     implementation(project(":feature:home"))
@@ -103,7 +104,6 @@ dependencies {
     implementation(project(":feature:song"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:help"))
-    implementation(project(":feature:user"))
     implementation(project(":feature:how_it_works"))
     implementation(project(":feature:donation"))
 
