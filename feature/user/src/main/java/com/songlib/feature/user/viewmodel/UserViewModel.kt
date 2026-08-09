@@ -1,7 +1,8 @@
-package com.songlib.feature.settings.viewmodel
+package com.songlib.feature.user.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.songlib.core.common.entity.AuthState
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PreferencesRepo
@@ -14,24 +15,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UserProfileViewModel @Inject constructor(
+class UserViewModel @Inject constructor(
     private val userRepo: UserRepo,
     private val prefsRepo: PreferencesRepo,
     private val draftRepo: DraftRepo,
     private val editorRepo: EditorRepo,
 ) : ViewModel() {
 
-    sealed interface AuthState {
-        object Idle : AuthState
-        object Loading : AuthState
-        data class Success(val userId: Int) : AuthState
-        data class Error(val message: String) : AuthState
-    }
-
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
     val isLoggedIn: Boolean get() = prefsRepo.isLoggedIn
+    val isAdmin: Boolean get() = prefsRepo.isAdmin
     val userName: String get() = prefsRepo.loggedInName
     val userEmail: String get() = prefsRepo.loggedInEmail
     val userPhotoUrl: String get() = prefsRepo.loggedInPhotoUrl

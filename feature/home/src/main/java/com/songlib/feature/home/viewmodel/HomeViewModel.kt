@@ -6,16 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.songlib.core.common.entity.AuthState
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.SongUtils
-import com.songlib.core.data.repos.DraftRepo
-import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
-import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.data.worker.SyncWorker
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
@@ -44,14 +40,8 @@ class HomeViewModel @Inject constructor(
     private val listRepo: ListingRepo,
     private val prefsRepo: PreferencesRepo,
     private val trackingRepo: TrackingRepo,
-    private val editorRepo: EditorRepo,
-    private val draftRepo: DraftRepo,
-    private val userRepo: UserRepo,
     @ApplicationContext private val context: Context,
 ) : ViewModel() {
-
-    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
-    val authState: StateFlow<AuthState> = _authState.asStateFlow()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -97,9 +87,6 @@ class HomeViewModel @Inject constructor(
 
     private val _hasHistory = MutableStateFlow(false)
     val hasHistory: StateFlow<Boolean> = _hasHistory.asStateFlow()
-
-    private val _hasEdits = MutableStateFlow(false)
-    val hasEdits: StateFlow<Boolean> = _hasEdits.asStateFlow()
 
     private var dataFetched = false
 
@@ -156,9 +143,6 @@ class HomeViewModel @Inject constructor(
         _filtered.value = _songs.value
         _likes.value = _songs.value.filter { it.liked }
         _hasHistory.value = trackingRepo.fetchHistories().isNotEmpty()
-
-        val userId = prefsRepo.loggedInUserId
-        if (userId > 0) _hasEdits.value = editorRepo.hasEdits(userId)
     }
 
     private fun observeInstallSyncWorker() {
@@ -166,7 +150,7 @@ class HomeViewModel @Inject constructor(
             if (_songs.value.isEmpty()) _uiState.tryEmit(UiState.Loading)
             try {
                 val result = withTimeoutOrNull(SYNC_OBSERVE_TIMEOUT_MS) {
-                    WorkManager.Companion.getInstance(context)
+                    WorkManager.getInstance(context)
                         .getWorkInfosForUniqueWorkFlow(SyncWorker.Companion.INSTALL_SYNC_WORK_NAME)
                         .collect { workInfoList ->
                             val info = workInfoList.firstOrNull() ?: return@collect
@@ -191,8 +175,7 @@ class HomeViewModel @Inject constructor(
                                     if (_songs.value.isEmpty()) _uiState.tryEmit(UiState.Loading)
                                 }
 
-                                else -> { /* other states */
-                                }
+                                else -> {}
                             }
                         }
                 }
@@ -283,7 +266,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveListItemSuspend(parent: ListingUi, song: Int) {
+    private fun saveListItemSuspend(parent: ListingUi, song: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             saveListItemSuspend(parent, song)
             _listings.value = listRepo.fetchListings(0)
@@ -313,57 +296,5 @@ class HomeViewModel @Inject constructor(
     }
 
     fun checkAndHandleNewListing(): Boolean = listings.value.isNotEmpty()
-
-    fun clearData(onComplete: (Boolean) -> Unit) {
-        _uiState.tryEmit(UiState.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                songbkRepo.deleteAllData()
-                listRepo.deleteAllListings()
-                withContext(Dispatchers.Main) {
-                    prefsRepo.resetAppData()
-                    _books.value = emptyList()
-                    _songs.value = emptyList()
-                    _filtered.value = emptyList()
-                    _likes.value = emptyList()
-                    _listings.value = emptyList()
-                    _uiState.tryEmit(UiState.Loaded)
-                }
-                onComplete(true)
-            } catch (e: Exception) {
-                _uiState.tryEmit(UiState.Error("Error clearing data"))
-                Log.e("HomeViewModel", "Error clearing data", e)
-                onComplete(false)
-            }
-        }
-    }
-
-    fun recoverIncompleteLibrary() {
-        prefsRepo.isDataLoaded = false
-    }
-
-    fun loginOrRegister(googleId: String, email: String, name: String, photoUrl: String) {
-        viewModelScope.launch {
-            _authState.value = AuthState.Loading
-            try {
-                val userId = userRepo.loginOrRegister(googleId, email, name, photoUrl)
-                draftRepo.syncDraftsToRemote(userId)
-                editorRepo.syncEditsToRemote(userId)
-                editorRepo.syncEditStatuses(userId)
-                userRepo.syncBookSelection(userId)
-                _authState.value = AuthState.Success(userId)
-            } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.message ?: "Login failed")
-            }
-        }
-    }
-
-    fun signInFailed(message: String) {
-        _authState.value = AuthState.Error(message)
-    }
-
-    fun signOut() {
-        userRepo.signOut()
-        _authState.value = AuthState.Idle
-    }
+    fun recoverIncompleteLibrary() { prefsRepo.isDataLoaded = false }
 }

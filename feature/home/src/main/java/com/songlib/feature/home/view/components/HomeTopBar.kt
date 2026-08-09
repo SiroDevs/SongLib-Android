@@ -24,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
@@ -34,7 +33,6 @@ import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.home.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
-import com.songlib.core.common.entity.AuthState
 
 @Composable
 fun HomeAppBar(
@@ -52,15 +50,10 @@ fun HomeAppBar(
     viewModel: HomeViewModel,
     navController: NavHostController,
     prefsRepo: PreferencesRepo,
-    onSignInRequested: (
-        onResult: (googleId: String, email: String, name: String, photo: String) -> Unit,
-        onError: (message: String) -> Unit
-    ) -> Unit,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
     val hasHistory by viewModel.hasHistory.collectAsState()
-    val hasEdits by viewModel.hasEdits.collectAsState()
 
     AppTopBar(
         title = title,
@@ -89,10 +82,8 @@ fun HomeAppBar(
                     }
 
                     HomeUserProfile(
-                        viewModel = viewModel,
                         prefsRepo = prefsRepo,
                         navController = navController,
-                        onSignInRequested = onSignInRequested
                     )
 
                     IconButton(onClick = { showMoreMenu = true }) {
@@ -103,8 +94,6 @@ fun HomeAppBar(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
                         hasHistory = hasHistory,
-                        hasEdits = hasEdits,
-                        isAdmin = prefsRepo.isAdmin,
                         navController = navController,
                     )
                 }
@@ -144,48 +133,25 @@ fun HomeAppBar(
 
 @Composable
 fun HomeUserProfile(
-    viewModel: HomeViewModel,
     prefsRepo: PreferencesRepo,
     navController: NavHostController,
-    onSignInRequested: (
-        onResult: (googleId: String, email: String, name: String, photo: String) -> Unit,
-        onError: (message: String) -> Unit
-    ) -> Unit,
 ) {
-    val authState by viewModel.authState.collectAsState()
-    val context = LocalContext.current
-
-    val isLoading = authState is AuthState.Loading
-
-    if (prefsRepo.isLoggedIn) {
-        IconButton(onClick = { navController.navigate(Routes.USER_PROFILE) }) {
-            if (prefsRepo.loggedInPhotoUrl.isNotEmpty()) {
-                AsyncImage(
-                    model = prefsRepo.loggedInPhotoUrl,
-                    contentDescription = "Profile photo",
-                    modifier = Modifier
-                        .size(25.dp)
-                        .clip(CircleShape)
-                )
-            } else {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = null,
-                    modifier = Modifier.size(25.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    } else {
-        IconButton(onClick = {
-            onSignInRequested(
-                { googleId, email, name, photo ->
-                    viewModel.loginOrRegister(googleId, email, name, photo)
-                },
-                { message -> viewModel.signInFailed(message) }
+    IconButton(onClick = { navController.navigate(Routes.USER) }) {
+        if (prefsRepo.isLoggedIn && prefsRepo.loggedInPhotoUrl.isNotEmpty()) {
+            AsyncImage(
+                model = prefsRepo.loggedInPhotoUrl,
+                contentDescription = "Profile photo",
+                modifier = Modifier
+                    .size(25.dp)
+                    .clip(CircleShape)
             )
-        }) {
-            Icon(Icons.Default.AccountCircle, "Profile")
+        } else {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "Account",
+                modifier = Modifier.size(25.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

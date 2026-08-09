@@ -61,7 +61,7 @@ object Routes {
     const val DRAFT_PRESENT = "draft_present"
     const val DRAFT_EDITOR  = "draft_editor"
     const val HISTORY = "history"
-    const val USER_PROFILE = "user_profile"
+    const val USER = "user"
     const val USER_EDITS = "user_edits"
     const val ADMIN_EDITS = "admin_edits"
     const val EDITOR = "editor"

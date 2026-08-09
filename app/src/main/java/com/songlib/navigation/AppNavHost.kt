@@ -47,9 +47,9 @@ import com.songlib.feature.song.presentor.view.screen.PresenterScreen
 import com.songlib.feature.selection.viewmodel.SelectionViewModel
 import com.songlib.feature.selection.view.screen.SelectionScreen
 import com.songlib.feature.settings.viewmodel.SettingsViewModel
-import com.songlib.feature.settings.viewmodel.UserProfileViewModel
 import com.songlib.feature.settings.view.screen.SettingsScreen
-import com.songlib.feature.settings.view.screen.UserProfileScreen
+import com.songlib.feature.user.viewmodel.UserViewModel
+import com.songlib.feature.user.view.screen.UserScreen
 import com.songlib.feature.song.editor.viewmodel.EditorViewModel
 import com.songlib.feature.song.editor.view.EditorScreen
 import com.songlib.viewmodel.MainViewModel
@@ -106,7 +106,6 @@ fun AppNavHost(
                 navController = navController,
                 homeViewModel = homeViewModel,
                 prefsRepo = prefsRepo,
-                onSignInRequested = onSignInRequest
             )
         }
 
@@ -253,9 +252,9 @@ fun AppNavHost(
             HistoryScreen(navController = navController, viewModel = viewModel)
         }
 
-        composable(Routes.USER_PROFILE) {
-            val viewModel: UserProfileViewModel = hiltViewModel()
-            UserProfileScreen(
+        composable(Routes.USER) {
+            val viewModel: UserViewModel = hiltViewModel()
+            UserScreen(
                 navController = navController,
                 viewModel = viewModel,
                 onSignInRequested = onSignInRequest

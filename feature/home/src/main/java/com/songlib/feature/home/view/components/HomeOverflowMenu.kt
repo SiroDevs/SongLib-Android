@@ -1,16 +1,12 @@
 package com.songlib.feature.home.view.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AdminPanelSettings
-import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.HelpOutline
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -20,57 +16,12 @@ import com.songlib.core.common.utils.Routes
 fun HomeOverflowMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
-    hasHistory: Boolean,
-    hasEdits: Boolean,
-    isAdmin: Boolean,
     navController: NavHostController,
 ) {
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismiss,
     ) {
-        if (hasEdits) {
-            DropdownMenuItem(
-                text = { Text("My Edits") },
-                leadingIcon = { Icon(Icons.Default.Checklist, null) },
-                onClick = {
-                    onDismiss()
-                    navController.navigate(Routes.USER_EDITS)
-                }
-            )
-        }
-        if (isAdmin) {
-            DropdownMenuItem(
-                text = {
-                    Text(
-                        "Admin: Pending Edits",
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        Icons.Default.AdminPanelSettings,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                },
-                onClick = {
-                    onDismiss()
-                    navController.navigate(Routes.ADMIN_EDITS)
-                }
-            )
-        }
-
-        if (hasHistory) {
-            DropdownMenuItem(
-                text = { Text("Your History") },
-                leadingIcon = { Icon(Icons.Default.History, null) },
-                onClick = {
-                    onDismiss()
-                    navController.navigate(Routes.HISTORY)
-                }
-            )
-        }
         DropdownMenuItem(
             text = { Text("App Settings") },
             leadingIcon = { Icon(Icons.Default.Settings, null) },

@@ -43,10 +43,6 @@ fun HomeContent(
     navController: NavHostController,
     viewModel: HomeViewModel,
     prefsRepo: PreferencesRepo,
-    onSignInRequested: (
-        onResult: (googleId: String, email: String, name: String, photo: String) -> Unit,
-        onError: (message: String) -> Unit
-    ) -> Unit,
 ) {
     val selectedTab by viewModel.selectedTab.collectAsState()
     val pagerState = rememberPagerState(
@@ -137,7 +133,6 @@ fun HomeContent(
                 viewModel = viewModel,
                 navController = navController,
                 prefsRepo = prefsRepo,
-                onSignInRequested = onSignInRequested,
             )
         },
         bottomBar = {

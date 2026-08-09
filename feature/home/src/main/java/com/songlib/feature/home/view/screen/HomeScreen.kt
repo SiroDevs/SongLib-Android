@@ -28,10 +28,6 @@ fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel,
     prefsRepo: PreferencesRepo,
-    onSignInRequested: (
-        onResult: (googleId: String, email: String, name: String, photo: String) -> Unit,
-        onError: (message: String) -> Unit
-    ) -> Unit,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val songs by homeViewModel.songs.collectAsState()
@@ -102,7 +98,6 @@ fun HomeScreen(
                     viewModel = homeViewModel,
                     navController = navController,
                     prefsRepo = prefsRepo,
-                    onSignInRequested = onSignInRequested
                 )
             }
         }
