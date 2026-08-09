@@ -6,12 +6,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -28,7 +29,7 @@ import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.viewmodel.HomeViewModel
-import com.songlib.feature.home.view.components.ChoosingListingSheet
+import com.songlib.core.ui.components.action.ChoosingListingSheet
 import com.songlib.feature.home.view.components.HomeAppBar
 import com.songlib.feature.home.view.components.HomeTab
 import com.songlib.feature.home.view.components.homeTabs
@@ -129,7 +130,6 @@ fun HomeContent(
                 onShowListingSheet = { showListingSheet = true },
                 onDeleteListings = { viewModel.deleteListings(selectedListings) },
                 onAddListing = { showAddListingDialog = true },
-                viewModel = viewModel,
                 navController = navController,
                 prefsRepo = prefsRepo,
             )
@@ -137,14 +137,18 @@ fun HomeContent(
         bottomBar = {
             NavigationBar(containerColor = MaterialTheme.colorScheme.onPrimary) {
                 homeTabs.forEach { homeTab ->
-                    BottomNavigationItem(
+                    NavigationBarItem(
                         icon = { Icon(homeTab.icon, contentDescription = homeTab.title) },
-                        label = { Text(text = homeTab.title) },
-                        selectedContentColor = MaterialTheme.colorScheme.primary,
-                        unselectedContentColor = MaterialTheme.colorScheme.scrim,
-                        alwaysShowLabel = true,
+                        label = { Text(homeTab.title) },
                         selected = selectedTab == homeTab,
                         onClick = { viewModel.setSelectedTab(homeTab) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     )
                 }
             }

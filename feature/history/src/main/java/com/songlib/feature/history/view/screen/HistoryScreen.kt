@@ -60,7 +60,7 @@ fun HistoryScreen(
     val topBarTitle = when {
         hasViewSelection -> "${selectedViews.size} selected"
         hasSearchSelection -> "${selectedSearchIds.size} selected"
-        else -> "History"
+        else -> "My History"
     }
 
     Scaffold(

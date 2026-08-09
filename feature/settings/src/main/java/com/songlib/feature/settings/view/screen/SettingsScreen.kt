@@ -5,15 +5,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Brightness6
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.EditNote
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Swipe
 import androidx.compose.material.icons.filled.VolunteerActivism
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -28,8 +32,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.appThemeName
-import com.songlib.core.designsystem.theme.ThemeSelectorDialog
-import com.songlib.core.ui.MainViewModel
+import com.songlib.core.design_system.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.settings.viewmodel.SettingsViewModel
 import com.songlib.feature.settings.view.components.ConfirmResetDialog
@@ -38,11 +41,12 @@ import com.songlib.feature.settings.view.components.SettingsSectionTitle
 @Composable
 fun SettingsScreen(
     navController: NavHostController,
-    mainViewModel: MainViewModel,
     settViewModel: SettingsViewModel,
     themeRepo: ThemeRepo,
+    onReset: () -> Unit,
 ) {
     val theme = themeRepo.selectedTheme
+    var showMoreMenu by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
 
@@ -53,7 +57,7 @@ fun SettingsScreen(
                 showResetDialog = false
                 settViewModel.clearData { success ->
                     if (success) {
-                        mainViewModel.reset()
+                        onReset()
                     }
                 }
             }
@@ -76,7 +80,26 @@ fun SettingsScreen(
             AppTopBar(
                 title = "App Settings",
                 showGoBack = true,
-                onNavIconClick = { navController.popBackStack() }
+                onNavIconClick = { navController.popBackStack() },
+                actions = {
+                    IconButton(onClick = { showMoreMenu = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "More")
+                    }
+
+                    DropdownMenu(
+                        expanded = showMoreMenu,
+                        onDismissRequest = { showMoreMenu = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Select Afresh") },
+                            leadingIcon = { Icon(Icons.Default.DeleteForever, null) },
+                            onClick = {
+                                showMoreMenu = false
+                                showResetDialog = true
+                            }
+                        )
+                    }
+                }
             )
         }
     ) { padding ->
@@ -122,17 +145,6 @@ fun SettingsScreen(
             )
             HorizontalDivider()
 
-            SettingsSectionTitle("Manage Account")
-            ListItem(
-                leadingContent = { Icon(Icons.Default.AccountCircle, "Profile") },
-                headlineContent = { Text("Your Profile") },
-                supportingContent = { Text("Manage your Profile") },
-                modifier = Modifier.clickable {
-                    navController.navigate(Routes.USER_PROFILE)
-                }
-            )
-            HorizontalDivider()
-
             SettingsSectionTitle("SongBook Selection")
             ListItem(
                 leadingContent = { Icon(Icons.Default.EditNote, "Reset") },
@@ -141,12 +153,6 @@ fun SettingsScreen(
                 modifier = Modifier.clickable {
                     settViewModel.updateSelection(true)
                     navController.navigate(Routes.SELECTION) {
-                        // NOTE: popUpTo(0) resolves to the Int overload, and this graph
-                        // uses string routes exclusively — there is no destination with
-                        // integer id 0, so that call crashed with
-                        // "Navigation destination with ID 0 is unknown to this NavController".
-                        // popUpTo(navController.graph.id) is the correct way to clear the
-                        // entire back stack down to the graph root.
                         popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true
                     }

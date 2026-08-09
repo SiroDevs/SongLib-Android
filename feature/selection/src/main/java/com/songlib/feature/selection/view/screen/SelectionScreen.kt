@@ -30,7 +30,7 @@ import com.songlib.core.common.entity.UiState
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.ThemeRepo
-import com.songlib.core.designsystem.theme.ThemeSelectorDialog
+import com.songlib.core.design_system.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.general.SplashContent
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.selection.viewmodel.SelectionViewModel

@@ -20,13 +20,16 @@ data class PagedSongsResponse(
 @Keep
 data class UserDto(
     val userId: Int = 0,
+    val role: String = "user",
     val username: String,
+    val googleId: String? = null,
     val email: String,
     val name: String? = null,
+    val phone: String? = null,
     val photoUrl: String? = null,
-    val googleId: String? = null,
+    val bio: String? = null,
     val selectedBooks: String? = null,
-    val role: String = "user",
+    val lastseen: String? = null,
     val created: String? = null,
     val updated: String? = null
 )

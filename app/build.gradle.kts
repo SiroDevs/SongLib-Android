@@ -5,10 +5,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.songlib.hilt)
     alias(libs.plugins.devtools.ksp)
-    alias(libs.plugins.google.services)
     alias(libs.plugins.kotlin.serialization)
     id("kotlin-parcelize")
     alias(libs.plugins.io.sentry)
+    alias(libs.plugins.google.services)
 }
 
 val keystoreProperties = Properties()
@@ -25,29 +25,13 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 868
-        versionName = "1.0.868"
+        versionCode = 870
+        versionName = "1.0.870"
         minSdk = 26
         targetSdk = 37
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        buildConfigField(
-            "String",
-            "PaystackSecretKey",
-            "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\""
-        )
-        buildConfigField(
-            "String",
-            "GoogleWebClientId",
-            "\"${localProperties.getProperty("GOOGLE_WEB_CLIENT_ID") ?: ""}\""
-        )
-        buildConfigField(
-            "String",
-            "SonglibApiKey",
-            "\"${localProperties.getProperty("SONGLIB_API_KEY") ?: ""}\""
-        )
     }
 
     signingConfigs {
@@ -104,11 +88,12 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:data"))
     implementation(project(":core:database"))
-    implementation(project(":core:designsystem"))
+    implementation(project(":core:design_system"))
     implementation(project(":core:network"))
     implementation(project(":core:ui"))
 
     // Feature modules
+    implementation(project(":feature:account"))
     implementation(project(":feature:casting"))
     implementation(project(":feature:selection"))
     implementation(project(":feature:home"))
@@ -119,7 +104,7 @@ dependencies {
     implementation(project(":feature:song"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:help"))
-    implementation(project(":feature:howitworks"))
+    implementation(project(":feature:how_it_works"))
     implementation(project(":feature:donation"))
 
     // Navigation
@@ -130,9 +115,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-
-    // Monitoring
-    implementation(libs.android.billing)
     implementation(libs.androidx.concurrent.futures)
 
     // WorkManager
@@ -140,10 +122,14 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
 
-    // Google Sign-In
+    // Google Sign-In (Credential Manager)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.google.identity.googleid)
+
+    // Firebase Auth
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 
     // Testing
     testImplementation(libs.junit)

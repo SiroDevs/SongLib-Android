@@ -6,9 +6,9 @@ import com.songlib.core.network.dtos.PaystackCustomField
 import com.songlib.core.network.dtos.PaystackInitializeRequest
 import com.songlib.core.network.dtos.PaystackMetadata
 import com.songlib.core.network.services.PaystackService
+import com.songlib.core.data.BuildConfig
 import java.util.UUID
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 import kotlin.math.roundToLong
 
@@ -16,8 +16,7 @@ private const val TAG = "DonationRepo"
 
 @Singleton
 class DonationRepo @Inject constructor(
-    private val paystackService: PaystackService,
-    @Named("paystack_secret_key") private val secretKey: String,
+    private val paystackService: PaystackService
 ) {
     suspend fun submitDonation(
         amountUsd: Double,
@@ -39,7 +38,7 @@ class DonationRepo @Inject constructor(
             }
 
             val response = paystackService.initializeTransaction(
-                bearer = "Bearer $secretKey",
+                bearer = "Bearer ${BuildConfig.PaystackSecretKey}",
                 body = PaystackInitializeRequest(
                     email = email,
                     amount = amountInCents,

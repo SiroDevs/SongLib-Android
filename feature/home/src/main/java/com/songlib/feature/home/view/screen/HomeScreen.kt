@@ -97,7 +97,7 @@ fun HomeScreen(
                 HomeContent(
                     viewModel = homeViewModel,
                     navController = navController,
-                    prefsRepo = prefsRepo
+                    prefsRepo = prefsRepo,
                 )
             }
         }

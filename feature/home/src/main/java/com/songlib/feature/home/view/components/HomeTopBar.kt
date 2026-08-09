@@ -1,6 +1,9 @@
 package com.songlib.feature.home.view.components
 
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cast
 import androidx.compose.material.icons.filled.Delete
@@ -8,25 +11,30 @@ import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FormatListNumbered
-import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.data.repos.PreferencesRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.home.viewmodel.HomeViewModel
+import coil.compose.AsyncImage
 
 @Composable
 fun HomeAppBar(
@@ -41,14 +49,11 @@ fun HomeAppBar(
     onShowListingSheet: () -> Unit,
     onDeleteListings: () -> Unit,
     onAddListing: () -> Unit,
-    viewModel: HomeViewModel,
     navController: NavHostController,
     prefsRepo: PreferencesRepo,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
-    val hasHistory by viewModel.hasHistory.collectAsState()
-    val hasEdits by viewModel.hasEdits.collectAsState()
 
     AppTopBar(
         title = title,
@@ -70,11 +75,10 @@ fun HomeAppBar(
                         Icon(Icons.Default.Cast, contentDescription = "Casting to PC")
                     }
 
-                    if (selectedTab == HomeTab.Search) {
-                        IconButton(onClick = { navController.navigate(Routes.DRAFTS) }) {
-                            Icon(Icons.Default.EditNote, contentDescription = "Drafts")
-                        }
-                    }
+                    HomeUserProfile(
+                        prefsRepo = prefsRepo,
+                        navController = navController,
+                    )
 
                     IconButton(onClick = { showMoreMenu = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
@@ -83,9 +87,6 @@ fun HomeAppBar(
                     HomeOverflowMenu(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
-                        hasHistory = hasHistory,
-                        hasEdits = hasEdits,
-                        isAdmin = prefsRepo.isAdmin,
                         navController = navController,
                     )
                 }
@@ -121,4 +122,38 @@ fun HomeAppBar(
             }
         }
     )
+}
+
+@Composable
+fun HomeUserProfile(
+    prefsRepo: PreferencesRepo,
+    navController: NavHostController,
+) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    var isLoggedIn by remember { mutableStateOf(prefsRepo.isLoggedIn) }
+    var photoUrl by remember { mutableStateOf(prefsRepo.loggedInPhotoUrl) }
+
+    LaunchedEffect(backStackEntry) {
+        isLoggedIn = prefsRepo.isLoggedIn
+        photoUrl = prefsRepo.loggedInPhotoUrl
+    }
+
+    IconButton(onClick = { navController.navigate(Routes.ACCOUNT) }) {
+        if (isLoggedIn && photoUrl.isNotEmpty()) {
+            AsyncImage(
+                model = photoUrl,
+                contentDescription = "Profile photo",
+                modifier = Modifier
+                    .size(25.dp)
+                    .clip(CircleShape)
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "Account",
+                modifier = Modifier.size(25.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
 }

@@ -29,7 +29,7 @@
             <option value="$PROJECT_DIR$/core/common" />
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/database" />
-            <option value="$PROJECT_DIR$/core/designsystem" />
+            <option value="$PROJECT_DIR$/core/design_system" />
             <option value="$PROJECT_DIR$/core/network" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
@@ -40,7 +40,7 @@
             <option value="$PROJECT_DIR$/feature/help" />
             <option value="$PROJECT_DIR$/feature/history" />
             <option value="$PROJECT_DIR$/feature/home" />
-            <option value="$PROJECT_DIR$/feature/howitworks" />
+            <option value="$PROJECT_DIR$/feature/how_it_works" />
             <option value="$PROJECT_DIR$/feature/listing" />
             <option value="$PROJECT_DIR$/feature/selection" />
             <option value="$PROJECT_DIR$/feature/settings" />

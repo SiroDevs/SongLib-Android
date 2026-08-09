@@ -1,10 +1,24 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.songlib.android.library)
     alias(libs.plugins.songlib.hilt)
 }
 
+val localProperties = Properties()
+val localFile = rootProject.file("local.properties")
+if (localFile.exists()) {
+    localProperties.load(localFile.inputStream())
+}
+
 android {
     namespace = "com.songlib.core.data"
+
+    buildFeatures { buildConfig = true }
+
+    defaultConfig {
+        buildConfigField("String", "PaystackSecretKey", "\"${localProperties.getProperty("PAYSTACK_SECRET_KEY") ?: ""}\"")
+    }
 }
 
 dependencies {
@@ -22,4 +36,7 @@ dependencies {
     implementation(libs.squareup.retrofit)
     implementation(libs.squareup.retrofit.gson)
     implementation(libs.squareup.okhttp3.logging)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 }

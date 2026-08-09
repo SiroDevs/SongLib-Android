@@ -61,17 +61,11 @@ object Routes {
     const val DRAFT_PRESENT = "draft_present"
     const val DRAFT_EDITOR  = "draft_editor"
     const val HISTORY = "history"
-    const val USER_PROFILE = "user_profile"
+    const val ACCOUNT = "account"
     const val USER_EDITS = "user_edits"
     const val ADMIN_EDITS = "admin_edits"
     const val EDITOR = "editor"
     const val CASTING = "casting"
-
-    // "auto" drives the headless recovery flow: fetch + save the songbooks the
-    // user already had selected with no book grid, no FAB, just the skeleton
-    // until it hands off to Home. Optional query arg, defaults to false so
-    // every existing `navigate(Routes.SELECTION)` / startDestination call
-    // keeps working unchanged and lands on the normal interactive screen.
     const val SELECTION_AUTO_ARG = "auto"
     const val SELECTION_ROUTE_PATTERN = "$SELECTION?$SELECTION_AUTO_ARG={$SELECTION_AUTO_ARG}"
     const val SELECTION_AUTO_RECOVER = "$SELECTION?$SELECTION_AUTO_ARG=true"

@@ -1,11 +1,16 @@
 package com.songlib.core.common.entity
 
+sealed interface AuthState {
+    object Idle : AuthState
+    object Loading : AuthState
+    data class Success(val userId: Int) : AuthState
+    data class Error(val message: String) : AuthState
+}
+
 sealed class UiState {
     object Idle : UiState()
     object Loading : UiState()
     object Loaded : UiState()
-    object RcChecking : UiState()
-    object RcChecked : UiState()
     object Filtered : UiState()
     object Saving : UiState()
     object Saved : UiState()
