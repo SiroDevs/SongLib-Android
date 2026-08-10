@@ -1,4 +1,4 @@
-name: Release to Play Store
+name: Android CI/CD
 
 # Fires whenever `stable` gets new commits — i.e. when `develop` is merged into it,
 # whether that's a fast-forward push, a merge commit, or a merged PR.
@@ -11,8 +11,10 @@ permissions:
   contents: write   # needed to create the tag + GitHub Release
 
 jobs:
-  release:
+  build-release:
+    name: Build Release
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,7 +57,8 @@ jobs:
           echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
           echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> local.properties
           echo "PAYSTACK_SECRET_KEY=${{ secrets.PAYSTACK_SECRET_KEY }}" >> local.properties
-          echo "SONGLIB_API_KEY=${{ secrets.SONGLIB_API_KEY }}" >> local.properties
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> local.properties
 
       # Recreate the signing keystore + key.properties from secrets.
       # storeFile is read by app/build.gradle.kts via `file(it as String)`, which resolves
