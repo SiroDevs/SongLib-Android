@@ -66,10 +66,9 @@ jobs:
       - name: Create local.properties
         run: |
           echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
-          echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> local.properties
+          echo "SONGLIB_API_KEY=${{ secrets.SONGLIB_API_KEY }}" >> local.properties
           echo "PAYSTACK_SECRET_KEY=${{ secrets.PAYSTACK_SECRET_KEY }}" >> local.properties
-          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
-          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> local.properties
+          echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> local.properties
 
       - name: Set up signing config
         run: |
