@@ -21,8 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # app/build.gradle.kts already carries the source of truth for the version,
-      # e.g. versionName = "1.0.870" -> tag v1.0.870, apk SongLib-v1.0.870.apk
       - name: Derive version + tag
         id: version
         run: |
@@ -35,14 +33,12 @@ jobs:
           echo "apkName=SongLib-${TAG}.apk" >> "$GITHUB_OUTPUT"
           echo "Resolved tag: ${TAG} (versionCode ${VERSION_CODE})"
 
-      # Only release when versionName/versionCode actually changed since the last release.
-      # No bump on this merge -> tag already exists -> skip the build job entirely (no failure).
       - name: Check for existing tag
         id: check
         run: |
           if git ls-remote --tags origin | grep -q "refs/tags/${{ steps.version.outputs.tag }}$"; then
             echo "should_release=false" >> "$GITHUB_OUTPUT"
-            echo "Tag ${{ steps.version.outputs.tag }} already exists — nothing to release, skipping build."
+            echo "The release ${{ steps.version.outputs.tag }} already exists — nothing to release, skipping build."
           else
             echo "should_release=true" >> "$GITHUB_OUTPUT"
             echo "Tag ${{ steps.version.outputs.tag }} is new — proceeding to build + release."
@@ -67,9 +63,6 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # local.properties isn't committed; recreate what the build needs.
-      # NOTE: app/build.gradle.kts loads this file unconditionally (no exists() guard),
-      # so it must exist before ANY Gradle task runs, even a clean/lint task.
       - name: Create local.properties
         run: |
           echo "sdk.dir=${ANDROID_SDK_ROOT}" > local.properties
@@ -78,14 +71,10 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> local.properties
 
-      # Recreate the signing keystore + key.properties from secrets.
-      # storeFile is read by app/build.gradle.kts via `file(it as String)`, which resolves
-      # relative to the app/ module directory (not the repo root) — so it must be
-      # "../keystore/release.jks" to point back at <root>/keystore/release.jks.
       - name: Set up signing config
         run: |
           mkdir -p keystore
-          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore/release.jks
+          echo "${{ secrets.SIGNING_KEY }}" | base64 -d > keystore/release.jks
           cat > keystore/key.properties <<EOF
           storeFile=../keystore/release.jks
           storePassword=${{ secrets.KEYSTORE_PASSWORD }}
