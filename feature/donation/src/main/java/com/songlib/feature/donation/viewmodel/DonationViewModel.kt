@@ -2,7 +2,9 @@ package com.songlib.feature.donation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.songlib.core.common.entity.DonationMethod
 import com.songlib.core.data.repos.DonationRepo
+import com.songlib.core.data.repos.PrefsRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +22,7 @@ sealed class DonationState {
 @HiltViewModel
 class DonationViewModel @Inject constructor(
     private val donationRepo: DonationRepo,
+    private val prefsRepo: PrefsRepo,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow<DonationState>(DonationState.Idle)
@@ -47,7 +50,7 @@ class DonationViewModel @Inject constructor(
                 }
                 .onFailure { e ->
                     _state.value = DonationState.Error(
-                        e.message ?: "There is a problem. Try again."
+                        e.message ?: "Kuna tatizo. Jaribu tena."
                     )
                 }
         }
@@ -71,6 +74,10 @@ class DonationViewModel @Inject constructor(
 
     fun resetState() {
         _state.value = DonationState.Idle
+    }
+
+    fun recordCryptoDonation() {
+        prefsRepo.recordDonation(DonationMethod.CRYPTO)
     }
 }
 

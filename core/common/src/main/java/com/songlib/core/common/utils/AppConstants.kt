@@ -48,6 +48,16 @@ object PrefConstants {
     const val LAST_SINCE_DATE = "last_since_date"
 }
 
+object PayConstants {
+    const val MPESA_NUMBER = "254115586529"
+    const val PAYBILL_NUMBER = "880100"
+    const val ACCOUNT_NUMBER = "9530000018"
+    const val CRYPTO_PROFILE = "sirodevs.base.eth"
+    const val ETH_ADDRESS = "0x1C9A68b346D956e9Eff027C34DB671817e365fbb"
+    const val SOL_ADDRESS = "5qW65Qu8hMLdsjNPxvpFGuv6EAJosGA5YDo6ePSnva1A"
+    const val PAYPAL_ADDRESS = "https://www.paypal.com/donate/?hosted_button_id=FYZYTW723Q8QC"
+}
+
 object Routes {
     const val SELECTION = "selection"
     const val HOME = "home"
