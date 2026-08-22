@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.entity.AuthState
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.UserRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ data class UserProfileState(
 @HiltViewModel
 class AccountViewModel @Inject constructor(
     private val userRepo: UserRepo,
-    private val prefsRepo: PreferencesRepo,
+    private val prefsRepo: PrefsRepo,
     private val draftRepo: DraftRepo,
     private val editorRepo: EditorRepo,
 ) : ViewModel() {

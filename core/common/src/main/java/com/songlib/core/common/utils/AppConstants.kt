@@ -37,15 +37,28 @@ object PrefConstants {
     const val THEME_MODE = "themeMode"
     const val HORIZONTAL_SLIDES = "horizontalSlides"
     const val DEMO_MODE = "demoMode"
+
     const val DONATION_DONE_AT = "donation_done_at"
+    const val DONATION_METHOD = "donation_method"
     const val DONATION_REMIND_NEXT_OPEN = "donation_remind_next"
     const val LAST_SYNCED_AT = "last_synced_at"
+
     const val LOGGED_IN_USER_ID = "logged_in_user_id"
     const val LOGGED_IN_EMAIL = "logged_in_email"
     const val LOGGED_IN_NAME = "logged_in_name"
     const val LOGGED_IN_PHOTO_URL = "logged_in_photo_url"
     const val LOGGED_IN_ROLE = "logged_in_role"
     const val LAST_SINCE_DATE = "last_since_date"
+}
+
+object PayConstants {
+    const val MPESA_NUMBER = "254115586529"
+    const val PAYBILL_NUMBER = "880100"
+    const val ACCOUNT_NUMBER = "9530000018"
+    const val CRYPTO_PROFILE = "sirodevs.base.eth"
+    const val ETH_ADDRESS = "0x1C9A68b346D956e9Eff027C34DB671817e365fbb"
+    const val SOL_ADDRESS = "5qW65Qu8hMLdsjNPxvpFGuv6EAJosGA5YDo6ePSnva1A"
+    const val PAYPAL_ADDRESS = "https://www.paypal.com/donate/?hosted_button_id=FYZYTW723Q8QC"
 }
 
 object Routes {

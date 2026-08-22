@@ -6,7 +6,7 @@ import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.common.utils.songItemTitle
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.ListingRepo
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
@@ -43,7 +43,7 @@ sealed interface ReportUiState {
 class PresenterViewModel @Inject constructor(
     private val songbkRepo: SongBookRepo,
     private val listRepo: ListingRepo,
-    private val prefsRepo: PreferencesRepo,
+    private val prefsRepo: PrefsRepo,
     private val reportRepo: ReportRepo,
     private val trackingRepo: TrackingRepo,
     private val draftRepo: DraftRepo,

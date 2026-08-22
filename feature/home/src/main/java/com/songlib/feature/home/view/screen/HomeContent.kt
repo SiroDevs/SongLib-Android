@@ -26,7 +26,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
 import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.viewmodel.HomeViewModel
 import com.songlib.core.ui.components.action.ChoosingListingSheet
@@ -42,7 +42,7 @@ import com.songlib.feature.home.view.screen.tabs.HomeSearch
 fun HomeContent(
     navController: NavHostController,
     viewModel: HomeViewModel,
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
 ) {
     val selectedTab by viewModel.selectedTab.collectAsState()
     val pagerState = rememberPagerState(

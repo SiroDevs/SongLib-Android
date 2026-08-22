@@ -16,7 +16,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.songlib.navigation.AppNavHost
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeMode
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.design_system.theme.AppTheme
@@ -31,7 +31,7 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var prefsRepo: PreferencesRepo
+    lateinit var prefsRepo: PrefsRepo
 
     private val credentialManager by lazy { CredentialManager.create(this) }
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }

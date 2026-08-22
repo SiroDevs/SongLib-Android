@@ -75,11 +75,28 @@ jobs:
           mkdir -p keystore
           echo "${{ secrets.SIGNING_KEY }}" | base64 -d > keystore/release.jks
           cat > keystore/key.properties <<EOF
-          storeFile=../keystore/release.jks
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
-          keyPassword=${{ secrets.KEY_PASSWORD }}
+          STORE_FILE=../keystore/release.jks
+          KEYSTORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS=${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}
           EOF
+
+      - name: Verify signing config
+        run: |
+          echo "keystore/key.properties keys present:"
+          sed 's/=.*/=<set>/' keystore/key.properties
+          for key in STORE_FILE KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            value=$(grep "^${key}=" keystore/key.properties | cut -d= -f2-)
+            if [ -z "$value" ]; then
+              echo "::error::${key} is empty — check that the matching secret is set."
+              exit 1
+            fi
+          done
+          if [ ! -f keystore/release.jks ] || [ ! -s keystore/release.jks ]; then
+            echo "::error::keystore/release.jks is missing or empty — check secrets.SIGNING_KEY."
+            exit 1
+          fi
+          echo "Signing config looks good."
 
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew

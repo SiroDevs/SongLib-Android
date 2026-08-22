@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.SongEntity
@@ -35,7 +35,7 @@ class EditorViewModel @Inject constructor(
     private val editorRepo: EditorRepo,
     private val songbkRepo: SongBookRepo,
     private val draftRepo: DraftRepo,
-    private val prefsRepo: PreferencesRepo,
+    private val prefsRepo: PrefsRepo,
 ) : ViewModel() {
 
     private val _submitState = MutableStateFlow<EditSubmitState>(EditSubmitState.Idle)
