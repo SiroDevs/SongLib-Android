@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.feature.home.viewmodel.HomeViewModel
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collectLatest
 fun HomeScreen(
     navController: NavHostController,
     homeViewModel: HomeViewModel,
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val songs by homeViewModel.songs.collectAsState()

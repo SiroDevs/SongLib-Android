@@ -37,9 +37,12 @@ object PrefConstants {
     const val THEME_MODE = "themeMode"
     const val HORIZONTAL_SLIDES = "horizontalSlides"
     const val DEMO_MODE = "demoMode"
+
     const val DONATION_DONE_AT = "donation_done_at"
+    const val DONATION_METHOD = "donation_method"
     const val DONATION_REMIND_NEXT_OPEN = "donation_remind_next"
     const val LAST_SYNCED_AT = "last_synced_at"
+
     const val LOGGED_IN_USER_ID = "logged_in_user_id"
     const val LOGGED_IN_EMAIL = "logged_in_email"
     const val LOGGED_IN_NAME = "logged_in_name"

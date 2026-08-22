@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Cast
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.FormatListNumbered
@@ -18,7 +17,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,11 +27,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
-import com.songlib.feature.home.viewmodel.HomeViewModel
 import coil.compose.AsyncImage
 
 @Composable
@@ -50,7 +47,7 @@ fun HomeAppBar(
     onDeleteListings: () -> Unit,
     onAddListing: () -> Unit,
     navController: NavHostController,
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
 ) {
     var showMoreMenu by remember { mutableStateOf(false) }
     val hasSelection = selectedSongs.isNotEmpty() || selectedListings.isNotEmpty()
@@ -126,7 +123,7 @@ fun HomeAppBar(
 
 @Composable
 fun HomeUserProfile(
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
     navController: NavHostController,
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()

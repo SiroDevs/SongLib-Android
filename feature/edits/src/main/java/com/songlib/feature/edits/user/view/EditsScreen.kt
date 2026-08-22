@@ -22,7 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.EditEntity
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.core.ui.components.indicators.EmptyState
@@ -31,7 +31,7 @@ import com.songlib.feature.edits.user.viewmodel.EditsViewModel
 @Composable
 fun EditsScreen(
     navController: NavHostController,
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
     viewModel: EditsViewModel = hiltViewModel(),
 ) {
     val edits by viewModel.edits.collectAsState()

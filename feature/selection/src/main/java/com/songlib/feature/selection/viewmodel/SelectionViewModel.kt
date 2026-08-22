@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.entity.Selectable
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.data.worker.SyncScheduler
@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SelectionViewModel @Inject constructor(
     private val songbkRepo: SongBookRepo,
-    private val prefsRepo: PreferencesRepo,
+    private val prefsRepo: PrefsRepo,
     private val userRepo: UserRepo,
 ) : ViewModel() {
 

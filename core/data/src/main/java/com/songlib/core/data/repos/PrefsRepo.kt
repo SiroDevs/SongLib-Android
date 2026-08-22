@@ -4,11 +4,13 @@ import android.content.Context
 import com.songlib.core.common.utils.PrefConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.core.content.edit
+import com.songlib.core.common.entity.DonationMethod
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PreferencesRepo @Inject constructor(
+class PrefsRepo @Inject constructor(
     @ApplicationContext context: Context
 ) {
     private val prefs =
@@ -57,6 +59,15 @@ class PreferencesRepo @Inject constructor(
         get() = prefs.getLong(PrefConstants.DONATION_DONE_AT, 0L)
         set(value) = prefs.edit { putLong(PrefConstants.DONATION_DONE_AT, value) }
 
+    var donationMethod: DonationMethod
+        get() = runCatching {
+            DonationMethod.valueOf(
+                prefs.getString(PrefConstants.DONATION_METHOD, DonationMethod.DIY.name)
+                    ?: DonationMethod.DIY.name
+            )
+        }.getOrDefault(DonationMethod.DIY)
+        set(value) = prefs.edit { putString(PrefConstants.DONATION_METHOD, value.name) }
+
     var donationRemindNextOpen: Boolean
         get() = prefs.getBoolean(PrefConstants.DONATION_REMIND_NEXT_OPEN, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.DONATION_REMIND_NEXT_OPEN, value) }
@@ -64,14 +75,27 @@ class PreferencesRepo @Inject constructor(
     fun shouldShowDonation(): Boolean {
         val now = System.currentTimeMillis()
         val oneDayMs = 24 * 60 * 60 * 1000L
-        val sixtyDaysMs = 60 * oneDayMs
         if (installDate == 0L || now - installDate < oneDayMs) return false
+
         val donated = donationDoneAt
-        return donated == 0L || now - donated > sixtyDaysMs
+        if (donated == 0L) return true
+
+        val monthsUntilNextPrompt = when (donationMethod) {
+            DonationMethod.DIY -> 3
+            DonationMethod.PAYSTACK -> 3
+            DonationMethod.CRYPTO -> 5
+        }
+        val nextPromptAt = Calendar.getInstance().apply {
+            timeInMillis = donated
+            add(Calendar.MONTH, monthsUntilNextPrompt)
+        }.timeInMillis
+
+        return now >= nextPromptAt
     }
 
-    fun recordDonation() {
+    fun recordDonation(method: DonationMethod = DonationMethod.DIY) {
         donationDoneAt = System.currentTimeMillis()
+        donationMethod = method
         donationRemindNextOpen = false
     }
 

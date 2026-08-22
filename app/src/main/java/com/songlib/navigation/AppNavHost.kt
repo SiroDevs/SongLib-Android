@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.DraftEntity
@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     themeRepo: ThemeRepo,
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
     mainViewModel: MainViewModel,
     onSignInRequest: (
         callback: (googleId: String, email: String, name: String, photo: String) -> Unit,

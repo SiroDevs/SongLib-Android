@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class UserRepo @Inject constructor(
     private val service: SongLibService,
-    private val prefsRepo: PreferencesRepo,
+    private val prefsRepo: PrefsRepo,
 ) {
     suspend fun loginOrRegister(
         googleId: String,

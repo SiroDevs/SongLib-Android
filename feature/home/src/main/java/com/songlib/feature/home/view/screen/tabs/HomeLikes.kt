@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
-import com.songlib.core.data.repos.PreferencesRepo
+import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.viewmodel.HomeViewModel
 import com.songlib.feature.home.view.components.SongsList
@@ -19,7 +19,7 @@ import com.songlib.feature.home.view.components.SongsList
 fun HomeLikes(
     viewModel: HomeViewModel,
     navController: NavHostController,
-    prefsRepo: PreferencesRepo,
+    prefsRepo: PrefsRepo,
     onShowDonation: () -> Unit,
 ) {
     val listState = rememberLazyListState()
