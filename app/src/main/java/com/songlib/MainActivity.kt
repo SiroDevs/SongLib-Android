@@ -9,6 +9,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -24,6 +25,7 @@ import com.songlib.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,6 +38,10 @@ class MainActivity : ComponentActivity() {
     private val credentialManager by lazy { CredentialManager.create(this) }
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
 
+    /** Total attempts made for a sign-in request: the initial try plus 2 retries. */
+    private val maxSignInAttempts = 3
+    private val signInRetryDelayMs = 800L
+
     fun launchSignIn(
         callback: (googleId: String, email: String, name: String, photo: String) -> Unit,
         onError: (message: String) -> Unit = {}
@@ -47,6 +53,17 @@ class MainActivity : ComponentActivity() {
             return
         }
 
+        CoroutineScope(Dispatchers.Main).launch {
+            attemptSignIn(webClientId, attempt = 1, callback = callback, onError = onError)
+        }
+    }
+
+    private suspend fun attemptSignIn(
+        webClientId: String,
+        attempt: Int,
+        callback: (googleId: String, email: String, name: String, photo: String) -> Unit,
+        onError: (message: String) -> Unit,
+    ) {
         val googleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(false)
             .setServerClientId(webClientId)
@@ -57,54 +74,74 @@ class MainActivity : ComponentActivity() {
             .addCredentialOption(googleIdOption)
             .build()
 
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val result = credentialManager.getCredential(
-                    request = request,
-                    context = this@MainActivity,
-                )
-                val credential = result.credential
-                if (credential is CustomCredential &&
-                    credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
-                ) {
-                    val googleIdTokenCredential =
-                        GoogleIdTokenCredential.createFrom(credential.data)
+        try {
+            val result = credentialManager.getCredential(
+                request = request,
+                context = this@MainActivity,
+            )
+            val credential = result.credential
+            if (credential is CustomCredential &&
+                credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+            ) {
+                val googleIdTokenCredential =
+                    GoogleIdTokenCredential.createFrom(credential.data)
 
-                    val firebaseCredential = GoogleAuthProvider.getCredential(
-                        googleIdTokenCredential.idToken,
-                        null
-                    )
-                    firebaseAuth.signInWithCredential(firebaseCredential)
-                        .addOnSuccessListener { authResult ->
-                            val firebaseUser = authResult.user
-                            if (firebaseUser == null) {
-                                onError("Sign-in succeeded but no user was returned.")
-                                return@addOnSuccessListener
-                            }
-                            callback(
-                                firebaseUser.email ?: googleIdTokenCredential.id,
-                                firebaseUser.email ?: googleIdTokenCredential.id,
-                                firebaseUser.displayName ?: googleIdTokenCredential.displayName ?: "",
-                                firebaseUser.photoUrl?.toString()
-                                    ?: googleIdTokenCredential.profilePictureUri?.toString()
-                                    ?: ""
-                            )
+                val firebaseCredential = GoogleAuthProvider.getCredential(
+                    googleIdTokenCredential.idToken,
+                    null
+                )
+                firebaseAuth.signInWithCredential(firebaseCredential)
+                    .addOnSuccessListener { authResult ->
+                        val firebaseUser = authResult.user
+                        if (firebaseUser == null) {
+                            onError("Sign-in succeeded but no user was returned.")
+                            return@addOnSuccessListener
                         }
-                        .addOnFailureListener { e ->
-                            android.util.Log.e("SignIn", "Firebase signInWithCredential failed", e)
-                            onError(e.message ?: "Google sign-in failed. Please try again.")
-                        }
-                } else {
-                    android.util.Log.w("SignIn", "Unexpected credential type: ${credential.type}")
-                    onError("Sign-in returned an unexpected credential type.")
-                }
-            } catch (e: GetCredentialException) {
-                android.util.Log.e("SignIn", "Google sign-in failed: ${e.javaClass.simpleName} ${e.message}", e)
-                onError(e.message ?: "Google sign-in was cancelled or failed.")
-            } catch (e: Exception) {
-                android.util.Log.e("SignIn", "Unexpected error during sign-in", e)
-                onError("Something went wrong signing in. Please try again.")
+                        callback(
+                            firebaseUser.email ?: googleIdTokenCredential.id,
+                            firebaseUser.email ?: googleIdTokenCredential.id,
+                            firebaseUser.displayName ?: googleIdTokenCredential.displayName ?: "",
+                            firebaseUser.photoUrl?.toString()
+                                ?: googleIdTokenCredential.profilePictureUri?.toString()
+                                ?: ""
+                        )
+                    }
+                    .addOnFailureListener { e ->
+                        android.util.Log.e("SignIn", "Firebase signInWithCredential failed (attempt $attempt)", e)
+                        retryOrFail(webClientId, attempt, e.message, callback, onError)
+                    }
+            } else {
+                android.util.Log.w("SignIn", "Unexpected credential type: ${credential.type}")
+                onError("Sign-in returned an unexpected credential type.")
             }
+        } catch (e: GetCredentialCancellationException) {
+            // The user dismissed the picker themselves — don't retry, that would just
+            // reopen it on top of them.
+            android.util.Log.d("SignIn", "Google sign-in cancelled by user")
+            onError("Google sign-in was cancelled.")
+        } catch (e: GetCredentialException) {
+            android.util.Log.e("SignIn", "Google sign-in failed (attempt $attempt): ${e.javaClass.simpleName} ${e.message}", e)
+            retryOrFail(webClientId, attempt, e.message, callback, onError)
+        } catch (e: Exception) {
+            android.util.Log.e("SignIn", "Unexpected error during sign-in (attempt $attempt)", e)
+            retryOrFail(webClientId, attempt, null, callback, onError)
+        }
+    }
+
+    private fun retryOrFail(
+        webClientId: String,
+        attempt: Int,
+        errorMessage: String?,
+        callback: (googleId: String, email: String, name: String, photo: String) -> Unit,
+        onError: (message: String) -> Unit,
+    ) {
+        if (attempt < maxSignInAttempts) {
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(signInRetryDelayMs)
+                attemptSignIn(webClientId, attempt + 1, callback, onError)
+            }
+        } else {
+            onError(errorMessage ?: "Google sign-in failed after $maxSignInAttempts attempts. Please try again.")
         }
     }
 

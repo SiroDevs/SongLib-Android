@@ -15,6 +15,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.material.icons.filled.FormatSize
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
@@ -29,8 +31,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.songlib.core.common.utils.lyricsString
-import com.songlib.core.common.utils.songShareString
 import com.songlib.core.database.model.SongEntity
 
 @Composable
@@ -41,11 +41,20 @@ fun PresentorMoreMenu(
     onReportSong: () -> Unit,
     onEditSong: () -> Unit,
     onCopyToDrafts: () -> Unit,
+    onShareSong: () -> Unit,
 ) {
     DropdownMenu(
         expanded = expanded,
         onDismissRequest = onDismiss,
     ) {
+        DropdownMenuItem(
+            text = { Text("Share this Song") },
+            leadingIcon = { Icon(Icons.Default.Share, contentDescription = null) },
+            onClick = {
+                onDismiss()
+                onShareSong()
+            },
+        )
         DropdownMenuItem(
             text = { Text("Edit this Song") },
             leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
@@ -85,8 +94,9 @@ fun PresentorMoreMenu(
 fun PresentorFab(
     fontSize: Float,
     currentSong: SongEntity?,
+    isAutoPlaying: Boolean,
     onResetFontSize: () -> Unit,
-    onShare: (String) -> Unit,
+    onToggleAutoPlay: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -108,14 +118,14 @@ fun PresentorFab(
 
         if (currentSong != null) {
             FloatingActionButton(
-                onClick = {
-                    val shareText = songShareString(currentSong.title, lyricsString(currentSong.content))
-                    onShare(shareText)
-                },
+                onClick = onToggleAutoPlay,
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
             ) {
-                Icon(Icons.Default.Share, contentDescription = "Share song")
+                Icon(
+                    imageVector = if (isAutoPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    contentDescription = if (isAutoPlaying) "Pause Auto Play" else "Start Auto Play",
+                )
             }
         }
     }

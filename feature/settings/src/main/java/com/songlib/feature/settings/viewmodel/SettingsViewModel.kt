@@ -26,6 +26,9 @@ class SettingsViewModel @Inject constructor(
     var demoMode by mutableStateOf(prefsRepo.demoMode)
         private set
 
+    var autoPlayEnabled by mutableStateOf(prefsRepo.autoPlayEnabled)
+        private set
+
     fun updateHorizontalSlides(enabled: Boolean) {
         horizontalSlides = enabled
         prefsRepo.horizontalSlides = enabled
@@ -34,6 +37,11 @@ class SettingsViewModel @Inject constructor(
     fun updateDemoMode(enabled: Boolean) {
         demoMode = enabled
         prefsRepo.demoMode = enabled
+    }
+
+    fun updateAutoPlayEnabled(enabled: Boolean) {
+        autoPlayEnabled = enabled
+        prefsRepo.autoPlayEnabled = enabled
     }
 
     fun updateSelection(enabled: Boolean) {

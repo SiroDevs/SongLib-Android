@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.ui.sample.SampleIndicators
 import com.songlib.core.ui.sample.SampleVerses
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun PresenterLayers(
@@ -24,12 +25,21 @@ fun PresenterLayers(
     fontSize: Float = AppFonts.DEFAULT_FONT_SP,
     cornerOverlay: (@Composable () -> Unit)? = null,
     onVerseIndexChanged: (Int) -> Unit = {},
+    autoAdvanceTo: SharedFlow<Int>? = null,
 ) {
     val pagerState = rememberPagerState { verses.size }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             onVerseIndexChanged(page)
+        }
+    }
+
+    LaunchedEffect(autoAdvanceTo) {
+        autoAdvanceTo?.collect { page ->
+            if (page in verses.indices) {
+                pagerState.animateScrollToPage(page)
+            }
         }
     }
 

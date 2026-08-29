@@ -37,6 +37,7 @@ object PrefConstants {
     const val THEME_MODE = "themeMode"
     const val HORIZONTAL_SLIDES = "horizontalSlides"
     const val DEMO_MODE = "demoMode"
+    const val AUTO_PLAY_ENABLED = "autoPlayEnabled"
 
     const val DONATION_DONE_AT = "donation_done_at"
     const val DONATION_METHOD = "donation_method"
@@ -98,4 +99,25 @@ object AppFonts {
     const val DEFAULT_FONT_SP = 28f
     const val MIN_FONT_SP = 14f
     const val MAX_FONT_SP = 60f
+}
+
+/**
+ * Tunables for the Auto Play stanza-timing engine (see `PresenterViewModel`).
+ * Verse/chorus durations start at these defaults and are then learned per-song
+ * from how long the user actually lingers on each stanza.
+ */
+object AutoPlayDefaults {
+    const val DEFAULT_VERSE_MS = 15_000L
+    const val DEFAULT_CHORUS_MS = 9_000L
+    const val MIN_DURATION_MS = 3_000L
+    const val MAX_DURATION_MS = 60_000L
+
+    /** Smoothing weight applied to a freshly observed dwell time. */
+    const val LEARNING_WEIGHT = 0.4
+
+    /** Multiplier applied when auto-correcting a duration that was too short. */
+    const val CORRECTION_FACTOR = 1.25
+
+    /** How soon after an auto-advance a "swipe back" counts as a correction signal. */
+    const val CORRECTION_WINDOW_MS = 20_000L
 }

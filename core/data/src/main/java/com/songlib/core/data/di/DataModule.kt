@@ -1,6 +1,7 @@
 package com.songlib.core.data.di
 
 import android.content.Context
+import com.songlib.core.data.repos.AutoPlayRepo
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.ListingRepo
@@ -10,6 +11,7 @@ import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.ThemeRepo
 import com.songlib.core.data.repos.TrackingRepo
 import com.songlib.core.data.repos.UserRepo
+import com.songlib.core.database.daos.AutoPlayDao
 import com.songlib.core.database.daos.BookDao
 import com.songlib.core.database.daos.DraftDao
 import com.songlib.core.database.daos.EditDao
@@ -69,4 +71,8 @@ object DataModule {
     @Provides @Singleton
     fun provideUserRepo(service: SongLibService, prefsRepo: PrefsRepo): UserRepo =
         UserRepo(service, prefsRepo)
+
+    @Provides @Singleton
+    fun provideAutoPlayRepo(autoPlayDao: AutoPlayDao): AutoPlayRepo =
+        AutoPlayRepo(autoPlayDao)
 }

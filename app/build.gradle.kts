@@ -25,8 +25,8 @@ android {
 
     defaultConfig {
         applicationId = "com.songlib"
-        versionCode = 873
-        versionName = "1.0.873"
+        versionCode = 875
+        versionName = "1.0.875"
         minSdk = 26
         targetSdk = 37
 
@@ -142,8 +142,8 @@ dependencies {
 
 sentry {
     debug.set(true)
-    includeSourceContext.set(true)
     org.set("futuristicken")
     projectName.set("songlib-android")
+    includeSourceContext.set(true)
     authToken.set(localProperties.getProperty("SENTRY_AUTH_TOKEN"))
 }
