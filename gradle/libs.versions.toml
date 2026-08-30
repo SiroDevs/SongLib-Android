@@ -33,7 +33,6 @@ appcompat = "1.8.0"
 material = "1.14.0"
 splashscreen = "1.2.0"
 firebaseBom = "34.18.0"
-firebaseAuth = "10.0.0-beta04"
 zxing = "3.5.3"
 
 [libraries]
@@ -71,7 +70,7 @@ ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.re
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 androidx-work-runtime = { module = "androidx.work:work-runtime-ktx", version.ref = "workmanager" }
-androidx-hilt-work = { module = "androidx.hilt:hiltWork", version.ref = "hiltWork" }
+androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
@@ -79,7 +78,7 @@ androidx-credentials = { module = "androidx.credentials:credentials", version.re
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentials" }
 google-identity-googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
-firebase-auth = { module = "com.firebaseui:firebase-ui-auth", version.ref = "firebaseAuth" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 

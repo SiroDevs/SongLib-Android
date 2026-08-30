@@ -11,5 +11,6 @@ android {
 dependencies {
     implementation(project(":core:data"))
     implementation(libs.androidx.foundation)
+    implementation(libs.androidx.work.runtime)
     implementation(libs.coil.compose)
 }

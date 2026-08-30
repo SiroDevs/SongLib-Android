@@ -27,8 +27,8 @@ dependencies {
     api(project(":core:network"))
 
     api(libs.androidx.compose.material)
-
     implementation(libs.androidx.core.ktx)
+
     implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.hilt.work)
     ksp(libs.androidx.hilt.compiler)
