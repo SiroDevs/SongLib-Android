@@ -20,20 +20,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlin.collections.copy
 
 @Composable
 fun DemoStepLabel(text: String) {
     Text(
-        text       = text,
-        color      = Color(0xFFFFD700),
-        fontSize   = 18.sp,
+        text = text,
+        color = Color(0xFFFFD700),
+        fontSize = 18.sp,
         fontWeight = FontWeight.Bold,
-        textAlign  = TextAlign.Center,
-        style      = LocalTextStyle.current.copy(
+        textAlign = TextAlign.Center,
+        style = LocalTextStyle.current.copy(
             shadow = Shadow(
-                color      = Color.Black,
-                offset     = Offset(2f, 2f),
+                color = Color.Black,
+                offset = Offset(2f, 2f),
                 blurRadius = 8f,
             )
         ),
@@ -43,15 +42,15 @@ fun DemoStepLabel(text: String) {
 @Composable
 fun DemoStepExplanation(text: String) {
     Text(
-        text      = text,
-        color     = Color.White,
-        fontSize  = 15.sp,
+        text = text,
+        color = Color.White,
+        fontSize = 15.sp,
         textAlign = TextAlign.Center,
-        modifier  = Modifier.padding(horizontal = 8.dp),
-        style     = LocalTextStyle.current.copy(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        style = LocalTextStyle.current.copy(
             shadow = Shadow(
-                color      = Color.Black,
-                offset     = Offset(1f, 1f),
+                color = Color.Black,
+                offset = Offset(1f, 1f),
                 blurRadius = 12f,
             )
         ),
@@ -60,21 +59,21 @@ fun DemoStepExplanation(text: String) {
 
 @Composable
 fun DemoNavButtons(
-    isFirst:    Boolean,
-    isLast:     Boolean,
+    isFirst: Boolean,
+    isLast: Boolean,
     onPrevious: () -> Unit,
-    onNext:     () -> Unit,
-    onClose:    () -> Unit,
+    onNext: () -> Unit,
+    onClose: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-        modifier              = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         OutlinedButton(
-            onClick  = onPrevious,
-            enabled  = !isFirst,
-            colors   = ButtonDefaults.outlinedButtonColors(
-                contentColor         = Color.White,
+            onClick = onPrevious,
+            enabled = !isFirst,
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = Color.White,
                 disabledContentColor = Color.White.copy(alpha = 0.3f),
             ),
             border = BorderStroke(
@@ -87,22 +86,22 @@ fun DemoNavButtons(
 
         Button(
             onClick = onNext,
-            colors  = ButtonDefaults.buttonColors(
+            colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFFFD700),
-                contentColor   = Color.Black,
+                contentColor = Color.Black,
             ),
         ) {
             Text(
-                text       = if (isLast) "Finish" else "Next",
-                fontSize   = 13.sp,
+                text = if (isLast) "Finish" else "Next",
+                fontSize = 13.sp,
                 fontWeight = FontWeight.Bold,
             )
         }
 
         OutlinedButton(
             onClick = onClose,
-            colors  = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFFF6B6B)),
-            border  = BorderStroke(1.dp, Color(0xFFFF6B6B).copy(alpha = 0.7f)),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color(0xFFFF6B6B)),
+            border = BorderStroke(1.dp, Color(0xFFFF6B6B).copy(alpha = 0.7f)),
         ) {
             Text("Close", fontSize = 13.sp)
         }
