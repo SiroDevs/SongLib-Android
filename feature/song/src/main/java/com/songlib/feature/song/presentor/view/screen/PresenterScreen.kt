@@ -177,7 +177,6 @@ fun PresenterScreen(
                         },
                         onReportSong = { showReportDialog = true },
                         onEditSong = {
-                            // Navigate to the song editor
                             val songToEdit = currentSong ?: song
                             songToEdit?.let { s ->
                                 navController.currentBackStackEntry
