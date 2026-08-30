@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.songlib.android.feature)
     alias(libs.plugins.songlib.android.library.compose)
+    alias(libs.plugins.songlib.hilt)
 }
 
 android {
@@ -10,10 +11,6 @@ android {
 dependencies {
     implementation(project(":core:data"))
     implementation(libs.androidx.foundation)
-
     implementation(libs.androidx.work.runtime)
-    implementation(libs.androidx.hilt.work)
-    ksp(libs.androidx.hilt.compiler)
-
     implementation(libs.coil.compose)
 }

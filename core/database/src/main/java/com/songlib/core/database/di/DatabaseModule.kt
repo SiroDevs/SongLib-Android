@@ -3,6 +3,7 @@ package com.songlib.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.songlib.core.database.AppDatabase
+import com.songlib.core.database.daos.AutoPlayDao
 import com.songlib.core.database.daos.BookDao
 import com.songlib.core.database.daos.DraftDao
 import com.songlib.core.database.daos.EditDao
@@ -11,6 +12,7 @@ import com.songlib.core.database.daos.ListingDao
 import com.songlib.core.database.daos.SearchDao
 import com.songlib.core.database.daos.SongDao
 import com.songlib.core.database.legacy.LegacyImportCallback
+import com.songlib.core.database.migrations.ALL_MIGRATIONS
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +29,7 @@ object DatabaseModule {
     fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase =
         Room.databaseBuilder(appContext, AppDatabase::class.java, "SongLibrary")
             .addCallback(LegacyImportCallback(appContext))
+            .addMigrations(*ALL_MIGRATIONS)
             .build()
 
     @Provides fun provideBookDao(db: AppDatabase): BookDao = db.booksDao()
@@ -36,4 +39,5 @@ object DatabaseModule {
     @Provides fun provideSongDao(db: AppDatabase): SongDao = db.songsDao()
     @Provides fun provideDraftDao(db: AppDatabase): DraftDao = db.draftsDao()
     @Provides fun provideEditDao(db: AppDatabase): EditDao = db.editsDao()
+    @Provides fun provideAutoPlayDao(db: AppDatabase): AutoPlayDao = db.autoPlayDao()
 }

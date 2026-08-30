@@ -4,21 +4,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.utils.getSongVerses
 import com.songlib.core.common.utils.songItemTitle
+import com.songlib.core.data.repos.AutoPlayRepo
 import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.ListingRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
+import com.songlib.core.database.model.AutoPlayEntity
 import com.songlib.core.database.model.DraftEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
+import com.songlib.core.common.utils.AutoPlayDefaults
 import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -48,6 +53,7 @@ class PresenterViewModel @Inject constructor(
     private val trackingRepo: TrackingRepo,
     private val draftRepo: DraftRepo,
     private val castingRepo: CastingRepo,
+    private val autoPlayRepo: AutoPlayRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -99,6 +105,127 @@ class PresenterViewModel @Inject constructor(
         _fontSize.value = newSp.coerceIn(AppFonts.MIN_FONT_SP, AppFonts.MAX_FONT_SP)
     }
 
+    // --- Auto Play -----------------------------------------------------
+
+    private val _isAutoPlaying = MutableStateFlow(prefsRepo.autoPlayEnabled)
+    val isAutoPlaying: StateFlow<Boolean> = _isAutoPlaying.asStateFlow()
+
+    /** Emits a page index the presenter's pager should scroll itself to. */
+    private val _autoAdvanceTo = MutableSharedFlow<Int>()
+    val autoAdvanceTo: SharedFlow<Int> = _autoAdvanceTo.asSharedFlow()
+
+    private var autoPlayJob: Job? = null
+    private var songDurations: AutoPlayEntity? = null
+
+    private var currentPageIndex: Int = -1
+    private var pageEnteredAt: Long = 0L
+
+    /** The page index we ourselves just auto-advanced to (so we don't "learn" from it). */
+    private var pendingAutoAdvanceIndex: Int? = null
+
+    /** Where/when we last auto-advanced FROM, so a quick swipe-back can correct it. */
+    private var lastAutoAdvanceFromIndex: Int? = null
+    private var lastAutoAdvanceFromAt: Long = 0L
+
+    private fun isChorusPage(index: Int): Boolean =
+        _indicators.value.getOrNull(index) == "C"
+
+    private fun durationsOrDefault(): AutoPlayEntity =
+        songDurations ?: AutoPlayEntity(
+            songId = _currentSong.value?.songId ?: 0,
+            verseDuration = AutoPlayDefaults.DEFAULT_VERSE_MS,
+            chorusDuration = AutoPlayDefaults.DEFAULT_CHORUS_MS,
+        )
+
+    private fun durationForPage(index: Int): Long {
+        val durations = durationsOrDefault()
+        return if (isChorusPage(index)) durations.chorusDuration else durations.verseDuration
+    }
+
+    private fun persistDurations() {
+        val entity = songDurations ?: return
+        viewModelScope.launch { autoPlayRepo.saveDurations(entity) }
+    }
+
+    /** Blend a freshly observed dwell time into the learned duration for this page's type. */
+    private fun learnDuration(index: Int, elapsedMs: Long) {
+        val clamped = elapsedMs.coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
+        val current = durationsOrDefault()
+        val updated = if (isChorusPage(index)) {
+            val blended = blend(current.chorusDuration, clamped)
+            current.copy(chorusDuration = blended)
+        } else {
+            val blended = blend(current.verseDuration, clamped)
+            current.copy(verseDuration = blended)
+        }
+        songDurations = updated
+        persistDurations()
+    }
+
+    private fun blend(existing: Long, observed: Long): Long {
+        val weight = AutoPlayDefaults.LEARNING_WEIGHT
+        return (existing * (1 - weight) + observed * weight).toLong()
+            .coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
+    }
+
+    /** The auto-advance away from [index] happened too soon — nudge its duration up. */
+    private fun correctDurationUpward(index: Int) {
+        val current = durationsOrDefault()
+        val updated = if (isChorusPage(index)) {
+            current.copy(
+                chorusDuration = (current.chorusDuration * AutoPlayDefaults.CORRECTION_FACTOR)
+                    .toLong()
+                    .coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
+            )
+        } else {
+            current.copy(
+                verseDuration = (current.verseDuration * AutoPlayDefaults.CORRECTION_FACTOR)
+                    .toLong()
+                    .coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
+            )
+        }
+        songDurations = updated
+        persistDurations()
+    }
+
+    private fun scheduleAutoAdvance(fromIndex: Int) {
+        autoPlayJob?.cancel()
+        val nextIndex = fromIndex + 1
+        if (nextIndex !in _verses.value.indices) return
+
+        val waitMs = durationForPage(fromIndex)
+        autoPlayJob = viewModelScope.launch {
+            delay(waitMs)
+            pendingAutoAdvanceIndex = nextIndex
+            lastAutoAdvanceFromIndex = fromIndex
+            lastAutoAdvanceFromAt = System.currentTimeMillis()
+            _autoAdvanceTo.emit(nextIndex)
+        }
+    }
+
+    /** Toggled from the presenter's play/pause FAB. */
+    fun toggleAutoPlay() {
+        val turningOn = !_isAutoPlaying.value
+        _isAutoPlaying.value = turningOn
+        if (turningOn) {
+            viewModelScope.launch {
+                _toastEvent.emit("Auto Play is on: The next stanza will move on its own")
+            }
+            if (currentPageIndex >= 0) scheduleAutoAdvance(currentPageIndex)
+        } else {
+            autoPlayJob?.cancel()
+        }
+    }
+
+    private fun loadAutoPlayDurations(songId: Int) {
+        viewModelScope.launch {
+            songDurations = autoPlayRepo.getDurations(songId)
+            if (_isAutoPlaying.value && currentPageIndex >= 0) {
+                scheduleAutoAdvance(currentPageIndex)
+            }
+        }
+    }
+
     private var currentBookTitle: String? = null
 
     fun loadSong(song: SongEntity, bookTitle: String? = null) {
@@ -106,7 +233,9 @@ class PresenterViewModel @Inject constructor(
         _currentSong.value = song
         _isLiked.value = song.liked
         currentBookTitle = bookTitle
+        resetAutoPlayForNewSong()
         parseSong(song)
+        loadAutoPlayDurations(song.songId)
 
         viewModelScope.launch {
             trackingRepo.recordSongView(song.songId)
@@ -127,10 +256,22 @@ class PresenterViewModel @Inject constructor(
         _uiState.value = UiState.Loading
         _currentSong.value = song
         _isLiked.value = song.liked
+        resetAutoPlayForNewSong()
         parseSong(song)
+        loadAutoPlayDurations(song.songId)
         _currentSongIndex.value = _bookSongs.value.indexOfFirst { it.songId == song.songId }
 
         viewModelScope.launch { trackingRepo.recordSongView(song.songId) }
+    }
+
+    private fun resetAutoPlayForNewSong() {
+        autoPlayJob?.cancel()
+        songDurations = null
+        currentPageIndex = -1
+        pageEnteredAt = 0L
+        pendingAutoAdvanceIndex = null
+        lastAutoAdvanceFromIndex = null
+        lastAutoAdvanceFromAt = 0L
     }
 
     fun navigateToNext() {
@@ -185,9 +326,33 @@ class PresenterViewModel @Inject constructor(
 
     fun onVerseIndexChanged(index: Int) {
         castingRepo.updateIndex(index)
+
+        val now = System.currentTimeMillis()
+        val previousIndex = currentPageIndex
+        val wasAutoAdvance = pendingAutoAdvanceIndex == index
+        pendingAutoAdvanceIndex = null
+
+        if (previousIndex >= 0 && previousIndex != index && pageEnteredAt > 0 && !wasAutoAdvance) {
+            // A manual swipe: learn how long the user actually lingered on that page.
+            learnDuration(previousIndex, now - pageEnteredAt)
+
+            // Swiped back to the page we just auto-advanced away from — it left too soon.
+            if (index < previousIndex &&
+                lastAutoAdvanceFromIndex == index &&
+                now - lastAutoAdvanceFromAt < AutoPlayDefaults.CORRECTION_WINDOW_MS
+            ) {
+                correctDurationUpward(index)
+            }
+        }
+
+        currentPageIndex = index
+        pageEnteredAt = now
+
+        if (_isAutoPlaying.value) scheduleAutoAdvance(index)
     }
 
     override fun onCleared() {
+        autoPlayJob?.cancel()
         castingRepo.publishIdle()
         super.onCleared()
     }

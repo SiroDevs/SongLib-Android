@@ -30,7 +30,7 @@ interface SearchDao {
     suspend fun deleteAll()
 
     @Query("UPDATE searches SET hits = hits + 1 WHERE title = :title")
-    suspend fun bumpHits(title: String): Int   // returns rows affected
+    suspend fun bumpHits(title: String): Int
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertIfAbsent(search: SearchEntity)

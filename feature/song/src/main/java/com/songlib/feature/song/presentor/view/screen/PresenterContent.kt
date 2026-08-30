@@ -23,6 +23,7 @@ import com.songlib.core.ui.components.pagecurl.CornerNavZone
 import com.songlib.core.ui.components.pagecurl.CurlCorner
 import com.songlib.feature.song.R
 import com.songlib.feature.song.presentor.view.components.PresenterLayers
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun PresenterContent(
@@ -36,6 +37,7 @@ fun PresenterContent(
     onNavigatePrevious: () -> Unit,
     onNavigateNext: () -> Unit,
     onVerseIndexChanged: (Int) -> Unit = {},
+    autoAdvanceTo: SharedFlow<Int>? = null,
 ) {
     var fontSizeAtGestureStart by remember { mutableFloatStateOf(fontSize) }
     Box(
@@ -72,6 +74,7 @@ fun PresenterContent(
             horizontalSlides = horizontalSlides,
             fontSize = fontSize,
             onVerseIndexChanged = onVerseIndexChanged,
+            autoAdvanceTo = autoAdvanceTo,
             cornerOverlay = {
                 if (hasPrevious) {
                     CornerNavZone(

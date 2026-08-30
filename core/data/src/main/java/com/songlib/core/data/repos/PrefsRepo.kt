@@ -55,6 +55,10 @@ class PrefsRepo @Inject constructor(
         get() = prefs.getBoolean(PrefConstants.DEMO_MODE, true)
         set(value) = prefs.edit { putBoolean(PrefConstants.DEMO_MODE, value) }
 
+    var autoPlayEnabled: Boolean
+        get() = prefs.getBoolean(PrefConstants.AUTO_PLAY_ENABLED, true)
+        set(value) = prefs.edit { putBoolean(PrefConstants.AUTO_PLAY_ENABLED, value) }
+
     var donationDoneAt: Long
         get() = prefs.getLong(PrefConstants.DONATION_DONE_AT, 0L)
         set(value) = prefs.edit { putLong(PrefConstants.DONATION_DONE_AT, value) }

@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Swipe
@@ -126,6 +127,17 @@ fun SettingsScreen(
                     Switch(
                         checked = settViewModel.horizontalSlides,
                         onCheckedChange = { settViewModel.updateHorizontalSlides(it) }
+                    )
+                }
+            )
+            ListItem(
+                leadingContent = { Icon(Icons.Default.PlayArrow, "Auto Play") },
+                headlineContent = { Text("Auto Play") },
+                supportingContent = { Text("Automatically move through verses and chorus") },
+                trailingContent = {
+                    Switch(
+                        checked = settViewModel.autoPlayEnabled,
+                        onCheckedChange = { settViewModel.updateAutoPlayEnabled(it) }
                     )
                 }
             )

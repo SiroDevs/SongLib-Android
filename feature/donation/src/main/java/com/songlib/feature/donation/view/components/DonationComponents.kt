@@ -148,12 +148,12 @@ fun DonationMethodFilterStrip(
             onClick = { onMethodSelected(DonationMethod.PAYSTACK) },
             modifier = Modifier.weight(1f),
         )
-        FilterStripItem(
-            label = "CRYPTO",
-            isSelected = selectedMethod == DonationMethod.CRYPTO,
-            onClick = { onMethodSelected(DonationMethod.CRYPTO) },
-            modifier = Modifier.weight(1f),
-        )
+//        FilterStripItem(
+//            label = "CRYPTO",
+//            isSelected = selectedMethod == DonationMethod.CRYPTO,
+//            onClick = { onMethodSelected(DonationMethod.CRYPTO) },
+//            modifier = Modifier.weight(1f),
+//        )
     }
 }
 

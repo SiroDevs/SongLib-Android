@@ -25,6 +25,8 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.common.utils.Routes
+import com.songlib.core.common.utils.lyricsString
+import com.songlib.core.common.utils.songShareString
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
@@ -62,7 +64,20 @@ fun PresenterScreen(
     val listings by viewModel.listings.collectAsState()
     val fontSize by viewModel.fontSize.collectAsState()
     val reportState by viewModel.reportState.collectAsState()
+    val isAutoPlaying by viewModel.isAutoPlaying.collectAsState()
     val context = LocalContext.current
+
+    val shareSong: () -> Unit = {
+        val song = currentSong
+        if (song != null) {
+            val shareText = songShareString(song.title, lyricsString(song.content))
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, shareText)
+            }
+            context.startActivity(Intent.createChooser(intent, "Share song via"))
+        }
+    }
 
     var showMoreMenu by remember { mutableStateOf(false) }
     var showReportDialog by remember { mutableStateOf(false) }
@@ -175,6 +190,7 @@ fun PresenterScreen(
                             val songToCopy = currentSong ?: song
                             songToCopy?.let { viewModel.copyToDrafts(it) }
                         },
+                        onShareSong = shareSong,
                     )
                 },
             )
@@ -183,14 +199,9 @@ fun PresenterScreen(
             PresentorFab(
                 fontSize = fontSize,
                 currentSong = currentSong,
+                isAutoPlaying = isAutoPlaying,
                 onResetFontSize = { viewModel.updateFontSize(AppFonts.DEFAULT_FONT_SP) },
-                onShare = { shareText ->
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, shareText)
-                    }
-                    context.startActivity(Intent.createChooser(intent, "Share song via"))
-                },
+                onToggleAutoPlay = { viewModel.toggleAutoPlay() },
             )
         },
     ) { paddingValues ->
@@ -216,6 +227,7 @@ fun PresenterScreen(
                     onNavigatePrevious = { viewModel.navigateToPrevious() },
                     onNavigateNext = { viewModel.navigateToNext() },
                     onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
+                    autoAdvanceTo = viewModel.autoAdvanceTo,
                 )
 
                 UiState.Loading -> { }
