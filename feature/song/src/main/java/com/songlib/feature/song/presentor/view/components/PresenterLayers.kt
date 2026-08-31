@@ -4,12 +4,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,8 +32,13 @@ fun PresenterLayers(
     cornerOverlay: (@Composable () -> Unit)? = null,
     onVerseIndexChanged: (Int) -> Unit = {},
     autoAdvanceTo: SharedFlow<Int>? = null,
+    isAutoPlaying: Boolean = false,
+    autoPlayElapsedSeconds: Int = 0,
+    autoPlayTotalSeconds: Int = 0,
+    onToggleAutoPlay: () -> Unit = {},
 ) {
     val pagerState = rememberPagerState { verses.size }
+    var showAutoPlayInfo by remember { mutableStateOf(false) }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -51,11 +58,16 @@ fun PresenterLayers(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        OutlinedCard(
-            modifier = Modifier.fillMaxSize().height(50.dp),
-        ) {
-
-        }
+        AutoPlayCard(
+            isAutoPlaying = isAutoPlaying,
+            elapsedSeconds = autoPlayElapsedSeconds,
+            totalSeconds = autoPlayTotalSeconds,
+            onToggle = onToggleAutoPlay,
+            onInfoClick = { showAutoPlayInfo = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+        )
 
         PagerView(
             pagerState = pagerState,
@@ -76,6 +88,10 @@ fun PresenterLayers(
                 .fillMaxWidth()
                 .padding(bottom = 10.dp)
         )
+    }
+
+    if (showAutoPlayInfo) {
+        AutoPlayInfoDialog(onDismiss = { showAutoPlayInfo = false })
     }
 }
 

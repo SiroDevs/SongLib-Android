@@ -33,11 +33,6 @@ import com.songlib.core.ui.components.share.ShareHelper
 import com.songlib.core.ui.components.share.captureOnly
 import kotlinx.coroutines.launch
 
-/**
- * Share and Copy buttons shown at the bottom of each verse slide. Copy puts the verse
- * text (with the song title and book name at the bottom) on the clipboard. Share builds
- * a formatted image of the verse and opens the Android share sheet directly.
- */
 @Composable
 fun VerseShareButtons(
     songTitle: String,
@@ -62,8 +57,6 @@ fun VerseShareButtons(
     }
 
     Box(modifier = modifier) {
-        // Measured, placed, and drawn normally (so the graphics layer has content to
-        // capture) but reports zero size and is invisible, so it takes no space here.
         Box(modifier = Modifier.captureOnly()) {
             VerseShareCard(
                 verseLabel = verseLabel,

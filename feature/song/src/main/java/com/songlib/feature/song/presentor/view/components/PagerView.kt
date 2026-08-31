@@ -100,8 +100,7 @@ fun PagerView(
                             ?: "Verse ${page + 1}",
                         verseText = verses[page],
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 14.dp),
+                            .align(Alignment.CenterHorizontally),
                     )
                 }
             }

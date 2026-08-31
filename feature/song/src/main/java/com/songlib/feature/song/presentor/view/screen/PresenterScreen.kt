@@ -64,6 +64,8 @@ fun PresenterScreen(
     val listings by viewModel.listings.collectAsState()
     val fontSize by viewModel.fontSize.collectAsState()
     val reportState by viewModel.reportState.collectAsState()
+    val isAutoPlaying by viewModel.isAutoPlaying.collectAsState()
+    val autoPlayProgress by viewModel.autoPlayProgress.collectAsState()
     val context = LocalContext.current
 
     var showMoreMenu by remember { mutableStateOf(false) }
@@ -229,6 +231,10 @@ fun PresenterScreen(
                     onNavigateNext = { viewModel.navigateToNext() },
                     onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
                     autoAdvanceTo = viewModel.autoAdvanceTo,
+                    isAutoPlaying = isAutoPlaying,
+                    autoPlayElapsedSeconds = autoPlayProgress.elapsedSeconds,
+                    autoPlayTotalSeconds = autoPlayProgress.totalSeconds,
+                    onToggleAutoPlay = { viewModel.toggleAutoPlay() },
                 )
                 UiState.Loading -> { }
                 else -> EmptyState()

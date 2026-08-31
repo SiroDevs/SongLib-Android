@@ -40,6 +40,10 @@ fun PresenterContent(
     onNavigateNext: () -> Unit,
     onVerseIndexChanged: (Int) -> Unit = {},
     autoAdvanceTo: SharedFlow<Int>? = null,
+    isAutoPlaying: Boolean = false,
+    autoPlayElapsedSeconds: Int = 0,
+    autoPlayTotalSeconds: Int = 0,
+    onToggleAutoPlay: () -> Unit = {},
 ) {
     var fontSizeAtGestureStart by remember { mutableFloatStateOf(fontSize) }
     Box(
@@ -79,6 +83,10 @@ fun PresenterContent(
             fontSize = fontSize,
             onVerseIndexChanged = onVerseIndexChanged,
             autoAdvanceTo = autoAdvanceTo,
+            isAutoPlaying = isAutoPlaying,
+            autoPlayElapsedSeconds = autoPlayElapsedSeconds,
+            autoPlayTotalSeconds = autoPlayTotalSeconds,
+            onToggleAutoPlay = onToggleAutoPlay,
             cornerOverlay = {
                 if (hasPrevious) {
                     CornerNavZone(
