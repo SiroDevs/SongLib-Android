@@ -101,6 +101,9 @@ fun DraftPresenterScreen(
                     onNavigatePrevious = { viewModel.navigatePrevious() },
                     onNavigateNext = { viewModel.navigateNext() },
                     onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
+                    songTitle = displayTitle,
+                    bookName = "",
+                    autoAdvanceTo = null,
                 )
 
                 UiState.Loading -> { }

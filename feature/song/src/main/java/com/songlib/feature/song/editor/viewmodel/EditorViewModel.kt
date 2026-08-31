@@ -60,7 +60,6 @@ class EditorViewModel @Inject constructor(
         if (editorMode != null) return
         editorMode = EditorMode.Song(song)
         _title.value = song.title
-        // FIX 3: decode # → newline so the TextField shows readable verse breaks
         _content.value = song.content.storageToDisplay()
     }
 
@@ -68,7 +67,6 @@ class EditorViewModel @Inject constructor(
         if (editorMode != null) return
         editorMode = EditorMode.Draft(draft)
         _title.value = draft.title
-        // FIX 3: same decode for drafts
         _content.value = draft.content.storageToDisplay()
     }
 
@@ -79,8 +77,6 @@ class EditorViewModel @Inject constructor(
     fun onContentChange(value: String) {
         _content.value = value
     }
-
-    // ── Submit ────────────────────────────────────────────────────────────
 
     fun submit() {
         if (_title.value.isBlank()) {
@@ -102,7 +98,6 @@ class EditorViewModel @Inject constructor(
         _submitState.value = EditSubmitState.Submitting
         viewModelScope.launch {
             try {
-                // FIX 3: re-encode newlines → # before saving/submitting
                 val storedContent = _content.value.displayToStorage()
 
                 editorRepo.submitSongEdit(

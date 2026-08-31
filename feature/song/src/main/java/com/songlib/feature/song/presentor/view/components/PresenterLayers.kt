@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
@@ -21,6 +23,8 @@ import kotlinx.coroutines.flow.SharedFlow
 fun PresenterLayers(
     verses: List<String>,
     indicators: List<String>,
+    songTitle: String,
+    bookName: String?,
     horizontalSlides: Boolean = false,
     fontSize: Float = AppFonts.DEFAULT_FONT_SP,
     cornerOverlay: (@Composable () -> Unit)? = null,
@@ -47,9 +51,18 @@ fun PresenterLayers(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        OutlinedCard(
+            modifier = Modifier.fillMaxSize().height(50.dp),
+        ) {
+
+        }
+
         PagerView(
             pagerState = pagerState,
             verses = verses,
+            songTitle = songTitle,
+            bookName = bookName,
+            indicators = indicators,
             modifier = Modifier.weight(1f),
             horizontalSlides = horizontalSlides,
             fontSize = fontSize,
@@ -72,5 +85,7 @@ fun PreviewPresenterContent() {
     PresenterLayers(
         verses = SampleVerses,
         indicators = SampleIndicators,
+        songTitle = "Sample Song",
+        bookName = "Sample Book",
     )
 }

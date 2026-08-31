@@ -25,9 +25,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.common.utils.Routes
-import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songShareString
-import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.ui.components.action.AppTopBar
@@ -35,6 +33,7 @@ import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.action.ChoosingListingSheet
+import com.songlib.core.ui.components.share.ScreenshotReminderDialog
 import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
 import com.songlib.feature.song.presentor.viewmodel.ReportUiState
 import com.songlib.feature.song.presentor.view.components.DemoOverlay
@@ -42,6 +41,7 @@ import com.songlib.feature.song.presentor.view.components.LikeSongBtn
 import com.songlib.feature.song.presentor.view.components.PresentorMoreMenu
 import com.songlib.feature.song.presentor.view.components.PresentorFab
 import com.songlib.feature.song.presentor.view.components.ReportSongDialog
+import com.songlib.feature.song.presentor.view.components.SongShareSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +50,6 @@ fun PresenterScreen(
     viewModel: PresenterViewModel,
     song: SongEntity?,
     book: BookEntity?,
-    prefsRepo: PrefsRepo,
 ) {
     val horizontalSlides = viewModel.horizontalSlides
     val uiState by viewModel.uiState.collectAsState()
@@ -58,31 +57,20 @@ fun PresenterScreen(
     val hasPreviousSong by viewModel.hasPreviousSong.collectAsState()
     val hasNextSong by viewModel.hasNextSong.collectAsState()
     val title by viewModel.title.collectAsState()
+    val content by viewModel.content.collectAsState()
     val verses by viewModel.verses.collectAsState()
     val indicators by viewModel.indicators.collectAsState()
     val currentSong by viewModel.currentSong.collectAsState()
     val listings by viewModel.listings.collectAsState()
     val fontSize by viewModel.fontSize.collectAsState()
     val reportState by viewModel.reportState.collectAsState()
-    val isAutoPlaying by viewModel.isAutoPlaying.collectAsState()
     val context = LocalContext.current
-
-    val shareSong: () -> Unit = {
-        val song = currentSong
-        if (song != null) {
-            val shareText = songShareString(song.title, lyricsString(song.content))
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, shareText)
-            }
-            context.startActivity(Intent.createChooser(intent, "Share song via"))
-        }
-    }
 
     var showMoreMenu by remember { mutableStateOf(false) }
     var showReportDialog by remember { mutableStateOf(false) }
     var showListingSheet by remember { mutableStateOf(false) }
     var showAddListingDialog by remember { mutableStateOf(false) }
+    var showShareSheet by remember { mutableStateOf(false) }
     var showPresenterDemo by rememberSaveable { mutableStateOf(viewModel.demoMode) }
 
     LaunchedEffect(Unit) {
@@ -90,21 +78,22 @@ fun PresenterScreen(
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
-
     LaunchedEffect(song) {
         song?.let { viewModel.loadSong(it, book?.title) }
     }
-
     LaunchedEffect(reportState) {
         if (reportState is ReportUiState.Success) {
             showReportDialog = false
             viewModel.resetReportState()
         }
     }
+    if (uiState == UiState.Loaded) {
+        ScreenshotReminderDialog(onShareClick = { showShareSheet = true })
+    }
 
     if (showReportDialog) {
         ReportSongDialog(
-            songTitle = currentSong?.title ?: song?.title ?: "",
+            songTitle = title,
             isSubmitting = reportState is ReportUiState.Submitting,
             onDismiss = {
                 showReportDialog = false
@@ -126,8 +115,6 @@ fun PresenterScreen(
 
     if (showAddListingDialog) {
         QuickFormDialog(
-            title = "New Listing",
-            label = "Listing title",
             onDismiss = { showAddListingDialog = false },
             onConfirm = { newTitle ->
                 viewModel.saveListing(newTitle)
@@ -149,6 +136,16 @@ fun PresenterScreen(
                 showListingSheet = false
             },
             onDone = { showListingSheet = false }
+        )
+    }
+
+    if (showShareSheet && currentSong != null) {
+        SongShareSheet(
+            songTitle = title,
+            bookName = book?.title,
+            lyrics = content,
+            shareText = songShareString(title, content),
+            onDismiss = { showShareSheet = false },
         )
     }
 
@@ -189,7 +186,6 @@ fun PresenterScreen(
                             val songToCopy = currentSong ?: song
                             songToCopy?.let { viewModel.copyToDrafts(it) }
                         },
-                        onShareSong = shareSong,
                     )
                 },
             )
@@ -198,9 +194,14 @@ fun PresenterScreen(
             PresentorFab(
                 fontSize = fontSize,
                 currentSong = currentSong,
-                isAutoPlaying = isAutoPlaying,
                 onResetFontSize = { viewModel.updateFontSize(AppFonts.DEFAULT_FONT_SP) },
-                onToggleAutoPlay = { viewModel.toggleAutoPlay() },
+                onShare = { shareText ->
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    context.startActivity(Intent.createChooser(intent, "Share song via"))
+                },
             )
         },
     ) { paddingValues ->
@@ -214,10 +215,11 @@ fun PresenterScreen(
                     message = (uiState as UiState.Error).message,
                     retryAction = {}
                 )
-
                 UiState.Loaded -> PresenterContent(
                     verses = verses,
                     indicators = indicators,
+                    songTitle = title,
+                    bookName = book?.title,
                     horizontalSlides = horizontalSlides,
                     hasPrevious = hasPreviousSong,
                     hasNext = hasNextSong,
@@ -228,12 +230,9 @@ fun PresenterScreen(
                     onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
                     autoAdvanceTo = viewModel.autoAdvanceTo,
                 )
-
                 UiState.Loading -> { }
-
                 else -> EmptyState()
             }
-
             DemoOverlay(
                 isVisible = showPresenterDemo,
                 onDismiss = { showPresenterDemo = false }

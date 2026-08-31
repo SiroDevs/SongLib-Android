@@ -43,7 +43,7 @@ fun DialPad(
         listOf("1", "2", "3"),
         listOf("4", "5", "6"),
         listOf("7", "8", "9"),
-        listOf<Any>(Icons.AutoMirrored.Filled.Backspace, "0", " ")
+        listOf<Any>(Icons.AutoMirrored.Filled.Backspace, "00", "0")
     )
 
     Box(

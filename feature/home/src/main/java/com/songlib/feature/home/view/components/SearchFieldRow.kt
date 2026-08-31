@@ -32,7 +32,7 @@ fun SearchFieldRow(
     onQueryChange: (String) -> Unit,
     onClear: () -> Unit,
     onVoiceSearch: () -> Unit,
-    onSearch: ((String) -> Unit)? = null,   // called when user presses the search IME action
+    onSearch: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Box(

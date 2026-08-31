@@ -19,6 +19,7 @@ import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.AppFonts
 import com.songlib.core.common.utils.AutoPlayDefaults
 import com.songlib.core.casting.data.CastingRepo
+import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.network.dtos.SongReportRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -65,6 +66,9 @@ class PresenterViewModel @Inject constructor(
     private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
 
+    private val _content = MutableStateFlow("Song Content")
+    val content: StateFlow<String> get() = _content
+
     private val _toastEvent = MutableSharedFlow<String>()
     val toastEvent: SharedFlow<String> = _toastEvent.asSharedFlow()
 
@@ -105,12 +109,9 @@ class PresenterViewModel @Inject constructor(
         _fontSize.value = newSp.coerceIn(AppFonts.MIN_FONT_SP, AppFonts.MAX_FONT_SP)
     }
 
-    // --- Auto Play -----------------------------------------------------
-
     private val _isAutoPlaying = MutableStateFlow(prefsRepo.autoPlayEnabled)
     val isAutoPlaying: StateFlow<Boolean> = _isAutoPlaying.asStateFlow()
 
-    /** Emits a page index the presenter's pager should scroll itself to. */
     private val _autoAdvanceTo = MutableSharedFlow<Int>()
     val autoAdvanceTo: SharedFlow<Int> = _autoAdvanceTo.asSharedFlow()
 
@@ -120,10 +121,8 @@ class PresenterViewModel @Inject constructor(
     private var currentPageIndex: Int = -1
     private var pageEnteredAt: Long = 0L
 
-    /** The page index we ourselves just auto-advanced to (so we don't "learn" from it). */
     private var pendingAutoAdvanceIndex: Int? = null
 
-    /** Where/when we last auto-advanced FROM, so a quick swipe-back can correct it. */
     private var lastAutoAdvanceFromIndex: Int? = null
     private var lastAutoAdvanceFromAt: Long = 0L
 
@@ -147,7 +146,6 @@ class PresenterViewModel @Inject constructor(
         viewModelScope.launch { autoPlayRepo.saveDurations(entity) }
     }
 
-    /** Blend a freshly observed dwell time into the learned duration for this page's type. */
     private fun learnDuration(index: Int, elapsedMs: Long) {
         val clamped = elapsedMs.coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
         val current = durationsOrDefault()
@@ -168,7 +166,6 @@ class PresenterViewModel @Inject constructor(
             .coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
     }
 
-    /** The auto-advance away from [index] happened too soon — nudge its duration up. */
     private fun correctDurationUpward(index: Int) {
         val current = durationsOrDefault()
         val updated = if (isChorusPage(index)) {
@@ -290,6 +287,7 @@ class PresenterViewModel @Inject constructor(
         val content = song.content
         val hasChorus = content.contains("CHORUS")
         _title.value = songItemTitle(song.songNo, song.title)
+        _content.value = lyricsString(song.content)
 
         val songVerses = getSongVerses(content)
         val verseCount = songVerses.size

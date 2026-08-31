@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.SharedFlow
 fun PresenterContent(
     verses: List<String>,
     indicators: List<String>,
+    songTitle: String,
+    bookName: String?,
     horizontalSlides: Boolean,
     hasPrevious: Boolean,
     hasNext: Boolean,
@@ -71,6 +73,8 @@ fun PresenterContent(
         PresenterLayers(
             verses = verses,
             indicators = indicators,
+            songTitle = songTitle,
+            bookName = bookName,
             horizontalSlides = horizontalSlides,
             fontSize = fontSize,
             onVerseIndexChanged = onVerseIndexChanged,

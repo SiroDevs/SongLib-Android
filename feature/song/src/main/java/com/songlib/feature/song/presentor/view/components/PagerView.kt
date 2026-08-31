@@ -3,6 +3,7 @@ package com.songlib.feature.song.presentor.view.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,10 @@ import com.songlib.core.common.utils.AppFonts
 fun PagerView(
     pagerState: PagerState,
     verses: List<String>,
+    songTitle: String,
+    bookName: String?,
     modifier: Modifier = Modifier,
+    indicators: List<String> = emptyList(),
     horizontalSlides: Boolean = false,
     fontSize: Float = AppFonts.DEFAULT_FONT_SP,
     cornerOverlay: (@Composable () -> Unit)? = null,
@@ -70,19 +74,34 @@ fun PagerView(
                 }
 
             pager { page ->
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = verses[page],
-                        fontSize = animatedFontSize.sp,
-                        fontWeight = FontWeight.Medium,
-                        lineHeight = (animatedFontSize * 1.25f).sp,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface,
+                Column(modifier = Modifier.fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = verses[page],
+                            fontSize = animatedFontSize.sp,
+                            fontWeight = FontWeight.Medium,
+                            lineHeight = (animatedFontSize * 1.25f).sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+
+                    VerseShareButtons(
+                        songTitle = songTitle,
+                        bookName = bookName,
+                        verseLabel = indicators.getOrNull(page)
+                            ?.let { if (it == "C") "Chorus" else "Verse $it" }
+                            ?: "Verse ${page + 1}",
+                        verseText = verses[page],
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 14.dp),
                     )
                 }
             }
@@ -99,6 +118,8 @@ fun PagerPreview() {
     PagerView(
         pagerState = pagerState,
         verses = SampleVerses,
+        songTitle = "Sample Song",
+        bookName = "Sample Book",
         modifier = Modifier
             .fillMaxWidth()
             .padding(bottom = 200.dp),
