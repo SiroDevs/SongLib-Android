@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+/** Owns the "add to list" listings shown from the presenter's more-menu. */
 class ListingController(
     private val listRepo: ListingRepo,
     private val scope: CoroutineScope,

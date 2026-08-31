@@ -4,6 +4,7 @@ import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.common.utils.AutoPlayDefaults
 import com.songlib.core.data.repos.AutoPlayRepo
 import com.songlib.core.database.model.AutoPlayEntity
+import com.songlib.feature.song.presentor.utils.AutoPlayProgress
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +19,7 @@ import kotlinx.coroutines.launch
 class AutoplayController(
     private val autoPlayRepo: AutoPlayRepo,
     private val castingRepo: CastingRepo,
-    private val content: SongController,
+    private val presenter: PresenterController,
     private val scope: CoroutineScope,
     private val toastEvent: MutableSharedFlow<String>,
     initiallyEnabled: Boolean,
@@ -26,29 +27,30 @@ class AutoplayController(
     private val _isAutoPlaying = MutableStateFlow(initiallyEnabled)
     val isAutoPlaying: StateFlow<Boolean> = _isAutoPlaying.asStateFlow()
 
-    /** Emits a page index the presenter's pager should scroll itself to. */
     private val _autoAdvanceTo = MutableSharedFlow<Int>()
     val autoAdvanceTo: SharedFlow<Int> = _autoAdvanceTo.asSharedFlow()
 
+    private val _autoPlayProgress = MutableStateFlow(AutoPlayProgress())
+    val autoPlayProgress: StateFlow<AutoPlayProgress> = _autoPlayProgress.asStateFlow()
+
     private var autoPlayJob: Job? = null
+    private var progressTickerJob: Job? = null
     private var songDurations: AutoPlayEntity? = null
 
     private var currentPageIndex: Int = -1
     private var pageEnteredAt: Long = 0L
 
-    /** The page index we ourselves just auto-advanced to (so we don't "learn" from it). */
     private var pendingAutoAdvanceIndex: Int? = null
 
-    /** Where/when we last auto-advanced FROM, so a quick swipe-back can correct it. */
     private var lastAutoAdvanceFromIndex: Int? = null
     private var lastAutoAdvanceFromAt: Long = 0L
 
     private fun isChorusPage(index: Int): Boolean =
-        content.indicators.value.getOrNull(index) == "C"
+        presenter.indicators.value.getOrNull(index) == "C"
 
     private fun durationsOrDefault(): AutoPlayEntity =
         songDurations ?: AutoPlayEntity(
-            songId = content.currentSong.value?.songId ?: 0,
+            songId = presenter.currentSong.value?.songId ?: 0,
             verseDuration = AutoPlayDefaults.DEFAULT_VERSE_MS,
             chorusDuration = AutoPlayDefaults.DEFAULT_CHORUS_MS,
         )
@@ -63,7 +65,6 @@ class AutoplayController(
         scope.launch { autoPlayRepo.saveDurations(entity) }
     }
 
-    /** Blend a freshly observed dwell time into the learned duration for this page's type. */
     private fun learnDuration(index: Int, elapsedMs: Long) {
         val clamped = elapsedMs.coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
         val current = durationsOrDefault()
@@ -84,7 +85,6 @@ class AutoplayController(
             .coerceIn(AutoPlayDefaults.MIN_DURATION_MS, AutoPlayDefaults.MAX_DURATION_MS)
     }
 
-    /** The auto-advance away from [index] happened too soon — nudge its duration up. */
     private fun correctDurationUpward(index: Int) {
         val current = durationsOrDefault()
         val updated = if (isChorusPage(index)) {
@@ -107,7 +107,7 @@ class AutoplayController(
     private fun scheduleAutoAdvance(fromIndex: Int) {
         autoPlayJob?.cancel()
         val nextIndex = fromIndex + 1
-        if (nextIndex !in content.verses.value.indices) return
+        if (nextIndex !in presenter.verses.value.indices) return
 
         val waitMs = durationForPage(fromIndex)
         autoPlayJob = scope.launch {
@@ -119,7 +119,6 @@ class AutoplayController(
         }
     }
 
-    /** Toggled from the presenter's play/pause FAB. */
     fun toggleAutoPlay() {
         val turningOn = !_isAutoPlaying.value
         _isAutoPlaying.value = turningOn
@@ -128,9 +127,34 @@ class AutoplayController(
                 toastEvent.emit("Auto Play is on: The next stanza will move on its own")
             }
             if (currentPageIndex >= 0) scheduleAutoAdvance(currentPageIndex)
+            startProgressTicker()
         } else {
             autoPlayJob?.cancel()
+            stopProgressTicker()
         }
+    }
+
+    private fun startProgressTicker() {
+        progressTickerJob?.cancel()
+        progressTickerJob = scope.launch {
+            while (true) {
+                if (currentPageIndex >= 0) {
+                    val elapsedMs = (System.currentTimeMillis() - pageEnteredAt).coerceAtLeast(0L)
+                    val totalMs = durationForPage(currentPageIndex)
+                    _autoPlayProgress.value = AutoPlayProgress(
+                        elapsedSeconds = (elapsedMs / 1000L).toInt(),
+                        totalSeconds = (totalMs / 1000L).toInt().coerceAtLeast(1),
+                    )
+                }
+                delay(200L)
+            }
+        }
+    }
+
+    private fun stopProgressTicker() {
+        progressTickerJob?.cancel()
+        progressTickerJob = null
+        _autoPlayProgress.value = AutoPlayProgress()
     }
 
     fun loadDurations(songId: Int) {
@@ -150,6 +174,8 @@ class AutoplayController(
         pendingAutoAdvanceIndex = null
         lastAutoAdvanceFromIndex = null
         lastAutoAdvanceFromAt = 0L
+        _autoPlayProgress.value = AutoPlayProgress()
+        if (_isAutoPlaying.value) startProgressTicker() else stopProgressTicker()
     }
 
     fun onVerseIndexChanged(index: Int) {
@@ -161,10 +187,8 @@ class AutoplayController(
         pendingAutoAdvanceIndex = null
 
         if (previousIndex >= 0 && previousIndex != index && pageEnteredAt > 0 && !wasAutoAdvance) {
-            // A manual swipe: learn how long the user actually lingered on that page.
             learnDuration(previousIndex, now - pageEnteredAt)
 
-            // Swiped back to the page we just auto-advanced away from — it left too soon.
             if (index < previousIndex &&
                 lastAutoAdvanceFromIndex == index &&
                 now - lastAutoAdvanceFromAt < AutoPlayDefaults.CORRECTION_WINDOW_MS
@@ -181,5 +205,6 @@ class AutoplayController(
 
     fun cancel() {
         autoPlayJob?.cancel()
+        progressTickerJob?.cancel()
     }
 }

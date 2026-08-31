@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/** Owns copying the presented song into the user's drafts for editing. */
 class DraftController(
     private val draftRepo: DraftRepo,
     private val prefsRepo: PrefsRepo,

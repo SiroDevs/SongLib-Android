@@ -35,7 +35,7 @@ import com.songlib.core.ui.components.indicators.ErrorState
 import com.songlib.core.ui.components.action.ChoosingListingSheet
 import com.songlib.core.ui.components.share.ScreenshotReminderDialog
 import com.songlib.feature.song.presentor.viewmodel.PresenterViewModel
-import com.songlib.feature.song.presentor.viewmodel.ReportUiState
+import com.songlib.feature.song.presentor.utils.ReportUiState
 import com.songlib.feature.song.presentor.view.components.DemoOverlay
 import com.songlib.feature.song.presentor.view.components.LikeSongBtn
 import com.songlib.feature.song.presentor.view.components.PresentorMoreMenu

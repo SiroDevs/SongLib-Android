@@ -3,6 +3,7 @@ package com.songlib.feature.song.presentor.viewmodel.controller
 import com.songlib.core.casting.data.CastingRepo
 import com.songlib.core.common.entity.UiState
 import com.songlib.core.common.utils.getSongVerses
+import com.songlib.core.common.utils.lyricsString
 import com.songlib.core.common.utils.songItemTitle
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.TrackingRepo
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SongController(
+class PresenterController(
     private val songbkRepo: SongBookRepo,
     private val trackingRepo: TrackingRepo,
     private val castingRepo: CastingRepo,
@@ -26,6 +27,9 @@ class SongController(
 
     private val _title = MutableStateFlow("Song Presenter")
     val title: StateFlow<String> get() = _title
+
+    private val _content = MutableStateFlow("Song Content")
+    val content: StateFlow<String> get() = _content
 
     private val _indicators = MutableStateFlow<List<String>>(emptyList())
     val indicators: StateFlow<List<String>> get() = _indicators
@@ -53,8 +57,6 @@ class SongController(
 
     private var currentBookTitle: String? = null
 
-    /** Full song load: also (re)fetches the sibling songs in the same book. Used the first
-     *  time the presenter opens a song. */
     fun loadSong(song: SongEntity, bookTitle: String? = null) {
         currentBookTitle = bookTitle
         applySong(song)
@@ -73,22 +75,18 @@ class SongController(
         }
     }
 
-    /** Lighter song switch for next/previous navigation within an already-loaded book —
-     *  reuses the existing sibling list instead of refetching it. */
     fun navigateToSong(song: SongEntity) {
         applySong(song)
         _currentSongIndex.value = _bookSongs.value.indexOfFirst { it.songId == song.songId }
         scope.launch { trackingRepo.recordSongView(song.songId) }
     }
 
-    /** The next song in [bookSongs], or null if there isn't one. */
     fun nextSong(): SongEntity? {
         val idx = _currentSongIndex.value
         val songs = _bookSongs.value
         return if (idx in 0 until songs.size - 1) songs[idx + 1] else null
     }
 
-    /** The previous song in [bookSongs], or null if there isn't one. */
     fun previousSong(): SongEntity? {
         val idx = _currentSongIndex.value
         val songs = _bookSongs.value
@@ -115,6 +113,7 @@ class SongController(
         val content = song.content
         val hasChorus = content.contains("CHORUS")
         _title.value = songItemTitle(song.songNo, song.title)
+        _content.value = lyricsString(song.content)
 
         val songVerses = getSongVerses(content)
         val verseCount = songVerses.size

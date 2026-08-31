@@ -4,7 +4,7 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.ReportRepo
 import com.songlib.core.database.model.SongEntity
 import com.songlib.core.network.dtos.SongReportRequest
-import com.songlib.feature.song.presentor.viewmodel.ReportUiState
+import com.songlib.feature.song.presentor.utils.ReportUiState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/** Owns submitting and tracking the state of a "report this song" request. */
 class ReportController(
     private val reportRepo: ReportRepo,
     private val prefsRepo: PrefsRepo,
