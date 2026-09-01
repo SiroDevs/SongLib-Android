@@ -55,6 +55,10 @@ class PresenterViewModel @Inject constructor(
 
     val horizontalSlides = prefsRepo.horizontalSlides
     val demoMode = prefsRepo.demoMode
+    // Settings-level "Auto Play" toggle: purely a visibility gate for the whole card.
+    // Whether it's true or false has no bearing on when a run actually starts — only a
+    // tap on the in-presenter play button does that.
+    val autoPlayFeatureEnabled = prefsRepo.autoPlayEnabled
 
     val uiState: StateFlow<UiState> = presenter.uiState
     val title: StateFlow<String> = presenter.title
@@ -71,7 +75,7 @@ class PresenterViewModel @Inject constructor(
     fun loadSong(song: SongEntity, bookTitle: String? = null) {
         autoPlay.resetForNewSong()
         presenter.loadSong(song, bookTitle)
-//        autoPlay.loadDurations(song.songId)
+        autoPlay.loadDurations(song.songId)
         listingController.loadListings()
     }
 

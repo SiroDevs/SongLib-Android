@@ -1,6 +1,5 @@
 package com.songlib.core.data.repos
 
-import com.songlib.core.common.utils.AutoPlayDefaults
 import com.songlib.core.database.daos.AutoPlayDao
 import com.songlib.core.database.model.AutoPlayEntity
 import kotlinx.coroutines.Dispatchers
@@ -12,14 +11,10 @@ import javax.inject.Singleton
 class AutoPlayRepo @Inject constructor(
     private val autoPlayDao: AutoPlayDao,
 ) {
-    suspend fun getDurations(songId: Int): AutoPlayEntity =
-        withContext(Dispatchers.IO) {
-            autoPlayDao.getBySongId(songId) ?: AutoPlayEntity(
-                songId = songId,
-                verseDuration = 0,
-                chorusDuration = 0,
-            )
-        }
+    /** Returns the learned durations for [songId], or null if nothing has been learned yet.
+     *  No fabricated defaults — a song with no observed timing simply has none. */
+    suspend fun getDurations(songId: Int): AutoPlayEntity? =
+        withContext(Dispatchers.IO) { autoPlayDao.getBySongId(songId) }
 
     suspend fun saveDurations(entity: AutoPlayEntity) {
         withContext(Dispatchers.IO) { autoPlayDao.upsert(entity) }

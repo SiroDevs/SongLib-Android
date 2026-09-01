@@ -52,6 +52,7 @@ fun PresenterScreen(
     book: BookEntity?,
 ) {
     val horizontalSlides = viewModel.horizontalSlides
+    val autoPlayFeatureEnabled = viewModel.autoPlayFeatureEnabled
     val uiState by viewModel.uiState.collectAsState()
     val isLiked by viewModel.isLiked.collectAsState()
     val hasPreviousSong by viewModel.hasPreviousSong.collectAsState()
@@ -232,6 +233,7 @@ fun PresenterScreen(
                     onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
                     autoAdvanceTo = viewModel.autoAdvanceTo,
                     isAutoPlaying = isAutoPlaying,
+                    autoPlayFeatureEnabled = autoPlayFeatureEnabled,
                     autoPlayIsMonitoring = autoPlayProgress.isMonitoring,
                     autoPlayElapsedSeconds = autoPlayProgress.elapsedSeconds,
                     autoPlayTotalSeconds = autoPlayProgress.totalSeconds,

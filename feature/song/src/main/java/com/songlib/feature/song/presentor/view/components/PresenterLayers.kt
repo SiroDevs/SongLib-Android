@@ -33,6 +33,7 @@ fun PresenterLayers(
     onVerseIndexChanged: (Int) -> Unit = {},
     autoAdvanceTo: SharedFlow<Int>? = null,
     isAutoPlaying: Boolean = false,
+    autoPlayFeatureEnabled: Boolean = true,
     autoPlayIsMonitoring: Boolean = true,
     autoPlayElapsedSeconds: Int = 0,
     autoPlayTotalSeconds: Int = 0,
@@ -40,6 +41,10 @@ fun PresenterLayers(
 ) {
     val pagerState = rememberPagerState { verses.size }
     var showAutoPlayInfo by remember { mutableStateOf(false) }
+
+    val showAutoPlayCard = autoPlayFeatureEnabled &&
+        verses.size > 2 &&
+        pagerState.currentPage < verses.size - 1
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -59,17 +64,19 @@ fun PresenterLayers(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        AutoPlayCard(
-            isAutoPlaying = isAutoPlaying,
-            isMonitoring = autoPlayIsMonitoring,
-            elapsedSeconds = autoPlayElapsedSeconds,
-            totalSeconds = autoPlayTotalSeconds,
-            onToggle = onToggleAutoPlay,
-            onInfoClick = { showAutoPlayInfo = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, start = 15.dp, end = 15.dp),
-        )
+//        if (showAutoPlayCard) {
+//            AutoPlayCard(
+//                isAutoPlaying = isAutoPlaying,
+//                isMonitoring = autoPlayIsMonitoring,
+//                elapsedSeconds = autoPlayElapsedSeconds,
+//                totalSeconds = autoPlayTotalSeconds,
+//                onToggle = onToggleAutoPlay,
+//                onInfoClick = { showAutoPlayInfo = true },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+//            )
+//        }
 
         PagerView(
             pagerState = pagerState,

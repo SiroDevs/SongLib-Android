@@ -130,17 +130,17 @@ fun SettingsScreen(
                     )
                 }
             )
-            ListItem(
-                leadingContent = { Icon(Icons.Default.PlayArrow, "Auto Play") },
-                headlineContent = { Text("Auto Play") },
-                supportingContent = { Text("Automatically move through verses and chorus") },
-                trailingContent = {
-                    Switch(
-                        checked = settViewModel.autoPlayEnabled,
-                        onCheckedChange = { settViewModel.updateAutoPlayEnabled(it) }
-                    )
-                }
-            )
+//            ListItem(
+//                leadingContent = { Icon(Icons.Default.PlayArrow, "Auto Play") },
+//                headlineContent = { Text("Auto Play") },
+//                supportingContent = { Text("Automatically move through verses and chorus") },
+//                trailingContent = {
+//                    Switch(
+//                        checked = settViewModel.autoPlayEnabled,
+//                        onCheckedChange = { settViewModel.updateAutoPlayEnabled(it) }
+//                    )
+//                }
+//            )
             HorizontalDivider()
 
             SettingsSectionTitle("Donate to SongLib")

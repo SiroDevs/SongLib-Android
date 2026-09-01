@@ -48,7 +48,7 @@ fun AutoPlayCard(
 ) {
     OutlinedCard(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
+        shape = CircleShape,
     ) {
         Row(
             modifier = Modifier
@@ -57,8 +57,9 @@ fun AutoPlayCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AutoPlayButton(
+            AutoPlayCircleButton(
                 onClick = onToggle,
+                contentDescription = if (isAutoPlaying) "Pause Auto Play" else "Start Auto Play",
                 borderColor = MaterialTheme.colorScheme.onSurface,
             ) {
                 Icon(
@@ -96,13 +97,14 @@ fun AutoPlayCard(
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
                         )
-                    }
-                    if (!isMonitoring) {
-                        val progress = if (totalSeconds > 0) {
-                            (elapsedSeconds.toFloat() / totalSeconds).coerceIn(0f, 1f)
+                        // Drains from full to empty as the countdown runs out - there's
+                        // nothing to show a bar for while we're still monitoring.
+                        val remaining = if (totalSeconds > 0) {
+                            (1f - elapsedSeconds.toFloat() / totalSeconds).coerceIn(0f, 1f)
                         } else 0f
                         LinearProgressIndicator(
-                            progress = { progress },
+                            progress = { remaining },
+//                            color = AutoPlayRed,
                             trackColor = Color.Transparent,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -135,8 +137,9 @@ fun AutoPlayCard(
                 }
                 AutoPlayTimerBadge(seconds = badgeSeconds)
             } else {
-                AutoPlayButton(
+                AutoPlayCircleButton(
                     onClick = onInfoClick,
+                    contentDescription = "About Auto Play",
                     borderColor = MaterialTheme.colorScheme.onSurface,
                 ) {
                     Icon(
@@ -151,15 +154,16 @@ fun AutoPlayCard(
 }
 
 @Composable
-private fun AutoPlayButton(
+private fun AutoPlayCircleButton(
     onClick: () -> Unit,
+    contentDescription: String,
     borderColor: Color,
     content: @Composable () -> Unit,
 ) {
     OutlinedIconButton(
         onClick = onClick,
         modifier = Modifier.size(BadgeSize),
-        shape = RoundedCornerShape(15.dp),
+        shape = CircleShape,
         border = BorderStroke(2.dp, borderColor),
     ) {
         content()
@@ -225,8 +229,8 @@ private fun AutoPlayCardMonitoringPreview() {
     AutoPlayCard(
         isAutoPlaying = true,
         isMonitoring = true,
-        elapsedSeconds = 30,
-        totalSeconds = 45,
+        elapsedSeconds = 7,
+        totalSeconds = 0,
         onToggle = {},
         onInfoClick = {},
         modifier = Modifier.padding(10.dp),
