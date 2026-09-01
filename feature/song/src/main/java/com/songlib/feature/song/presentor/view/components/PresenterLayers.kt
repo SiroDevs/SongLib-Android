@@ -33,6 +33,7 @@ fun PresenterLayers(
     onVerseIndexChanged: (Int) -> Unit = {},
     autoAdvanceTo: SharedFlow<Int>? = null,
     isAutoPlaying: Boolean = false,
+    autoPlayIsMonitoring: Boolean = true,
     autoPlayElapsedSeconds: Int = 0,
     autoPlayTotalSeconds: Int = 0,
     onToggleAutoPlay: () -> Unit = {},
@@ -60,13 +61,14 @@ fun PresenterLayers(
     ) {
         AutoPlayCard(
             isAutoPlaying = isAutoPlaying,
+            isMonitoring = autoPlayIsMonitoring,
             elapsedSeconds = autoPlayElapsedSeconds,
             totalSeconds = autoPlayTotalSeconds,
             onToggle = onToggleAutoPlay,
             onInfoClick = { showAutoPlayInfo = true },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                .padding(top = 10.dp, start = 15.dp, end = 15.dp),
         )
 
         PagerView(

@@ -232,6 +232,7 @@ fun PresenterScreen(
                     onVerseIndexChanged = { viewModel.onVerseIndexChanged(it) },
                     autoAdvanceTo = viewModel.autoAdvanceTo,
                     isAutoPlaying = isAutoPlaying,
+                    autoPlayIsMonitoring = autoPlayProgress.isMonitoring,
                     autoPlayElapsedSeconds = autoPlayProgress.elapsedSeconds,
                     autoPlayTotalSeconds = autoPlayProgress.totalSeconds,
                     onToggleAutoPlay = { viewModel.toggleAutoPlay() },

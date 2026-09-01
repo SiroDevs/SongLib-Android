@@ -34,12 +34,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val AutoPlayRed = Color(0xFFC62828)
 private val BadgeSize = 44.dp
 
 @Composable
 fun AutoPlayCard(
     isAutoPlaying: Boolean,
+    isMonitoring: Boolean,
     elapsedSeconds: Int,
     totalSeconds: Int,
     onToggle: () -> Unit,
@@ -48,7 +48,7 @@ fun AutoPlayCard(
 ) {
     OutlinedCard(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(10.dp),
     ) {
         Row(
             modifier = Modifier
@@ -57,9 +57,8 @@ fun AutoPlayCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            AutoPlayCircleButton(
+            AutoPlayButton(
                 onClick = onToggle,
-                contentDescription = if (isAutoPlaying) "Pause Auto Play" else "Start Auto Play",
                 borderColor = MaterialTheme.colorScheme.onSurface,
             ) {
                 Icon(
@@ -71,31 +70,47 @@ fun AutoPlayCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 if (isAutoPlaying) {
-                    Text(
-                        text = "Waiting for you to move to the next Verse so",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                    )
-                    Text(
-                        text = "as to determine the duration per verse",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1,
-                    )
-                    val progress = if (totalSeconds > 0) {
-                        (elapsedSeconds.toFloat() / totalSeconds).coerceIn(0f, 1f)
-                    } else 0f
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        color = AutoPlayRed,
-                        trackColor = Color.Transparent,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 6.dp)
-                            .height(2.dp)
-                            .clip(RoundedCornerShape(1.dp)),
-                    )
+                    if (isMonitoring) {
+                        Text(
+                            text = "Waiting for you to move to the next Verse so",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                        )
+                        Text(
+                            text = "as to determine the duration per verse",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                        )
+                    } else {
+                        Text(
+                            text = "AUTO PLAY IS ON",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                        )
+                        Text(
+                            text = "Moving to the next verse automatically",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                        )
+                    }
+                    if (!isMonitoring) {
+                        val progress = if (totalSeconds > 0) {
+                            (elapsedSeconds.toFloat() / totalSeconds).coerceIn(0f, 1f)
+                        } else 0f
+                        LinearProgressIndicator(
+                            progress = { progress },
+                            trackColor = Color.Transparent,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 6.dp)
+                                .height(2.dp)
+                                .clip(RoundedCornerShape(1.dp)),
+                        )
+                    }
                 } else {
                     Text(
                         text = "START AUTO PLAY ON THIS SONG",
@@ -113,11 +128,15 @@ fun AutoPlayCard(
             }
 
             if (isAutoPlaying) {
-                AutoPlayTimerBadge(seconds = elapsedSeconds)
+                val badgeSeconds = if (isMonitoring) {
+                    elapsedSeconds
+                } else {
+                    (totalSeconds - elapsedSeconds).coerceAtLeast(0)
+                }
+                AutoPlayTimerBadge(seconds = badgeSeconds)
             } else {
-                AutoPlayCircleButton(
+                AutoPlayButton(
                     onClick = onInfoClick,
-                    contentDescription = "About Auto Play",
                     borderColor = MaterialTheme.colorScheme.onSurface,
                 ) {
                     Icon(
@@ -132,16 +151,15 @@ fun AutoPlayCard(
 }
 
 @Composable
-private fun AutoPlayCircleButton(
+private fun AutoPlayButton(
     onClick: () -> Unit,
-    contentDescription: String,
     borderColor: Color,
     content: @Composable () -> Unit,
 ) {
     OutlinedIconButton(
         onClick = onClick,
         modifier = Modifier.size(BadgeSize),
-        shape = CircleShape,
+        shape = RoundedCornerShape(15.dp),
         border = BorderStroke(2.dp, borderColor),
     ) {
         content()
@@ -153,12 +171,11 @@ private fun AutoPlayTimerBadge(seconds: Int) {
     Box(
         modifier = Modifier
             .size(BadgeSize)
-            .border(BorderStroke(2.dp, AutoPlayRed), CircleShape),
+            .border(BorderStroke(2.dp, MaterialTheme.colorScheme.onSurface), CircleShape),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = seconds.toString(),
-            color = AutoPlayRed,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
         )
@@ -193,6 +210,7 @@ fun AutoPlayInfoDialog(onDismiss: () -> Unit) {
 private fun AutoPlayCardOffPreview() {
     AutoPlayCard(
         isAutoPlaying = false,
+        isMonitoring = true,
         elapsedSeconds = 0,
         totalSeconds = 0,
         onToggle = {},
@@ -203,9 +221,24 @@ private fun AutoPlayCardOffPreview() {
 
 @Preview(showBackground = true)
 @Composable
-private fun AutoPlayCardOnPreview() {
+private fun AutoPlayCardMonitoringPreview() {
     AutoPlayCard(
         isAutoPlaying = true,
+        isMonitoring = true,
+        elapsedSeconds = 30,
+        totalSeconds = 45,
+        onToggle = {},
+        onInfoClick = {},
+        modifier = Modifier.padding(10.dp),
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AutoPlayCardCountingDownPreview() {
+    AutoPlayCard(
+        isAutoPlaying = true,
+        isMonitoring = false,
         elapsedSeconds = 30,
         totalSeconds = 45,
         onToggle = {},

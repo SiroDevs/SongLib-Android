@@ -18,10 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/**
- * Formatted card rendered only to be captured into a bitmap for sharing — it is never
- * shown directly to the user, it's drawn off-screen and turned into an image.
- */
 @Composable
 private fun ShareCardTemplate(
     label: String,
@@ -33,7 +29,7 @@ private fun ShareCardTemplate(
 ) {
     Card(
         modifier = modifier.widthIn(min = 300.dp, max = 340.dp),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(0.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
     ) {

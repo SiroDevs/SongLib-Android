@@ -81,9 +81,9 @@ fun VerseShareButtons(
                             .show()
                     }
                 },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
+//                colors = ButtonDefaults.outlinedButtonColors(
+//                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+//                ),
             ) {
                 Icon(Icons.Default.ContentCopy, contentDescription = null, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))

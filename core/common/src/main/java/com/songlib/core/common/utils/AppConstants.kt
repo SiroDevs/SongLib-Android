@@ -101,23 +101,13 @@ object AppFonts {
     const val MAX_FONT_SP = 60f
 }
 
-/**
- * Tunables for the Auto Play stanza-timing engine (see `PresenterViewModel`).
- * Verse/chorus durations start at these defaults and are then learned per-song
- * from how long the user actually lingers on each stanza.
- */
 object AutoPlayDefaults {
-    const val DEFAULT_VERSE_MS = 15_000L
-    const val DEFAULT_CHORUS_MS = 9_000L
     const val MIN_DURATION_MS = 3_000L
     const val MAX_DURATION_MS = 60_000L
 
-    /** Smoothing weight applied to a freshly observed dwell time. */
     const val LEARNING_WEIGHT = 0.4
 
-    /** Multiplier applied when auto-correcting a duration that was too short. */
     const val CORRECTION_FACTOR = 1.25
 
-    /** How soon after an auto-advance a "swipe back" counts as a correction signal. */
     const val CORRECTION_WINDOW_MS = 20_000L
 }

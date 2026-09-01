@@ -22,9 +22,8 @@ class AutoplayController(
     private val presenter: PresenterController,
     private val scope: CoroutineScope,
     private val toastEvent: MutableSharedFlow<String>,
-    initiallyEnabled: Boolean,
 ) {
-    private val _isAutoPlaying = MutableStateFlow(initiallyEnabled)
+    private val _isAutoPlaying = MutableStateFlow(false)
     val isAutoPlaying: StateFlow<Boolean> = _isAutoPlaying.asStateFlow()
 
     private val _autoAdvanceTo = MutableSharedFlow<Int>()
@@ -40,6 +39,8 @@ class AutoplayController(
     private var currentPageIndex: Int = -1
     private var pageEnteredAt: Long = 0L
 
+    private var isMonitoringFirstVerse = true
+
     private var pendingAutoAdvanceIndex: Int? = null
 
     private var lastAutoAdvanceFromIndex: Int? = null
@@ -51,8 +52,8 @@ class AutoplayController(
     private fun durationsOrDefault(): AutoPlayEntity =
         songDurations ?: AutoPlayEntity(
             songId = presenter.currentSong.value?.songId ?: 0,
-            verseDuration = AutoPlayDefaults.DEFAULT_VERSE_MS,
-            chorusDuration = AutoPlayDefaults.DEFAULT_CHORUS_MS,
+            verseDuration = 0,
+            chorusDuration = 0,
         )
 
     private fun durationForPage(index: Int): Long {
@@ -123,6 +124,7 @@ class AutoplayController(
         val turningOn = !_isAutoPlaying.value
         _isAutoPlaying.value = turningOn
         if (turningOn) {
+            isMonitoringFirstVerse = true
             scope.launch {
                 toastEvent.emit("Auto Play is on: The next stanza will move on its own")
             }
@@ -144,6 +146,7 @@ class AutoplayController(
                     _autoPlayProgress.value = AutoPlayProgress(
                         elapsedSeconds = (elapsedMs / 1000L).toInt(),
                         totalSeconds = (totalMs / 1000L).toInt().coerceAtLeast(1),
+                        isMonitoring = isMonitoringFirstVerse,
                     )
                 }
                 delay(200L)
@@ -174,6 +177,7 @@ class AutoplayController(
         pendingAutoAdvanceIndex = null
         lastAutoAdvanceFromIndex = null
         lastAutoAdvanceFromAt = 0L
+        isMonitoringFirstVerse = true
         _autoPlayProgress.value = AutoPlayProgress()
         if (_isAutoPlaying.value) startProgressTicker() else stopProgressTicker()
     }
@@ -195,6 +199,10 @@ class AutoplayController(
             ) {
                 correctDurationUpward(index)
             }
+        }
+
+        if (previousIndex >= 0 && previousIndex != index) {
+            isMonitoringFirstVerse = false
         }
 
         currentPageIndex = index

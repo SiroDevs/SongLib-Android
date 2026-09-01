@@ -10,4 +10,5 @@ sealed interface ReportUiState {
 data class AutoPlayProgress(
     val elapsedSeconds: Int = 0,
     val totalSeconds: Int = 0,
+    val isMonitoring: Boolean = true,
 )

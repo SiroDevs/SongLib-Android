@@ -47,7 +47,7 @@ class PresenterViewModel @Inject constructor(
 
     private val presenter = PresenterController(songbkRepo, trackingRepo, castingRepo, viewModelScope)
     private val autoPlay = AutoplayController(
-        autoPlayRepo, castingRepo, presenter, viewModelScope, _toastEvent, prefsRepo.autoPlayEnabled,
+        autoPlayRepo, castingRepo, presenter, viewModelScope, _toastEvent,
     )
     private val listingController = ListingController(listRepo, viewModelScope, _toastEvent)
     private val drafts = DraftController(draftRepo, prefsRepo, viewModelScope, _toastEvent)
@@ -71,7 +71,7 @@ class PresenterViewModel @Inject constructor(
     fun loadSong(song: SongEntity, bookTitle: String? = null) {
         autoPlay.resetForNewSong()
         presenter.loadSong(song, bookTitle)
-        autoPlay.loadDurations(song.songId)
+//        autoPlay.loadDurations(song.songId)
         listingController.loadListings()
     }
 

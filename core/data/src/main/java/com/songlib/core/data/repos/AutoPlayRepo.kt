@@ -12,13 +12,12 @@ import javax.inject.Singleton
 class AutoPlayRepo @Inject constructor(
     private val autoPlayDao: AutoPlayDao,
 ) {
-    /** Returns the learned durations for [songId], or sensible defaults if none saved yet. */
     suspend fun getDurations(songId: Int): AutoPlayEntity =
         withContext(Dispatchers.IO) {
             autoPlayDao.getBySongId(songId) ?: AutoPlayEntity(
                 songId = songId,
-                verseDuration = AutoPlayDefaults.DEFAULT_VERSE_MS,
-                chorusDuration = AutoPlayDefaults.DEFAULT_CHORUS_MS,
+                verseDuration = 0,
+                chorusDuration = 0,
             )
         }
 
