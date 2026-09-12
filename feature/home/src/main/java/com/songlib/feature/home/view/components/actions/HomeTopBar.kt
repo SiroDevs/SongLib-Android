@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.actions
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -81,7 +81,7 @@ fun HomeAppBar(
                         Icon(Icons.Default.MoreVert, contentDescription = "More")
                     }
 
-                    HomeOverflowMenu(
+                    HomeMoreMenu(
                         expanded = showMoreMenu,
                         onDismiss = { showMoreMenu = false },
                         navController = navController,

@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.actions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder

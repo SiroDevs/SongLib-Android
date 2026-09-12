@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.actions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
+import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,7 +44,7 @@ fun DialPad(
         listOf("1", "2", "3"),
         listOf("4", "5", "6"),
         listOf("7", "8", "9"),
-        listOf<Any>(Icons.AutoMirrored.Filled.Backspace, "00", "0")
+        listOf<Any>("0", "", Icons.AutoMirrored.Filled.Backspace)
     )
 
     Box(
@@ -106,7 +107,7 @@ fun DialPad(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            row.forEachIndexed { colIndex, item ->
+                            row.forEachIndexed { i, item ->
                                 val mod = Modifier.weight(1f)
                                 when {
                                     item is String && item == " " -> {
@@ -120,7 +121,7 @@ fun DialPad(
                                     item is ImageVector -> {
                                         DialIconButton(
                                             icon = item,
-                                            modifier = mod,
+                                            modifier = Modifier.weight(2f),
                                             onClick = onBackspaceClick
                                         )
                                     }
