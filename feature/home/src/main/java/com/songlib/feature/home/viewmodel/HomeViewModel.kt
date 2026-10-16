@@ -91,6 +91,10 @@ class HomeViewModel @Inject constructor(
         const val SYNC_OBSERVE_TIMEOUT_MS = 20_000L
     }
 
+    fun refreshDemoMode() {
+        _demoMode.value = prefsRepo.demoMode
+    }
+
     fun dismissDemo() {
         prefsRepo.demoMode = false
         _demoMode.value = false

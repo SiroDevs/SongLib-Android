@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <queries>
+        <package android:name="com.biblelib" />
+        <package android:name="com.swahilib" />
+    </queries>
+
     <application
         android:label="@string/app_name"
         android:name=".SongLibApp"

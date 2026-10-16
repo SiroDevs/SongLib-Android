@@ -42,6 +42,8 @@ object PrefConstants {
     const val DONATION_DONE_AT = "donation_done_at"
     const val DONATION_METHOD = "donation_method"
     const val DONATION_REMIND_NEXT_OPEN = "donation_remind_next"
+    const val CHURCHLIB_PROMO_DONE = "churchlib_promo_done"
+    const val CHURCHLIB_PROMO_REMIND_AT = "churchlib_promo_remind_at"
     const val LAST_SYNCED_AT = "last_synced_at"
 
     const val LOGGED_IN_USER_ID = "logged_in_user_id"
@@ -50,6 +52,15 @@ object PrefConstants {
     const val LOGGED_IN_PHOTO_URL = "logged_in_photo_url"
     const val LOGGED_IN_ROLE = "logged_in_role"
     const val LAST_SINCE_DATE = "last_since_date"
+}
+
+object CrossPromo {
+    const val BIBLELIB_PACKAGE = "com.biblelib"
+    const val SWAHILIB_PACKAGE = "com.swahilib"
+    const val CHURCHLIB_URL = "https://churchlib.sirodevs.com"
+
+    const val PROMO_FIRST_DELAY_MS = 60 * 60 * 1000L
+    const val PROMO_REMIND_DELAY_MS = 3 * 60 * 60 * 1000L
 }
 
 object PayConstants {

@@ -5,6 +5,7 @@ import com.songlib.core.common.utils.PrefConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.core.content.edit
 import com.songlib.core.common.entity.DonationMethod
+import com.songlib.core.common.utils.CrossPromo
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,7 +53,7 @@ class PrefsRepo @Inject constructor(
         set(value) = prefs.edit { putBoolean(PrefConstants.HORIZONTAL_SLIDES, value) }
 
     var demoMode: Boolean
-        get() = prefs.getBoolean(PrefConstants.DEMO_MODE, true)
+        get() = prefs.getBoolean(PrefConstants.DEMO_MODE, false)
         set(value) = prefs.edit { putBoolean(PrefConstants.DEMO_MODE, value) }
 
     var autoPlayEnabled: Boolean
@@ -101,6 +102,29 @@ class PrefsRepo @Inject constructor(
         donationDoneAt = System.currentTimeMillis()
         donationMethod = method
         donationRemindNextOpen = false
+    }
+
+    var churchLibPromoDone: Boolean
+        get() = prefs.getBoolean(PrefConstants.CHURCHLIB_PROMO_DONE, false)
+        set(value) = prefs.edit { putBoolean(PrefConstants.CHURCHLIB_PROMO_DONE, value) }
+
+    private var churchLibPromoRemindAt: Long
+        get() = prefs.getLong(PrefConstants.CHURCHLIB_PROMO_REMIND_AT, 0L)
+        set(value) = prefs.edit { putLong(PrefConstants.CHURCHLIB_PROMO_REMIND_AT, value) }
+
+    fun churchLibPromoWaitMs(): Long? {
+        if (churchLibPromoDone || installDate == 0L) return null
+        val remindAt = churchLibPromoRemindAt
+        val dueAt = if (remindAt > 0L) remindAt else installDate + CrossPromo.PROMO_FIRST_DELAY_MS
+        return (dueAt - System.currentTimeMillis()).coerceAtLeast(0L)
+    }
+
+    fun remindChurchLibPromoLater() {
+        churchLibPromoRemindAt = System.currentTimeMillis() + CrossPromo.PROMO_REMIND_DELAY_MS
+    }
+
+    fun markChurchLibPromoSeen() {
+        churchLibPromoDone = true
     }
 
     var lastSyncedAt: Long

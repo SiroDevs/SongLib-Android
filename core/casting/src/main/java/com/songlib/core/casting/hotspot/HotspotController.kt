@@ -1,9 +1,11 @@
 package com.songlib.core.casting.hotspot
 
+import android.Manifest
 import android.content.Context
 import android.net.wifi.SoftApConfiguration
 import android.net.wifi.WifiManager
 import android.os.Build
+import androidx.annotation.RequiresPermission
 import kotlin.random.Random
 
 data class HotspotInfo(
@@ -26,6 +28,7 @@ class HotspotController(context: Context) {
 
     val isActive: Boolean get() = reservation != null
 
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES])
     fun start(onResult: (HotspotOutcome) -> Unit) {
         stop()
 
@@ -48,7 +51,6 @@ class HotspotController(context: Context) {
         }
 
         try {
-            @Suppress("DEPRECATION")
             wifiManager.startLocalOnlyHotspot(callback, null)
         } catch (e: Exception) {
             onResult(HotspotOutcome.Failure(e.message ?: "Couldn't start the hotspot"))
@@ -68,14 +70,12 @@ class HotspotController(context: Context) {
     ): HotspotInfo {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val config = res.softApConfiguration
-            if (config != null) {
-                val isOpen = config.securityType == SoftApConfiguration.SECURITY_TYPE_OPEN
-                return HotspotInfo(
-                    ssid = config.ssid ?: fallbackSsid,
-                    password = if (isOpen) null else config.passphrase,
-                    isOpen = isOpen,
-                )
-            }
+            val isOpen = config.securityType == SoftApConfiguration.SECURITY_TYPE_OPEN
+            return HotspotInfo(
+                ssid = config.ssid ?: fallbackSsid,
+                password = if (isOpen) null else config.passphrase,
+                isOpen = isOpen,
+            )
         }
 
         @Suppress("DEPRECATION")
