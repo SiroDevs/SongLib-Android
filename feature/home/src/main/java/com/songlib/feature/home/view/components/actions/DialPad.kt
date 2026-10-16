@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.actions
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Backspace
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,7 +44,7 @@ fun DialPad(
         listOf("1", "2", "3"),
         listOf("4", "5", "6"),
         listOf("7", "8", "9"),
-        listOf<Any>(Icons.AutoMirrored.Filled.Backspace, "0", " ")
+        listOf("0", "X", "V")
     )
 
     Box(
@@ -106,23 +107,27 @@ fun DialPad(
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            row.forEachIndexed { colIndex, item ->
+                            row.forEachIndexed { index, item ->
                                 val mod = Modifier.weight(1f)
-                                when {
-                                    item is String && item == " " -> {
-                                        Spacer(modifier = mod)
-                                    }
-                                    item is String -> {
-                                        DialButton(label = item, modifier = mod) {
-                                            onNumberClick(item)
-                                        }
-                                    }
-                                    item is ImageVector -> {
+                                when (item) {
+                                    "X" -> {
                                         DialIconButton(
-                                            icon = item,
+                                            icon = Icons.AutoMirrored.Filled.Backspace,
                                             modifier = mod,
                                             onClick = onBackspaceClick
                                         )
+                                    }
+                                    "V" -> {
+                                        DialIconButton(
+                                            icon = Icons.Filled.Check,
+                                            modifier = mod,
+                                            onClick = onDismiss
+                                        )
+                                    }
+                                    else -> {
+                                        DialButton(label = item, modifier = mod) {
+                                            onNumberClick(item)
+                                        }
                                     }
                                 }
                             }

@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.lists
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background

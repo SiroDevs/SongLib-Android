@@ -12,6 +12,19 @@ data class PaginationMeta(
 )
 
 @Keep
+data class BookSyncMeta(
+    val bookId: Int,
+    val songCount: Int,
+    val lastUpdated: String?
+)
+
+@Keep
+data class SyncMetaResponse(
+    val serverTime: String? = null,
+    val books: List<BookSyncMeta> = emptyList()
+)
+
+@Keep
 data class PagedSongsResponse(
     val data: List<com.songlib.core.database.model.SongEntity>,
     val pagination: PaginationMeta

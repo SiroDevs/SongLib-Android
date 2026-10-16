@@ -119,8 +119,7 @@ fun AppNavHost(
                 navController = navController,
                 viewModel = viewModel,
                 book = book,
-                song = song,
-                prefsRepo = prefsRepo
+                song = song
             )
         }
 

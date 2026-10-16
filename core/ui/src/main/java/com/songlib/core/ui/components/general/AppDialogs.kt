@@ -55,8 +55,8 @@ fun InfoDialog(
 
 @Composable
 fun QuickFormDialog(
-    title: String,
-    label: String,
+    title: String = "New Listing",
+    label: String = "Listing title",
     initialValue: String = "",
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit

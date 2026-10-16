@@ -10,19 +10,18 @@ import com.songlib.core.data.repos.DraftRepo
 import com.songlib.core.data.repos.EditorRepo
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
+import com.songlib.core.data.repos.SongSyncer
 import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.database.model.BookEntity
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 @HiltWorker
 class SyncWorker @AssistedInject constructor(
     @Assisted private val context: Context,
     @Assisted workerParams: WorkerParameters,
     private val songbkRepo: SongBookRepo,
+    private val songSyncer: SongSyncer,
     private val prefsRepo: PrefsRepo,
     private val draftRepo: DraftRepo,
     private val editorRepo: EditorRepo,
@@ -53,14 +52,11 @@ class SyncWorker @AssistedInject constructor(
                 val bookIds = books.map { it.bookId }
                 Log.d(TAG, "Fetched ${books.size} books, syncing songs for $bookIds")
 
-                val since = prefsRepo.lastSinceDateIso.takeIf { it.isNotEmpty() }
-                songbkRepo.fetchAndSaveSongs(bookIds)
+                songSyncer.syncBooks(bookIds)
             } else {
                 Log.w(TAG, "⚠️ No books returned – skipping song fetch")
             }
 
-            val isoNow = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US).format(Date())
-            prefsRepo.lastSinceDateIso = isoNow
             prefsRepo.isDataLoaded = true
             prefsRepo.lastSyncedAt = System.currentTimeMillis()
 

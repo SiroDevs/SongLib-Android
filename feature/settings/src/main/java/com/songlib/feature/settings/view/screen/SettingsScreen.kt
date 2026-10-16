@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness6
 import androidx.compose.material.icons.filled.DeleteForever
@@ -36,6 +38,7 @@ import com.songlib.core.data.repos.appThemeName
 import com.songlib.core.design_system.theme.ThemeSelectorDialog
 import com.songlib.core.ui.components.action.AppTopBar
 import com.songlib.feature.settings.viewmodel.SettingsViewModel
+import com.songlib.feature.settings.view.components.AlsoBySiroDevs
 import com.songlib.feature.settings.view.components.ConfirmResetDialog
 import com.songlib.feature.settings.view.components.SettingsSectionTitle
 
@@ -108,6 +111,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
             SettingsSectionTitle("Display")
             ListItem(
@@ -130,17 +134,17 @@ fun SettingsScreen(
                     )
                 }
             )
-            ListItem(
-                leadingContent = { Icon(Icons.Default.PlayArrow, "Auto Play") },
-                headlineContent = { Text("Auto Play") },
-                supportingContent = { Text("Automatically move through verses and chorus") },
-                trailingContent = {
-                    Switch(
-                        checked = settViewModel.autoPlayEnabled,
-                        onCheckedChange = { settViewModel.updateAutoPlayEnabled(it) }
-                    )
-                }
-            )
+//            ListItem(
+//                leadingContent = { Icon(Icons.Default.PlayArrow, "Auto Play") },
+//                headlineContent = { Text("Auto Play") },
+//                supportingContent = { Text("Automatically move through verses and chorus") },
+//                trailingContent = {
+//                    Switch(
+//                        checked = settViewModel.autoPlayEnabled,
+//                        onCheckedChange = { settViewModel.updateAutoPlayEnabled(it) }
+//                    )
+//                }
+//            )
             HorizontalDivider()
 
             SettingsSectionTitle("Donate to SongLib")
@@ -191,6 +195,8 @@ fun SettingsScreen(
                 }
             )
             HorizontalDivider()
+
+            AlsoBySiroDevs()
         }
     }
 }

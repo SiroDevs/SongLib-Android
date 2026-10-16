@@ -37,7 +37,7 @@ class UserRepo @Inject constructor(
 
             val remoteBooks = user.selectedBooks
             if (!remoteBooks.isNullOrEmpty() && prefsRepo.selectedBooks.isEmpty()) {
-                prefsRepo.selectedBooks = remoteBooks
+                prefsRepo.selectedBooks = BookSelection.cap(remoteBooks)
             }
             user.userId
         } catch (e: retrofit2.HttpException) {
@@ -52,7 +52,7 @@ class UserRepo @Inject constructor(
 
                     val remoteBooks = existing.selectedBooks
                     if (!remoteBooks.isNullOrEmpty() && prefsRepo.selectedBooks.isEmpty()) {
-                        prefsRepo.selectedBooks = remoteBooks
+                        prefsRepo.selectedBooks = BookSelection.cap(remoteBooks)
                     }
                     Log.d(
                         "UserRepo",

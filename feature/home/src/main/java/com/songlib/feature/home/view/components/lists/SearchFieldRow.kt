@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.lists
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,7 +32,7 @@ fun SearchFieldRow(
     onQueryChange: (String) -> Unit,
     onClear: () -> Unit,
     onVoiceSearch: () -> Unit,
-    onSearch: ((String) -> Unit)? = null,   // called when user presses the search IME action
+    onSearch: ((String) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Box(

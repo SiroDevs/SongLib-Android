@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,13 +25,26 @@ import kotlinx.coroutines.flow.SharedFlow
 fun PresenterLayers(
     verses: List<String>,
     indicators: List<String>,
+    songTitle: String,
+    bookName: String?,
     horizontalSlides: Boolean = false,
     fontSize: Float = AppFonts.DEFAULT_FONT_SP,
     cornerOverlay: (@Composable () -> Unit)? = null,
     onVerseIndexChanged: (Int) -> Unit = {},
     autoAdvanceTo: SharedFlow<Int>? = null,
+    isAutoPlaying: Boolean = false,
+    autoPlayFeatureEnabled: Boolean = true,
+    autoPlayIsMonitoring: Boolean = true,
+    autoPlayElapsedSeconds: Int = 0,
+    autoPlayTotalSeconds: Int = 0,
+    onToggleAutoPlay: () -> Unit = {},
 ) {
     val pagerState = rememberPagerState { verses.size }
+    var showAutoPlayInfo by remember { mutableStateOf(false) }
+
+    val showAutoPlayCard = autoPlayFeatureEnabled &&
+        verses.size > 2 &&
+        pagerState.currentPage < verses.size - 1
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -47,9 +64,26 @@ fun PresenterLayers(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+//        if (showAutoPlayCard) {
+//            AutoPlayCard(
+//                isAutoPlaying = isAutoPlaying,
+//                isMonitoring = autoPlayIsMonitoring,
+//                elapsedSeconds = autoPlayElapsedSeconds,
+//                totalSeconds = autoPlayTotalSeconds,
+//                onToggle = onToggleAutoPlay,
+//                onInfoClick = { showAutoPlayInfo = true },
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+//            )
+//        }
+
         PagerView(
             pagerState = pagerState,
             verses = verses,
+            songTitle = songTitle,
+            bookName = bookName,
+            indicators = indicators,
             modifier = Modifier.weight(1f),
             horizontalSlides = horizontalSlides,
             fontSize = fontSize,
@@ -64,6 +98,10 @@ fun PresenterLayers(
                 .padding(bottom = 10.dp)
         )
     }
+
+    if (showAutoPlayInfo) {
+        AutoPlayInfoDialog(onDismiss = { showAutoPlayInfo = false })
+    }
 }
 
 @Preview(showBackground = true)
@@ -72,5 +110,7 @@ fun PreviewPresenterContent() {
     PresenterLayers(
         verses = SampleVerses,
         indicators = SampleIndicators,
+        songTitle = "Sample Song",
+        bookName = "Sample Book",
     )
 }

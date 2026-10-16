@@ -6,14 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.songlib.core.common.entity.Selectable
 import com.songlib.core.common.entity.UiState
+import com.songlib.core.common.utils.AppLimits
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.data.repos.SongBookRepo
 import com.songlib.core.data.repos.UserRepo
 import com.songlib.core.data.worker.SyncScheduler
 import com.songlib.core.database.model.BookEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -32,6 +36,10 @@ class SelectionViewModel @Inject constructor(
 
     private val _books = MutableStateFlow<List<Selectable<BookEntity>>>(emptyList())
     val books: StateFlow<List<Selectable<BookEntity>>> get() = _books
+
+    /** One-off messages for the UI (e.g. the songbook limit was reached). */
+    private val _messages = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val messages: SharedFlow<String> = _messages.asSharedFlow()
 
     private fun getSelectedIds(): Set<Int> =
         prefsRepo.selectedBooks
@@ -64,8 +72,22 @@ class SelectionViewModel @Inject constructor(
     fun getSelectedBookList(): List<BookEntity> =
         _books.value.filter { it.isSelected }.map { it.data }
 
-    fun saveSelectedBooks(context: Context) {
-        saveBooks(getSelectedBookList(), context)
+    /**
+     * @param trimToLimit used by the headless auto-recover path, where nobody is
+     * around to deselect books: keeps the first [AppLimits.MAX_SONGBOOKS].
+     */
+    fun saveSelectedBooks(context: Context, trimToLimit: Boolean = false) {
+        val selected = getSelectedBookList()
+        val toSave = if (trimToLimit) selected.take(AppLimits.MAX_SONGBOOKS) else selected
+        if (toSave.size > AppLimits.MAX_SONGBOOKS) {
+            val extra = toSave.size - AppLimits.MAX_SONGBOOKS
+            _messages.tryEmit(
+                "You can keep up to ${AppLimits.MAX_SONGBOOKS} songbooks. " +
+                    "Please deselect $extra and try again."
+            )
+            return
+        }
+        saveBooks(toSave, context)
     }
 
     private fun saveBooks(books: List<BookEntity>, context: Context) {
@@ -113,6 +135,14 @@ class SelectionViewModel @Inject constructor(
     }
 
     fun toggleBookSelection(book: Selectable<BookEntity>) {
+        val selectedCount = _books.value.count { it.isSelected }
+        if (!book.isSelected && selectedCount >= AppLimits.MAX_SONGBOOKS) {
+            _messages.tryEmit(
+                "You can select up to ${AppLimits.MAX_SONGBOOKS} songbooks. " +
+                    "Deselect one to add another."
+            )
+            return
+        }
         _books.value = _books.value.map {
             if (it.data.bookId == book.data.bookId) it.copy(isSelected = !it.isSelected) else it
         }

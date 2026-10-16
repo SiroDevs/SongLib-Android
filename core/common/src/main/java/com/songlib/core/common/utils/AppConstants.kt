@@ -42,6 +42,8 @@ object PrefConstants {
     const val DONATION_DONE_AT = "donation_done_at"
     const val DONATION_METHOD = "donation_method"
     const val DONATION_REMIND_NEXT_OPEN = "donation_remind_next"
+    const val CHURCHLIB_PROMO_DONE = "churchlib_promo_done"
+    const val CHURCHLIB_PROMO_REMIND_AT = "churchlib_promo_remind_at"
     const val LAST_SYNCED_AT = "last_synced_at"
 
     const val LOGGED_IN_USER_ID = "logged_in_user_id"
@@ -50,6 +52,30 @@ object PrefConstants {
     const val LOGGED_IN_PHOTO_URL = "logged_in_photo_url"
     const val LOGGED_IN_ROLE = "logged_in_role"
     const val LAST_SINCE_DATE = "last_since_date"
+    const val BOOK_SYNC_MARKERS = "book_sync_markers"
+}
+
+object AppLimits {
+    /** Most songbooks a user can have selected at once. Enforced in the app only;
+     *  the shared API deliberately has no such cap (ChurchLib uses it too). */
+    const val MAX_SONGBOOKS = 10
+
+    /** How often the app checks for song/book changes. The check itself is a few
+     *  hundred bytes; only changed books are downloaded. */
+    const val SYNC_CHECK_INTERVAL_DAYS = 3L
+
+    /** Daily-sync start is spread randomly over this window so devices that open
+     *  the app together (e.g. Sunday morning) don't all hit the API at once. */
+    const val SYNC_JITTER_MINUTES = 30L
+}
+
+object CrossPromo {
+    const val BIBLELIB_PACKAGE = "com.biblelib"
+    const val SWAHILIB_PACKAGE = "com.swahilib"
+    const val CHURCHLIB_URL = "https://churchlib.sirodevs.com"
+
+    const val PROMO_FIRST_DELAY_MS = 60 * 60 * 1000L
+    const val PROMO_REMIND_DELAY_MS = 3 * 60 * 60 * 1000L
 }
 
 object PayConstants {
@@ -101,23 +127,13 @@ object AppFonts {
     const val MAX_FONT_SP = 60f
 }
 
-/**
- * Tunables for the Auto Play stanza-timing engine (see `PresenterViewModel`).
- * Verse/chorus durations start at these defaults and are then learned per-song
- * from how long the user actually lingers on each stanza.
- */
 object AutoPlayDefaults {
-    const val DEFAULT_VERSE_MS = 15_000L
-    const val DEFAULT_CHORUS_MS = 9_000L
     const val MIN_DURATION_MS = 3_000L
     const val MAX_DURATION_MS = 60_000L
 
-    /** Smoothing weight applied to a freshly observed dwell time. */
     const val LEARNING_WEIGHT = 0.4
 
-    /** Multiplier applied when auto-correcting a duration that was too short. */
     const val CORRECTION_FACTOR = 1.25
 
-    /** How soon after an auto-advance a "swipe back" counts as a correction signal. */
     const val CORRECTION_WINDOW_MS = 20_000L
 }

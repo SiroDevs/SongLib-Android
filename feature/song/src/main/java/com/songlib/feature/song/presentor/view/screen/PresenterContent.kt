@@ -29,6 +29,8 @@ import kotlinx.coroutines.flow.SharedFlow
 fun PresenterContent(
     verses: List<String>,
     indicators: List<String>,
+    songTitle: String,
+    bookName: String?,
     horizontalSlides: Boolean,
     hasPrevious: Boolean,
     hasNext: Boolean,
@@ -38,6 +40,12 @@ fun PresenterContent(
     onNavigateNext: () -> Unit,
     onVerseIndexChanged: (Int) -> Unit = {},
     autoAdvanceTo: SharedFlow<Int>? = null,
+    isAutoPlaying: Boolean = false,
+    autoPlayFeatureEnabled: Boolean = true,
+    autoPlayIsMonitoring: Boolean = true,
+    autoPlayElapsedSeconds: Int = 0,
+    autoPlayTotalSeconds: Int = 0,
+    onToggleAutoPlay: () -> Unit = {},
 ) {
     var fontSizeAtGestureStart by remember { mutableFloatStateOf(fontSize) }
     Box(
@@ -71,10 +79,18 @@ fun PresenterContent(
         PresenterLayers(
             verses = verses,
             indicators = indicators,
+            songTitle = songTitle,
+            bookName = bookName,
             horizontalSlides = horizontalSlides,
             fontSize = fontSize,
             onVerseIndexChanged = onVerseIndexChanged,
             autoAdvanceTo = autoAdvanceTo,
+            isAutoPlaying = isAutoPlaying,
+            autoPlayFeatureEnabled = autoPlayFeatureEnabled,
+            autoPlayIsMonitoring = autoPlayIsMonitoring,
+            autoPlayElapsedSeconds = autoPlayElapsedSeconds,
+            autoPlayTotalSeconds = autoPlayTotalSeconds,
+            onToggleAutoPlay = onToggleAutoPlay,
             cornerOverlay = {
                 if (hasPrevious) {
                     CornerNavZone(

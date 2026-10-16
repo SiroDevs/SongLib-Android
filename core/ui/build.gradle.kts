@@ -17,4 +17,6 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.hilt.android)
     implementation(libs.zxing.core)
+    implementation(libs.androidx.icons.extended)
+    implementation(libs.androidx.core.ktx)
 }

@@ -13,7 +13,7 @@ import com.songlib.core.common.entity.UiState
 import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.viewmodel.HomeViewModel
-import com.songlib.feature.home.view.components.SongsList
+import com.songlib.feature.home.view.components.lists.SongsList
 
 @Composable
 fun HomeLikes(

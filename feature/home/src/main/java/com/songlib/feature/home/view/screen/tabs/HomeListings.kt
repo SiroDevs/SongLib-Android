@@ -19,7 +19,7 @@ import com.songlib.core.ui.components.general.ConfirmDialog
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.core.ui.components.indicators.EmptyState
 import com.songlib.feature.home.viewmodel.HomeViewModel
-import com.songlib.feature.home.view.components.ListingsList
+import com.songlib.feature.home.view.components.lists.ListingsList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

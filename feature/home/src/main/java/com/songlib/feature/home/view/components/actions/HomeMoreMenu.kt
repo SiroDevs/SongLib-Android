@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.actions
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HelpOutline
@@ -13,7 +13,7 @@ import androidx.navigation.NavHostController
 import com.songlib.core.common.utils.Routes
 
 @Composable
-fun HomeOverflowMenu(
+fun HomeMoreMenu(
     expanded: Boolean,
     onDismiss: () -> Unit,
     navController: NavHostController,

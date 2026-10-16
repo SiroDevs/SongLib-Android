@@ -1,4 +1,4 @@
-package com.songlib.feature.home.view.components
+package com.songlib.feature.home.view.components.lists
 
 import android.app.Activity
 import android.content.Intent

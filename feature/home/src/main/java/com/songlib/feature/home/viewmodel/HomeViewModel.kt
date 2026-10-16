@@ -17,7 +17,7 @@ import com.songlib.core.database.model.BookEntity
 import com.songlib.core.database.model.ListingUi
 import com.songlib.core.database.model.SongEntity
 import com.songlib.feature.home.utils.HomeUtils
-import com.songlib.feature.home.view.components.HomeTab
+import com.songlib.feature.home.view.components.actions.HomeTab
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -89,6 +89,10 @@ class HomeViewModel @Inject constructor(
 
     private companion object {
         const val SYNC_OBSERVE_TIMEOUT_MS = 20_000L
+    }
+
+    fun refreshDemoMode() {
+        _demoMode.value = prefsRepo.demoMode
     }
 
     fun dismissDemo() {

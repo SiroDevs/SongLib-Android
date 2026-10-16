@@ -30,9 +30,10 @@ import com.songlib.core.data.repos.PrefsRepo
 import com.songlib.core.ui.components.general.QuickFormDialog
 import com.songlib.feature.home.viewmodel.HomeViewModel
 import com.songlib.core.ui.components.action.ChoosingListingSheet
-import com.songlib.feature.home.view.components.HomeAppBar
-import com.songlib.feature.home.view.components.HomeTab
-import com.songlib.feature.home.view.components.homeTabs
+import com.songlib.feature.home.view.components.actions.HomeAppBar
+import com.songlib.feature.home.view.components.actions.HomeTab
+import com.songlib.feature.home.view.components.promo.ChurchLibPromo
+import com.songlib.feature.home.view.components.actions.homeTabs
 import com.songlib.feature.home.view.screen.tabs.HomeLikes
 import com.songlib.feature.home.view.screen.tabs.HomeListings
 import com.songlib.feature.home.view.screen.tabs.HomeSearch
@@ -53,7 +54,12 @@ fun HomeContent(
     val selectedSongs by viewModel.selectedSongs.collectAsState()
     val selectedListings by viewModel.selectedListings.collectAsState()
     val listings by viewModel.listings.collectAsState(initial = emptyList())
+    val demoMode by viewModel.demoMode.collectAsState()
     val context = LocalContext.current
+
+    LaunchedEffect(Unit) { viewModel.refreshDemoMode() }
+
+    ChurchLibPromo(prefsRepo = prefsRepo, enabled = !demoMode)
 
     var showListingSheet by remember { mutableStateOf(false) }
     var showAddListingDialog by remember { mutableStateOf(false) }
