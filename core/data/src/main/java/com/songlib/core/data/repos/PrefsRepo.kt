@@ -1,6 +1,7 @@
 package com.songlib.core.data.repos
 
 import android.content.Context
+import com.songlib.core.common.utils.AppLimits
 import com.songlib.core.common.utils.PrefConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import androidx.core.content.edit
@@ -135,8 +136,8 @@ class PrefsRepo @Inject constructor(
         val last = lastSyncedAt
         if (last == 0L) return false
         val elapsed = System.currentTimeMillis() - last
-        val oneDayMs = 24 * 60 * 60 * 1000L
-        return elapsed >= oneDayMs
+        val intervalMs = AppLimits.SYNC_CHECK_INTERVAL_DAYS * 24 * 60 * 60 * 1000L
+        return elapsed >= intervalMs
     }
 
     var loggedInUserId: Int
@@ -171,6 +172,11 @@ class PrefsRepo @Inject constructor(
         loggedInRole = "user"
     }
 
+    /** Per-book "last updated" marker from the server, see [BookSyncMarkers]. */
+    var bookSyncMarkers: String
+        get() = prefs.getString(PrefConstants.BOOK_SYNC_MARKERS, "") ?: ""
+        set(value) = prefs.edit { putString(PrefConstants.BOOK_SYNC_MARKERS, value) }
+
     var lastSinceDateIso: String
         get() = prefs.getString(PrefConstants.LAST_SINCE_DATE, "") ?: ""
         set(value) = prefs.edit { putString(PrefConstants.LAST_SINCE_DATE, value) }
@@ -181,6 +187,7 @@ class PrefsRepo @Inject constructor(
         selectAfresh = false
         initialBooks = ""
         selectedBooks = ""
+        bookSyncMarkers = ""
         clearUser()
     }
 }

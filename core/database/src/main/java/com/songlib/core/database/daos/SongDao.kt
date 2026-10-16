@@ -28,6 +28,9 @@ interface SongDao {
     @Delete()
     fun delete(song: SongEntity)
 
+    @Query("SELECT COUNT(*) FROM songs WHERE book = :bookId")
+    suspend fun countByBook(bookId: Int): Int
+
     @Query("DELETE FROM songs WHERE book = :id")
     suspend fun deleteById(id: Int)
 

@@ -52,6 +52,21 @@ object PrefConstants {
     const val LOGGED_IN_PHOTO_URL = "logged_in_photo_url"
     const val LOGGED_IN_ROLE = "logged_in_role"
     const val LAST_SINCE_DATE = "last_since_date"
+    const val BOOK_SYNC_MARKERS = "book_sync_markers"
+}
+
+object AppLimits {
+    /** Most songbooks a user can have selected at once. Enforced in the app only;
+     *  the shared API deliberately has no such cap (ChurchLib uses it too). */
+    const val MAX_SONGBOOKS = 10
+
+    /** How often the app checks for song/book changes. The check itself is a few
+     *  hundred bytes; only changed books are downloaded. */
+    const val SYNC_CHECK_INTERVAL_DAYS = 3L
+
+    /** Daily-sync start is spread randomly over this window so devices that open
+     *  the app together (e.g. Sunday morning) don't all hit the API at once. */
+    const val SYNC_JITTER_MINUTES = 30L
 }
 
 object CrossPromo {

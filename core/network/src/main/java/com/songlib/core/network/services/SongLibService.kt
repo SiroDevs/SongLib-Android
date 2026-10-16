@@ -15,6 +15,7 @@ import com.songlib.core.network.dtos.ListingDto
 import com.songlib.core.network.dtos.OrganisationDto
 import com.songlib.core.network.dtos.PagedSongsResponse
 import com.songlib.core.network.dtos.SongReportRequest
+import com.songlib.core.network.dtos.SyncMetaResponse
 import com.songlib.core.network.dtos.SongReportResponse
 import com.songlib.core.network.dtos.UserDto
 import retrofit2.http.Body
@@ -38,8 +39,13 @@ interface SongLibService {
     suspend fun getSongsPage(
         @Path("bookIds") bookIds: String,
         @Query("page")   page: Int = 1,
-        @Query("limit")  limit: Int = 500
+        @Query("limit")  limit: Int = 500,
+        @Query("since")  since: String? = null
     ): PagedSongsResponse
+
+    /** Tiny per-book change summary (song count + last updated). */
+    @GET("${ApiConstants.SONGS}/sync-meta")
+    suspend fun getSyncMeta(@Query("books") books: String): SyncMetaResponse
 
     @GET("${ApiConstants.SONGS}/{songId}")
     suspend fun getSongById(@Path("songId") songId: Int): SongEntity

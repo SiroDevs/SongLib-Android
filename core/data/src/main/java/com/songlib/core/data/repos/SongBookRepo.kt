@@ -39,44 +39,6 @@ class SongBookRepo @Inject constructor(
         }
     }
 
-    suspend fun fetchAndSaveSongs(bookIds: List<Int>) {
-        val booksParam = bookIds.joinToString(",")
-        var page = 1
-        var totalFetched = 0
-        while (true) {
-            val response = songlibService.getSongsPage(
-                bookIds = booksParam,
-                page = page,
-                limit = 500
-            )
-            val songs = response.data
-            if (songs.isNotEmpty()) {
-                saveSongs(songs)
-                totalFetched += songs.size
-                Log.d("TAG", "✅ Page $page: fetched ${songs.size} songs (total: $totalFetched)")
-            }
-            if (!response.pagination.hasMore) break
-            page++
-        }
-        Log.d("TAG", "✅ All pages done. Total songs fetched: $totalFetched")
-    }
-
-    /** Flow-based paginated fetch used by SelectionScreen (no local save). */
-    fun fetchRemoteSongs(bookIds: List<Int>): Flow<List<SongEntity>> = flow {
-        val booksParam = bookIds.joinToString(",")
-        var page = 1
-        val allSongs = mutableListOf<SongEntity>()
-
-        while (true) {
-            val response =
-                songlibService.getSongsPage(bookIds = booksParam, page = page, limit = 500)
-            allSongs.addAll(response.data)
-            if (!response.pagination.hasMore) break
-            page++
-        }
-        emit(allSongs)
-    }
-
     suspend fun saveBook(book: BookEntity) {
         withContext(Dispatchers.IO) { booksDao.insert(book) }
     }

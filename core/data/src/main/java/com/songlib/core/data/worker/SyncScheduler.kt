@@ -7,7 +7,9 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.songlib.core.common.utils.AppLimits
 import java.util.concurrent.TimeUnit
+import kotlin.random.Random
 
 object SyncScheduler {
     private val networkConstraints = Constraints.Builder()
@@ -29,8 +31,10 @@ object SyncScheduler {
     }
 
     fun scheduleDailySync(context: Context) {
+        val jitterSeconds = Random.nextLong(0, AppLimits.SYNC_JITTER_MINUTES * 60)
         val request = OneTimeWorkRequestBuilder<SyncWorker>()
             .setConstraints(networkConstraints)
+            .setInitialDelay(jitterSeconds, TimeUnit.SECONDS)
             .addTag(SyncWorker.TAG)
             .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
             .build()
